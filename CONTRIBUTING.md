@@ -14,13 +14,13 @@
 ## Đặt tên
 
 - Thư mục feature: `F0x-ten-khong-dau` (người dùng) hoặc `B0x-ten-khong-dau` (quản trị).
-- File: chữ thường, gạch nối. ADR: `architecture/decisions/NNNN-ten-quyet-dinh.md`, đánh số tăng dần.
+- File: chữ thường, gạch nối. ADR: `docs/architecture/decisions/NNNN-ten-quyet-dinh.md`, đánh số tăng dần.
 
 ## Quy trình
 
 - Tài liệu sửa **chung PR với code** của feature tương ứng. Reviewer duyệt cả hai.
 - Thay đổi luật trong `spec.md` cần ít nhất 1 reviewer là PO hoặc BA.
-- Quyết định kiến trúc quan trọng → tạo một ADR (dùng `templates/adr.md`).
+- Quyết định kiến trúc quan trọng → tạo một ADR (dùng `docs/templates/adr.md`).
 
 ## Definition of Done (tài liệu)
 

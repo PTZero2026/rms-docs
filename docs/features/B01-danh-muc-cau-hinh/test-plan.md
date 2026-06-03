@@ -1,30 +1,72 @@
 ---
 title: "Danh mục & cấu hình — Test plan"
 spec: "./spec.md"
-owner: "<TEST>"
+owner: "PO/BA"
 status: Draft
+version: 0.1
 updated: 2026-06-01
 ---
 
 # Danh mục & cấu hình — Kế hoạch kiểm thử
 
-> Mỗi test case bám vào một AC trong `spec.md`. Không có AC tương ứng = thiếu yêu cầu, báo lại BA/PO.
+> Mỗi test case bám vào một AC trong [`spec.md`](./spec.md). Không có AC tương ứng = thiếu yêu cầu,
+> báo lại BA/PO.
 
 ## 1. Phạm vi kiểm thử
 
-Mặt nào được test (FE / BO / API), môi trường, dữ liệu mẫu.
+- **Mặt:** chỉ **BackOffice (BO)** + **API** backend (kiểm tra quyền và ràng buộc ở backend). Không có FE.
+- **Môi trường:** môi trường staging có CSDL PostgreSQL, RBAC (B03) đã cấu hình 2 vai trò mẫu:
+  *Quản trị hệ thống* và *Chuyên viên QL KHCN*.
+- **Dữ liệu mẫu:**
+  - `LinhVuc`: "LV-01" (đang gắn ≥1 `DeTai`), "LV-02" (không tham chiếu), một cặp cha–con A→B.
+  - `DonVi`: cây A → B → C để test chống vòng.
+  - `CauHinhHeThong`: `NGUONG_DIEM_XET_DUYET` (DECIMAL), `SO_NGAY_NHAC_HAN_BAO_CAO` (INT).
+  - `BoTieuChi` loại `XET_DUYET` với các tiêu chí tổng trọng số 90% và 100%.
+- **Phủ AC:** AC-01 … AC-09 đều có ≥1 test case (xem cột "Liên kết AC").
 
 ## 2. Test cases
 
-| ID    | Liên kết AC | Tiền điều kiện | Bước thực hiện | Kết quả mong đợi | Loại     |
-|-------|-------------|----------------|----------------|------------------|----------|
-| TC-01 | AC-01       | ...            | ...            | ...              | Happy    |
-| TC-02 | AC-01       | ...            | ...            | ...              | Biên/Lỗi |
+| ID    | Liên kết AC | Tiền điều kiện | Bước thực hiện | Kết quả mong đợi | Loại |
+|-------|-------------|----------------|----------------|------------------|------|
+| TC-01 | AC-01 | Đăng nhập vai trò Quản trị hệ thống; mã "LV-99" chưa tồn tại | Mở BO-02, tạo LinhVuc ma="LV-99", ten hợp lệ, lưu | Bản ghi lưu thành công, `trangThaiBanGhi=ACTIVE`, có 1 bản ghi `NhatKyHeThong` | Happy |
+| TC-02 | AC-02 | Đã có LinhVuc ma="LV-01" | Tạo LinhVuc khác với ma="LV-01", lưu | Bị từ chối, báo lỗi "mã đã tồn tại"; không tạo bản ghi mới | Biên/Lỗi |
+| TC-03 | AC-03 | DonVi A là cha của B (A→B) | Sửa A, chọn `donViChaId` = B; lưu | Bị từ chối, báo "không thể tạo vòng trong cây đơn vị" | Biên/Lỗi |
+| TC-04 | AC-03 | DonVi A tồn tại | Sửa A, chọn `donViChaId` = chính A; lưu | Bị từ chối, báo lỗi tạo vòng (tự làm cha của mình) | Biên/Lỗi |
+| TC-05 | AC-04 | LinhVuc "LV-01" đang được ≥1 DeTai tham chiếu | Mở BO-02, yêu cầu xóa "LV-01" | Không xóa cứng; thông báo đang được sử dụng + gợi ý vô hiệu hóa; bản ghi giữ nguyên | Biên/Lỗi |
+| TC-06 | AC-05 | LinhVuc "LV-02" không có bản ghi tham chiếu | Xóa "LV-02" | `trangThaiBanGhi=DELETED`; biến mất khỏi danh sách chọn mới; audit được ghi | Happy |
+| TC-07 | AC-05 / AC-01 | Đã thực hiện TC-01 và TC-06 | Mở BO-07, lọc theo loaiDoiTuong=LinhVuc | Thấy bản ghi audit tạo (TC-01) và xóa mềm (TC-06) với giaTriCu/giaTriMoi | Happy |
+| TC-08 | AC-06 | Vai trò Quản trị; tham số NGUONG_DIEM_XET_DUYET kieuDuLieu=DECIMAL | Mở BO-04, sửa giaTri = "abc", lưu | Bị từ chối, báo lỗi sai kiểu dữ liệu; giá trị cũ giữ nguyên | Biên/Lỗi |
+| TC-09 | AC-06 | Như TC-08 | Sửa giaTri = "7.5" (hợp lệ), lưu | Lưu thành công; audit ghi giaTriCu→giaTriMoi | Happy |
+| TC-10 | AC-07 | Vai trò có quyền BoTieuChi; bộ tiêu chí XET_DUYET có tổng trọng số 90% | Mở BO-05, lưu bộ tiêu chí | Hiển thị cảnh báo "tổng trọng số chưa đạt 100%" nhưng vẫn lưu thành công | Biên/Lỗi |
+| TC-11 | AC-07 | Bộ tiêu chí có tổng trọng số đúng 100% | Lưu bộ tiêu chí | Lưu thành công, không cảnh báo trọng số | Happy |
+| TC-12 | AC-08 | Đăng nhập vai trò Chuyên viên QL KHCN | Cố tạo/sửa DonVi qua BO-01 / API | Bị từ chối, lỗi thiếu quyền (403); không thay đổi dữ liệu | Negative/Quyền |
+| TC-13 | AC-08 | Đăng nhập vai trò Chuyên viên QL KHCN | Tạo/sửa một BoTieuChi qua BO-05 | Được phép; lưu thành công theo phân quyền nghiệp vụ | Happy |
+| TC-14 | AC-09 | Vai trò có quyền BoTieuChi | Thêm TieuChiDanhGia với diemToiDa=0, lưu | Bị từ chối, báo "diemToiDa phải lớn hơn 0" | Biên/Lỗi |
+| TC-15 | AC-09 | Như TC-14 | Thêm TieuChiDanhGia với trongSo=120, lưu | Bị từ chối, báo trongSo phải trong [0,100] | Biên/Lỗi |
 
 ## 3. Trường hợp biên & negative
 
-Liệt kê các tình huống dễ sót: dữ liệu rỗng, quá hạn, trùng, sai quyền.
+- **Dữ liệu rỗng/bắt buộc:** tạo danh mục thiếu `ma` hoặc `ten` → từ chối (validate bắt buộc).
+- **Trùng mã khác loại:** mã trùng nhưng khác loại danh mục → cho phép (BR-01 giới hạn theo cùng loại;
+  `CauHinhHeThong.khoa` thì duy nhất toàn cục — kiểm tra riêng).
+- **Xóa nút cây còn nút con:** xóa DonVi cha còn nút con/đang tham chiếu → chặn theo RESTRICT (BR-02).
+- **Sai quyền truy cập audit:** vai trò không có quyền cố sửa/xóa bản ghi `NhatKyHeThong` → từ chối
+  (audit bất biến).
+- **Giá trị biên kiểu số:** NGUONG_DIEM_XET_DUYET nhận giá trị âm hoặc ngoài khoảng cho phép → từ chối (BR-06).
+- **Mục INACTIVE vs DELETED:** mục INACTIVE vẫn hiển thị trên bản ghi cũ đã gắn nhưng không hiện ở danh
+  sách chọn mới; mục DELETED ẩn hoàn toàn khỏi chọn mới (BR-04).
+- **Mẫu biểu thuyết minh (BO-06):** đánh dấu **blocked** cho tới khi thực thể `BieuMauThuyetMinh` được
+  bổ sung vào data-model (spec §5/§7).
 
 ## 4. Checklist hồi quy
 
-Những luồng cũ cần test lại khi feature này thay đổi.
+Khi B01 thay đổi, kiểm tra lại các feature tiêu thụ danh mục:
+
+- [ ] F01/F02: chọn `LinhVuc`, mẫu biểu thuyết minh, bộ tiêu chí xét duyệt vẫn đúng (mục INACTIVE/DELETED
+      không xuất hiện ở chọn mới; bản ghi cũ vẫn giữ tham chiếu).
+- [ ] F03/F06: bộ tiêu chí (`diemToiDa`, `trongSo`) tải đúng; điểm tổng hợp tính đúng theo trọng số.
+- [ ] F07: danh mục `LoaiSanPham` và `nhom` hiển thị đúng khi kê khai sản phẩm.
+- [ ] F04/B04: tham số `SO_NGAY_NHAC_HAN_BAO_CAO` thay đổi được job nhắc hạn áp dụng đúng.
+- [ ] Mọi feature: cây `DonVi` hiển thị/chọn đúng sau khi đổi cấu trúc cây.
+- [ ] Audit: mọi thay đổi danh mục/cấu hình đều sinh bản ghi `NhatKyHeThong` (không sót, không trùng).
+- [ ] RBAC (B03): thay đổi vai trò/quyền không phá vỡ phân quyền B01 trong Permission matrix.
