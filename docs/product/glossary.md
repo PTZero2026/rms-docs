@@ -13,22 +13,22 @@ thực thể dữ liệu, cột "Thực thể" trỏ tới `../architecture/data
 
 | Thuật ngữ | Định nghĩa | Thực thể |
 |-----------|------------|----------|
-| Đề tài | Đơn vị nghiên cứu được đề xuất và quản lý xuyên suốt vòng đời trong hệ thống. | `DeTai` |
-| Đợt kêu gọi | Kỳ mở nhận đề xuất, có thời gian và tiêu chí riêng. | `DotKeuGoi` |
-| Đề xuất | Hành động/hồ sơ đăng ký một đề tài mới trong một đợt kêu gọi. | `DeTai` |
+| Đề tài | Đơn vị nghiên cứu được đề xuất và quản lý xuyên suốt vòng đời trong hệ thống. | `ResearchProject` |
+| Đợt kêu gọi | Kỳ mở nhận đề xuất, có thời gian và tiêu chí riêng. | `ProposalCall` |
+| Đề xuất | Hành động/hồ sơ đăng ký một đề tài mới trong một đợt kêu gọi. | `ResearchProject` |
 | Thuyết minh | Hồ sơ mô tả chi tiết đề tài khi đề xuất. | — |
-| Xét duyệt | Quy trình hội đồng đánh giá đề xuất để chấp nhận/từ chối. | `HoiDong`, `PhieuCham` |
-| Hội đồng | Nhóm chuyên gia đánh giá đề xuất hoặc nghiệm thu đề tài. | `HoiDong` |
-| Phiếu chấm | Phiếu cho điểm/nhận xét của một thành viên hội đồng. | `PhieuCham` |
-| Tiến độ | Quá trình thực hiện đề tài, theo dõi qua các báo cáo định kỳ. | `BaoCaoTienDo` |
-| Báo cáo tiến độ | Báo cáo định kỳ về kết quả thực hiện đề tài. | `BaoCaoTienDo` |
-| Kinh phí | Ngân sách cấp cho đề tài và các giao dịch chi/đối soát. | `GiaoDichKinhPhi` |
-| Giao dịch kinh phí | Một khoản chi/thu liên quan đề tài, dùng để đối soát tài chính. | `GiaoDichKinhPhi` |
+| Xét duyệt | Quy trình hội đồng đánh giá đề xuất để chấp nhận/từ chối. | `EvaluationCommittee`, `ScoreSheet` |
+| Hội đồng | Nhóm chuyên gia đánh giá đề xuất hoặc nghiệm thu đề tài. | `EvaluationCommittee` |
+| Phiếu chấm | Phiếu cho điểm/nhận xét của một thành viên hội đồng. | `ScoreSheet` |
+| Tiến độ | Quá trình thực hiện đề tài, theo dõi qua các báo cáo định kỳ. | `ProgressReport` |
+| Báo cáo tiến độ | Báo cáo định kỳ về kết quả thực hiện đề tài. | `ProgressReport` |
+| Kinh phí | Ngân sách cấp cho đề tài và các giao dịch chi/đối soát. | `BudgetTransaction` |
+| Giao dịch kinh phí | Một khoản chi/thu liên quan đề tài, dùng để đối soát tài chính. | `BudgetTransaction` |
 | Đối soát | So khớp giao dịch kinh phí với hệ thống tài chính ngoài. | — |
-| Nghiệm thu | Quy trình hội đồng đánh giá kết quả cuối của đề tài. | `HoiDong`, `PhieuCham` |
-| Sản phẩm khoa học | Bài báo, sáng chế, giải pháp… sinh ra từ đề tài. | `SanPhamKhoaHoc` |
-| Lý lịch khoa học | Hồ sơ năng lực/thành tích nghiên cứu của một nhà khoa học. | `NguoiDung`, `SanPhamKhoaHoc` |
-| Công bố | Việc công khai/ghi nhận sản phẩm khoa học của đề tài. | `SanPhamKhoaHoc` |
+| Nghiệm thu | Quy trình hội đồng đánh giá kết quả cuối của đề tài. | `EvaluationCommittee`, `ScoreSheet` |
+| Sản phẩm khoa học | Bài báo, sáng chế, giải pháp… sinh ra từ đề tài. | `ResearchOutput` |
+| Lý lịch khoa học | Hồ sơ năng lực/thành tích nghiên cứu của một nhà khoa học. | `User`, `ResearchOutput` |
+| Công bố | Việc công khai/ghi nhận sản phẩm khoa học của đề tài. | `ResearchOutput` |
 
 ## Vai trò & người dùng
 

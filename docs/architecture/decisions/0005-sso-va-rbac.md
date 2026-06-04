@@ -15,7 +15,7 @@ soát chặt phạm vi dữ liệu.
 ## Quyết định
 - **Xác thực** bằng SSO nội bộ (OIDC ưu tiên, hỗ trợ SAML); RMS không tự quản mật khẩu trừ tài khoản
   nội bộ dự phòng.
-- **Phân quyền** bằng RBAC do RMS quản lý: quyền nguyên tử `MODULE.HANH_DONG` → gom vào `VaiTro` → gán `NguoiDung`.
+- **Phân quyền** bằng RBAC do RMS quản lý: quyền nguyên tử `MODULE.ACTION` → gom vào `Role` → gán `User`.
   Kiểm tra quyền bắt buộc ở backend cho mọi API.
 
 ## Phương án đã cân nhắc

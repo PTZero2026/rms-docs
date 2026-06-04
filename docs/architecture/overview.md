@@ -75,7 +75,7 @@ flowchart LR
 | Job scheduler | Tác vụ định kỳ (nhắc hạn báo cáo, đối soát) | Cron/queue worker |
 
 > **Vì sao monolith module hóa thay vì microservices:** đội ngũ lean, nghiệp vụ gắn kết quanh một
-> thực thể trung tâm (`DeTai`) cần transaction xuyên feature; tách service sớm gây chi phí phân tán
+> thực thể trung tâm (`ResearchProject`) cần transaction xuyên feature; tách service sớm gây chi phí phân tán
 > không tương xứng. Ranh giới module theo feature giữ khả năng tách về sau. Xem [ADR-0002](decisions/0002-kien-truc-hai-mat-mot-backend.md).
 
 ## 3. Module backend ↔ feature
@@ -95,17 +95,17 @@ qua interface rõ ràng. Thực thể dùng chung định nghĩa ở `data-model
 ### 4.1 Xác thực & phân quyền
 - **Xác thực:** SSO nội bộ qua OIDC/SAML (xem `integrations.md`); backend cấp access token nội bộ
   (JWT) sau khi xác thực. Tài khoản nội bộ chỉ dùng cho trường hợp không có trên SSO.
-- **Phân quyền:** RBAC — `Quyen` (nguyên tử `MODULE.HANH_DONG`) gom vào `VaiTro`, gán cho `NguoiDung`.
+- **Phân quyền:** RBAC — `Permission` (nguyên tử `MODULE.ACTION`) gom vào `Role`, gán cho `User`.
   Kiểm tra quyền ở backend cho mọi API; FE/BO chỉ ẩn/hiện theo quyền, **không** là lớp bảo vệ.
 - Phạm vi dữ liệu (data scoping): chủ nhiệm chỉ thấy đề tài của mình; chuyên viên thấy theo đơn vị/đợt.
   Xem [ADR-0005](decisions/0005-sso-va-rbac.md).
 
 ### 4.2 Audit & nhật ký
 Mọi hành động làm đổi trạng thái nghiệp vụ quan trọng (nộp, duyệt, chấm, chi kinh phí, đổi quyền)
-ghi `NhatKyHeThong` (append-only). Tách khỏi log kỹ thuật. Bất biến, có thể truy vết ai-làm-gì-khi-nào.
+ghi `AuditLog` (append-only). Tách khỏi log kỹ thuật. Bất biến, có thể truy vết ai-làm-gì-khi-nào.
 
 ### 4.3 Trạng thái & máy trạng thái
-Vòng đời `DeTai` (xem `data-model.md` §3) là logic tập trung ở `proposal`/domain service dùng chung,
+Vòng đời `ResearchProject` (xem `data-model.md` §3) là logic tập trung ở `proposal`/domain service dùng chung,
 **không** rải ở từng màn hình. Các feature gọi service để chuyển trạng thái, không tự update enum.
 
 ### 4.4 Đa ngôn ngữ & định dạng

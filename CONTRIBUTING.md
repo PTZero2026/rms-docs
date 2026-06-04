@@ -13,8 +13,8 @@
 
 ## Đặt tên
 
-- Thư mục feature: `F0x-ten-khong-dau` (người dùng) hoặc `B0x-ten-khong-dau` (quản trị).
-- File: chữ thường, gạch nối. ADR: `docs/architecture/decisions/NNNN-ten-quyet-dinh.md`, đánh số tăng dần.
+- Thư mục feature: `F0x-name-khong-dau` (người dùng) hoặc `B0x-name-khong-dau` (quản trị).
+- File: chữ thường, gạch nối. ADR: `docs/architecture/decisions/NNNN-name-quyet-dinh.md`, đánh số tăng dần.
 
 ## Quy trình
 

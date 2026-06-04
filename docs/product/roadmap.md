@@ -61,7 +61,7 @@ Mục tiêu: khai thác đầu ra và dữ liệu tích lũy.
 ## Phụ thuộc chính
 
 - F01 cần **F02** (phải có đợt kêu gọi) và **B01/B03** (danh mục + người dùng).
-- F03, F06 cùng dùng **HoiDong / PhieuCham** — nên thống nhất mô hình từ F03.
+- F03, F06 cùng dùng **EvaluationCommittee / ScoreSheet** — nên thống nhất mô hình từ F03.
 - F05 phụ thuộc tích hợp **hệ thống tài chính** (đối soát) — xem `../architecture/integrations.md`.
 - B02 phụ thuộc dữ liệu do các feature F sinh ra → đặt ở Later là hợp lý.
 

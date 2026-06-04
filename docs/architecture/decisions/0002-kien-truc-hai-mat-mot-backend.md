@@ -9,7 +9,7 @@ deciders: "SA, Tech lead, PO"
 
 ## Bối cảnh
 RMS phục vụ hai nhóm rất khác nhau: nhà khoa học (Portal FE) và quản trị/hội đồng (BackOffice BO).
-Cùng thao tác trên một thực thể trung tâm `DeTai` và vòng đời liên tục xuyên feature, cần transaction
+Cùng thao tác trên một thực thể trung tâm `ResearchProject` và vòng đời liên tục xuyên feature, cần transaction
 nhất quán. Đội ngũ ở quy mô lean.
 
 ## Quyết định
@@ -24,6 +24,6 @@ chung một CSDL quan hệ. Không tách microservices ở giai đoạn đầu.
 - **C — Hai backend tách rời cho FE và BO:** dễ lệch dữ liệu, trùng logic vòng đời — đi ngược nguyên tắc "một nguồn sự thật".
 
 ## Hệ quả
-- Logic vòng đời `DeTai` tập trung ở domain service dùng chung, mọi feature gọi qua đó.
+- Logic vòng đời `ResearchProject` tập trung ở domain service dùng chung, mọi feature gọi qua đó.
 - Phân quyền là lằn ranh chính giữa FE và BO, không phải hai hệ thống tách biệt.
 - Phải duy trì ranh giới module rõ để có thể tách service khi tải tăng.

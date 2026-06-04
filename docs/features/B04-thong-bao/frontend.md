@@ -21,7 +21,7 @@ mẫu/nhật ký nằm ở [`backoffice.md`](./backoffice.md).
 - **Chuông thông báo** ở thanh điều hướng (mọi trang) — hiển thị số chưa đọc (badge), bấm mở dropdown nhanh.
 - **Trung tâm thông báo** (trang đầy đủ) — vào từ dropdown ("Xem tất cả") hoặc menu tài khoản.
 - **Tùy chọn nhận thông báo** — trong trang Cài đặt cá nhân.
-- **Deep-link**: bấm một thông báo điều hướng tới đối tượng nguồn qua `ThongBao.lienKet` (đề tài, báo cáo…).
+- **Deep-link**: bấm một thông báo điều hướng tới đối tượng nguồn qua `Notification.link` (đề tài, báo cáo…).
 
 ## 2. Danh sách màn hình
 
@@ -38,11 +38,11 @@ mẫu/nhật ký nằm ở [`backoffice.md`](./backoffice.md).
 
 ### FE-01 — Chuông & dropdown thông báo
 
-- **Vị trí:** icon chuông trên thanh điều hướng, có **badge số chưa đọc** (IN_APP, `trangThai != DA_DOC`).
+- **Vị trí:** icon chuông trên thanh điều hướng, có **badge số chưa đọc** (IN_APP, `status != READ`).
   Badge hiển thị tối đa "99+".
-- **Dropdown:** danh sách rút gọn 5–10 thông báo mới nhất, mỗi dòng gồm: icon theo `loaiSuKien`, tiêu đề,
+- **Dropdown:** danh sách rút gọn 5–10 thông báo mới nhất, mỗi dòng gồm: icon theo `eventType`, tiêu đề,
   thời gian tương đối ("2 giờ trước"), chấm đậm nếu chưa đọc.
-- **Thao tác:** bấm một dòng → điều hướng theo `lienKet` và đánh dấu dòng đó `DA_DOC`; link "Xem tất cả" → FE-02;
+- **Thao tác:** bấm một dòng → điều hướng theo `link` và đánh dấu dòng đó `READ`; link "Xem tất cả" → FE-02;
   nút "Đánh dấu tất cả đã đọc" (xác nhận nhẹ).
 - **Trạng thái:**
   - *Tải:* skeleton 3–5 dòng.
@@ -52,7 +52,7 @@ mẫu/nhật ký nằm ở [`backoffice.md`](./backoffice.md).
 ### FE-02 — Trung tâm thông báo
 
 - **Danh sách:** phân trang server-side (NFR < 2s, xem `overview.md` §4.5), mỗi mục: tiêu đề, trích nội dung,
-  `loaiSuKien` (nhãn dễ đọc), thời gian, trạng thái đọc.
+  `eventType` (nhãn dễ đọc), thời gian, trạng thái đọc.
 - **Bộ lọc:** theo **trạng thái đọc** (Tất cả / Chưa đọc / Đã đọc), theo **nhóm sự kiện** (đề xuất, xét duyệt,
   tiến độ, kinh phí, nghiệm thu, sản phẩm), theo **khoảng thời gian**. Lọc giữ trên URL để chia sẻ/refresh.
 - **Thao tác:** mở một mục (→ FE-03, đánh dấu đã đọc), **đánh dấu đã đọc đơn lẻ**, **đánh dấu tất cả đã đọc**.
@@ -66,9 +66,9 @@ mẫu/nhật ký nằm ở [`backoffice.md`](./backoffice.md).
 ### FE-03 — Chi tiết / điều hướng từ thông báo
 
 - Mở từ FE-01/FE-02. Hiển thị tiêu đề + nội dung đầy đủ (đã render từ mẫu), thời gian, nút điều hướng tới
-  đối tượng nguồn (`lienKet`).
-- **Tự động đánh dấu `DA_DOC`** khi mở (nếu đang chưa đọc).
-- **Trạng thái lỗi:** nếu `lienKet` trỏ tới đối tượng người dùng không còn quyền xem → hiển thị nội dung
+  đối tượng nguồn (`link`).
+- **Tự động đánh dấu `READ`** khi mở (nếu đang chưa đọc).
+- **Trạng thái lỗi:** nếu `link` trỏ tới đối tượng người dùng không còn quyền xem → hiển thị nội dung
   thông báo nhưng nút điều hướng báo "Bạn không còn quyền truy cập mục này." (không lỗi cứng).
 
 ### FE-04 — Tùy chọn nhận thông báo
@@ -78,7 +78,7 @@ mẫu/nhật ký nằm ở [`backoffice.md`](./backoffice.md).
 - **Ràng buộc UI (theo spec):**
   - Nhóm sự kiện **bắt buộc** (BR-08): công tắc EMAIL bị khóa ở trạng thái bật, có chú thích "Bắt buộc nhận".
   - Kênh SMS chỉ hiện công tắc cho nhóm có sự kiện **ưu tiên cao** (BR-03); nhóm còn lại hiển thị "—".
-  - Người chưa có `soDienThoai` (B03): công tắc SMS hiển thị gợi ý "Cập nhật số điện thoại để nhận SMS".
+  - Người chưa có `phoneNumber` (B03): công tắc SMS hiển thị gợi ý "Cập nhật số điện thoại để nhận SMS".
 - **Thao tác:** đổi công tắc → lưu (tự lưu hoặc nút "Lưu thay đổi"), hiển thị toast xác nhận.
 - **Trạng thái:** *Tải* skeleton; *Lỗi lưu* giữ nguyên giá trị cũ + toast lỗi + cho thử lại.
 

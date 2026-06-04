@@ -21,35 +21,35 @@ updated: 2026-06-01
 ## 2. SSO (OIDC/SAML)
 
 - **Luồng:** Authorization Code + PKCE (OIDC). RMS là Relying Party; SSO là Identity Provider.
-- **Ánh xạ định danh:** claim `email` (hoặc `preferred_username`) → `NguoiDung.email`. Lần đăng nhập đầu,
-  nếu chưa có tài khoản và chính sách cho phép, tạo `NguoiDung` với `nguonTaiKhoan = SSO` (just-in-time provisioning).
+- **Ánh xạ định danh:** claim `email` (hoặc `preferred_username`) → `User.email`. Lần đăng nhập đầu,
+  nếu chưa có tài khoản và chính sách cho phép, tạo `User` với `accountSource = SSO` (just-in-time provisioning).
 - **Vai trò:** RMS quản lý vai trò nội bộ (B03), **không** lấy quyền từ SSO — SSO chỉ chứng thực danh tính.
 - **Đăng xuất:** hỗ trợ single logout nếu IdP cung cấp; nếu không, hủy session nội bộ.
-- **Dự phòng:** tài khoản `NOI_BO` (đăng nhập mật khẩu RMS) cho người không có trên SSO hoặc khi SSO sự cố;
+- **Dự phòng:** tài khoản `INTERNAL` (đăng nhập mật khẩu RMS) cho người không có trên SSO hoặc khi SSO sự cố;
   giới hạn tối thiểu, có audit riêng.
 
 ## 3. Email/SMS gateway
 
-- **Email:** SMTP nội bộ hoặc API; RMS đẩy job vào hàng đợi, worker gửi và cập nhật `ThongBao.trangThai`.
+- **Email:** SMTP nội bộ hoặc API; RMS đẩy job vào hàng đợi, worker gửi và cập nhật `Notification.status`.
 - **SMS:** API nhà cung cấp; chỉ dùng cho sự kiện ưu tiên cao (nhắc hạn sát ngày, kết quả nghiệm thu).
-- **Mẫu thông báo:** quản lý ở B04 (template theo `loaiSuKien`), tránh hardcode nội dung trong code.
-- **Retry & dead-letter:** gửi lỗi được thử lại theo cấu hình; quá số lần chuyển trạng thái `LOI` để theo dõi.
+- **Mẫu thông báo:** quản lý ở B04 (template theo `eventType`), tránh hardcode nội dung trong code.
+- **Retry & dead-letter:** gửi lỗi được thử lại theo cấu hình; quá số lần chuyển trạng thái `ERROR` để theo dõi.
 - Chi tiết sự kiện ↔ kênh: xem `features/B04-thong-bao/spec.md`.
 
 ## 4. Hệ thống tài chính (đối soát kinh phí — F05)
 
 - **Mục tiêu:** RMS là nơi **theo dõi** kinh phí đề tài; hệ thống tài chính là **sổ cái** thật.
-  RMS đối soát `GiaoDichKinhPhi` với giao dịch bên tài chính, **không** thay thế kế toán.
+  RMS đối soát `BudgetTransaction` với giao dịch bên tài chính, **không** thay thế kế toán.
 - **Cơ chế:** ưu tiên REST API truy vấn giao dịch theo mã đề tài/mã giao dịch; fallback nhập file
   định kỳ (CSV/Excel) nếu chưa có API.
-- **Khóa đối chiếu:** `GiaoDichKinhPhi.maGiaoDichTaiChinh` ↔ mã chứng từ bên tài chính.
-- **Kết quả đối soát:** mỗi giao dịch nhận `trangThaiDoiSoat` = `KHOP` / `LECH` / `CHUA_DOI_SOAT`;
+- **Khóa đối chiếu:** `BudgetTransaction.financeTransactionCode` ↔ mã chứng từ bên tài chính.
+- **Kết quả đối soát:** mỗi giao dịch nhận `reconciliationStatus` = `MATCHED` / `MISMATCHED` / `UNRECONCILED`;
   chênh lệch được liệt kê cho chuyên viên xử lý thủ công. Xem [ADR-0004](decisions/0004-doi-soat-kinh-phi-qua-api.md).
 
 ## 5. Object storage
 
 - File (thuyết minh, minh chứng sản phẩm, báo cáo) lưu ở object storage; CSDL chỉ giữ metadata
-  (`TaiLieuDinhKem`). Truy cập qua pre-signed URL có thời hạn, kiểm quyền ở backend trước khi cấp URL.
+  (`Attachment`). Truy cập qua pre-signed URL có thời hạn, kiểm quyền ở backend trước khi cấp URL.
 
 ## 6. Nguyên tắc tích hợp chung
 

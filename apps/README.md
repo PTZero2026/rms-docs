@@ -12,4 +12,4 @@ Ba mặt triển khai theo [ADR-0002](../docs/architecture/decisions/0002-kien-t
 ## backend/src/modules/
 Mỗi module ↔ một feature tài liệu (xem bảng ánh xạ trong [AGENTS.md §3](../AGENTS.md)).
 Module giao tiếp qua interface rõ ràng; thực thể dùng chung định nghĩa ở
-[data-model.md](../docs/architecture/data-model.md). Logic vòng đời `DeTai` tập trung, không rải ở màn hình.
+[data-model.md](../docs/architecture/data-model.md). Logic vòng đời `ResearchProject` tập trung, không rải ở màn hình.

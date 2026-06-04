@@ -15,29 +15,29 @@ updated: 2026-06-01
 - **Chủ nhiệm đề tài** (FE): đăng ký nghiệm thu, nộp hồ sơ cuối, theo dõi lịch & kết quả nghiệm thu.
 - **Thành viên đề tài** (FE): xem trạng thái & kết quả nghiệm thu của đề tài mình tham gia.
 
-Vào từ "Đề tài của tôi" → đề tài `DANG_THUC_HIEN`/`CHO_NGHIEM_THU`/`DANG_NGHIEM_THU` → tab **Nghiệm thu**.
+Vào từ "Đề tài của tôi" → đề tài `IN_PROGRESS`/`PENDING_ACCEPTANCE`/`UNDER_ACCEPTANCE` → tab **Nghiệm thu**.
 
 ## 2. Danh sách màn hình
 
 | Mã MH | Tên màn hình | Mục đích |
 |-------|--------------|----------|
 | FE-01 | Đăng ký nghiệm thu | Kiểm tra điều kiện, nộp hồ sơ cuối, gửi đăng ký |
-| FE-02 | Theo dõi nghiệm thu | Trạng thái đề tài, lịch hội đồng, kết quả `DAT`/`KHONG_DAT` + nhận xét (nếu công khai) |
+| FE-02 | Theo dõi nghiệm thu | Trạng thái đề tài, lịch hội đồng, kết quả `PASSED`/`FAILED` + nhận xét (nếu công khai) |
 
 ## 3. Mô tả màn hình & thao tác
 
 ### FE-01 — Đăng ký nghiệm thu
-- Bảng **điều kiện** (checklist): kỳ báo cáo cuối đã `DAT`? đủ sản phẩm cam kết `DA_DUYET`? — hiển thị
+- Bảng **điều kiện** (checklist): kỳ báo cáo cuối đã `PASSED`? đủ sản phẩm cam kết `APPROVED`? — hiển thị
   rõ mục nào chưa đạt và link tới F04/F07 để bổ sung (BR-01).
-- Khu vực nộp **hồ sơ nghiệm thu cuối** (`TaiLieuDinhKem`): kéo-thả, validate dung lượng/định dạng.
-- Nút **Gửi đăng ký** chỉ bật khi đủ điều kiện → `DeTai: DANG_THUC_HIEN → CHO_NGHIEM_THU`.
+- Khu vực nộp **hồ sơ nghiệm thu cuối** (`Attachment`): kéo-thả, validate dung lượng/định dạng.
+- Nút **Gửi đăng ký** chỉ bật khi đủ điều kiện → `ResearchProject: IN_PROGRESS → PENDING_ACCEPTANCE`.
 - **Trạng thái rỗng/lỗi:** nếu chưa đủ điều kiện, nút bị vô hiệu kèm giải thích.
 
 ### FE-02 — Theo dõi nghiệm thu
 - Hiển thị trạng thái đề tài theo chuỗi nghiệm thu; lịch họp/đợt đánh giá (thời điểm, hội đồng — ẩn danh
   tính người chấm nếu cấu hình ẩn).
-- Khi có kết luận: hiển thị `DAT`/`KHONG_DAT`; nếu `KHONG_DAT` kèm **thời hạn làm lại** và hướng dẫn;
-  nhận xét hội đồng hiển thị khi `NGHIEM_THU.CONG_KHAI_NHAN_XET=true`.
+- Khi có kết luận: hiển thị `PASSED`/`FAILED`; nếu `FAILED` kèm **thời hạn làm lại** và hướng dẫn;
+  nhận xét hội đồng hiển thị khi `ACCEPTANCE.PUBLIC_COMMENTS=true`.
 - **Đang tải:** skeleton; **Lỗi:** thông báo + thử lại.
 
 ## 4. Thông báo & trạng thái

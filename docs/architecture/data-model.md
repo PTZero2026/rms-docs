@@ -8,191 +8,191 @@ updated: 2026-06-01
 
 > **Nguồn sự thật về dữ liệu dùng chung.** Mọi `spec.md` tham chiếu tên thực thể, tên trường và
 > enum trạng thái ở đây thay vì tự định nghĩa lại. Khi một feature cần trường mới, bổ sung vào file
-> này trong cùng PR. Tên thực thể không dấu, PascalCase; tên trường camelCase.
+> này trong cùng PR. Tên thực thể tiếng Anh, PascalCase; tên trường tiếng Anh camelCase.
 
 ## 1. Quy ước chung
 
 - **Khóa chính:** mọi thực thể có `id` (UUID v4), không tái sử dụng.
 - **Trường audit dùng chung** (mọi thực thể nghiệp vụ, không lặp lại trong bảng trường bên dưới):
-  `createdAt`, `createdBy`, `updatedAt`, `updatedBy` (FK → `NguoiDung`).
-- **Xóa mềm:** thực thể danh mục và hồ sơ dùng `trangThaiBanGhi` (`ACTIVE` | `INACTIVE` | `DELETED`)
+  `createdAt`, `createdBy`, `updatedAt`, `updatedBy` (FK → `User`).
+- **Xóa mềm:** thực thể danh mục và hồ sơ dùng `recordStatus` (`ACTIVE` | `INACTIVE` | `DELETED`)
   thay vì xóa cứng, để giữ toàn vẹn tham chiếu lịch sử.
 - **Tiền tệ:** lưu số nguyên VND (`bigint`), không dùng số thực.
 - **Thời gian:** lưu UTC (`timestamptz`), hiển thị theo múi giờ Việt Nam ở tầng giao diện.
-- **File đính kèm:** không lưu nhị phân trong CSDL — xem thực thể `TaiLieuDinhKem` (trỏ tới object storage).
+- **File đính kèm:** không lưu nhị phân trong CSDL — xem thực thể `Attachment` (trỏ tới object storage).
 
 ## 2. Sơ đồ thực thể (ERD)
 
 ```mermaid
 erDiagram
-    NguoiDung ||--o{ ThanhVienDeTai : "tham gia"
-    NguoiDung }o--o{ VaiTro : "được gán"
-    VaiTro }o--o{ Quyen : "gồm"
-    DonVi ||--o{ NguoiDung : "thuộc"
+    User ||--o{ ProjectMember : "tham gia"
+    User }o--o{ Role : "được gán"
+    Role }o--o{ Permission : "gồm"
+    Unit ||--o{ User : "thuộc"
 
-    DotKeuGoi ||--o{ DeTai : "nhận đề xuất"
-    LinhVuc ||--o{ DeTai : "phân loại"
-    DeTai ||--o{ ThanhVienDeTai : "có"
-    DeTai ||--o{ TaiLieuDinhKem : "đính kèm"
+    ProposalCall ||--o{ ResearchProject : "nhận đề xuất"
+    ResearchField ||--o{ ResearchProject : "phân loại"
+    ResearchProject ||--o{ ProjectMember : "có"
+    ResearchProject ||--o{ Attachment : "đính kèm"
 
-    DeTai ||--o{ DotDanhGia : "trải qua"
-    DotDanhGia ||--|| HoiDong : "do"
-    DotDanhGia ||--o{ PhieuCham : "tổng hợp"
-    HoiDong ||--o{ ThanhVienHoiDong : "gồm"
-    ThanhVienHoiDong ||--o{ PhieuCham : "điền"
-    TieuChiDanhGia ||--o{ DiemTieuChi : "được chấm"
-    PhieuCham ||--o{ DiemTieuChi : "gồm"
+    ResearchProject ||--o{ EvaluationRound : "trải qua"
+    EvaluationRound ||--|| EvaluationCommittee : "do"
+    EvaluationRound ||--o{ ScoreSheet : "tổng hợp"
+    EvaluationCommittee ||--o{ CommitteeMember : "gồm"
+    CommitteeMember ||--o{ ScoreSheet : "điền"
+    EvaluationCriterion ||--o{ CriterionScore : "được chấm"
+    ScoreSheet ||--o{ CriterionScore : "gồm"
 
-    DeTai ||--o{ BaoCaoTienDo : "nộp"
-    DeTai ||--o{ DuToanKinhPhi : "có"
-    DeTai ||--o{ GiaoDichKinhPhi : "phát sinh"
-    DeTai ||--o{ SanPhamKhoaHoc : "tạo ra"
-    NguoiDung ||--o{ SanPhamKhoaHoc : "đồng tác giả"
+    ResearchProject ||--o{ ProgressReport : "nộp"
+    ResearchProject ||--o{ BudgetEstimate : "có"
+    ResearchProject ||--o{ BudgetTransaction : "phát sinh"
+    ResearchProject ||--o{ ResearchOutput : "tạo ra"
+    User ||--o{ ResearchOutput : "đồng tác giả"
 
-    NguoiDung ||--o{ ThongBao : "nhận"
-    NguoiDung ||--o{ NhatKyHeThong : "thực hiện"
+    User ||--o{ Notification : "nhận"
+    User ||--o{ AuditLog : "thực hiện"
 ```
 
-> `DotDanhGia` là một **lượt đánh giá** của một hội đồng trên một đề tài; nó được dùng lại cho cả
-> **xét duyệt** (F03) và **nghiệm thu** (F06) — phân biệt bằng trường `loai`. Xem [ADR-0003](decisions/0003-mo-hinh-hoi-dong-dung-chung.md).
+> `EvaluationRound` là một **lượt đánh giá** của một hội đồng trên một đề tài; nó được dùng lại cho cả
+> **xét duyệt** (F03) và **nghiệm thu** (F06) — phân biệt bằng trường `type`. Xem [ADR-0003](decisions/0003-mo-hinh-hoi-dong-dung-chung.md).
 
 ## 3. Vòng đời đề tài (state machine)
 
-Trạng thái của `DeTai.trangThai` là **trục xương sống** nối các feature. Mỗi chuyển trạng thái
-do đúng một feature kích hoạt và được ghi `NhatKyHeThong`.
+Trạng thái của `ResearchProject.status` là **trục xương sống** nối các feature. Mỗi chuyển trạng thái
+do đúng một feature kích hoạt và được ghi `AuditLog`.
 
 ```mermaid
 stateDiagram-v2
-    [*] --> NHAP : Chủ nhiệm tạo đề xuất (F01)
-    NHAP --> DA_NOP : Nộp trong đợt kêu gọi mở (F01)
-    DA_NOP --> NHAP : Chuyên viên trả lại bổ sung (F01)
-    DA_NOP --> DANG_XET_DUYET : Đưa vào hội đồng (F03)
-    DANG_XET_DUYET --> DUYET : Hội đồng thông qua (F03)
-    DANG_XET_DUYET --> TU_CHOI : Hội đồng không thông qua (F03)
-    DUYET --> DANG_THUC_HIEN : Ký hợp đồng/giao đề tài (F04)
-    DANG_THUC_HIEN --> TAM_DUNG : Tạm dừng có lý do (F04)
-    TAM_DUNG --> DANG_THUC_HIEN : Tiếp tục (F04)
-    DANG_THUC_HIEN --> CHO_NGHIEM_THU : Đủ điều kiện nghiệm thu (F06)
-    CHO_NGHIEM_THU --> DANG_NGHIEM_THU : Lập hội đồng nghiệm thu (F06)
-    DANG_NGHIEM_THU --> DAT : Nghiệm thu đạt (F06)
-    DANG_NGHIEM_THU --> KHONG_DAT : Nghiệm thu không đạt (F06)
-    KHONG_DAT --> DANG_THUC_HIEN : Cho làm lại có thời hạn (F06)
-    DAT --> HOAN_THANH : Quyết toán & đóng đề tài (F05/F06)
-    TU_CHOI --> [*]
-    HOAN_THANH --> [*]
-    NHAP --> HUY : Chủ nhiệm/chuyên viên hủy
-    DA_NOP --> HUY : Hủy trước xét duyệt
-    HUY --> [*]
+    [*] --> DRAFT : Chủ nhiệm tạo đề xuất (F01)
+    DRAFT --> SUBMITTED : Nộp trong đợt kêu gọi mở (F01)
+    SUBMITTED --> DRAFT : Chuyên viên trả lại bổ sung (F01)
+    SUBMITTED --> UNDER_REVIEW : Đưa vào hội đồng (F03)
+    UNDER_REVIEW --> APPROVED : Hội đồng thông qua (F03)
+    UNDER_REVIEW --> REJECTED : Hội đồng không thông qua (F03)
+    APPROVED --> IN_PROGRESS : Ký hợp đồng/giao đề tài (F04)
+    IN_PROGRESS --> SUSPENDED : Tạm dừng có lý do (F04)
+    SUSPENDED --> IN_PROGRESS : Tiếp tục (F04)
+    IN_PROGRESS --> PENDING_ACCEPTANCE : Đủ điều kiện nghiệm thu (F06)
+    PENDING_ACCEPTANCE --> UNDER_ACCEPTANCE : Lập hội đồng nghiệm thu (F06)
+    UNDER_ACCEPTANCE --> PASSED : Nghiệm thu đạt (F06)
+    UNDER_ACCEPTANCE --> FAILED : Nghiệm thu không đạt (F06)
+    FAILED --> IN_PROGRESS : Cho làm lại có thời hạn (F06)
+    PASSED --> COMPLETED : Quyết toán & đóng đề tài (F05/F06)
+    REJECTED --> [*]
+    COMPLETED --> [*]
+    DRAFT --> CANCELLED : Chủ nhiệm/chuyên viên hủy
+    SUBMITTED --> CANCELLED : Hủy trước xét duyệt
+    CANCELLED --> [*]
 ```
 
 | Từ trạng thái | Tới | Điều kiện | Feature | Người thực hiện |
 |---|---|---|---|---|
-| `NHAP` | `DA_NOP` | Đợt kêu gọi đang mở, hồ sơ đủ trường bắt buộc | F01 | Chủ nhiệm |
-| `DA_NOP` | `NHAP` | Hồ sơ thiếu/sai, còn hạn nộp | F01 | Chuyên viên |
-| `DA_NOP` | `DANG_XET_DUYET` | Hết hạn nộp / chốt danh sách, đã gán hội đồng | F03 | Chuyên viên |
-| `DANG_XET_DUYET` | `DUYET` / `TU_CHOI` | Đủ phiếu chấm hợp lệ, đạt/không đạt ngưỡng | F03 | Chuyên viên (theo kết luận HĐ) |
-| `DUYET` | `DANG_THUC_HIEN` | Đã giao đề tài / ký hợp đồng | F04 | Chuyên viên |
-| `DANG_THUC_HIEN` | `CHO_NGHIEM_THU` | Đã nộp báo cáo cuối + đủ sản phẩm cam kết | F06 | Chủ nhiệm |
-| `DANG_NGHIEM_THU` | `DAT` / `KHONG_DAT` | Hội đồng nghiệm thu kết luận | F06 | Chuyên viên |
-| `DAT` | `HOAN_THANH` | Đã quyết toán kinh phí | F05/F06 | Chuyên viên |
+| `DRAFT` | `SUBMITTED` | Đợt kêu gọi đang mở, hồ sơ đủ trường bắt buộc | F01 | Chủ nhiệm |
+| `SUBMITTED` | `DRAFT` | Hồ sơ thiếu/sai, còn hạn nộp | F01 | Chuyên viên |
+| `SUBMITTED` | `UNDER_REVIEW` | Hết hạn nộp / chốt danh sách, đã gán hội đồng | F03 | Chuyên viên |
+| `UNDER_REVIEW` | `APPROVED` / `REJECTED` | Đủ phiếu chấm hợp lệ, đạt/không đạt ngưỡng | F03 | Chuyên viên (theo kết luận HĐ) |
+| `APPROVED` | `IN_PROGRESS` | Đã giao đề tài / ký hợp đồng | F04 | Chuyên viên |
+| `IN_PROGRESS` | `PENDING_ACCEPTANCE` | Đã nộp báo cáo cuối + đủ sản phẩm cam kết | F06 | Chủ nhiệm |
+| `UNDER_ACCEPTANCE` | `PASSED` / `FAILED` | Hội đồng nghiệm thu kết luận | F06 | Chuyên viên |
+| `PASSED` | `COMPLETED` | Đã quyết toán kinh phí | F05/F06 | Chuyên viên |
 
 > Quy tắc chung: **không cho nhảy trạng thái ngoài sơ đồ**. Mọi chuyển trạng thái phải kèm
-> `lyDo` khi là chuyển lùi/hủy/tạm dừng. Logic này tập trung ở backend (domain service), không
+> `reason` khi là chuyển lùi/hủy/tạm dừng. Logic này tập trung ở backend (domain service), không
 > phân tán ở từng màn hình.
 
 ## 4. Thực thể cốt lõi
 
 ### 4.1 Người dùng & phân quyền (B03)
 
-**NguoiDung**
+**User**
 
 | Trường | Kiểu | Ràng buộc | Mô tả |
 |---|---|---|---|
 | `id` | uuid | PK | |
-| `maNguoiDung` | string | unique | Mã cán bộ/nhà khoa học |
-| `hoTen` | string | not null | |
+| `userCode` | string | unique | Mã cán bộ/nhà khoa học |
+| `fullName` | string | not null | |
 | `email` | string | unique, not null | Định danh đăng nhập (khớp SSO) |
-| `soDienThoai` | string | | Dùng cho thông báo SMS (B04) |
-| `donViId` | uuid | FK → DonVi | Đơn vị công tác |
-| `hocHamHocVi` | string | | Phục vụ lý lịch khoa học (F08) |
-| `nguonTaiKhoan` | enum | `SSO` \| `NOI_BO` | Nguồn tạo tài khoản |
-| `trangThai` | enum | `ACTIVE` \| `LOCKED` \| `INACTIVE` | |
+| `phoneNumber` | string | | Dùng cho thông báo SMS (B04) |
+| `unitId` | uuid | FK → Unit | Đơn vị công tác |
+| `academicTitle` | string | | Phục vụ lý lịch khoa học (F08) |
+| `accountSource` | enum | `SSO` \| `INTERNAL` | Nguồn tạo tài khoản |
+| `status` | enum | `ACTIVE` \| `LOCKED` \| `INACTIVE` | |
 
-**VaiTro** (`id`, `ma` unique, `ten`, `moTa`, `laHeThong` bool) — vai trò chuẩn xem B03 §Vai trò.
-**Quyen** (`id`, `ma` unique vd `DE_TAI.DUYET`, `moTa`) — quyền nguyên tử theo `MODULE.HANH_DONG`.
-**NguoiDung_VaiTro** và **VaiTro_Quyen**: bảng nối nhiều-nhiều.
+**Role** (`id`, `code` unique, `name`, `description`, `isSystem` bool) — vai trò chuẩn xem B03 §Vai trò.
+**Permission** (`id`, `code` unique vd `RESEARCH_PROJECT.APPROVE`, `description`) — quyền nguyên tử theo `MODULE.ACTION`.
+**User_Role** và **Role_Permission**: bảng nối nhiều-nhiều.
 
 ### 4.2 Danh mục dùng chung (B01)
 
-**DonVi** (`id`, `ma`, `ten`, `donViChaId` self-FK, `trangThaiBanGhi`) — cây đơn vị.
-**LinhVuc** (`id`, `ma`, `ten`, `linhVucChaId` self-FK, `trangThaiBanGhi`) — lĩnh vực nghiên cứu.
-**LoaiSanPham** (`id`, `ma`, `ten`, `nhom` enum `BAI_BAO`|`SANG_CHE`|`GIAI_PHAP`|`DAO_TAO`|`KHAC`).
-**CauHinhHeThong** (`khoa` PK, `giaTri`, `kieuDuLieu`, `moTa`) — tham số chạy (ngưỡng điểm, hạn nhắc…).
+**Unit** (`id`, `code`, `name`, `parentUnitId` self-FK, `recordStatus`) — cây đơn vị.
+**ResearchField** (`id`, `code`, `name`, `parentFieldId` self-FK, `recordStatus`) — lĩnh vực nghiên cứu.
+**ProductType** (`id`, `code`, `name`, `category` enum `ARTICLE`|`PATENT`|`SOLUTION`|`TRAINING`|`OTHER`).
+**SystemSetting** (`key` PK, `value`, `dataType`, `description`) — tham số chạy (ngưỡng điểm, hạn nhắc…).
 
 ### 4.3 Đợt kêu gọi & đề tài (F02, F01)
 
-**DotKeuGoi**
+**ProposalCall**
 
 | Trường | Kiểu | Ràng buộc | Mô tả |
 |---|---|---|---|
 | `id` | uuid | PK | |
-| `ma` | string | unique | Mã đợt, vd `KG-2026-01` |
-| `ten` | string | not null | |
-| `tuNgay` / `denNgay` | date | not null | Khoảng nhận đề xuất |
-| `linhVucIds` | uuid[] | | Lĩnh vực được nhận trong đợt |
-| `bieuMauThuyetMinhId` | uuid | | Mẫu thuyết minh áp dụng |
-| `tieuChiXetDuyetId` | uuid | FK → BoTieuChi | Bộ tiêu chí xét duyệt áp dụng |
-| `trangThai` | enum | `NHAP`\|`MO`\|`DONG`\|`HUY` | Vòng đời đợt (xem F02) |
+| `code` | string | unique | Mã đợt, vd `KG-2026-01` |
+| `name` | string | not null | |
+| `startDate` / `endDate` | date | not null | Khoảng nhận đề xuất |
+| `researchFieldIds` | uuid[] | | Lĩnh vực được nhận trong đợt |
+| `proposalTemplateId` | uuid | | Mẫu thuyết minh áp dụng |
+| `reviewCriteriaSetId` | uuid | FK → CriteriaSet | Bộ tiêu chí xét duyệt áp dụng |
+| `status` | enum | `DRAFT`\|`OPEN`\|`CLOSED`\|`CANCELLED` | Vòng đời đợt (xem F02) |
 
-**DeTai**
+**ResearchProject**
 
 | Trường | Kiểu | Ràng buộc | Mô tả |
 |---|---|---|---|
 | `id` | uuid | PK | |
-| `maDeTai` | string | unique | Sinh tự động khi nộp |
-| `ten` | string | not null | |
-| `dotKeuGoiId` | uuid | FK → DotKeuGoi, not null | Đợt nộp |
-| `linhVucId` | uuid | FK → LinhVuc | |
-| `chuNhiemId` | uuid | FK → NguoiDung, not null | Chủ nhiệm |
-| `donViChuTriId` | uuid | FK → DonVi | Đơn vị chủ trì |
-| `tomTat` | text | | |
-| `thuyetMinh` | jsonb | | Nội dung theo biểu mẫu của đợt |
-| `kinhPhiDeXuat` | bigint | | Tổng dự toán đề xuất (VND) |
-| `thoiGianThucHien` | int | | Số tháng |
-| `trangThai` | enum | not null | Vòng đời §3 |
-| `ngayNop` | timestamptz | | Thời điểm chuyển `DA_NOP` |
+| `projectCode` | string | unique | Sinh tự động khi nộp |
+| `name` | string | not null | |
+| `proposalCallId` | uuid | FK → ProposalCall, not null | Đợt nộp |
+| `researchFieldId` | uuid | FK → ResearchField | |
+| `principalInvestigatorId` | uuid | FK → User, not null | Chủ nhiệm |
+| `hostUnitId` | uuid | FK → Unit | Đơn vị chủ trì |
+| `abstract` | text | | |
+| `proposalDocument` | jsonb | | Nội dung theo biểu mẫu của đợt |
+| `requestedBudget` | bigint | | Tổng dự toán đề xuất (VND) |
+| `durationMonths` | int | | Số tháng |
+| `status` | enum | not null | Vòng đời §3 |
+| `submittedAt` | timestamptz | | Thời điểm chuyển `SUBMITTED` |
 
-**ThanhVienDeTai** (`id`, `deTaiId`, `nguoiDungId`, `vaiTroTrongDeTai` enum `CHU_NHIEM`|`THANH_VIEN`|`THU_KY`, `nhiemVu`).
-**TaiLieuDinhKem** (`id`, `loaiDoiTuong`, `doiTuongId`, `tenFile`, `duongDan` object-storage key, `kichThuoc`, `mimeType`) — dùng chung cho mọi feature.
+**ProjectMember** (`id`, `researchProjectId`, `userId`, `projectRole` enum `PRINCIPAL_INVESTIGATOR`|`MEMBER`|`SECRETARY`, `responsibility`).
+**Attachment** (`id`, `targetType`, `targetId`, `fileName`, `storageKey` object-storage key, `fileSize`, `mimeType`) — dùng chung cho mọi feature.
 
 ### 4.4 Hội đồng & đánh giá (F03, F06)
 
-**HoiDong** (`id`, `ma`, `ten`, `loai` enum `XET_DUYET`|`NGHIEM_THU`, `trangThai`).
-**ThanhVienHoiDong** (`id`, `hoiDongId`, `nguoiDungId`, `chucDanh` enum `CHU_TICH`|`PHAN_BIEN`|`UY_VIEN`|`THU_KY`).
-**BoTieuChi** (`id`, `ten`, `loai` `XET_DUYET`|`NGHIEM_THU`) & **TieuChiDanhGia** (`id`, `boTieuChiId`, `ten`, `diemToiDa`, `trongSo`).
-**DotDanhGia** (`id`, `deTaiId`, `hoiDongId`, `loai` `XET_DUYET`|`NGHIEM_THU`, `trangThai`, `ketLuan` enum `DAT`|`KHONG_DAT`|`null`, `diemTongHop`).
-**PhieuCham** (`id`, `dotDanhGiaId`, `thanhVienHoiDongId`, `trangThai` `NHAP`|`DA_GUI`, `nhanXet`, `tongDiem`).
-**DiemTieuChi** (`id`, `phieuChamId`, `tieuChiDanhGiaId`, `diem`).
+**EvaluationCommittee** (`id`, `code`, `name`, `type` enum `PROPOSAL_REVIEW`|`ACCEPTANCE`, `status`).
+**CommitteeMember** (`id`, `committeeId`, `userId`, `committeeRole` enum `CHAIR`|`REVIEWER`|`MEMBER`|`SECRETARY`).
+**CriteriaSet** (`id`, `name`, `type` `PROPOSAL_REVIEW`|`ACCEPTANCE`) & **EvaluationCriterion** (`id`, `criteriaSetId`, `name`, `maxScore`, `weight`).
+**EvaluationRound** (`id`, `researchProjectId`, `committeeId`, `type` `PROPOSAL_REVIEW`|`ACCEPTANCE`, `status`, `conclusion` enum `PASSED`|`FAILED`|`null`, `aggregateScore`).
+**ScoreSheet** (`id`, `evaluationRoundId`, `committeeMemberId`, `status` `DRAFT`|`SUBMITTED`, `comment`, `totalScore`).
+**CriterionScore** (`id`, `scoreSheetId`, `evaluationCriterionId`, `score`).
 
 ### 4.5 Thực hiện đề tài (F04, F05)
 
-**BaoCaoTienDo** (`id`, `deTaiId`, `ky` int, `kyHan` date, `ngayNop`, `noiDung` text, `trangThai` `CHO_NOP`|`DA_NOP`|`DAT`|`YEU_CAU_CHINH_SUA`, `nhanXetChuyenVien`).
-**DuToanKinhPhi** (`id`, `deTaiId`, `khoanMuc`, `soTienDuToan` bigint, `ky`).
-**GiaoDichKinhPhi** (`id`, `deTaiId`, `khoanMuc`, `soTien` bigint, `loai` `CAP`|`CHI`, `ngay`, `trangThaiDoiSoat` `CHUA_DOI_SOAT`|`KHOP`|`LECH`, `maGiaoDichTaiChinh`).
+**ProgressReport** (`id`, `researchProjectId`, `period` int, `dueDate` date, `submittedAt`, `content` text, `status` `PENDING_SUBMISSION`|`SUBMITTED`|`PASSED`|`REVISION_REQUESTED`, `officerComment`).
+**BudgetEstimate** (`id`, `researchProjectId`, `budgetLine`, `estimatedAmount` bigint, `period`).
+**BudgetTransaction** (`id`, `researchProjectId`, `budgetLine`, `amount` bigint, `type` `DISBURSEMENT`|`EXPENSE`, `date`, `reconciliationStatus` `UNRECONCILED`|`MATCHED`|`MISMATCHED`, `financeTransactionCode`).
 
 ### 4.6 Sản phẩm & lý lịch (F07, F08)
 
-**SanPhamKhoaHoc** (`id`, `deTaiId` nullable, `loaiSanPhamId`, `ten`, `tacGia` jsonb, `namCongBo`, `thongTinXuatBan`, `minhChungId` FK → TaiLieuDinhKem, `trangThaiDuyet` `CHO_DUYET`|`DA_DUYET`|`TU_CHOI`).
-> Lý lịch khoa học (F08) là **khung nhìn tổng hợp** trên `NguoiDung` + `SanPhamKhoaHoc` + vai trò
-> trong `DeTai`, không phải một bảng riêng (xem F08 §Dữ liệu).
+**ResearchOutput** (`id`, `researchProjectId` nullable, `productTypeId`, `name`, `authors` jsonb, `publicationYear`, `publicationInfo`, `evidenceAttachmentId` FK → Attachment, `approvalStatus` `PENDING_APPROVAL`|`APPROVED`|`REJECTED`).
+> Lý lịch khoa học (F08) là **khung nhìn tổng hợp** trên `User` + `ResearchOutput` + vai trò
+> trong `ResearchProject`, không phải một bảng riêng (xem F08 §Dữ liệu).
 
 ### 4.7 Hạ tầng dùng chung (B04, audit)
 
-**ThongBao** (`id`, `nguoiNhanId`, `loaiSuKien`, `tieuDe`, `noiDung`, `kenh` `IN_APP`|`EMAIL`|`SMS`, `trangThai` `CHO_GUI`|`DA_GUI`|`DA_DOC`|`LOI`, `lienKet`).
-**NhatKyHeThong** (`id`, `nguoiThucHienId`, `hanhDong`, `loaiDoiTuong`, `doiTuongId`, `giaTriCu` jsonb, `giaTriMoi` jsonb, `thoiGian`, `diaChiIp`) — append-only, xem [ADR-0002](decisions/0002-kien-truc-hai-mat-mot-backend.md).
+**Notification** (`id`, `recipientId`, `eventType`, `title`, `content`, `channel` `IN_APP`|`EMAIL`|`SMS`, `status` `PENDING_SEND`|`SUBMITTED`|`READ`|`ERROR`, `link`).
+**AuditLog** (`id`, `actorId`, `action`, `targetType`, `targetId`, `oldValue` jsonb, `newValue` jsonb, `occurredAt`, `ipAddress`) — append-only, xem [ADR-0002](decisions/0002-kien-truc-hai-mat-mot-backend.md).
 
 ## 5. Ghi chú toàn vẹn
 
 - Mọi FK trỏ tới danh mục dùng `ON DELETE RESTRICT` — danh mục đang được tham chiếu không xóa cứng được.
-- `DeTai.trangThai` chỉ được đổi qua domain service, không update trực tiếp từ API CRUD.
-- Bảng nối nhiều-nhiều (`NguoiDung_VaiTro`, `VaiTro_Quyen`, `ThanhVienHoiDong`) có unique constraint trên cặp khóa để tránh trùng.
+- `ResearchProject.status` chỉ được đổi qua domain service, không update trực tiếp từ API CRUD.
+- Bảng nối nhiều-nhiều (`User_Role`, `Role_Permission`, `CommitteeMember`) có unique constraint trên cặp khóa để tránh trùng.

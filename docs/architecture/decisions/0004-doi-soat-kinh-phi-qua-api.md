@@ -22,6 +22,6 @@ qua tích hợp. Sổ cái thật vẫn ở hệ thống tài chính; RMS chỉ 
 - **C — Không quản kinh phí trong RMS:** mất khả năng gắn chi tiêu với tiến độ/nghiệm thu đề tài.
 
 ## Hệ quả
-- `GiaoDichKinhPhi.trangThaiDoiSoat` (`KHOP`/`LECH`/`CHUA_DOI_SOAT`) là kết quả đối soát định kỳ.
+- `BudgetTransaction.reconciliationStatus` (`MATCHED`/`MISMATCHED`/`UNRECONCILED`) là kết quả đối soát định kỳ.
 - Có cơ chế đối soát thủ công (nhập file) khi chưa có API — degrade chấp nhận được.
-- Đóng đề tài (`HOAN_THANH`) yêu cầu quyết toán không còn giao dịch `LECH` tồn đọng.
+- Đóng đề tài (`COMPLETED`) yêu cầu quyết toán không còn giao dịch `MISMATCHED` tồn đọng.
