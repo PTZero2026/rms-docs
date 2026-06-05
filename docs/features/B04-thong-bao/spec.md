@@ -84,7 +84,7 @@ là cấu hình khởi tạo, Quản trị có thể bật/tắt ở BO (xem `ba
 
 | eventType | Sự kiện (feature) | Người nhận | Kênh mặc định | Ưu tiên |
 |---|---|---|---|---|
-| `PROPOSAL_CALL_OPENED` | Mở đợt kêu gọi (F02) | Nhà khoa học thuộc lĩnh vực của đợt | IN_APP, EMAIL | Thường |
+| `PROPOSAL_CALL_OPENED` | Mở kỳ nhận đề xuất (F02) | Nhà khoa học thuộc lĩnh vực của kỳ | IN_APP, EMAIL | Thường |
 | `PROPOSAL_RETURNED_FOR_REVISION` | Đề xuất bị trả lại bổ sung (F01) | Chủ nhiệm | IN_APP, EMAIL | Cao |
 | `PROPOSAL_RECEIVED` | Đề xuất được tiếp nhận hợp lệ (F01) | Chủ nhiệm | IN_APP, EMAIL | Thường |
 | `PROPOSAL_REVIEW_APPROVED` | Kết quả xét duyệt = APPROVED (F03) | Chủ nhiệm, thành viên đề tài | IN_APP, EMAIL, SMS | Cao |

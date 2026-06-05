@@ -14,7 +14,7 @@ updated: 2026-06-01
 
 ## 1. Bối cảnh & mục tiêu
 
-Sau khi đợt kêu gọi đóng và chuyên viên chốt danh sách đề xuất hợp lệ (F01/F02), các đề tài cần được
+Sau khi kỳ nhận đề xuất đóng và chuyên viên chốt danh sách đề xuất hợp lệ (F01/F02), các đề tài cần được
 một **hội đồng chuyên môn** đánh giá để chấp nhận hoặc từ chối đưa vào thực hiện. Hiện quy trình này
 chạy thủ công (gửi hồ sơ giấy/email, tổng hợp điểm bằng bảng tính), khó truy vết, dễ sai sót khi cộng
 điểm theo trọng số và dễ xung đột lợi ích.
@@ -38,7 +38,7 @@ viên ra kết luận theo ngưỡng cấu hình.
   - Thông báo kết quả cho chủ nhiệm (qua B04); chủ nhiệm xem tiến trình & kết quả ở FE.
 - **Ngoài phạm vi:**
   - Tạo/sửa `CriteriaSet`, `EvaluationCriterion` và ngưỡng điểm → thuộc **B01** (danh mục & cấu hình).
-  - Gán bộ tiêu chí cho đợt kêu gọi (`ProposalCall.reviewCriteriaSetId`) → thuộc **F02**.
+  - Gán bộ tiêu chí cho kỳ nhận đề xuất (`ProposalCall.reviewCriteriaSetId`) → thuộc **F02**.
   - Tiếp nhận/chốt danh sách đề xuất → thuộc **F01**.
   - Nghiệm thu kết quả (`type=ACCEPTANCE`) → thuộc **F06** (dùng chung mô hình, xem [ADR-0003](../../architecture/decisions/0003-mo-hinh-hoi-dong-dung-chung.md)).
   - Giao đề tài/ký hợp đồng sau khi `APPROVED` → thuộc **F04**.
@@ -58,7 +58,7 @@ sequenceDiagram
     actor CN as Chủ nhiệm đề tài
 
     CV->>SYS: Lập EvaluationCommittee (type=PROPOSAL_REVIEW), phân công CommitteeMember
-    CV->>SYS: Tạo EvaluationRound cho từng đề tài (lấy CriteriaSet từ đợt kêu gọi)
+    CV->>SYS: Tạo EvaluationRound cho từng đề tài (lấy CriteriaSet từ kỳ nhận đề xuất)
     SYS->>SYS: ResearchProject: SUBMITTED → UNDER_REVIEW
     SYS-->>CN: Thông báo "đề tài đang xét duyệt"
     loop Mỗi thành viên (trừ người xung đột lợi ích)
@@ -95,7 +95,7 @@ stateDiagram-v2
 | ID    | Quy tắc | Mô tả | Ghi chú |
 |-------|---------|-------|---------|
 | BR-01 | Mở xét duyệt cần hội đồng | Chỉ tạo `EvaluationRound` (đưa đề tài vào xét) khi đề tài đang `SUBMITTED` và đã có `EvaluationCommittee` type `PROPOSAL_REVIEW` với ≥ 1 `CommitteeMember`. Tạo thành công → `ResearchProject` chuyển `UNDER_REVIEW`. | Chuyển trạng thái qua domain service, không update enum trực tiếp |
-| BR-02 | Bộ tiêu chí từ đợt kêu gọi | `EvaluationRound` dùng `CriteriaSet` lấy theo `ProposalCall.reviewCriteriaSetId` của đề tài; bộ tiêu chí phải có `type=PROPOSAL_REVIEW`. Không cho chấm nếu đợt kêu gọi chưa gán bộ tiêu chí. | Phụ thuộc F02/B01 |
+| BR-02 | Bộ tiêu chí từ kỳ nhận đề xuất | `EvaluationRound` dùng `CriteriaSet` lấy theo `ProposalCall.reviewCriteriaSetId` của đề tài; bộ tiêu chí phải có `type=PROPOSAL_REVIEW`. Không cho chấm nếu kỳ nhận đề xuất chưa gán bộ tiêu chí. | Phụ thuộc F02/B01 |
 | BR-03 | Xung đột lợi ích | Một thành viên hội đồng **không** được chấm đề tài mà mình là `principalInvestigatorId` hoặc có trong `ProjectMember`. Hệ thống ẩn đề tài đó khỏi hàng chờ chấm của thành viên và chặn tạo `ScoreSheet`. | Loại trừ khi tính số phiếu tối thiểu |
 | BR-04 | Một thành viên một phiếu / đợt | Mỗi cặp (`committeeMemberId`, `evaluationRoundId`) chỉ có tối đa **một** `ScoreSheet`. Không tạo phiếu thứ hai. | Unique trên cặp khóa (data-model §5) |
 | BR-05 | Điểm hợp lệ theo tiêu chí | Mỗi `CriterionScore.score` phải `0 ≤ score ≤ EvaluationCriterion.maxScore`. Phiếu phải có đủ điểm cho **tất cả** tiêu chí của bộ trước khi gửi. | Validate khi gửi phiếu (`DRAFT → SUBMITTED`) |
@@ -130,7 +130,7 @@ F03 thao tác trên các thực thể với `type=PROPOSAL_REVIEW`.
 
 ## 6. Acceptance criteria
 
-- **AC-01 (Happy — mở xét duyệt)** — Given một đề tài `SUBMITTED` thuộc đợt kêu gọi đã đóng và đã gán
+- **AC-01 (Happy — mở xét duyệt)** — Given một đề tài `SUBMITTED` thuộc kỳ nhận đề xuất đã đóng và đã gán
   bộ tiêu chí `PROPOSAL_REVIEW`, và đã có hội đồng `PROPOSAL_REVIEW` với ≥ 1 thành viên; When chuyên viên tạo
   `EvaluationRound` cho đề tài; Then hệ thống tạo đợt đánh giá `COLLECTING_SCORES`, chuyển `ResearchProject` sang
   `UNDER_REVIEW`, gửi thông báo cho chủ nhiệm và ghi audit.
@@ -160,7 +160,7 @@ F03 thao tác trên các thực thể với `type=PROPOSAL_REVIEW`.
 ## 7. Phụ thuộc & rủi ro
 
 **Phụ thuộc:**
-- **F01 / F02** — danh sách đề tài hợp lệ đã chốt; đợt kêu gọi đã đóng và đã gán `reviewCriteriaSetId`.
+- **F01 / F02** — danh sách đề tài hợp lệ đã chốt; kỳ nhận đề xuất đã đóng và đã gán `reviewCriteriaSetId`.
 - **B01** — `CriteriaSet`/`EvaluationCriterion` type `PROPOSAL_REVIEW` và các tham số `SystemSetting`
   (`MIN_SUBMITTED_SCORE_SHEETS`, `PASSING_SCORE`, `PUBLIC_COMMENTS`).
 - **B03** — vai trò & quyền (Chuyên viên QL KHCN, Thành viên hội đồng); tài khoản thành viên hội đồng.

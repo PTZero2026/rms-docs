@@ -86,7 +86,7 @@ qua interface rõ ràng. Thực thể dùng chung định nghĩa ở `data-model
 | Nhóm | Module |
 |---|---|
 | Nền tảng | `iam` (B03 người dùng/quyền), `catalog` (B01 danh mục), `notification` (B04), `audit` |
-| Đầu vòng đời | `call` (F02 đợt kêu gọi), `proposal` (F01 đề xuất), `review` (F03 xét duyệt) |
+| Đầu vòng đời | `call` (F02 kỳ nhận đề xuất), `proposal` (F01 đề xuất), `review` (F03 xét duyệt) |
 | Thực hiện | `progress` (F04), `budget` (F05), `acceptance` (F06 nghiệm thu) |
 | Đầu ra | `product` (F07 sản phẩm), `profile` (F08 lý lịch), `report` (B02 thống kê) |
 
@@ -97,7 +97,7 @@ qua interface rõ ràng. Thực thể dùng chung định nghĩa ở `data-model
   (JWT) sau khi xác thực. Tài khoản nội bộ chỉ dùng cho trường hợp không có trên SSO.
 - **Phân quyền:** RBAC — `Permission` (nguyên tử `MODULE.ACTION`) gom vào `Role`, gán cho `User`.
   Kiểm tra quyền ở backend cho mọi API; FE/BO chỉ ẩn/hiện theo quyền, **không** là lớp bảo vệ.
-- Phạm vi dữ liệu (data scoping): chủ nhiệm chỉ thấy đề tài của mình; chuyên viên thấy theo đơn vị/đợt.
+- Phạm vi dữ liệu (data scoping): chủ nhiệm chỉ thấy đề tài của mình; chuyên viên thấy theo đơn vị/kỳ.
   Xem [ADR-0005](decisions/0005-sso-va-rbac.md).
 
 ### 4.2 Audit & nhật ký

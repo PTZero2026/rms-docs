@@ -64,7 +64,7 @@ do đúng một feature kích hoạt và được ghi `AuditLog`.
 ```mermaid
 stateDiagram-v2
     [*] --> DRAFT : Chủ nhiệm tạo đề xuất (F01)
-    DRAFT --> SUBMITTED : Nộp trong đợt kêu gọi mở (F01)
+    DRAFT --> SUBMITTED : Nộp trong kỳ nhận đề xuất mở (F01)
     SUBMITTED --> DRAFT : Chuyên viên trả lại bổ sung (F01)
     SUBMITTED --> UNDER_REVIEW : Đưa vào hội đồng (F03)
     UNDER_REVIEW --> APPROVED : Hội đồng thông qua (F03)
@@ -87,7 +87,7 @@ stateDiagram-v2
 
 | Từ trạng thái | Tới | Điều kiện | Feature | Người thực hiện |
 |---|---|---|---|---|
-| `DRAFT` | `SUBMITTED` | Đợt kêu gọi đang mở, hồ sơ đủ trường bắt buộc | F01 | Chủ nhiệm |
+| `DRAFT` | `SUBMITTED` | Kỳ nhận đề xuất đang mở, hồ sơ đủ trường bắt buộc | F01 | Chủ nhiệm |
 | `SUBMITTED` | `DRAFT` | Hồ sơ thiếu/sai, còn hạn nộp | F01 | Chuyên viên |
 | `SUBMITTED` | `UNDER_REVIEW` | Hết hạn nộp / chốt danh sách, đã gán hội đồng | F03 | Chuyên viên |
 | `UNDER_REVIEW` | `APPROVED` / `REJECTED` | Đủ phiếu chấm hợp lệ, đạt/không đạt ngưỡng | F03 | Chuyên viên (theo kết luận HĐ) |
@@ -129,20 +129,20 @@ stateDiagram-v2
 **ProductType** (`id`, `code`, `name`, `category` enum `ARTICLE`|`PATENT`|`SOLUTION`|`TRAINING`|`OTHER`).
 **SystemSetting** (`key` PK, `value`, `dataType`, `description`) — tham số chạy (ngưỡng điểm, hạn nhắc…).
 
-### 4.3 Đợt kêu gọi & đề tài (F02, F01)
+### 4.3 Kỳ nhận đề xuất & đề tài (F02, F01)
 
 **ProposalCall**
 
 | Trường | Kiểu | Ràng buộc | Mô tả |
 |---|---|---|---|
 | `id` | uuid | PK | |
-| `code` | string | unique | Mã đợt, vd `KG-2026-01` |
+| `code` | string | unique | Mã kỳ, vd `KG-2026-01` |
 | `name` | string | not null | |
 | `startDate` / `endDate` | date | not null | Khoảng nhận đề xuất |
-| `researchFieldIds` | uuid[] | | Lĩnh vực được nhận trong đợt |
+| `researchFieldIds` | uuid[] | | Lĩnh vực được nhận trong kỳ |
 | `proposalTemplateId` | uuid | | Mẫu thuyết minh áp dụng |
 | `reviewCriteriaSetId` | uuid | FK → CriteriaSet | Bộ tiêu chí xét duyệt áp dụng |
-| `status` | enum | `DRAFT`\|`OPEN`\|`CLOSED`\|`CANCELLED` | Vòng đời đợt (xem F02) |
+| `status` | enum | `DRAFT`\|`OPEN`\|`CLOSED`\|`CANCELLED` | Vòng đời kỳ (xem F02) |
 
 **ResearchProject**
 
@@ -151,12 +151,12 @@ stateDiagram-v2
 | `id` | uuid | PK | |
 | `projectCode` | string | unique | Sinh tự động khi nộp |
 | `name` | string | not null | |
-| `proposalCallId` | uuid | FK → ProposalCall, not null | Đợt nộp |
+| `proposalCallId` | uuid | FK → ProposalCall, not null | Kỳ nộp |
 | `researchFieldId` | uuid | FK → ResearchField | |
 | `principalInvestigatorId` | uuid | FK → User, not null | Chủ nhiệm |
 | `hostUnitId` | uuid | FK → Unit | Đơn vị chủ trì |
 | `abstract` | text | | |
-| `proposalDocument` | jsonb | | Nội dung theo biểu mẫu của đợt |
+| `proposalDocument` | jsonb | | Nội dung theo biểu mẫu của kỳ |
 | `requestedBudget` | bigint | | Tổng dự toán đề xuất (VND) |
 | `durationMonths` | int | | Số tháng |
 | `status` | enum | not null | Vòng đời §3 |

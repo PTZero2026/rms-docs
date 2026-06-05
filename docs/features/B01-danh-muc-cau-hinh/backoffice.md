@@ -49,7 +49,7 @@ Cột là vai trò; ✓ = được phép, – = không. Mọi quyền kiểm tra
 | BO-03 | Loại sản phẩm (ProductType) | Quản lý danh mục loại sản phẩm theo `category`. |
 | BO-04 | Tham số hệ thống (SystemSetting) | Xem/sửa tham số khóa–giá trị vận hành. |
 | BO-05 | Bộ tiêu chí đánh giá (CriteriaSet/EvaluationCriterion) | Quản lý bộ tiêu chí PROPOSAL_REVIEW/ACCEPTANCE và các tiêu chí con. |
-| BO-06 | Mẫu biểu thuyết minh¹ | Quản lý cấu trúc biểu mẫu thuyết minh cho đợt kêu gọi. |
+| BO-06 | Mẫu biểu thuyết minh¹ | Quản lý cấu trúc biểu mẫu thuyết minh cho kỳ nhận đề xuất. |
 | BO-07 | Nhật ký thay đổi danh mục | Tra cứu audit các thay đổi danh mục/cấu hình. |
 
 ## 4. Mô tả màn hình & thao tác
@@ -79,7 +79,7 @@ Cột là vai trò; ✓ = được phép, – = không. Mọi quyền kiểm tra
   Khi lưu, nếu tổng `weight ≠ 100%` hiển thị cảnh báo nhưng vẫn cho lưu (BR-07).
 
 ### BO-06 Mẫu biểu thuyết minh¹
-- **Hiển thị/thao tác:** quản lý cấu trúc biểu mẫu (danh sách section/trường) dùng cho đợt kêu gọi F02.
+- **Hiển thị/thao tác:** quản lý cấu trúc biểu mẫu (danh sách section/trường) dùng cho kỳ nhận đề xuất F02.
   Phụ thuộc đề xuất bổ sung `BieuMauThuyetMinh` (spec §5).
 
 ### BO-07 Nhật ký thay đổi danh mục

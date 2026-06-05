@@ -61,7 +61,7 @@ updated: 2026-06-01
 - [ ] Đăng nhập SSO của tài khoản `ACTIVE` hiện có vẫn vào đúng theo vai trò (không bị JIT ghi đè).
 - [ ] Tài khoản nội bộ dự phòng vẫn đăng nhập được khi SSO mô phỏng lỗi.
 - [ ] Tập quyền hiệu lực dùng ở các feature khác (vd F01 nộp đề tài, F03 chấm điểm) vẫn đúng sau khi đổi quyền vai trò.
-- [ ] Data scoping: chủ nhiệm chỉ thấy đề tài của mình, chuyên viên theo đơn vị/đợt — không rộng/hẹp hơn.
+- [ ] Data scoping: chủ nhiệm chỉ thấy đề tài của mình, chuyên viên theo đơn vị/kỳ — không rộng/hẹp hơn.
 - [ ] `AuditLog` của các hành động cũ không bị sửa/xóa (append-only).
 - [ ] FK `ON DELETE RESTRICT` tới `User` còn nguyên — không có thao tác B03 làm rơi tham chiếu.
 - [ ] Phân trang & bộ lọc BO-01 đạt < 2s với dữ liệu lớn (NFR).

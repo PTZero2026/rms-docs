@@ -26,5 +26,5 @@ soát chặt phạm vi dữ liệu.
 
 ## Hệ quả
 - B03 quản lý vòng đời vai trò/quyền; SSO chỉ ánh xạ danh tính (claim email).
-- Phạm vi dữ liệu (data scoping) theo vai trò: chủ nhiệm thấy đề tài của mình, chuyên viên theo đơn vị/đợt.
+- Phạm vi dữ liệu (data scoping) theo vai trò: chủ nhiệm thấy đề tài của mình, chuyên viên theo đơn vị/kỳ.
 - FE/BO chỉ ẩn/hiện theo quyền; backend là lớp thực thi quyền duy nhất.

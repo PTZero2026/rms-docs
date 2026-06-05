@@ -54,7 +54,7 @@ Quyền nguyên tử RBAC ở backend (overview §4.1). FE/BO chỉ ẩn/hiện 
 ## 4. Mô tả màn hình & thao tác
 
 ### BO-01 — Quản lý hội đồng xét duyệt (Chuyên viên)
-- Danh sách `EvaluationCommittee` type `PROPOSAL_REVIEW` với bộ lọc theo trạng thái/đợt kêu gọi.
+- Danh sách `EvaluationCommittee` type `PROPOSAL_REVIEW` với bộ lọc theo trạng thái/kỳ nhận đề xuất.
 - Form lập/sửa hội đồng: mã, tên, trường `type` cố định `PROPOSAL_REVIEW`.
 - Phân công thành viên: chọn `User` + `committeeRole` (`CHAIR`/`REVIEWER`/`MEMBER`/`SECRETARY`);
   chặn trùng người (unique cặp khóa, data-model §5).
@@ -62,7 +62,7 @@ Quyền nguyên tử RBAC ở backend (overview §4.1). FE/BO chỉ ẩn/hiện 
 
 ### BO-02 — Mở & theo dõi đợt đánh giá (Chuyên viên)
 - Chọn các đề tài `SUBMITTED` (đã chốt danh sách F01) gắn vào hội đồng → tạo `EvaluationRound` cho từng đề tài.
-- Khi tạo: hệ thống lấy `CriteriaSet` từ đợt kêu gọi của đề tài (BR-02), chặn nếu chưa gán bộ tiêu chí;
+- Khi tạo: hệ thống lấy `CriteriaSet` từ kỳ nhận đề xuất của đề tài (BR-02), chặn nếu chưa gán bộ tiêu chí;
   chuyển `ResearchProject` sang `UNDER_REVIEW` (BR-01) và gửi thông báo chủ nhiệm.
 - Bảng theo dõi tiến độ: mỗi đề tài hiển thị số phiếu `SUBMITTED` / tổng thành viên hợp lệ (đã trừ xung đột
   lợi ích), cảnh báo nếu chưa đủ `MIN_SUBMITTED_SCORE_SHEETS`.
@@ -79,7 +79,7 @@ Quyền nguyên tử RBAC ở backend (overview §4.1). FE/BO chỉ ẩn/hiện 
 ### BO-04 — Hàng chờ chấm của tôi (Thành viên hội đồng)
 - Danh sách `EvaluationRound` mà thành viên được phân công và đang `COLLECTING_SCORES`; **không** hiển thị đề tài
   xung đột lợi ích (BR-03) và đề tài đã `CONCLUDED`.
-- Mỗi dòng: tên đề tài, đợt kêu gọi, trạng thái phiếu của tôi (`Chưa chấm`/`Nháp`/`Đã gửi`).
+- Mỗi dòng: tên đề tài, kỳ nhận đề xuất, trạng thái phiếu của tôi (`Chưa chấm`/`Nháp`/`Đã gửi`).
 
 ### BO-05 — Màn hình chấm điểm (Thành viên hội đồng)
 - Trái: hồ sơ đề tài (thuyết minh, tài liệu đính kèm — chỉ đọc). Phải: form `ScoreSheet`.
@@ -100,7 +100,7 @@ Ghi `AuditLog` (append-only, overview §4.2) cho các hành động:
 | Ra kết luận (`APPROVED`/`REJECTED`) | Chuyên viên | `EvaluationRound`, `ResearchProject` |
 | Mở lại đợt đã kết luận (kèm `reason`) | Chuyên viên | `EvaluationRound` |
 
-Ai xem được nhật ký: chuyên viên (trong phạm vi đơn vị/đợt) và admin (B03). Thành viên hội đồng không
+Ai xem được nhật ký: chuyên viên (trong phạm vi đơn vị/kỳ) và admin (B03). Thành viên hội đồng không
 xem nhật ký xét duyệt của người khác.
 
 ## 6. Liên kết AC

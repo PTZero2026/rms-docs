@@ -24,7 +24,7 @@ updated: 2026-06-01
 ## Chủ nhiệm đề tài
 
 - **Vai trò:** Nhà khoa học, người chịu trách nhiệm chính của một đề tài.
-- **Mục tiêu:** Đăng ký đề xuất trong đợt kêu gọi và đưa đề tài đi hết vòng đời tới nghiệm thu/công bố.
+- **Mục tiêu:** Đăng ký đề xuất trong kỳ nhận đề xuất và đưa đề tài đi hết vòng đời tới nghiệm thu/công bố.
 - **Tác vụ:** Nộp thuyết minh (F01); theo dõi kết quả xét duyệt (F03); nộp báo cáo tiến độ (F04);
   theo dõi/giải trình kinh phí (F05); chuẩn bị nghiệm thu (F06); kê khai sản phẩm khoa học (F07);
   cập nhật lý lịch khoa học (F08).
@@ -43,7 +43,7 @@ updated: 2026-06-01
 
 - **Vai trò:** Cán bộ quản lý khoa học & công nghệ, vận hành quy trình.
 - **Mục tiêu:** Đảm bảo mọi đề tài đi đúng quy trình, đúng hạn, dữ liệu đầy đủ.
-- **Tác vụ:** Cấu hình & mở đợt kêu gọi (F02); tiếp nhận/kiểm tra đề xuất (F01); tổ chức xét duyệt
+- **Tác vụ:** Cấu hình & mở kỳ nhận đề xuất (F02); tiếp nhận/kiểm tra đề xuất (F01); tổ chức xét duyệt
   hội đồng (F03); giám sát tiến độ (F04) & kinh phí (F05); điều phối nghiệm thu (F06);
   tổng hợp báo cáo & thống kê (B02).
 - **Pain point:** Theo dõi thủ công nhiều đề tài; tổng hợp báo cáo tốn công, dễ sai sót.

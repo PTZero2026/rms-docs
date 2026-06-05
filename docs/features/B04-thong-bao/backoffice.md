@@ -13,7 +13,7 @@ updated: 2026-06-01
 ## 1. Vai trò sử dụng
 
 - **Quản trị hệ thống** (Admin): quản lý mẫu thông báo, cấu hình ma trận sự kiện ↔ kênh, sửa tham số nhắc hạn/retry.
-- **Chuyên viên QL KHCN**: theo dõi nhật ký gửi (SUBMITTED/ERROR), gửi lại thông báo lỗi trong phạm vi đơn vị/đợt phụ trách.
+- **Chuyên viên QL KHCN**: theo dõi nhật ký gửi (SUBMITTED/ERROR), gửi lại thông báo lỗi trong phạm vi đơn vị/kỳ phụ trách.
 
 Mô tả persona: `../../product/personas.md`. Quyền cụ thể: §2 dưới đây.
 
@@ -23,7 +23,7 @@ Quyền nguyên tử theo `MODULE.ACTION` (module `notification`), gom vào vai 
 
 | Hành động | Quản trị hệ thống | Chuyên viên QL KHCN | Thành viên hội đồng |
 |-----------|:-----------------:|:-------------------:|:-------------------:|
-| Xem nhật ký gửi (`NOTIFICATION.LOG_VIEW`) | ✓ (toàn hệ thống) | ✓ (theo phạm vi đơn vị/đợt) | – |
+| Xem nhật ký gửi (`NOTIFICATION.LOG_VIEW`) | ✓ (toàn hệ thống) | ✓ (theo phạm vi đơn vị/kỳ) | – |
 | Gửi lại thông báo lỗi (`NOTIFICATION.RESEND`) | ✓ | ✓ (trong phạm vi) | – |
 | Xem mẫu thông báo (`NOTIFICATION.TEMPLATE_VIEW`) | ✓ | ✓ (chỉ xem) | – |
 | Tạo/sửa mẫu thông báo (`NOTIFICATION.TEMPLATE_EDIT`) | ✓ | – | – |
@@ -31,7 +31,7 @@ Quyền nguyên tử theo `MODULE.ACTION` (module `notification`), gom vào vai 
 | Sửa tham số nhắc hạn/retry (`NOTIFICATION.PARAM_CONFIG`) | ✓ | – | – |
 
 > Phạm vi dữ liệu (data scoping) áp dụng cho Chuyên viên theo `overview.md` §4.1: chỉ thấy thông báo của
-> đề tài/đợt thuộc phạm vi mình phụ trách. Người nhận thường (FE) không có quyền nào ở bảng này — họ chỉ
+> đề tài/kỳ thuộc phạm vi mình phụ trách. Người nhận thường (FE) không có quyền nào ở bảng này — họ chỉ
 > xem thông báo của chính mình (BR-10).
 
 ## 3. Danh sách màn hình

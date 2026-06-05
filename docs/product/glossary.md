@@ -14,8 +14,8 @@ thực thể dữ liệu, cột "Thực thể" trỏ tới `../architecture/data
 | Thuật ngữ | Định nghĩa | Thực thể |
 |-----------|------------|----------|
 | Đề tài | Đơn vị nghiên cứu được đề xuất và quản lý xuyên suốt vòng đời trong hệ thống. | `ResearchProject` |
-| Đợt kêu gọi | Kỳ mở nhận đề xuất, có thời gian và tiêu chí riêng. | `ProposalCall` |
-| Đề xuất | Hành động/hồ sơ đăng ký một đề tài mới trong một đợt kêu gọi. | `ResearchProject` |
+| Kỳ nhận đề xuất | Khoảng thời gian đơn vị mở để tiếp nhận hồ sơ đề xuất đề tài, có lĩnh vực, biểu mẫu và tiêu chí xét duyệt riêng; không phải thời gian thực hiện/hoàn thành đề tài. | `ProposalCall` |
+| Đề xuất | Hành động/hồ sơ đăng ký một đề tài mới trong một kỳ nhận đề xuất. | `ResearchProject` |
 | Thuyết minh | Hồ sơ mô tả chi tiết đề tài khi đề xuất. | — |
 | Xét duyệt | Quy trình hội đồng đánh giá đề xuất để chấp nhận/từ chối. | `EvaluationCommittee`, `ScoreSheet` |
 | Hội đồng | Nhóm chuyên gia đánh giá đề xuất hoặc nghiệm thu đề tài. | `EvaluationCommittee` |

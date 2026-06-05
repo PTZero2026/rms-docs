@@ -136,7 +136,7 @@ stateDiagram-v2
 | BR-08 | Nhắc hạn theo cấu hình | Hệ thống phát sự kiện nhắc hạn cho chủ nhiệm trước `dueDate` **N ngày**, với N = `SystemSetting['PROGRESS.REMINDER_DAYS_BEFORE_DUE']` (B01). Việc gửi do B04 đảm nhận. | Bỏ qua kỳ đã `PASSED` và đề tài `SUSPENDED` |
 | BR-09 | Đánh dấu trễ hạn | Báo cáo bị đánh dấu **trễ** khi: chưa nộp mà đã quá `dueDate` (`PENDING_SUBMISSION`/`REVISION_REQUESTED`), hoặc nộp với `submittedAt > dueDate`. Cờ trễ phục vụ lọc & cảnh báo, không chặn nộp. | Tính theo múi giờ hiển thị; cờ dẫn xuất từ `dueDate`/`submittedAt` |
 | BR-10 | Điều kiện chuyển nghiệm thu | `IN_PROGRESS → PENDING_ACCEPTANCE` chỉ khi **kỳ báo cáo cuối** (`period` lớn nhất) đã `PASSED` **và** đề tài đủ sản phẩm cam kết. Thiếu điều kiện → chặn, nêu rõ thiếu gì. | Kiểm tra ở domain service; bàn giao F06 |
-| BR-11 | Tách bạch quyền & phạm vi | Chuyên viên chỉ thao tác đề tài trong phạm vi đơn vị/đợt được phân; chủ nhiệm chỉ thấy đề tài của mình; thành viên đề tài chỉ xem (không nộp/duyệt). | Data scoping (overview §4.1) |
+| BR-11 | Tách bạch quyền & phạm vi | Chuyên viên chỉ thao tác đề tài trong phạm vi đơn vị/kỳ được phân; chủ nhiệm chỉ thấy đề tài của mình; thành viên đề tài chỉ xem (không nộp/duyệt). | Data scoping (overview §4.1) |
 | BR-12 | Khóa báo cáo đã đạt | Báo cáo đã `PASSED` là chốt, không cho chủ nhiệm sửa/nộp lại; muốn thay đổi phải do chuyên viên mở lại (ngoại lệ, kèm `reason`, ghi audit). | Mở lại là ngoại lệ |
 
 ## 5. Dữ liệu

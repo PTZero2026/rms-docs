@@ -17,7 +17,7 @@ updated: 2026-06-01
 B01 là **feature nền tảng dùng chung** của RMS: nó sở hữu các danh mục và tham số cấu hình mà hầu hết
 các feature nghiệp vụ khác tham chiếu tới (đơn vị, lĩnh vực, loại sản phẩm, bộ tiêu chí đánh giá, mẫu
 biểu thuyết minh, tham số hệ thống). Nếu các danh mục này không nhất quán hoặc bị sửa tùy tiện, dữ liệu
-toàn hệ thống sẽ lệch: đề tài gắn sai lĩnh vực, hội đồng chấm sai thang điểm, đợt kêu gọi dùng mẫu cũ.
+toàn hệ thống sẽ lệch: đề tài gắn sai lĩnh vực, hội đồng chấm sai thang điểm, kỳ nhận đề xuất dùng mẫu cũ.
 
 Hiện trạng (chưa có hệ thống): danh mục nằm rải rác trong file Excel/quy chế giấy, mỗi phòng ban giữ một
 bản, không có lịch sử thay đổi. B01 tập trung hóa việc quản trị các danh mục này vào một nơi duy nhất,
@@ -38,14 +38,14 @@ Kết quả mong đợi:
   - Quản lý **SystemSetting** (tham số khóa–giá trị) như ngưỡng điểm xét duyệt, số ngày nhắc hạn báo cáo…
   - Quản lý **CriteriaSet** và **EvaluationCriterion** (bộ tiêu chí `PROPOSAL_REVIEW` / `ACCEPTANCE`, mỗi tiêu chí có
     `maxScore` và `weight`) dùng chung cho F03 (xét duyệt) và F06 (nghiệm thu).
-  - Quản lý **mẫu biểu thuyết minh** (biểu mẫu được đợt kêu gọi F02 áp dụng) — cấu trúc biểu mẫu, không
+  - Quản lý **mẫu biểu thuyết minh** (biểu mẫu được kỳ nhận đề xuất F02 áp dụng) — cấu trúc biểu mẫu, không
     phải nội dung thuyết minh của từng đề tài.
   - Xóa mềm theo `recordStatus` (`ACTIVE` | `INACTIVE` | `DELETED`); chặn xóa cứng khi đang được tham chiếu.
   - Ghi nhật ký (audit) cho mọi thay đổi danh mục/cấu hình.
 
 - **Ngoài phạm vi:**
   - Quản lý **người dùng, vai trò, quyền** (RBAC) — thuộc B03.
-  - Vòng đời **đợt kêu gọi** (mở/đóng đợt, gán mẫu biểu vào đợt) — thuộc F02; B01 chỉ cung cấp mẫu biểu
+  - Vòng đời **kỳ nhận đề xuất** (mở/đóng kỳ, gán mẫu biểu vào kỳ) — thuộc F02; B01 chỉ cung cấp mẫu biểu
     để F02 lựa chọn.
   - Quá trình **chấm điểm** theo bộ tiêu chí — thuộc F03/F06; B01 chỉ định nghĩa bộ tiêu chí.
   - Mặt người dùng (FE): không có. Nhà khoa học chỉ **đọc gián tiếp** danh mục qua các feature khác.

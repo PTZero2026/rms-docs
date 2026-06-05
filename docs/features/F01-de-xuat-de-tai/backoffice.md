@@ -12,9 +12,9 @@ updated: 2026-06-01
 
 ## 1. Vai trò sử dụng
 
-- **Chuyên viên QL KHCN:** vai trò chính ở F01 — tiếp nhận, kiểm tra hồ sơ đề xuất theo đợt; trả
+- **Chuyên viên QL KHCN:** vai trò chính ở F01 — tiếp nhận, kiểm tra hồ sơ đề xuất theo kỳ; trả
   lại bổ sung kèm lý do; chốt danh sách đề xuất hợp lệ để chuyển sang xét duyệt (F03). Phạm vi dữ
-  liệu theo đơn vị/đợt được phân công (overview §4.1).
+  liệu theo đơn vị/kỳ được phân công (overview §4.1).
 - **Quản trị hệ thống:** chỉ tham chiếu để cấu hình quyền (B03); không thao tác nghiệp vụ F01.
 
 ## 2. Phân quyền (Permission matrix)
@@ -38,7 +38,7 @@ là lớp bảo vệ thật (overview §4.1).
 
 | Mã MH | Tên màn hình | Mục đích |
 |-------|--------------|----------|
-| BO-01 | Danh sách đề xuất theo đợt | Lọc/tìm đề xuất của một đợt; theo dõi trạng thái. |
+| BO-01 | Danh sách đề xuất theo kỳ | Lọc/tìm đề xuất của một kỳ; theo dõi trạng thái. |
 | BO-02 | Chi tiết hồ sơ đề xuất | Xem đầy đủ hồ sơ, thành viên, dự toán, tài liệu, lịch sử. |
 | BO-03 | Tiếp nhận & kiểm tra | Đánh dấu đã kiểm tra; checklist hồ sơ. |
 | BO-04 | Trả lại bổ sung | Trả về `DRAFT` kèm `reason` khi còn hạn. |
@@ -46,16 +46,16 @@ là lớp bảo vệ thật (overview §4.1).
 
 ## 4. Mô tả màn hình & thao tác
 
-### BO-01 — Danh sách đề xuất theo đợt
-- **Bộ lọc:** đợt kêu gọi (mặc định đợt đang chọn), trạng thái (`DRAFT`/`SUBMITTED`/`CANCELLED`), lĩnh vực,
+### BO-01 — Danh sách đề xuất theo kỳ
+- **Bộ lọc:** kỳ nhận đề xuất (mặc định kỳ đang chọn), trạng thái (`DRAFT`/`SUBMITTED`/`CANCELLED`), lĩnh vực,
   đơn vị chủ trì, khoảng `submittedAt`, từ khóa (`projectCode`/tên/chủ nhiệm).
 - **Bảng:** `projectCode`, tên, chủ nhiệm, lĩnh vực, đơn vị, trạng thái, `submittedAt`, số tài liệu. Phân
   trang server-side (overview §4.5). Sắp xếp theo `submittedAt`.
-- **Phạm vi dữ liệu:** chỉ hiển thị đề xuất trong phạm vi đơn vị/đợt của chuyên viên (AC-06).
-- **Trạng thái rỗng/tải/lỗi:** thông báo "Đợt chưa có đề xuất nào"; skeleton; banner lỗi + thử lại.
+- **Phạm vi dữ liệu:** chỉ hiển thị đề xuất trong phạm vi đơn vị/kỳ của chuyên viên (AC-06).
+- **Trạng thái rỗng/tải/lỗi:** thông báo "Kỳ chưa có đề xuất nào"; skeleton; banner lỗi + thử lại.
 
 ### BO-02 — Chi tiết hồ sơ đề xuất
-- Hiển thị toàn bộ: thông tin chung, `proposalDocument` (render theo biểu mẫu đợt), `ProjectMember`,
+- Hiển thị toàn bộ: thông tin chung, `proposalDocument` (render theo biểu mẫu kỳ), `ProjectMember`,
   `requestedBudget`/`durationMonths`, `Attachment` (xem/tải), và **lịch sử trạng thái** từ
   `AuditLog` (nộp/trả lại/hủy kèm `reason`, ai, khi nào).
 - Nút hành động theo trạng thái & quyền: Tiếp nhận, Trả lại bổ sung, Hủy.
@@ -66,13 +66,13 @@ là lớp bảo vệ thật (overview §4.1).
   tới một trong hai hành động: trả lại (BO-04) hoặc đưa vào danh sách chốt (BO-05).
 
 ### BO-04 — Trả lại bổ sung
-- Áp dụng cho đề xuất `SUBMITTED` khi **đợt còn hạn** (BR-06). Nhập `reason` (bắt buộc) → xác nhận →
+- Áp dụng cho đề xuất `SUBMITTED` khi **kỳ còn hạn** (BR-06). Nhập `reason` (bắt buộc) → xác nhận →
   `SUBMITTED` → `DRAFT`, mở khóa cho chủ nhiệm sửa, gửi thông báo (B04), ghi `AuditLog` → AC-07.
-- Nếu đợt **đã hết hạn**: nút trả lại bị vô hiệu hóa, tooltip "Đợt đã hết hạn nộp, không thể trả
+- Nếu kỳ **đã hết hạn**: nút trả lại bị vô hiệu hóa, tooltip "Kỳ đã hết hạn nộp, không thể trả
   lại bổ sung" (AC-08).
 
 ### BO-05 — Chốt danh sách xét duyệt
-- Chọn nhiều đề xuất `SUBMITTED` hợp lệ trong một đợt → **Chốt danh sách**. Đánh dấu sẵn sàng đưa vào
+- Chọn nhiều đề xuất `SUBMITTED` hợp lệ trong một kỳ → **Chốt danh sách**. Đánh dấu sẵn sàng đưa vào
   xét duyệt; bàn giao sang **F03** (việc chuyển `SUBMITTED` → `UNDER_REVIEW` & gán hội đồng do F03
   thực hiện) → AC-10. Cảnh báo nếu trong tập chọn có đề xuất chưa kiểm tra/đang còn vấn đề.
 
@@ -84,7 +84,7 @@ Ghi `AuditLog` (append-only, data-model §4.7) cho mọi hành động đổi tr
 |-----------|-----------|----------|
 | Nộp đề xuất | `RESEARCH_PROJECT.SUBMIT` | `oldValue/newValue` trạng thái, `projectCode`, `submittedAt`, người nộp |
 | Trả lại bổ sung | `RESEARCH_PROJECT.RETURN_FOR_REVISION` | `reason`, trạng thái `SUBMITTED`→`DRAFT`, người thực hiện |
-| Chốt danh sách | `RESEARCH_PROJECT.FINALIZE` | danh sách `researchProjectId`, đợt, người chốt |
+| Chốt danh sách | `RESEARCH_PROJECT.FINALIZE` | danh sách `researchProjectId`, kỳ, người chốt |
 | Hủy đề xuất | `RESEARCH_PROJECT.CANCEL` | `reason`, trạng thái, người thực hiện |
 
 - Lịch sử hiển thị tại BO-02. Quyền xem nhật ký: chuyên viên (phạm vi của mình) và quản trị.

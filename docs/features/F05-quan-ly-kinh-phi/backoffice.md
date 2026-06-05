@@ -13,7 +13,7 @@ updated: 2026-06-01
 ## 1. Vai trò sử dụng
 
 - **Chuyên viên QL KHCN**: lập dự toán, ghi giao dịch cấp/chi, chạy đối soát (API hoặc nhập file), xử lý
-  giao dịch `MISMATCHED`, quyết toán & đóng đề tài. Phạm vi theo đơn vị/đợt được phân.
+  giao dịch `MISMATCHED`, quyết toán & đóng đề tài. Phạm vi theo đơn vị/kỳ được phân.
 - **Quản trị hệ thống**: xem; cấu hình tham số kinh phí qua B01 (`BUDGET.OVER_BUDGET_MODE`...).
 
 ## 2. Phân quyền (Permission matrix)

@@ -17,7 +17,7 @@ updated: 2026-06-01
 - **Thành viên đề tài** (nhà khoa học): xem thông tin đề tài mình tham gia; **không** chỉnh sửa nội
   dung hồ sơ (BR-05). Quyền sửa nội dung mặc định chỉ thuộc chủ nhiệm.
 
-Vào từ Portal người dùng (FE): menu "Đề xuất của tôi" hoặc từ một đợt kêu gọi đang `OPEN` → "Tạo đề
+Vào từ Portal người dùng (FE): menu "Đề xuất của tôi" hoặc từ một kỳ nhận đề xuất đang `OPEN` → "Tạo đề
 xuất". Đăng nhập qua SSO.
 
 ## 2. Danh sách màn hình
@@ -25,7 +25,7 @@ xuất". Đăng nhập qua SSO.
 | Mã MH | Tên màn hình | Mục đích |
 |-------|--------------|----------|
 | FE-01 | Danh sách đề xuất của tôi | Xem các đề xuất của chủ nhiệm theo trạng thái; tạo mới. |
-| FE-02 | Tạo/sửa đề xuất — form nhiều bước | Soạn thuyết minh theo biểu mẫu đợt, lưu nháp. |
+| FE-02 | Tạo/sửa đề xuất — form nhiều bước | Soạn thuyết minh theo biểu mẫu kỳ, lưu nháp. |
 | FE-03 | Bước thành viên | Thêm/sửa/xóa thành viên đề tài (`ProjectMember`). |
 | FE-04 | Bước dự toán kinh phí | Nhập `requestedBudget` và `durationMonths`. |
 | FE-05 | Bước tài liệu đính kèm | Tải lên/xóa file (`Attachment`). |
@@ -37,21 +37,21 @@ xuất". Đăng nhập qua SSO.
 Wireframe đặt trong `./assets/` (bổ sung khi có), link Figma nếu có.
 
 ### FE-01 — Danh sách đề xuất của tôi
-- **Bố cục:** bảng các đề xuất của người dùng (cột: `projectCode` hoặc "—" khi chưa nộp, tên, đợt kêu
+- **Bố cục:** bảng các đề xuất của người dùng (cột: `projectCode` hoặc "—" khi chưa nộp, tên, kỳ kêu
   gọi, lĩnh vực, trạng thái, cập nhật gần nhất). Nút **Tạo đề xuất**.
-- **Tạo đề xuất:** mở dialog chọn **đợt kêu gọi đang `OPEN`** (chỉ liệt kê đợt `OPEN` còn hạn). Chọn
+- **Tạo đề xuất:** mở dialog chọn **kỳ nhận đề xuất đang `OPEN`** (chỉ liệt kê kỳ `OPEN` còn hạn). Chọn
   xong → tạo `ResearchProject` ở `DRAFT`, điều hướng tới FE-02. → AC-01.
 - **Badge trạng thái:** `DRAFT` (xám "Nháp"), `SUBMITTED` (xanh "Đã nộp"), `CANCELLED` (đỏ "Đã hủy").
-- **Trạng thái rỗng:** chưa có đề xuất → minh họa + CTA "Tạo đề xuất". Nếu không có đợt nào `OPEN`:
-  thông báo "Hiện chưa có đợt kêu gọi nào đang mở".
+- **Trạng thái rỗng:** chưa có đề xuất → minh họa + CTA "Tạo đề xuất". Nếu không có kỳ nào `OPEN`:
+  thông báo "Hiện chưa có kỳ nhận đề xuất nào đang mở".
 - **Đang tải:** skeleton bảng. **Lỗi:** banner + nút "Thử lại".
 
 ### FE-02 — Tạo/sửa đề xuất (form nhiều bước)
 - **Stepper:** Thông tin chung → Thuyết minh → Thành viên (FE-03) → Dự toán (FE-04) → Tài liệu
   (FE-05) → Xem lại & nộp (FE-06). Cho phép nhảy bước; mọi bước **Lưu nháp** giữ `DRAFT`.
-- **Thông tin chung:** `name` (bắt buộc), `researchFieldId` (chọn trong lĩnh vực của đợt — BR-03),
+- **Thông tin chung:** `name` (bắt buộc), `researchFieldId` (chọn trong lĩnh vực của kỳ — BR-03),
   `hostUnitId`, `abstract`.
-- **Thuyết minh:** render động theo `proposalTemplateId` của đợt (lưu vào `proposalDocument` jsonb).
+- **Thuyết minh:** render động theo `proposalTemplateId` của kỳ (lưu vào `proposalDocument` jsonb).
   Đánh dấu trường bắt buộc bằng dấu *.
 - **Chỉ sửa khi `DRAFT`:** nếu đề xuất ở `SUBMITTED`, form chuyển chế độ chỉ đọc và hiện banner "Hồ sơ
   đã nộp, chỉ sửa được sau khi chuyên viên trả lại bổ sung" (BR-05) → AC-05.
@@ -95,14 +95,14 @@ Wireframe đặt trong `./assets/` (bổ sung khi có), link Figma nếu có.
 |------------|-----------|
 | Lưu nháp thành công | "Đã lưu nháp lúc HH:mm." |
 | Nộp thành công | "Đã nộp đề xuất. Mã đề tài: {projectCode}." |
-| Quá hạn nộp | "Đã hết hạn nộp của đợt kêu gọi. Không thể nộp." (AC-03) |
+| Quá hạn nộp | "Đã hết hạn nộp của kỳ nhận đề xuất. Không thể nộp." (AC-03) |
 | Thiếu trường bắt buộc | "Vui lòng hoàn thiện các trường: {danh sách}." (AC-04) |
 | Sửa sau khi nộp | "Hồ sơ đã nộp, chỉ sửa được sau khi được trả lại bổ sung." (AC-05) |
 | Thành viên trùng | "Thành viên đã có trong đề tài." (AC-09) |
 | Bị trả lại bổ sung | Banner: "Hồ sơ được trả lại để bổ sung. Lý do: {reason}." (AC-07) |
 | Không có quyền | "Bạn không có quyền truy cập đề xuất này." (AC-06) |
 
-- **Trạng thái rỗng:** danh sách trống, không có đợt `OPEN`, chưa có thành viên/tài liệu — đều có
+- **Trạng thái rỗng:** danh sách trống, không có kỳ `OPEN`, chưa có thành viên/tài liệu — đều có
   minh họa + hướng dẫn.
 - **Đang tải:** skeleton/spinner cho danh sách, form, upload.
 - **Lỗi:** lỗi mạng/máy chủ → banner + "Thử lại"; lỗi nhập liệu → inline cạnh trường.

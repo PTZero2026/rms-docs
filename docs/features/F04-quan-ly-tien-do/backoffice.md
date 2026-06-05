@@ -13,7 +13,7 @@ updated: 2026-06-01
 ## 1. Vai trò sử dụng
 
 - **Chuyên viên QL KHCN**: giao đề tài, lập lịch kỳ báo cáo, duyệt/yêu cầu chỉnh sửa báo cáo, tạm dừng/tiếp
-  tục, chuyển sang chờ nghiệm thu. Thao tác trong phạm vi đơn vị/đợt được phân (BR-11).
+  tục, chuyển sang chờ nghiệm thu. Thao tác trong phạm vi đơn vị/kỳ được phân (BR-11).
 - **Quản trị hệ thống**: xem, không trực tiếp xử lý nghiệp vụ tiến độ.
 
 ## 2. Phân quyền (Permission matrix)
@@ -33,7 +33,7 @@ updated: 2026-06-01
 
 | Mã MH | Tên màn hình | Mục đích |
 |-------|--------------|----------|
-| BO-01 | Danh sách đề tài đang thực hiện | Lọc theo đơn vị/đợt/trạng thái/đề tài trễ hạn; vào chi tiết |
+| BO-01 | Danh sách đề tài đang thực hiện | Lọc theo đơn vị/kỳ/trạng thái/đề tài trễ hạn; vào chi tiết |
 | BO-02 | Giao đề tài & lập lịch báo cáo | Giao đề tài `APPROVED`, tạo các kỳ (`period`, `dueDate`) |
 | BO-03 | Chi tiết tiến độ đề tài | Bảng kỳ báo cáo, duyệt/yêu cầu sửa, tạm dừng/tiếp tục, chuyển nghiệm thu |
 | BO-04 | Duyệt báo cáo kỳ | Xem nội dung/đính kèm, duyệt đạt hoặc yêu cầu chỉnh sửa kèm nhận xét |
@@ -41,7 +41,7 @@ updated: 2026-06-01
 ## 4. Mô tả màn hình & thao tác
 
 - **BO-01:** danh sách phân trang server-side; bộ lọc trạng thái đề tài, **đề tài có báo cáo trễ hạn**,
-  đợt kêu gọi, đơn vị. Cột cảnh báo số kỳ quá hạn.
+  kỳ nhận đề xuất, đơn vị. Cột cảnh báo số kỳ quá hạn.
 - **BO-02:** chọn đề tài `APPROVED` → nút **Giao đề tài** (xác nhận → `IN_PROGRESS`, BR-01). Sau đó thêm các
   kỳ báo cáo: nhập `period` và `dueDate`; hệ thống chặn `period` trùng (BR-07) và chặn lập kỳ khi đề tài không
   `IN_PROGRESS` (BR-02).
