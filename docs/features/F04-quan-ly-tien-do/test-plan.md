@@ -3,7 +3,7 @@ title: "Quản lý tiến độ — Test plan"
 spec: "./spec.md"
 owner: "PO/BA"
 status: Draft
-updated: 2026-06-01
+updated: 2026-06-05
 ---
 
 # Quản lý tiến độ — Kế hoạch kiểm thử
@@ -13,13 +13,14 @@ updated: 2026-06-01
 ## 1. Phạm vi kiểm thử
 
 - Mặt: FE (Chủ nhiệm/Thành viên), BO (Chuyên viên), API (chuyển trạng thái, RBAC, data scoping), job nhắc hạn.
-- Môi trường: staging; dữ liệu mẫu: 1 đề tài `APPROVED`, 1 đề tài `IN_PROGRESS` có 3 kỳ báo cáo, 1 đề tài `SUSPENDED`.
+- Môi trường: staging; dữ liệu mẫu: 1 đề tài `APPROVED` chưa có hồ sơ giao đề tài, 1 đề tài `IN_PROGRESS`
+  có `ProjectAssignment.EFFECTIVE` và 3 kỳ báo cáo, 1 đề tài `SUSPENDED`.
 
 ## 2. Test cases
 
 | ID | Liên kết AC | Tiền điều kiện | Bước thực hiện | Kết quả mong đợi | Loại |
 |----|-------------|----------------|----------------|------------------|------|
-| TC-01 | AC-01 | Đề tài `APPROVED` | Chuyên viên giao đề tài | Đề tài `IN_PROGRESS`, có thông báo + audit | Happy |
+| TC-01 | AC-01 | Đề tài `APPROVED` | Chuyên viên lập hồ sơ `ProjectAssignment` đủ căn cứ và xác nhận giao đề tài | `ProjectAssignment=EFFECTIVE`, đề tài `IN_PROGRESS`, có thông báo + audit | Happy |
 | TC-02 | AC-02 | Đề tài `IN_PROGRESS` | Lập 3 kỳ với `period`/`dueDate` | Tạo 3 `ProgressReport` trạng thái `PENDING_SUBMISSION` | Happy |
 | TC-03 | AC-03 | Kỳ `PENDING_SUBMISSION` | Chủ nhiệm nhập nội dung, đính kèm, nộp | Kỳ `SUBMITTED`, có `submittedAt`, chuyên viên được báo | Happy |
 | TC-04 | AC-04 | Báo cáo `SUBMITTED` | Chuyên viên duyệt đạt | Báo cáo `PASSED`, chủ nhiệm được báo, audit | Happy |
@@ -34,6 +35,9 @@ updated: 2026-06-01
 | TC-13 | AC-12 | Kỳ cuối chưa `PASSED` | Chuyển chờ nghiệm thu | Chặn, nêu điều kiện thiếu, giữ `IN_PROGRESS` | Negative |
 | TC-14 | AC-13 | Đề tài `SUSPENDED` | Lập kỳ báo cáo | Chặn (BR-02) | Negative |
 | TC-15 | AC-13 | Đề tài `IN_PROGRESS` đã có kỳ 2 | Lập kỳ 2 lần nữa | Chặn trùng `period` (BR-07) | Negative |
+| TC-16 | AC-14 | Đề tài `APPROVED` | Xác nhận giao đề tài khi thiếu file quyết định/hợp đồng hoặc thiếu `approvedBudget` | Chặn, giữ `APPROVED`, báo trường thiếu | Negative |
+| TC-17 | AC-15 | Đề tài `APPROVED`, `requestedBudget=200 triệu` | Nhập `approvedBudget=180 triệu` nhưng không nhập `note` | Chặn, yêu cầu lý do điều chỉnh | Biên/Lỗi |
+| TC-18 | AC-15 | Như TC-17 | Nhập `note` lý do điều chỉnh và xác nhận giao | Cho giao đề tài, audit lưu lý do | Happy |
 
 ## 3. Trường hợp biên & negative
 
@@ -42,6 +46,8 @@ updated: 2026-06-01
 - Tiếp tục đề tài chưa từng tạm dừng (không hợp lệ).
 - Mở lại báo cáo `PASSED` (BR-12) — quyền & ghi audit.
 - Job nhắc hạn không gửi cho kỳ đã `PASSED` và đề tài `SUSPENDED` (BR-08).
+- Giao đề tài với `contractNo` và `decisionNo` cùng có/thiếu một trong hai; xác nhận rule "ít nhất một căn cứ".
+- Tạo hồ sơ giao đề tài thứ hai `EFFECTIVE` cho cùng đề tài — phải chặn (BR-14).
 
 ## 4. Checklist hồi quy
 
@@ -49,3 +55,4 @@ updated: 2026-06-01
 - Data scoping: chuyên viên chỉ thấy đề tài trong phạm vi; chủ nhiệm chỉ thấy đề tài của mình.
 - Thông báo (B04) phát đúng sự kiện; audit ghi đủ.
 - Đối chiếu "đủ sản phẩm cam kết" với F07 khi quy tắc BR-10 được chốt.
+- F05 lấy đúng `ProjectAssignment.approvedBudget` làm trần khoán kinh phí.

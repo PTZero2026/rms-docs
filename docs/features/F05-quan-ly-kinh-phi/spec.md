@@ -4,7 +4,7 @@ id: "F05"
 owner: "PO/BA"
 status: Draft        # Draft | Review | Approved
 version: 0.1
-updated: 2026-06-01
+updated: 2026-06-05
 ---
 
 # Quản lý kinh phí
@@ -14,20 +14,24 @@ updated: 2026-06-01
 
 ## 1. Bối cảnh & mục tiêu
 
-Sau khi đề tài được giao và chuyển sang `IN_PROGRESS` (F04), kinh phí được cấp và chi theo
-khoản mục trong suốt quá trình thực hiện. Hiện việc theo dõi kinh phí làm thủ công trên bảng tính,
+Sau khi đề tài được giao và chuyển sang `IN_PROGRESS` (F04), kinh phí được khoán/cấp và chi theo
+khoản mục trong suốt quá trình thực hiện. Hồ sơ giao đề tài ở F04 cung cấp **tổng kinh phí được phê
+duyệt** (`ProjectAssignment.approvedBudget`); F05 bóc tách thành **khoán kinh phí** theo khoản mục,
+cơ chế quyết toán và đợt cấp kinh phí. Hiện việc theo dõi kinh phí làm thủ công trên bảng tính,
 tách rời sổ kế toán thật của hệ thống tài chính: chủ nhiệm không biết còn lại bao nhiêu theo dự
-toán, chuyên viên khó phát hiện chênh lệch giữa số liệu RMS và số liệu tài chính, và đến khi quyết
-toán để đóng đề tài thì dữ liệu đã lệch khó truy nguyên.
+toán, khoản nào khoán chi/khoản nào cần chứng từ, chuyên viên khó phát hiện chênh lệch giữa số liệu
+RMS và số liệu tài chính, và đến khi quyết toán để đóng đề tài thì dữ liệu đã lệch khó truy nguyên.
 
-F05 số hóa việc **theo dõi** dự toán và giao dịch kinh phí ở mức đề tài, rồi **đối soát** chúng với
-hệ thống tài chính qua tích hợp (API, fallback nhập file). RMS **không thay thế kế toán** — sổ cái
-thật vẫn ở hệ thống tài chính; RMS phản ánh, gắn chi tiêu với đề tài và phát hiện chênh lệch để
-chuyên viên xử lý (xem [ADR-0004](../../architecture/decisions/0004-doi-soat-kinh-phi-qua-api.md)).
+F05 số hóa việc **khoán kinh phí** (lập dự toán theo khoản mục, xác định cơ chế `LUMP_SUM`/`ACTUAL_EXPENSE`/`MIXED`,
+theo dõi đợt cấp kinh phí) và **theo dõi** giao dịch kinh phí ở mức đề tài, rồi **đối soát** chúng với
+hệ thống tài chính qua tích hợp (API, fallback nhập file). RMS **không thay thế kế toán** — sổ cái thật
+vẫn ở hệ thống tài chính; RMS phản ánh, gắn chi tiêu với đề tài và phát hiện chênh lệch để chuyên viên
+xử lý (xem [ADR-0004](../../architecture/decisions/0004-doi-soat-kinh-phi-qua-api.md)).
 
 **Kết quả mong đợi:**
-- Mỗi đề tài `IN_PROGRESS` có dự toán theo khoản mục (`BudgetEstimate`) và sổ giao dịch cấp/chi
-  (`BudgetTransaction`); chủ nhiệm xem được dự toán vs thực chi và giải trình khoản chi.
+- Mỗi đề tài `IN_PROGRESS` có dự toán theo khoản mục (`BudgetEstimate`) không vượt tổng kinh phí được giao,
+  mỗi khoản mục có cơ chế quyết toán (`settlementMode`) và có thể có các đợt cấp kinh phí (`BudgetAllocation`).
+- Chủ nhiệm xem được dự toán vs thực chi, khoản nào khoán chi/khoản nào cần chứng từ, và giải trình khoản chi.
 - Chuyên viên chạy đối soát định kỳ; mỗi giao dịch có `reconciliationStatus` (`MATCHED`/`MISMATCHED`/`UNRECONCILED`),
   chênh lệch được xử lý có truy vết; tài chính lỗi vẫn đối soát thủ công được (degrade).
 - Khi đề tài `PASSED`, chuyên viên quyết toán; chỉ đóng đề tài (`COMPLETED`) khi **không còn giao dịch
@@ -36,7 +40,11 @@ chuyên viên xử lý (xem [ADR-0004](../../architecture/decisions/0004-doi-soa
 ## 2. Phạm vi
 
 - **Trong phạm vi:**
-  - Lập/sửa dự toán kinh phí theo khoản mục (`BudgetEstimate`) cho đề tài `IN_PROGRESS`.
+  - Lập/sửa **khoán kinh phí** theo khoản mục (`BudgetEstimate`) cho đề tài `IN_PROGRESS`, lấy
+    `ProjectAssignment.approvedBudget` từ F04 làm tổng trần.
+  - Xác định cơ chế quyết toán theo khoản mục: `LUMP_SUM` (khoán chi), `ACTUAL_EXPENSE` (thực thanh thực chi),
+    hoặc `MIXED`.
+  - Lập/theo dõi các đợt cấp kinh phí (`BudgetAllocation`) theo kế hoạch và thực tế.
   - Ghi nhận giao dịch cấp/chi (`BudgetTransaction` type `DISBURSEMENT`/`EXPENSE`) gắn khoản mục, có thể đính chứng từ.
   - Đối soát giao dịch với hệ thống tài chính qua API; **fallback nhập file CSV/Excel** khi tài chính
     lỗi/chưa có API; gán `reconciliationStatus` theo `financeTransactionCode`.
@@ -48,7 +56,7 @@ chuyên viên xử lý (xem [ADR-0004](../../architecture/decisions/0004-doi-soa
 - **Ngoài phạm vi:**
   - Hạch toán/kế toán đầy đủ (sổ cái, định khoản) → ở **hệ thống tài chính**, không phải RMS
     ([ADR-0004](../../architecture/decisions/0004-doi-soat-kinh-phi-qua-api.md)).
-  - Giao đề tài/ký hợp đồng đưa đề tài vào `IN_PROGRESS` → thuộc **F04**.
+  - Giao đề tài chính thức đưa đề tài vào `IN_PROGRESS` → thuộc **F04**.
   - Kết luận nghiệm thu `PASSED`/`FAILED` → thuộc **F06**; F05 chỉ xử lý phần quyết toán trước khi đóng.
   - Cấu hình tham số (ngưỡng cảnh báo vượt dự toán, chế độ chặn/cảnh báo, lịch đối soát) → **B01**.
   - Định nghĩa danh mục khoản mục dùng chung (nếu chuẩn hóa) → **B01**.
@@ -68,7 +76,10 @@ sequenceDiagram
     participant FIN as Hệ thống tài chính
 
     Note over CV,SYS: Đề tài đã IN_PROGRESS (F04)
-    CV->>SYS: Lập BudgetEstimate theo khoản mục
+    CV->>SYS: Lập khoán kinh phí từ ProjectAssignment.approvedBudget
+    SYS->>SYS: Tạo BudgetEstimate theo khoản mục + settlementMode [BR-12]
+    CV->>SYS: Lập kế hoạch cấp kinh phí (BudgetAllocation)
+    SYS->>SYS: Theo dõi PLANNED → DISBURSED/CANCELLED [BR-14]
     CN->>SYS: Ghi nhận / xem BudgetTransaction (DISBURSEMENT/EXPENSE), đính chứng từ, giải trình
     SYS->>SYS: Cảnh báo/chặn nếu tổng EXPENSE vượt dự toán [BR-03]
 
@@ -123,7 +134,7 @@ stateDiagram-v2
 
 | ID    | Quy tắc | Mô tả | Ghi chú |
 |-------|---------|-------|---------|
-| BR-01 | Chỉ quản kinh phí khi đang thực hiện | Chỉ lập/sửa `BudgetEstimate` và ghi `BudgetTransaction` cho đề tài có `status=IN_PROGRESS` (hoặc `SUSPENDED` — chỉ xem, không thêm chi). Đề tài chưa giao hoặc đã `COMPLETED` không nhận giao dịch mới. | Phụ thuộc F04 |
+| BR-01 | Chỉ quản kinh phí khi đang thực hiện | Chỉ lập/sửa `BudgetEstimate`, `BudgetAllocation` và ghi `BudgetTransaction` cho đề tài có `status=IN_PROGRESS` (hoặc `SUSPENDED` — chỉ xem, không thêm chi/cấp mới). Đề tài chưa giao hoặc đã `COMPLETED` không nhận giao dịch mới. | Phụ thuộc F04 |
 | BR-02 | Số tiền hợp lệ | `amount` (giao dịch) và `estimatedAmount` (dự toán) là **số nguyên VND > 0** (`bigint`), không số thực, không âm/không 0. Đơn vị thống nhất VND. | Tiền tệ lưu `bigint` ([data-model §1](../../architecture/data-model.md#1-quy-ước-chung)) |
 | BR-03 | Tổng chi vs dự toán | Tổng `BudgetTransaction` type `EXPENSE` của một khoản mục **không vượt** `BudgetEstimate` của khoản mục đó. Hành vi khi vượt theo cấu hình `BUDGET.OVER_BUDGET_MODE` (`WARN` = cho ghi kèm cảnh báo / `BLOCK` = chặn). | Cấu hình B01; mặc định `WARN` |
 | BR-04 | Chỉ chuyên viên đối soát & xử lý lệch | Chỉ **Chuyên viên QL KHCN** được chạy đối soát, nhập file đối soát và xử lý giao dịch `MISMATCHED` (điều chỉnh/khớp lại/đánh dấu giải quyết kèm `reason`). Đối soát so khớp theo `financeTransactionCode` & `amount` → gán `reconciliationStatus`. | RBAC backend (overview §4.1) |
@@ -134,6 +145,9 @@ stateDiagram-v2
 | BR-09 | Khóa đối chiếu duy nhất | `financeTransactionCode` khi đã gán phải **duy nhất** trong phạm vi nguồn tài chính (không hai giao dịch RMS cùng map một mã chứng từ). Giao dịch chưa có mã giữ `UNRECONCILED`. | Tránh khớp trùng khi đối soát |
 | BR-10 | Sửa giao dịch → đối soát lại | Sửa `amount`/`budgetLine`/`type` của giao dịch đã `MATCHED` đưa giao dịch về `UNRECONCILED` và yêu cầu đối soát lại. Giao dịch đã thuộc đề tài `COMPLETED` thì khóa, không sửa. | Giữ toàn vẹn quyết toán |
 | BR-11 | Truy vết mọi thay đổi kinh phí | Lập/sửa dự toán, ghi/sửa giao dịch, chạy đối soát, xử lý lệch, quyết toán đều ghi `AuditLog` (append-only). | Audit (overview §4.2) |
+| BR-12 | Tổng khoán không vượt kinh phí được giao | Tổng `BudgetEstimate.estimatedAmount` của đề tài không được vượt `ProjectAssignment.approvedBudget` hiệu lực từ F04, trừ khi có điều chỉnh giao đề tài được duyệt và ghi audit. | F04 là căn cứ tổng; F05 bóc tách chi tiết |
+| BR-13 | Mỗi khoản mục có cơ chế quyết toán | Mỗi `BudgetEstimate` bắt buộc có `settlementMode`: `LUMP_SUM` (khoán chi), `ACTUAL_EXPENSE` (thực thanh thực chi) hoặc `MIXED`. Khoản `ACTUAL_EXPENSE` bắt buộc chứng từ khi quyết toán; khoản `LUMP_SUM` kiểm tra theo mức khoán/sản phẩm/đợt cấp theo quy chế. | Cần PO chốt chi tiết chứng từ theo từng cơ chế |
+| BR-14 | Đợt cấp kinh phí hợp lệ | `BudgetAllocation.amount` là số nguyên VND > 0; tổng các đợt `DISBURSED` không vượt tổng dự toán/khoán đã duyệt. Đợt `DISBURSED` tạo/đối chiếu với `BudgetTransaction` type `DISBURSEMENT`; hủy đợt phải có `reason`, ghi audit. | Phục vụ theo dõi cấp kinh phí, không thay sổ cái tài chính |
 
 ## 5. Dữ liệu
 
@@ -143,24 +157,27 @@ F05 thao tác trên `BudgetEstimate`, `BudgetTransaction` gắn với `ResearchP
 | Thực thể | Vai trò trong F05 | Trường trọng yếu |
 |---|---|---|
 | `ResearchProject` | Đối tượng có kinh phí | `status` (`IN_PROGRESS`/`PASSED`/`COMPLETED`), `principalInvestigatorId`, `requestedBudget` (tham chiếu) |
-| `BudgetEstimate` | Dự toán theo khoản mục | `researchProjectId`, `budgetLine`, `estimatedAmount` (`bigint` VND, > 0), `period` |
+| `ProjectAssignment` | Căn cứ tổng kinh phí được giao từ F04 | `researchProjectId`, `approvedBudget`, `status=EFFECTIVE` |
+| `BudgetEstimate` | Khoán/dự toán theo khoản mục | `researchProjectId`, `budgetLine`, `estimatedAmount` (`bigint` VND, > 0), `period`, `settlementMode` (`LUMP_SUM`/`ACTUAL_EXPENSE`/`MIXED`) |
+| `BudgetAllocation` | Đợt cấp kinh phí | `researchProjectId`, `allocationNo`, `amount` (`bigint` VND, > 0), `plannedDate`, `actualDate`, `status` (`PLANNED`/`DISBURSED`/`CANCELLED`) |
 | `BudgetTransaction` | Giao dịch cấp/chi | `researchProjectId`, `budgetLine`, `amount` (`bigint` VND, > 0), `type` (`DISBURSEMENT`/`EXPENSE`), `date`, `reconciliationStatus` (`UNRECONCILED`/`MATCHED`/`MISMATCHED`), `financeTransactionCode` |
 | `Attachment` | Chứng từ khoản chi | `targetType=BudgetTransaction`, `targetId`, `storageKey` (object storage) |
 | `SystemSetting` | Tham số kinh phí | `BUDGET.OVER_BUDGET_MODE` (`WARN`/`BLOCK`), `BUDGET.OVER_BUDGET_WARNING_THRESHOLD` (%), `BUDGET.RECONCILIATION_SCHEDULE` |
-| `Notification` | Thông báo lệch & quyết toán | Sinh khi có `MISMATCHED` và khi quyết toán/`COMPLETED` (B04) |
-| `AuditLog` | Audit | Lập/sửa dự toán, ghi/sửa giao dịch, đối soát, xử lý lệch, quyết toán |
+| `Notification` | Thông báo đợt cấp, lệch & quyết toán | Sinh khi đợt cấp `DISBURSED`, khi có `MISMATCHED` và khi quyết toán/`COMPLETED` (B04) |
+| `AuditLog` | Audit | Lập/sửa khoán kinh phí/dự toán, lập/sửa đợt cấp, ghi/sửa giao dịch, đối soát, xử lý lệch, quyết toán |
 
 > **Trường có thể cần bổ sung vào data-model (cùng PR khi chốt):** `BudgetTransaction.mismatchResolutionReason`
 > (ghi lý do khi đánh dấu `MISMATCHED` đã giải quyết), `BudgetTransaction.description`/`explanation` (giải
-> trình của chủ nhiệm), `BudgetTransaction.reconciliationSource` (`API`/`FILE`). Ràng buộc: `amount > 0`,
-> `estimatedAmount > 0`; `financeTransactionCode` unique khi không null trong phạm vi nguồn (BR-09).
+> trình của chủ nhiệm), `BudgetTransaction.reconciliationSource` (`API`/`FILE`), `BudgetAllocation.cancelReason`.
+> Ràng buộc: `amount > 0`, `estimatedAmount > 0`; `financeTransactionCode` unique khi không null trong phạm vi nguồn (BR-09).
 > Nếu dùng các trường này, cập nhật [data-model §4.5](../../architecture/data-model.md#45-thực-hiện-đề-tài-f04-f05).
 
 ## 6. Acceptance criteria
 
-- **AC-01 (Happy — lập dự toán)** — Given một đề tài `IN_PROGRESS`; When chuyên viên lập
-  `BudgetEstimate` cho các khoản mục với `estimatedAmount` là số nguyên VND > 0; Then hệ thống lưu dự toán
-  theo khoản mục, hiển thị tổng dự toán và ghi audit.
+- **AC-01 (Happy — lập khoán kinh phí)** — Given một đề tài `IN_PROGRESS` đã có `ProjectAssignment.EFFECTIVE`;
+  When chuyên viên lập `BudgetEstimate` cho các khoản mục với `estimatedAmount` là số nguyên VND > 0 và
+  `settlementMode` hợp lệ; Then hệ thống lưu khoán/dự toán theo khoản mục, tổng không vượt
+  `approvedBudget`, hiển thị tổng dự toán và ghi audit.
 - **AC-02 (Happy — ghi giao dịch chi trong dự toán)** — Given đề tài `IN_PROGRESS` đã có dự toán
   khoản mục X; When ghi một `BudgetTransaction` type `EXPENSE` cho khoản mục X với `amount` > 0 mà tổng chi
   khoản mục **không vượt** dự toán; Then giao dịch được lưu ở `reconciliationStatus=UNRECONCILED`, cập
@@ -194,11 +211,21 @@ F05 thao tác trên `BudgetEstimate`, `BudgetTransaction` gắn với `ResearchP
   hoặc đã `COMPLETED`; When ghi giao dịch chi mới; Then hệ thống chặn (BR-01).
 - **AC-13 (Biên — mã đối chiếu trùng)** — Given một `financeTransactionCode` đã gán cho giao dịch khác;
   When đối soát/gán mã đó cho giao dịch thứ hai; Then hệ thống từ chối khớp trùng (BR-09).
+- **AC-14 (Negative — tổng khoán vượt kinh phí giao)** — Given `ProjectAssignment.approvedBudget` là 200 triệu;
+  When chuyên viên lập/sửa `BudgetEstimate` khiến tổng dự toán vượt 200 triệu mà không có điều chỉnh giao đề tài
+  được duyệt; Then hệ thống chặn, nêu rõ phần vượt (BR-12).
+- **AC-15 (Happy — lập và ghi nhận đợt cấp kinh phí)** — Given đề tài `IN_PROGRESS` đã có khoán kinh phí;
+  When chuyên viên lập `BudgetAllocation` và cập nhật đợt sang `DISBURSED`; Then hệ thống ghi nhận đợt cấp,
+  tạo/đối chiếu giao dịch `DISBURSEMENT` tương ứng, không vượt tổng dự toán và ghi audit (BR-14).
+- **AC-16 (Negative — khoản thực thanh thiếu chứng từ khi quyết toán)** — Given khoản mục
+  `settlementMode=ACTUAL_EXPENSE` có giao dịch chi chưa đủ chứng từ; When chuyên viên quyết toán đề tài;
+  Then hệ thống chặn hoặc cảnh báo theo quy chế, nêu danh sách giao dịch thiếu chứng từ (BR-13).
 
 ## 7. Phụ thuộc & rủi ro
 
 **Phụ thuộc:**
-- **F04** — đề tài phải ở `IN_PROGRESS` mới quản kinh phí; F04 đưa đề tài vào trạng thái này.
+- **F04** — đề tài phải ở `IN_PROGRESS` mới quản kinh phí; F04 đưa đề tài vào trạng thái này và cung cấp
+  `ProjectAssignment.approvedBudget` làm căn cứ tổng khoán kinh phí.
 - **F06** — kết luận nghiệm thu `PASSED` là tiền đề quyết toán; chuyển `PASSED → COMPLETED` là điểm phối
   hợp chung giữa F05 (quyết toán kinh phí) và F06 (đóng đề tài) — xem
   [data-model §3](../../architecture/data-model.md#3-vòng-đời-đề-tài-state-machine).
@@ -217,6 +244,10 @@ F05 thao tác trên `BudgetEstimate`, `BudgetTransaction` gắn với `ResearchP
   cần PO chốt và phản ánh ở B01.
 - **Quyền nhập giao dịch của chủ nhiệm:** chủ nhiệm chỉ giải trình/đính chứng từ, hay được nhập đề nghị
   chi (tạo giao dịch `UNRECONCILED` chờ chuyên viên)? Mặc định hiện tại: chỉ xem/giải trình (BR-08).
+- **Quy chế khoán chi theo khoản mục:** khoản `LUMP_SUM` cần chứng từ ở mức nào (theo sản phẩm, biên bản,
+  hay vẫn cần hóa đơn tối thiểu) và khoản `MIXED` tách tỷ lệ ra sao — cần PO/Tài chính chốt.
+- **Đợt cấp kinh phí:** có cần đồng bộ trực tiếp với giao dịch giải ngân từ hệ thống tài chính hay chỉ theo dõi
+  kế hoạch trong RMS rồi đối soát sau — cần thống nhất với tích hợp F05/ADR-0004.
 - **Ai sở hữu chuyển `PASSED → COMPLETED`:** F05 hay F06 kích hoạt; thống nhất domain service dùng chung,
   F05 cung cấp điều kiện "không còn MISMATCHED". Cần chốt với F06 để tránh hai feature cùng đổi trạng thái.
 - **Định dạng file đối soát:** schema cột CSV/Excel (mã chứng từ, số tiền, ngày, mã đề tài) cần thống

@@ -3,7 +3,7 @@ title: "Thông báo — Test plan"
 spec: "./spec.md"
 owner: "PO/BA"
 status: Draft
-updated: 2026-06-01
+updated: 2026-06-05
 ---
 
 # Thông báo — Kế hoạch kiểm thử
@@ -46,6 +46,8 @@ updated: 2026-06-01
 | TC-20 | AC-05 / Permission | Chuyên viên **không có quyền** `NOTIFICATION.RESEND` hoặc bản ghi ngoài phạm vi | Thử gọi gửi lại (API trực tiếp) | Bị từ chối (403/không thấy bản ghi); không thay đổi trạng thái | Negative |
 | TC-21 | AC-09 / Permission | Người dùng FE thường | Thử mở BO-01/BO-02/BO-03 (route/API) | Bị từ chối truy cập | Negative |
 | TC-22 | AC-06 | Trung tâm thông báo lỗi tải | Ép API danh sách lỗi, mở FE-02 | Hiển thị lỗi inline + "Thử lại", giữ bộ lọc; phần còn lại trang không vỡ | Biên/Lỗi |
+| TC-23 | AC-01 | F04 xác nhận `ProjectAssignment.EFFECTIVE` cho đề tài X | Kích hoạt `PROJECT_ASSIGNED` | Chủ nhiệm/thành viên đề tài nhận IN_APP/EMAIL/SMS theo cấu hình; `link` trỏ tới tab tiến độ/giao đề tài | Happy |
+| TC-24 | AC-01 | F05 cập nhật `BudgetAllocation` sang `DISBURSED` | Kích hoạt `BUDGET_ALLOCATION_DISBURSED` | Chủ nhiệm/chuyên viên phụ trách nhận IN_APP/EMAIL theo cấu hình; `link` trỏ tới tab kinh phí | Happy |
 
 ## 3. Trường hợp biên & negative
 
@@ -62,7 +64,8 @@ updated: 2026-06-01
 ## 4. Checklist hồi quy
 
 - **F01–F07 vẫn phát đúng sự kiện** sau khi đổi mẫu/ma trận: trả lại đề xuất (F01), kết quả xét duyệt (F03),
-  hạn báo cáo (F04), chênh lệch kinh phí (F05), lịch & kết quả nghiệm thu (F06), duyệt/từ chối sản phẩm (F07).
+  giao đề tài và hạn báo cáo (F04), đợt cấp/chênh lệch kinh phí (F05), lịch & kết quả nghiệm thu (F06),
+  duyệt/từ chối sản phẩm (F07).
 - **Đổi `maxRetry` / số ngày nhắc hạn ở B01** phản ánh đúng vào hành vi worker và job (không hardcode).
 - **Thay đổi người nhận/vai trò ở B03** không làm hỏng phân giải người nhận và phạm vi dữ liệu của chuyên viên.
 - **Badge số chưa đọc** đồng bộ giữa FE-01 và FE-02 sau khi đọc/đánh dấu.

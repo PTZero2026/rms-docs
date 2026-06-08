@@ -4,7 +4,7 @@ id: "B04"
 owner: "PO/BA"
 status: Draft        # Draft | Review | Approved
 version: 0.1
-updated: 2026-06-01
+updated: 2026-06-05
 ---
 
 # Thông báo
@@ -89,8 +89,10 @@ là cấu hình khởi tạo, Quản trị có thể bật/tắt ở BO (xem `ba
 | `PROPOSAL_RECEIVED` | Đề xuất được tiếp nhận hợp lệ (F01) | Chủ nhiệm | IN_APP, EMAIL | Thường |
 | `PROPOSAL_REVIEW_APPROVED` | Kết quả xét duyệt = APPROVED (F03) | Chủ nhiệm, thành viên đề tài | IN_APP, EMAIL, SMS | Cao |
 | `PROPOSAL_REVIEW_REJECTED` | Kết quả xét duyệt = REJECTED (F03) | Chủ nhiệm | IN_APP, EMAIL | Cao |
+| `PROJECT_ASSIGNED` | Đề tài đã được giao chính thức, có `ProjectAssignment.EFFECTIVE` (F04) | Chủ nhiệm, thành viên đề tài | IN_APP, EMAIL, SMS | Cao |
 | `PROGRESS_REPORT_DUE_SOON` | Báo cáo tiến độ sắp đến hạn (F04, job) | Chủ nhiệm | IN_APP, EMAIL | Thường |
 | `PROGRESS_REPORT_OVERDUE` | Báo cáo tiến độ đã quá hạn (F04, job) | Chủ nhiệm, chuyên viên phụ trách | IN_APP, EMAIL, SMS | Cao |
+| `BUDGET_ALLOCATION_DISBURSED` | Đợt cấp kinh phí đã được ghi nhận `DISBURSED` (F05) | Chủ nhiệm, chuyên viên phụ trách | IN_APP, EMAIL | Thường |
 | `BUDGET_RECONCILIATION_MISMATCHED` | Đối soát phát sinh chênh lệch `MISMATCHED` (F05) | Chủ nhiệm, chuyên viên phụ trách | IN_APP, EMAIL | Cao |
 | `ACCEPTANCE_SCHEDULED` | Lịch nghiệm thu được lập (F06) | Chủ nhiệm, thành viên hội đồng | IN_APP, EMAIL, SMS | Cao |
 | `ACCEPTANCE_RESULT` | Kết quả nghiệm thu PASSED/FAILED (F06) | Chủ nhiệm | IN_APP, EMAIL, SMS | Cao |

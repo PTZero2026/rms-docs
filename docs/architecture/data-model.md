@@ -1,7 +1,7 @@
 ---
 title: "Mô hình dữ liệu — RMS"
 status: Draft
-updated: 2026-06-01
+updated: 2026-06-05
 ---
 
 # Mô hình dữ liệu
@@ -43,8 +43,10 @@ erDiagram
     EvaluationCriterion ||--o{ CriterionScore : "được chấm"
     ScoreSheet ||--o{ CriterionScore : "gồm"
 
+    ResearchProject ||--o{ ProjectAssignment : "được giao"
     ResearchProject ||--o{ ProgressReport : "nộp"
     ResearchProject ||--o{ BudgetEstimate : "có"
+    ResearchProject ||--o{ BudgetAllocation : "được cấp"
     ResearchProject ||--o{ BudgetTransaction : "phát sinh"
     ResearchProject ||--o{ ResearchOutput : "tạo ra"
     User ||--o{ ResearchOutput : "đồng tác giả"
@@ -69,7 +71,7 @@ stateDiagram-v2
     SUBMITTED --> UNDER_REVIEW : Đưa vào hội đồng (F03)
     UNDER_REVIEW --> APPROVED : Hội đồng thông qua (F03)
     UNDER_REVIEW --> REJECTED : Hội đồng không thông qua (F03)
-    APPROVED --> IN_PROGRESS : Ký hợp đồng/giao đề tài (F04)
+    APPROVED --> IN_PROGRESS : Giao đề tài chính thức (F04)
     IN_PROGRESS --> SUSPENDED : Tạm dừng có lý do (F04)
     SUSPENDED --> IN_PROGRESS : Tiếp tục (F04)
     IN_PROGRESS --> PENDING_ACCEPTANCE : Đủ điều kiện nghiệm thu (F06)
@@ -91,7 +93,7 @@ stateDiagram-v2
 | `SUBMITTED` | `DRAFT` | Hồ sơ thiếu/sai, còn hạn nộp | F01 | Chuyên viên |
 | `SUBMITTED` | `UNDER_REVIEW` | Hết hạn nộp / chốt danh sách, đã gán hội đồng | F03 | Chuyên viên |
 | `UNDER_REVIEW` | `APPROVED` / `REJECTED` | Đủ phiếu chấm hợp lệ, đạt/không đạt ngưỡng | F03 | Chuyên viên (theo kết luận HĐ) |
-| `APPROVED` | `IN_PROGRESS` | Đã giao đề tài / ký hợp đồng | F04 | Chuyên viên |
+| `APPROVED` | `IN_PROGRESS` | Đã giao đề tài chính thức | F04 | Chuyên viên |
 | `IN_PROGRESS` | `PENDING_ACCEPTANCE` | Đã nộp báo cáo cuối + đủ sản phẩm cam kết | F06 | Chủ nhiệm |
 | `UNDER_ACCEPTANCE` | `PASSED` / `FAILED` | Hội đồng nghiệm thu kết luận | F06 | Chuyên viên |
 | `PASSED` | `COMPLETED` | Đã quyết toán kinh phí | F05/F06 | Chuyên viên |
@@ -176,8 +178,11 @@ stateDiagram-v2
 
 ### 4.5 Thực hiện đề tài (F04, F05)
 
+**ProjectAssignment** (`id`, `researchProjectId`, `assignmentType` `CONTRACT`|`DECISION`, `contractNo`, `decisionNo`, `signedAt` date, `effectiveDate` date, `startDate` date, `endDate` date, `approvedBudget` bigint, `fundingSource`, `status` `DRAFT`|`EFFECTIVE`|`CANCELLED`, `note`).
+
 **ProgressReport** (`id`, `researchProjectId`, `period` int, `dueDate` date, `submittedAt`, `content` text, `status` `PENDING_SUBMISSION`|`SUBMITTED`|`PASSED`|`REVISION_REQUESTED`, `officerComment`).
-**BudgetEstimate** (`id`, `researchProjectId`, `budgetLine`, `estimatedAmount` bigint, `period`).
+**BudgetEstimate** (`id`, `researchProjectId`, `budgetLine`, `estimatedAmount` bigint, `period`, `settlementMode` `LUMP_SUM`|`ACTUAL_EXPENSE`|`MIXED`).
+**BudgetAllocation** (`id`, `researchProjectId`, `allocationNo`, `amount` bigint, `plannedDate` date, `actualDate` date, `status` `PLANNED`|`DISBURSED`|`CANCELLED`).
 **BudgetTransaction** (`id`, `researchProjectId`, `budgetLine`, `amount` bigint, `type` `DISBURSEMENT`|`EXPENSE`, `date`, `reconciliationStatus` `UNRECONCILED`|`MATCHED`|`MISMATCHED`, `financeTransactionCode`).
 
 ### 4.6 Sản phẩm & lý lịch (F07, F08)

@@ -3,7 +3,7 @@ title: "Quản lý kinh phí — Test plan"
 spec: "./spec.md"
 owner: "PO/BA"
 status: Draft
-updated: 2026-06-01
+updated: 2026-06-05
 ---
 
 # Quản lý kinh phí — Kế hoạch kiểm thử
@@ -14,14 +14,15 @@ updated: 2026-06-01
 
 - Mặt: FE (Chủ nhiệm — xem/giải trình), BO (Chuyên viên — dự toán/giao dịch/đối soát/quyết toán), API
   (RBAC, data scoping), tích hợp tài chính (API + nhập file).
-- Dữ liệu mẫu: đề tài `IN_PROGRESS` có dự toán 3 khoản mục; tập giao dịch khớp & lệch; đề tài `PASSED`
+- Dữ liệu mẫu: đề tài `IN_PROGRESS` có `ProjectAssignment.approvedBudget`, khoán kinh phí 3 khoản mục
+  (`LUMP_SUM`/`ACTUAL_EXPENSE`/`MIXED`), đợt cấp kinh phí, tập giao dịch khớp & lệch; đề tài `PASSED`
   còn 1 giao dịch `MISMATCHED`.
 
 ## 2. Test cases
 
 | ID | Liên kết AC | Tiền điều kiện | Bước thực hiện | Kết quả mong đợi | Loại |
 |----|-------------|----------------|----------------|------------------|------|
-| TC-01 | AC-01 | Đề tài `IN_PROGRESS` | Lập dự toán khoản mục, số nguyên VND > 0 | Lưu dự toán, hiển thị tổng, audit | Happy |
+| TC-01 | AC-01 | Đề tài `IN_PROGRESS`, `approvedBudget=200 triệu` | Lập khoán kinh phí theo khoản mục, số nguyên VND > 0, có `settlementMode`, tổng ≤ 200 triệu | Lưu dự toán, hiển thị tổng, audit | Happy |
 | TC-02 | AC-02 | Đã có dự toán khoản mục X | Ghi chi khoản mục X không vượt dự toán | Giao dịch `UNRECONCILED`, cập nhật thực chi | Happy |
 | TC-03 | AC-03 | Có giao dịch `UNRECONCILED` có mã khớp | Chạy đối soát API | Khớp → `MATCHED`, lệch → `MISMATCHED`, thông báo, audit | Happy |
 | TC-04 | AC-04 | API tài chính không sẵn sàng | Nhập file CSV/Excel đối soát | Gán trạng thái như API, nghiệp vụ không khóa | Happy |
@@ -35,6 +36,10 @@ updated: 2026-06-01
 | TC-12 | AC-11 | Chủ nhiệm A | Truy cập kinh phí đề tài không thuộc A | Từ chối/ẩn | Negative |
 | TC-13 | AC-12 | Đề tài `APPROVED` hoặc `COMPLETED` | Ghi giao dịch chi mới | Chặn (BR-01) | Negative |
 | TC-14 | AC-13 | `financeTransactionCode` đã gán giao dịch khác | Đối soát/gán mã đó cho giao dịch 2 | Từ chối khớp trùng | Biên/Lỗi |
+| TC-15 | AC-14 | Đề tài `IN_PROGRESS`, `approvedBudget=200 triệu` | Lập/sửa dự toán khiến tổng = 220 triệu | Chặn, báo vượt kinh phí giao | Negative |
+| TC-16 | AC-15 | Đề tài đã có khoán kinh phí 200 triệu | Lập đợt cấp 1 và cập nhật `DISBURSED` 50 triệu | Ghi nhận đợt cấp, tạo/liên kết giao dịch `DISBURSEMENT`, audit | Happy |
+| TC-17 | AC-15 | Tổng đã `DISBURSED` 190 triệu | Cập nhật đợt cấp thêm 20 triệu sang `DISBURSED` | Chặn vì vượt tổng dự toán/khoán | Biên/Lỗi |
+| TC-18 | AC-16 | Đề tài `PASSED`, khoản `ACTUAL_EXPENSE` có giao dịch chi thiếu chứng từ | Quyết toán | Chặn/cảnh báo theo quy chế, nêu giao dịch thiếu chứng từ | Negative |
 
 ## 3. Trường hợp biên & negative
 
@@ -42,6 +47,8 @@ updated: 2026-06-01
 - Nhập file đối soát có dòng sai định dạng/thiếu cột — báo lỗi dòng, không hỏng cả mẻ.
 - Sửa giao dịch đã `MATCHED` → tự về `UNRECONCILED` (BR-10); sửa giao dịch của đề tài `COMPLETED` → bị khóa.
 - Đối soát chạy đồng thời lúc đang sửa giao dịch (race) — không tạo trạng thái sai.
+- Khoản `LUMP_SUM` thiếu sản phẩm/biên bản xác nhận theo quy chế — cần PO chốt cách chặn hay cảnh báo.
+- Hủy `BudgetAllocation` đã `DISBURSED` — cần reason và kiểm tra liên kết giao dịch giải ngân.
 
 ## 4. Checklist hồi quy
 
@@ -49,3 +56,4 @@ updated: 2026-06-01
 - Data scoping & RBAC kinh phí.
 - Thông báo chênh lệch & quyết toán (B04).
 - Tổng hợp kinh phí ở báo cáo B02 khớp số liệu F05 tại thời điểm chạy.
+- F04 đổi `ProjectAssignment.approvedBudget` qua điều chỉnh được duyệt thì F05 cập nhật trần khoán đúng, không tự sửa lịch sử chi.

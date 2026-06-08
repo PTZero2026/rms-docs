@@ -4,7 +4,7 @@ id: "F03"
 owner: "PO/BA"
 status: Draft        # Draft | Review | Approved
 version: 0.1
-updated: 2026-06-01
+updated: 2026-06-05
 ---
 
 # Xét duyệt hội đồng
@@ -41,7 +41,7 @@ viên ra kết luận theo ngưỡng cấu hình.
   - Gán bộ tiêu chí cho kỳ nhận đề xuất (`ProposalCall.reviewCriteriaSetId`) → thuộc **F02**.
   - Tiếp nhận/chốt danh sách đề xuất → thuộc **F01**.
   - Nghiệm thu kết quả (`type=ACCEPTANCE`) → thuộc **F06** (dùng chung mô hình, xem [ADR-0003](../../architecture/decisions/0003-mo-hinh-hoi-dong-dung-chung.md)).
-  - Giao đề tài/ký hợp đồng sau khi `APPROVED` → thuộc **F04**.
+  - Giao đề tài chính thức sau khi `APPROVED` → thuộc **F04**.
 
 ## 3. Luồng nghiệp vụ chính
 

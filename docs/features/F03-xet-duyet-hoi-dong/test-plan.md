@@ -4,7 +4,7 @@ spec: "./spec.md"
 owner: "PO/BA"
 status: Draft
 version: 0.1
-updated: 2026-06-01
+updated: 2026-06-05
 ---
 
 # Xét duyệt hội đồng — Kế hoạch kiểm thử
@@ -64,7 +64,7 @@ updated: 2026-06-01
 - [ ] Vòng đời `ResearchProject` (data-model §3): `SUBMITTED → UNDER_REVIEW → APPROVED/REJECTED` không cho nhảy ngoài sơ đồ.
 - [ ] F01: chốt danh sách đề tài `SUBMITTED` vẫn hoạt động; đề tài đã vào xét duyệt không bị trả lại bổ sung.
 - [ ] F02: bộ tiêu chí `reviewCriteriaSetId` của kỳ nhận đề xuất vẫn áp dụng đúng khi tạo `EvaluationRound`.
-- [ ] F04: đề tài `APPROVED` chuyển tiếp sang giao đề tài/ký hợp đồng đúng.
+- [ ] F04: đề tài `APPROVED` chuyển tiếp sang giao đề tài chính thức đúng.
 - [ ] F06: mô hình dùng chung — tạo đợt `ACCEPTANCE` không bị ảnh hưởng bởi logic F03 (lọc theo `type`).
 - [ ] B01: đổi ngưỡng/`MIN_SUBMITTED_SCORE_SHEETS` phản ánh đúng ở màn kết luận.
 - [ ] B04: thông báo vào xét duyệt và kết quả gửi đúng người nhận (chủ nhiệm).

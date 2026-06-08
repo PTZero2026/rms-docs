@@ -4,7 +4,7 @@ id: "F04"
 owner: "PO/BA"
 status: Draft        # Draft | Review | Approved
 version: 0.1
-updated: 2026-06-01
+updated: 2026-06-05
 ---
 
 # Quản lý tiến độ
@@ -14,13 +14,16 @@ updated: 2026-06-01
 
 ## 1. Bối cảnh & mục tiêu
 
-Sau khi hội đồng thông qua (F03), đề tài chuyển sang **giai đoạn thực hiện**: chuyên viên giao đề tài/ký
-hợp đồng, chủ nhiệm triển khai và **báo cáo tiến độ định kỳ**. Hiện việc theo dõi tiến độ chạy thủ công
-(báo cáo gửi qua email/giấy, chuyên viên tự nhớ lịch và nhắc hạn) nên dễ trễ hạn, khó tổng hợp đề tài nào
-đang chậm, và không truy được lịch sử duyệt/yêu cầu chỉnh sửa từng kỳ.
+Sau khi hội đồng thông qua (F03), đề tài cần được **giao chính thức** trước khi bước vào giai đoạn thực
+hiện: chuyên viên lập hồ sơ giao đề tài (quyết định/hợp đồng, thời gian thực hiện, tổng kinh phí được
+phê duyệt, văn bản đính kèm), chủ nhiệm triển khai và **báo cáo tiến độ định kỳ**. Hiện việc giao đề tài
+và theo dõi tiến độ chạy thủ công (quyết định/hợp đồng lưu rời, báo cáo gửi qua email/giấy, chuyên viên
+tự nhớ lịch và nhắc hạn) nên dễ thiếu căn cứ bàn giao, trễ hạn, khó tổng hợp đề tài nào đang chậm, và
+không truy được lịch sử duyệt/yêu cầu chỉnh sửa từng kỳ.
 
-F04 số hóa toàn bộ giai đoạn thực hiện: giao đề tài (`APPROVED → IN_PROGRESS`), lập **lịch các kỳ báo cáo**
-(`ProgressReport` theo `period`/`dueDate`), để chủ nhiệm **nộp báo cáo** (`PENDING_SUBMISSION → SUBMITTED`) kèm đính kèm, chuyên
+F04 số hóa toàn bộ giai đoạn thực hiện: **giao đề tài** bằng hồ sơ `ProjectAssignment` rồi chuyển
+`ResearchProject` `APPROVED → IN_PROGRESS`, lập **lịch các kỳ báo cáo** (`ProgressReport` theo
+`period`/`dueDate`), để chủ nhiệm **nộp báo cáo** (`PENDING_SUBMISSION → SUBMITTED`) kèm đính kèm, chuyên
 viên **duyệt báo cáo** (`SUBMITTED → PASSED`) hoặc **yêu cầu chỉnh sửa** (`→ REVISION_REQUESTED`) kèm nhận xét, hỗ
 trợ **tạm dừng/tiếp tục** đề tài có lý do (`IN_PROGRESS ↔ SUSPENDED`), và khi đủ điều kiện thì chuyển sang
 chờ nghiệm thu (`IN_PROGRESS → PENDING_ACCEPTANCE`, bàn giao F06). Nhắc hạn nộp báo cáo qua B04 theo số ngày
@@ -28,6 +31,8 @@ cấu hình ở B01.
 
 **Kết quả mong đợi:**
 
+- Mỗi đề tài chỉ vào thực hiện khi có hồ sơ giao đề tài hiệu lực: số quyết định/hợp đồng, thời gian thực
+  hiện, tổng kinh phí được phê duyệt và căn cứ đính kèm.
 - Mỗi đề tài đang thực hiện có lịch báo cáo rõ ràng; trạng thái từng kỳ (`PENDING_SUBMISSION`/`SUBMITTED`/`PASSED`/`REVISION_REQUESTED`)
   và việc trễ hạn đều được theo dõi và truy vết.
 - Chủ nhiệm được nhắc hạn trước khi đến `dueDate`; chuyên viên thấy đề tài/kỳ đang chậm hoặc quá hạn.
@@ -36,7 +41,9 @@ cấu hình ở B01.
 ## 2. Phạm vi
 
 - **Trong phạm vi:**
-  - Giao đề tài/ký hợp đồng: chuyển `ResearchProject` `APPROVED → IN_PROGRESS` (chuyên viên).
+  - **Giao đề tài:** lập/kích hoạt hồ sơ `ProjectAssignment` (quyết định/hợp đồng, ngày hiệu lực, thời
+    gian thực hiện, `approvedBudget`, căn cứ đính kèm) rồi chuyển `ResearchProject` `APPROVED → IN_PROGRESS`
+    (chuyên viên).
   - Lập & quản lý **lịch kỳ báo cáo** (`ProgressReport` theo `period`, `dueDate`) cho đề tài đang thực hiện.
   - Chủ nhiệm **nộp báo cáo tiến độ** định kỳ (`PENDING_SUBMISSION → SUBMITTED`), đính kèm tài liệu (`Attachment`).
   - Chuyên viên **duyệt** (`SUBMITTED → PASSED`) hoặc **yêu cầu chỉnh sửa** (`SUBMITTED → REVISION_REQUESTED`) kèm
@@ -48,7 +55,7 @@ cấu hình ở B01.
   - Xét duyệt đề xuất để đạt `APPROVED` → thuộc **F03**.
   - Cơ chế gửi thông báo/nhắc hạn thật (hàng đợi, kênh, mẫu) → thuộc **B04**; F04 chỉ phát sự kiện.
   - Tham số cấu hình (số ngày nhắc hạn) → thuộc **B01** (`SystemSetting`).
-  - Quản lý kinh phí/giải ngân song hành trong giai đoạn thực hiện → thuộc **F05**.
+  - **Khoán kinh phí**, dự toán chi tiết, đợt cấp kinh phí, giao dịch chi/giải ngân và đối soát → thuộc **F05**.
   - Lập hội đồng nghiệm thu, chấm điểm, kết luận `PASSED`/`FAILED` đề tài → thuộc **F06**.
 
 ## 3. Luồng nghiệp vụ chính
@@ -65,7 +72,10 @@ sequenceDiagram
     actor CN as Chủ nhiệm đề tài
     participant B04 as Thông báo (B04)
 
-    CV->>SYS: Giao đề tài / ký hợp đồng
+    CV->>SYS: Lập hồ sơ giao đề tài (ProjectAssignment)
+    SYS->>SYS: Validate quyết định/hợp đồng, thời gian, approvedBudget, căn cứ đính kèm [BR-01, BR-13]
+    CV->>SYS: Xác nhận giao đề tài
+    SYS->>SYS: ProjectAssignment: DRAFT → EFFECTIVE
     SYS->>SYS: ResearchProject: APPROVED → IN_PROGRESS [BR-01]
     CV->>SYS: Lập lịch kỳ báo cáo (period, dueDate)
     SYS->>SYS: Tạo ProgressReport trạng thái PENDING_SUBMISSION cho mỗi kỳ [BR-02]
@@ -100,7 +110,7 @@ sequenceDiagram
 
 ```mermaid
 stateDiagram-v2
-    APPROVED --> IN_PROGRESS : Giao đề tài / ký hợp đồng [BR-01]
+    APPROVED --> IN_PROGRESS : Giao đề tài hiệu lực [BR-01]
     IN_PROGRESS --> SUSPENDED : Tạm dừng có lý do [BR-06]
     SUSPENDED --> IN_PROGRESS : Tiếp tục [BR-06]
     IN_PROGRESS --> PENDING_ACCEPTANCE : Kỳ cuối PASSED + đủ sản phẩm cam kết [BR-10]
@@ -126,7 +136,7 @@ stateDiagram-v2
 
 | ID    | Quy tắc | Mô tả | Ghi chú |
 |-------|---------|-------|---------|
-| BR-01 | Giao đề tài cần `APPROVED` | Chỉ chuyển `ResearchProject` sang `IN_PROGRESS` từ trạng thái `APPROVED` (đã có kết luận hội đồng F03). Hành động "giao đề tài/ký hợp đồng" do chuyên viên thực hiện, ghi audit. | Chuyển qua domain service, không update enum trực tiếp (data-model §5) |
+| BR-01 | Giao đề tài cần `APPROVED` | Chỉ chuyển `ResearchProject` sang `IN_PROGRESS` từ trạng thái `APPROVED` (đã có kết luận hội đồng F03) và đã có `ProjectAssignment` hợp lệ chuyển `EFFECTIVE`. Hành động giao đề tài do chuyên viên thực hiện, ghi audit. | Chuyển qua domain service, không update enum trực tiếp (data-model §5) |
 | BR-02 | Chỉ lập kỳ khi đang thực hiện | Chỉ tạo/sửa lịch `ProgressReport` khi đề tài ở `IN_PROGRESS`. Mỗi kỳ tạo ra có `period` (số thứ tự) và `dueDate` (ngày đến hạn), trạng thái khởi tạo `PENDING_SUBMISSION`. | Không lập kỳ khi `APPROVED`/`SUSPENDED`/`PENDING_ACCEPTANCE` |
 | BR-03 | Chỉ chủ nhiệm nộp | Chỉ **Chủ nhiệm đề tài** được nộp/nộp lại báo cáo của đề tài mình (`PENDING_SUBMISSION → SUBMITTED`, `REVISION_REQUESTED → SUBMITTED`). Thành viên/chuyên viên không nộp thay. | RBAC + data scoping (overview §4.1) |
 | BR-04 | Không nộp khi tạm dừng | Không cho nộp/nộp lại báo cáo khi đề tài đang `SUSPENDED`. Phải tiếp tục (`→ IN_PROGRESS`) trước. | Nhắc hạn cũng tạm ngưng khi `SUSPENDED` |
@@ -138,6 +148,9 @@ stateDiagram-v2
 | BR-10 | Điều kiện chuyển nghiệm thu | `IN_PROGRESS → PENDING_ACCEPTANCE` chỉ khi **kỳ báo cáo cuối** (`period` lớn nhất) đã `PASSED` **và** đề tài đủ sản phẩm cam kết. Thiếu điều kiện → chặn, nêu rõ thiếu gì. | Kiểm tra ở domain service; bàn giao F06 |
 | BR-11 | Tách bạch quyền & phạm vi | Chuyên viên chỉ thao tác đề tài trong phạm vi đơn vị/kỳ được phân; chủ nhiệm chỉ thấy đề tài của mình; thành viên đề tài chỉ xem (không nộp/duyệt). | Data scoping (overview §4.1) |
 | BR-12 | Khóa báo cáo đã đạt | Báo cáo đã `PASSED` là chốt, không cho chủ nhiệm sửa/nộp lại; muốn thay đổi phải do chuyên viên mở lại (ngoại lệ, kèm `reason`, ghi audit). | Mở lại là ngoại lệ |
+| BR-13 | Hồ sơ giao đề tài bắt buộc đủ căn cứ | `ProjectAssignment` phải có ít nhất một căn cứ (`contractNo` hoặc `decisionNo`), `signedAt`/`effectiveDate`, `startDate`, `endDate`, `approvedBudget` > 0 VND, và file quyết định/hợp đồng đính kèm trước khi chuyển `EFFECTIVE`. | Thiếu căn cứ → giữ đề tài `APPROVED` |
+| BR-14 | Một hồ sơ giao đề tài hiệu lực | Mỗi `ResearchProject` chỉ có một `ProjectAssignment` `EFFECTIVE`. Sau khi hiệu lực không sửa trực tiếp các trường chính; mọi điều chỉnh thời gian/kinh phí/căn cứ phải có `reason`, ghi audit và tạo bản điều chỉnh/phụ lục theo chính sách sau này. | Tránh lệch lịch sử giao đề tài |
+| BR-15 | Ràng buộc thời gian & kinh phí giao đề tài | `startDate <= endDate`; nếu thời gian thực hiện hoặc `approvedBudget` khác hồ sơ đề xuất ban đầu (`durationMonths`/`requestedBudget`) thì bắt buộc nhập `note` lý do điều chỉnh. `approvedBudget` là tổng căn cứ để F05 lập khoán kinh phí. | F05 không được lập tổng dự toán vượt căn cứ này nếu chưa có điều chỉnh |
 
 ## 5. Dữ liệu
 
@@ -147,22 +160,25 @@ vòng đời `ResearchProject` ở [data-model §3](../../architecture/data-mode
 | Thực thể | Vai trò trong F04 | Trường trọng yếu |
 |---|---|---|
 | `ResearchProject` | Đối tượng đang thực hiện | `status` (`APPROVED`/`IN_PROGRESS`/`SUSPENDED`/`PENDING_ACCEPTANCE`) — đổi qua domain service |
+| `ProjectAssignment` | Hồ sơ giao đề tài | `researchProjectId`, `assignmentType` (`CONTRACT`/`DECISION`), `contractNo`, `decisionNo`, `signedAt`, `effectiveDate`, `startDate`, `endDate`, `approvedBudget`, `fundingSource`, `status` (`DRAFT`/`EFFECTIVE`/`CANCELLED`), `note` |
 | `ProgressReport` | Báo cáo từng kỳ | `researchProjectId`, `period`, `dueDate`, `submittedAt`, `content`, `status` (`PENDING_SUBMISSION`/`SUBMITTED`/`PASSED`/`REVISION_REQUESTED`), `officerComment` |
-| `Attachment` | Đính kèm báo cáo | `targetType='ProgressReport'`, `targetId`, `fileName`, `storageKey`, `fileSize`, `mimeType` |
+| `Attachment` | Đính kèm báo cáo / căn cứ giao đề tài | `targetType='ProgressReport'` hoặc `targetType='ProjectAssignment'`, `targetId`, `fileName`, `storageKey`, `fileSize`, `mimeType` |
 | `SystemSetting` | Tham số nhắc hạn | `PROGRESS.REMINDER_DAYS_BEFORE_DUE` |
 | `ResearchOutput` | Kiểm tra sản phẩm cam kết khi chuyển nghiệm thu (BR-10) | `researchProjectId` (đếm/đối chiếu cam kết) |
-| `Notification` | Nhắc hạn & thông báo trạng thái báo cáo | Sinh khi giao đề tài, nhắc hạn, có báo cáo chờ duyệt, yêu cầu chỉnh sửa, chuyển nghiệm thu (B04) |
+| `Notification` | Nhắc hạn & thông báo trạng thái báo cáo | Sinh `PROJECT_ASSIGNED` khi giao đề tài, nhắc hạn, có báo cáo chờ duyệt, yêu cầu chỉnh sửa, chuyển nghiệm thu (B04) |
 | `AuditLog` | Audit | Giao đề tài, lập kỳ, nộp, duyệt/yêu cầu sửa, tạm dừng/tiếp tục, chuyển nghiệm thu |
 
-> Ràng buộc bổ sung F04 cần: unique (`researchProjectId`, `period`) cho `ProgressReport` (BR-07); `officerComment`
+> Ràng buộc bổ sung F04 cần: unique (`researchProjectId`) cho `ProjectAssignment` `EFFECTIVE` (BR-14);
+> unique (`researchProjectId`, `period`) cho `ProgressReport` (BR-07); `officerComment`
 > bắt buộc khi `status=REVISION_REQUESTED` (BR-05); chuyển `SUSPENDED` lưu `reason` qua audit (BR-06).
 > Nếu cần thêm trường mới (vd `ProgressReport.isLate` materialized, `ResearchProject.suspensionReason`), bổ sung vào
 > data-model trong cùng PR. Hiện cờ trễ hạn (BR-09) tính dẫn xuất từ `dueDate`/`submittedAt`.
 
 ## 6. Acceptance criteria
 
-- **AC-01 (Happy — giao đề tài)** — Given một đề tài ở trạng thái `APPROVED`; When chuyên viên thực hiện
-  giao đề tài/ký hợp đồng; Then `ResearchProject` chuyển `IN_PROGRESS`, chủ nhiệm nhận thông báo, có audit.
+- **AC-01 (Happy — giao đề tài)** — Given một đề tài ở trạng thái `APPROVED`; When chuyên viên lập hồ sơ
+  `ProjectAssignment` đủ căn cứ và xác nhận giao đề tài; Then `ProjectAssignment` chuyển `EFFECTIVE`,
+  `ResearchProject` chuyển `IN_PROGRESS`, chủ nhiệm nhận thông báo, có audit.
 - **AC-02 (Happy — lập lịch kỳ báo cáo)** — Given đề tài `IN_PROGRESS`; When chuyên viên tạo các kỳ
   báo cáo với `period` và `dueDate`; Then hệ thống tạo các `ProgressReport` trạng thái `PENDING_SUBMISSION`, mỗi đề tài mỗi
   `period` chỉ một bản ghi (BR-07).
@@ -194,6 +210,12 @@ vòng đời `ResearchProject` ở [data-model §3](../../architecture/data-mode
 - **AC-13 (Negative — lập kỳ sai trạng thái / trùng kỳ)** — Given đề tài không ở `IN_PROGRESS` (vd `APPROVED`
   hoặc `SUSPENDED`), hoặc đã có báo cáo cùng `period`; When chuyên viên lập kỳ báo cáo; Then hệ thống chặn (BR-02,
   BR-07).
+- **AC-14 (Negative — giao đề tài thiếu căn cứ)** — Given đề tài `APPROVED`; When chuyên viên xác nhận giao
+  đề tài nhưng thiếu số hợp đồng/quyết định, ngày hiệu lực, khoảng thời gian, `approvedBudget` hoặc file căn cứ;
+  Then hệ thống chặn, giữ `ResearchProject=APPROVED`, nêu rõ trường còn thiếu (BR-13).
+- **AC-15 (Biên — điều chỉnh khác hồ sơ đề xuất)** — Given hồ sơ giao đề tài có `approvedBudget` hoặc thời gian
+  thực hiện khác `requestedBudget`/`durationMonths` ban đầu; When chuyên viên xác nhận mà không nhập `note`;
+  Then hệ thống chặn. Khi có `note`, cho giao đề tài và ghi lý do vào audit (BR-15).
 
 ## 7. Phụ thuộc & rủi ro
 
@@ -204,14 +226,20 @@ vòng đời `ResearchProject` ở [data-model §3](../../architecture/data-mode
   (nếu định nghĩa ở danh mục).
 - **B03** — vai trò & quyền (Chuyên viên QL KHCN, Chủ nhiệm, Thành viên đề tài); data scoping.
 - **B04** — kênh nhắc hạn báo cáo và thông báo trạng thái (giao đề tài, chờ duyệt, yêu cầu sửa, chuyển nghiệm thu).
-- **F05** — kinh phí/giải ngân chạy **song hành** trong giai đoạn thực hiện; cần thống nhất thời điểm khóa
-  khi `SUSPENDED` và khi chuyển `PENDING_ACCEPTANCE`.
+- **F05** — nhận `ProjectAssignment.approvedBudget` làm căn cứ lập **khoán kinh phí**; kinh phí/giải ngân chạy
+  **song hành** trong giai đoạn thực hiện; cần thống nhất thời điểm khóa khi `SUSPENDED` và khi chuyển
+  `PENDING_ACCEPTANCE`.
 - **F06** — tiếp nhận đề tài sau `PENDING_ACCEPTANCE`; tiêu chí "đủ sản phẩm cam kết" (BR-10) cần đồng bộ với F06.
 
 **Rủi ro & điểm cần làm rõ:**
 
 - **Định nghĩa "đủ sản phẩm cam kết" (BR-10):** lấy từ thuyết minh đề tài hay danh mục riêng? Cần PO chốt
   nguồn dữ liệu và cách đối chiếu (đếm số lượng theo loại sản phẩm?).
+- **Hồ sơ giao đề tài dùng quyết định hay hợp đồng:** có đơn vị chỉ dùng quyết định giao nhiệm vụ, có đơn vị
+  ký hợp đồng; hiện cho phép một trong hai căn cứ (`contractNo` hoặc `decisionNo`), cần PO xác nhận danh sách
+  trường bắt buộc theo quy chế.
+- **Điều chỉnh sau khi giao đề tài:** gia hạn thời gian/tăng giảm kinh phí nên tạo phụ lục riêng hay cập nhật
+  hồ sơ hiện tại có version? Hiện spec chặn sửa trực tiếp và yêu cầu audit, cần chốt model phụ lục khi vào phase sau.
 - **Ảnh hưởng của `SUSPENDED` lên lịch & nhắc hạn:** khi tạm dừng, các `dueDate` có dời tương ứng không, hay
   giữ nguyên? Cần PO xác nhận chính sách dời hạn.
 - **Cờ trễ hạn (BR-09) lưu hay tính động:** hiện giả định tính dẫn xuất; nếu cần báo cáo/thống kê nhanh có
