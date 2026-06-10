@@ -3,8 +3,8 @@ title: "Danh mục & cấu hình"
 id: "B01"
 owner: "PO/BA"
 status: Draft        # Draft | Review | Approved
-version: 0.1
-updated: 2026-06-01
+version: 0.2
+updated: 2026-06-10
 ---
 
 # Danh mục & cấu hình
@@ -33,8 +33,10 @@ Kết quả mong đợi:
 ## 2. Phạm vi
 
 - **Trong phạm vi:**
-  - Quản lý (xem, tạo, sửa, vô hiệu hóa/xóa mềm) các danh mục: **Unit** (cây phân cấp), **ResearchField**
-    (cây phân cấp), **ProductType**.
+  - Quản lý các **danh mục có entity riêng** (vì bị FK nghiệp vụ trỏ tới): **Unit** (cây), **ResearchField**
+    (cây), **ProductType**.
+  - Quản lý các **danh mục lookup chung** qua cặp bảng generic `Catalog`/`CatalogItem` — xem **§3.1 Sổ
+    danh mục (registry)**. Thêm một loại danh mục mới chỉ cần thêm một dòng `Catalog` (không cần migration/deploy).
   - Quản lý **SystemSetting** (tham số khóa–giá trị) như ngưỡng điểm xét duyệt, số ngày nhắc hạn báo cáo…
   - Quản lý **CriteriaSet** và **EvaluationCriterion** (bộ tiêu chí `PROPOSAL_REVIEW` / `ACCEPTANCE`, mỗi tiêu chí có
     `maxScore` và `weight`) dùng chung cho F03 (xét duyệt) và F06 (nghiệm thu).
@@ -44,7 +46,11 @@ Kết quả mong đợi:
   - Ghi nhật ký (audit) cho mọi thay đổi danh mục/cấu hình.
 
 - **Ngoài phạm vi:**
-  - Quản lý **người dùng, vai trò, quyền** (RBAC) — thuộc B03.
+  - Quản lý **người dùng, vai trò, quyền** (RBAC: `Role`/`Permission`) — thuộc B03. Lưu ý phân biệt với
+    danh mục lookup `USER_ROLE_LABEL` ("vị trí, vai trò người dùng" để **hiển thị/phân loại**), do B01
+    sở hữu, **không** điều khiển phân quyền.
+  - Hạ tầng gửi thông báo, `eventType`, mẫu/kênh thông báo — thuộc B04. Phân biệt với danh mục lookup
+    `NOTIFICATION_CATEGORY` ("phân loại thông báo" để gắn nhãn/lọc), do B01 sở hữu.
   - Vòng đời **kỳ nhận đề xuất** (mở/đóng kỳ, gán mẫu biểu vào kỳ) — thuộc F02; B01 chỉ cung cấp mẫu biểu
     để F02 lựa chọn.
   - Quá trình **chấm điểm** theo bộ tiêu chí — thuộc F03/F06; B01 chỉ định nghĩa bộ tiêu chí.
@@ -79,13 +85,36 @@ flowchart TD
 Luồng riêng của **CriteriaSet**: khi lưu/sửa bộ tiêu chí, hệ thống tính tổng `weight` các tiêu chí con
 và **cảnh báo** nếu khác 100% (không chặn lưu — xem BR-07).
 
+### 3.1 Sổ danh mục (catalog registry)
+
+Màn hình cấu hình danh mục có một **nav trái** liệt kê các danh mục cần cấu hình. Mỗi mục dưới đây là
+một danh mục; cột **Cơ chế lưu** cho biết nó dùng entity riêng hay cặp bảng generic `Catalog`/`CatalogItem`
+(xem [data-model §4.2](../../architecture/data-model.md)). Danh sách **mở** — "Có thể phát sinh thêm":
+thêm danh mục lookup mới = thêm một dòng `Catalog`, không cần migration/deploy (BR-12).
+
+| Danh mục (nav trái) | `Catalog.code` / entity | Cơ chế lưu | Cấu trúc | Ghi chú nghiệp vụ |
+|---|---|---|---|---|
+| Địa chỉ (Tỉnh/Huyện/Xã) | `ADMINISTRATIVE_DIVISION` | generic | TREE (3 cấp) | `extra.level` = `PROVINCE`/`DISTRICT`/`WARD`; seed dữ liệu hành chính, ít sửa tay |
+| Đơn vị công tác | `Unit` | entity riêng | TREE | Bị `User.unitId`, `ResearchProject.hostUnitId` trỏ tới |
+| Phân loại đề tài NCKH | `RESEARCH_TOPIC_CATEGORY` | generic | FLAT | Nhãn phân loại đề tài (vd cấp nhà nước/bộ/cơ sở) |
+| Chuyên ngành đề tài NCKH | `ResearchField` | entity riêng | TREE | Lĩnh vực/chuyên ngành; bị `ResearchProject.researchFieldId` trỏ tới (xem §7 điểm mở) |
+| Phân loại thông báo | `NOTIFICATION_CATEGORY` | generic | FLAT | Nhãn để lọc/nhóm tin — **khác** `eventType`/mẫu của B04 |
+| Phân loại đánh giá đề tài | `EVALUATION_CATEGORY` | generic | FLAT | Nhãn phân loại đợt/kết quả đánh giá — **khác** `CriteriaSet` |
+| Chức vụ | `POSITION` | generic | FLAT | Chức vụ cán bộ (hiển thị, lý lịch F08) |
+| Vị trí, vai trò người dùng | `USER_ROLE_LABEL` | generic | FLAT | Nhãn vị trí/vai trò hiển thị — **khác** RBAC `Role` của B03 |
+| *(loại sản phẩm)* | `ProductType` | entity riêng | FLAT | Đã có; quản lý chung cùng hub |
+
+> Quy tắc CRUD ở §3 và §4 áp dụng **đồng nhất** cho cả danh mục generic lẫn entity riêng: mã duy nhất
+> trong cùng danh mục (BR-01), chống vòng với danh mục TREE (BR-03), chặn xóa cứng khi còn tham chiếu
+> (BR-02), xóa mềm + audit (BR-04/BR-05).
+
 ## 4. Business rules
 
 | ID    | Quy tắc | Mô tả | Ghi chú |
 |-------|---------|-------|---------|
-| BR-01 | Mã danh mục duy nhất | Trường `code` của mỗi danh mục (`Unit`, `ResearchField`, `ProductType`, `CriteriaSet`…) là duy nhất, không trùng trong cùng loại danh mục. Với `SystemSetting`, `key` là duy nhất toàn cục. | Unique constraint ở CSDL; báo lỗi rõ ràng khi trùng. |
+| BR-01 | Mã danh mục duy nhất | Trường `code` của mỗi danh mục (`Unit`, `ResearchField`, `ProductType`, `CriteriaSet`…) là duy nhất, không trùng trong cùng loại danh mục. Với `CatalogItem`, `code` duy nhất theo (`tenantId`, `catalogId`) — trùng mã giữa hai danh mục khác nhau là hợp lệ. Với `SystemSetting`, `key` là duy nhất toàn cục. | Unique constraint ở CSDL; báo lỗi rõ ràng khi trùng. |
 | BR-02 | Không xóa cứng danh mục đang dùng | Danh mục đang được thực thể khác tham chiếu (FK) không được xóa cứng (`ON DELETE RESTRICT`). Hệ thống chỉ cho **xóa mềm** (`recordStatus = DELETED`) hoặc **vô hiệu hóa** (`INACTIVE`). | Bảo toàn dữ liệu lịch sử (đề tài cũ vẫn trỏ tới lĩnh vực đã ngừng dùng). |
-| BR-03 | Cây không tạo vòng | Với danh mục cây (`Unit.parentUnitId`, `ResearchField.parentFieldId`), một nút **không thể** chọn chính nó hoặc một nút con/cháu của nó làm cha. | Kiểm tra chu trình trước khi lưu. |
+| BR-03 | Cây không tạo vòng | Với danh mục cây (`Unit.parentUnitId`, `ResearchField.parentFieldId`, và `CatalogItem.parentItemId` của `Catalog` có `structure = TREE`), một nút **không thể** chọn chính nó hoặc một nút con/cháu của nó làm cha. | Kiểm tra chu trình trước khi lưu. |
 | BR-04 | Vô hiệu hóa thay vì xóa khi còn tham chiếu | Mục `INACTIVE` không xuất hiện trong danh sách chọn mới ở các feature khác, nhưng vẫn hiển thị trên các bản ghi cũ đã gắn nó. | Mục `DELETED` ẩn hoàn toàn khỏi UI chọn mới. |
 | BR-05 | Mọi thay đổi danh mục/cấu hình ghi audit | Tạo/sửa/vô hiệu/xóa mềm bất kỳ danh mục hay tham số cấu hình nào đều ghi `AuditLog` với `oldValue`/`newValue`. | Append-only; phục vụ truy vết ai-đổi-gì-khi-nào. |
 | BR-06 | Tham số cấu hình đúng kiểu | `SystemSetting.value` phải hợp lệ theo `dataType` (vd `INT`, `DECIMAL`, `BOOLEAN`, `STRING`). Lưu giá trị sai kiểu bị từ chối. | Ràng buộc tham số nghiệp vụ, vd ngưỡng điểm phải là số trong khoảng cho phép. |
@@ -93,6 +122,9 @@ và **cảnh báo** nếu khác 100% (không chặn lưu — xem BR-07).
 | BR-08 | Mỗi tiêu chí có điểm tối đa & trọng số hợp lệ | `EvaluationCriterion.maxScore > 0` và `0 ≤ weight ≤ 100`. | Đảm bảo F03/F06 tính điểm tổng hợp được. |
 | BR-09 | `ProductType.category` thuộc tập cố định | `category` chỉ nhận một trong `ARTICLE` \| `PATENT` \| `SOLUTION` \| `TRAINING` \| `OTHER`. | Enum chốt cứng ở data-model, không sửa qua UI. |
 | BR-10 | Phân quyền theo vai trò | Chỉ **Quản trị hệ thống** được CRUD toàn bộ danh mục. **Chuyên viên QL KHCN** chỉ được xem; riêng **CriteriaSet/EvaluationCriterion** được quản lý (tạo/sửa) theo phân quyền nghiệp vụ. | Chi tiết ở `ui.md` §2 Permission matrix. |
+| BR-11 | `CatalogItem` thuộc đúng cấu trúc danh mục | `parentItemId` chỉ được đặt khi `Catalog.structure = TREE`; với danh mục `FLAT`, `parentItemId` phải null. Nút cha phải cùng `catalogId` với nút con. | Tránh trộn mục giữa hai danh mục khác nhau. |
+| BR-12 | Phát sinh danh mục mới không cần deploy | Thêm một loại danh mục lookup mới = thêm một dòng `Catalog` (`code`, `name`, `structure`) rồi nhập `CatalogItem`. Không sửa schema, không deploy. Danh mục `isSystem = true` (loại lõi hệ thống) **không** được đổi `code` hay xóa qua UI. | Hỗ trợ "có thể phát sinh thêm"; bảo vệ các loại lõi mà feature khác phụ thuộc. |
+| BR-13 | Giá trị `extra` đúng schema khai báo | Nếu `Catalog.extraSchema` được khai báo, `CatalogItem.extra` phải hợp lệ theo schema đó (vd địa chỉ bắt buộc `extra.level ∈ {PROVINCE, DISTRICT, WARD}`). | Validate khi lưu; cho phép trường mở rộng đặc thù mà không cần cột riêng. |
 
 ## 5. Dữ liệu
 
@@ -101,9 +133,13 @@ Thực thể do B01 sở hữu, định nghĩa tại [`../../architecture/data-m
 mà dùng đúng các trường đã có:
 
 - **Unit** (`id`, `code`, `name`, `parentUnitId` self-FK, `recordStatus`) — cây đơn vị.
-- **ResearchField** (`id`, `code`, `name`, `parentFieldId` self-FK, `recordStatus`) — cây lĩnh vực nghiên cứu.
+- **ResearchField** (`id`, `code`, `name`, `parentFieldId` self-FK, `recordStatus`) — cây lĩnh vực/chuyên ngành nghiên cứu.
 - **ProductType** (`id`, `code`, `name`, `category` enum `ARTICLE`|`PATENT`|`SOLUTION`|`TRAINING`|`OTHER`).
 - **SystemSetting** (`key` PK, `value`, `dataType`, `description`) — tham số khóa–giá trị.
+- **Catalog** (`id`, `code`, `name`, `structure` `FLAT`|`TREE`, `isSystem`, `extraSchema` jsonb, `recordStatus`)
+  & **CatalogItem** (`id`, `catalogId`, `code`, `name`, `parentItemId` self-FK, `sortOrder`, `extra` jsonb,
+  `recordStatus`) — cặp bảng generic cho các danh mục lookup ở §3.1 (địa chỉ, chức vụ, phân loại đề tài/
+  thông báo/đánh giá, vị trí–vai trò hiển thị…).
 - **CriteriaSet** (`id`, `name`, `type` `PROPOSAL_REVIEW`|`ACCEPTANCE`) & **EvaluationCriterion**
   (`id`, `criteriaSetId`, `name`, `maxScore`, `weight`) — dùng chung cho F03/F06.
 
@@ -146,12 +182,28 @@ data-model §5.
   `CriteriaSet`, Then được phép theo phân quyền nghiệp vụ. *(quyền, BR-10)*
 - **AC-09** — Given Quản trị tạo `EvaluationCriterion` với `maxScore = 0`, When lưu, Then hệ thống từ chối và
   báo `maxScore` phải lớn hơn 0. *(lỗi – ràng buộc tiêu chí, BR-08)*
+- **AC-10** — Given Quản trị mở danh mục `POSITION` (Chức vụ) và đã có `CatalogItem` `code = "TP"`, When tạo
+  mục khác cùng danh mục với `code = "TP"`, Then hệ thống từ chối ("mã đã tồn tại trong danh mục");
+  nhưng When tạo `code = "TP"` trong danh mục `USER_ROLE_LABEL`, Then được phép. *(biên – trùng mã theo phạm vi danh mục, BR-01)*
+- **AC-11** — Given danh mục `ADMINISTRATIVE_DIVISION` có `structure = TREE` và một mục "Tỉnh" đang là cha của
+  một mục "Huyện", When Quản trị sửa mục "Tỉnh" để chọn "Huyện" (hoặc chính nó) làm `parentItemId`,
+  Then hệ thống từ chối với lỗi tạo vòng. *(lỗi – chu trình, BR-03/BR-11)*
+- **AC-12** — Given Quản trị tạo một loại danh mục mới bằng cách thêm một `Catalog` (`code = "ACADEMIC_RANK"`,
+  `structure = FLAT`), When lưu và nhập các `CatalogItem`, Then danh mục mới xuất hiện ở nav trái và dùng được
+  ngay, **không** cần migration/deploy; và một `AuditLog` được ghi. *(happy – mở rộng, BR-12)*
+- **AC-13** — Given danh mục `ADMINISTRATIVE_DIVISION` khai báo `extraSchema` yêu cầu `extra.level ∈ {PROVINCE, DISTRICT, WARD}`,
+  When Quản trị lưu một `CatalogItem` thiếu `level` hoặc sai giá trị, Then hệ thống từ chối và báo lỗi schema. *(lỗi – BR-13)*
+- **AC-14** — Given một `CatalogItem` thuộc `POSITION` đang được ít nhất một hồ sơ người dùng tham chiếu,
+  When Quản trị yêu cầu xóa mục đó, Then hệ thống **không** xóa cứng mà đề nghị vô hiệu hóa (INACTIVE),
+  và mục `INACTIVE` không còn xuất hiện ở danh sách chọn mới. *(lỗi – RESTRICT, BR-02/BR-04)*
 
 ## 7. Phụ thuộc & rủi ro
 
 - **Phụ thuộc xuôi (feature khác dùng B01):** F01/F02 dùng `ResearchField`, mẫu biểu thuyết minh và bộ tiêu chí
   xét duyệt; F03/F06 dùng `CriteriaSet`/`EvaluationCriterion`; F07 dùng `ProductType`; F04/B04 dùng
-  `SystemSetting` (số ngày nhắc hạn báo cáo). Mọi feature đều dùng `Unit`.
+  `SystemSetting` (số ngày nhắc hạn báo cáo). Mọi feature đều dùng `Unit`. Các danh mục lookup generic
+  (`POSITION`, `ADMINISTRATIVE_DIVISION`, …) được F08 (lý lịch), B03 (hồ sơ người dùng) và các form khác
+  tham chiếu qua `CatalogItem.id`.
 - **Phụ thuộc ngược:** B03 cung cấp vai trò/quyền để kiểm soát truy cập B01 (RBAC). `audit` module ghi
   `AuditLog`.
 - **Rủi ro – thay đổi cấu hình tác động vận hành:** đổi `PROPOSAL_REVIEW.PASSING_SCORE` hay số ngày nhắc hạn ảnh
@@ -162,3 +214,8 @@ data-model §5.
      phần quản lý mẫu biểu (xem §5 "đề xuất bổ sung").
   2. Ranh giới phân quyền `CriteriaSet` giữa Quản trị hệ thống và Chuyên viên QL KHCN cần PO chốt cuối
      (hiện đặt theo BR-10 và Permission matrix ở `ui.md`).
+  3. **"Chuyên ngành đề tài NCKH" vs `ResearchField`:** hiện ánh xạ "Chuyên ngành" về entity `ResearchField`
+     đã có (đang bị `ResearchProject` trỏ tới). Nếu PO xác định "Chuyên ngành" là một trục phân loại **khác**
+     với "lĩnh vực", cần tách thành danh mục generic riêng (`RESEARCH_SPECIALIZATION`) — chốt trước khi seed.
+  4. **"Đơn vị công tác" vs `Unit`:** hiện dùng chung cây `Unit`. Nếu cần phân biệt "đơn vị công tác của cán bộ"
+     với "đơn vị chủ trì đề tài", cân nhắc một danh mục generic riêng — hiện coi là một.

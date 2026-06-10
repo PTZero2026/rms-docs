@@ -15,6 +15,11 @@ updated: 2026-06-05
 - **Khóa chính:** mọi thực thể có `id` (UUID v4), không tái sử dụng.
 - **Trường audit dùng chung** (mọi thực thể nghiệp vụ, không lặp lại trong bảng trường bên dưới):
   `createdAt`, `createdBy`, `updatedAt`, `updatedBy` (FK → `User`).
+- **Actor (tác nhân):** tác nhân của một hành động không chỉ là con người — nhật ký dùng cặp
+  `actorType` (`HUMAN` | `SYSTEM` | `AI_AGENT`) + `actorId`, kèm `onBehalfOf` khi AI/hệ thống hành động thay người.
+  AI luôn là **một actor chịu RLS + RBAC** như mọi actor (không tạo "user ảo"). Xem [ADR-0010](decisions/0010-chuan-du-lieu-cho-ai-tham-gia.md).
+- **Phân loại nhạy cảm:** trường/thực thể có thể gắn nhãn `dataClassification` (`PUBLIC` | `INTERNAL` | `SENSITIVE`)
+  để kiểm soát dữ liệu nào được đưa cho AI/model ngoài. Mặc định `INTERNAL` nếu không ghi rõ ([ADR-0010](decisions/0010-chuan-du-lieu-cho-ai-tham-gia.md)).
 - **Xóa mềm:** thực thể danh mục và hồ sơ dùng `recordStatus` (`ACTIVE` | `INACTIVE` | `DELETED`)
   thay vì xóa cứng, để giữ toàn vẹn tham chiếu lịch sử.
 - **Tiền tệ:** lưu số nguyên VND (`bigint`), không dùng số thực.
@@ -169,10 +174,53 @@ Mỗi `WorkflowStep` (dù tổ chức đặt tên/`code` gì) phải gắn đún
 
 ### 4.2 Danh mục dùng chung (B01)
 
-**Unit** (`id`, `code`, `name`, `parentUnitId` self-FK, `recordStatus`) — cây đơn vị.
-**ResearchField** (`id`, `code`, `name`, `parentFieldId` self-FK, `recordStatus`) — lĩnh vực nghiên cứu.
-**ProductType** (`id`, `code`, `name`, `category` enum `ARTICLE`|`PATENT`|`SOLUTION`|`TRAINING`|`OTHER`).
+Hai nhóm: **(a) danh mục có entity riêng** vì bị FK nghiệp vụ trỏ tới, và **(b) danh mục lookup
+chung** dùng cặp bảng generic `Catalog`/`CatalogItem` (thêm loại mới chỉ cần thêm 1 dòng `Catalog`,
+không cần migration). Toàn bộ do B01 quản trị trên một màn hình hub duy nhất — xem B01 §5.
+
+**(a) Danh mục có entity riêng (bị FK trỏ tới):**
+
+**Unit** (`id`, `code`, `name`, `parentUnitId` self-FK, `recordStatus`) — cây đơn vị; `User.unitId`,
+`ResearchProject.hostUnitId` trỏ tới.
+**ResearchField** (`id`, `code`, `name`, `parentFieldId` self-FK, `recordStatus`) — lĩnh vực/chuyên
+ngành nghiên cứu; `ResearchProject.researchFieldId`, `ProposalCall.researchFieldIds` trỏ tới.
+**ProductType** (`id`, `code`, `name`, `category` enum `ARTICLE`|`PATENT`|`SOLUTION`|`TRAINING`|`OTHER`);
+`ResearchOutput.productTypeId` trỏ tới.
 **SystemSetting** (`key` PK, `value`, `dataType`, `description`) — tham số chạy (ngưỡng điểm, hạn nhắc…).
+
+**(b) Danh mục lookup chung (generic):**
+
+**Catalog** — định nghĩa **loại** danh mục.
+
+| Trường | Kiểu | Ràng buộc | Mô tả |
+|---|---|---|---|
+| `id` | uuid | PK | |
+| `code` | string | unique theo tenant | Mã loại danh mục, vd `POSITION`, `NOTIFICATION_CATEGORY` |
+| `name` | string | not null | Tên hiển thị, vd "Chức vụ" |
+| `structure` | enum | `FLAT` \| `TREE` | `TREE` cho phép `CatalogItem.parentItemId` (vd địa chỉ Tỉnh/Huyện/Xã) |
+| `isSystem` | bool | default false | Loại lõi hệ thống — không cho xóa/đổi `code` qua UI |
+| `extraSchema` | jsonb | nullable | (tùy chọn) mô tả các trường mở rộng hợp lệ cho `CatalogItem.extra` |
+| `description` | text | | |
+| `recordStatus` | enum | `ACTIVE`\|`INACTIVE`\|`DELETED` | Xóa mềm theo §1 |
+
+**CatalogItem** — **mục** trong một danh mục.
+
+| Trường | Kiểu | Ràng buộc | Mô tả |
+|---|---|---|---|
+| `id` | uuid | PK | |
+| `catalogId` | uuid | FK → Catalog, not null | Thuộc loại danh mục nào |
+| `code` | string | unique theo (`tenantId`,`catalogId`) | Mã mục, duy nhất trong cùng danh mục |
+| `name` | string | not null | Tên hiển thị |
+| `parentItemId` | uuid | self-FK, nullable | Chỉ dùng khi `Catalog.structure = TREE`; chống chu trình |
+| `sortOrder` | int | default 0 | Thứ tự hiển thị trong danh mục |
+| `extra` | jsonb | nullable | Trường đặc thù theo loại, vd `{ "level": "PROVINCE" }` cho địa chỉ |
+| `recordStatus` | enum | `ACTIVE`\|`INACTIVE`\|`DELETED` | Xóa mềm theo §1 |
+
+> Danh mục lookup khởi tạo (có thể phát sinh thêm): `ADMINISTRATIVE_DIVISION` (Tỉnh/Huyện/Xã, TREE),
+> `RESEARCH_TOPIC_CATEGORY` (phân loại đề tài NCKH), `NOTIFICATION_CATEGORY` (phân loại thông báo —
+> **khác** `eventType` của B04), `EVALUATION_CATEGORY` (phân loại đánh giá — **khác** `CriteriaSet`),
+> `POSITION` (chức vụ), `USER_ROLE_LABEL` (vị trí/vai trò hiển thị — **khác** RBAC `Role` của B03).
+> Tham chiếu từ thực thể khác dùng `CatalogItem.id` (FK `ON DELETE RESTRICT`, xem §5).
 
 ### 4.3 Kỳ nhận đề xuất & đề tài (F02, F01)
 
@@ -238,7 +286,7 @@ Mỗi `WorkflowStep` (dù tổ chức đặt tên/`code` gì) phải gắn đún
 ### 4.7 Hạ tầng dùng chung (B04, audit)
 
 **Notification** (`id`, `recipientId`, `eventType`, `title`, `content`, `channel` `IN_APP`|`EMAIL`|`SMS`, `status` `PENDING_SEND`|`SUBMITTED`|`READ`|`ERROR`, `link`).
-**AuditLog** (`id`, `actorId`, `action`, `targetType`, `targetId`, `oldValue` jsonb, `newValue` jsonb, `occurredAt`, `ipAddress`) — append-only, xem [ADR-0002](decisions/0002-kien-truc-hai-mat-mot-backend.md).
+**AuditLog** (`id`, `actorType` `HUMAN`|`SYSTEM`|`AI_AGENT`, `actorId`, `onBehalfOf` nullable, `action`, `targetType`, `targetId`, `oldValue` jsonb, `newValue` jsonb, `occurredAt`, `ipAddress`) — append-only, xem [ADR-0002](decisions/0002-kien-truc-hai-mat-mot-backend.md). Actor mở rộng cho AI/hệ thống theo [ADR-0010](decisions/0010-chuan-du-lieu-cho-ai-tham-gia.md).
 
 ### 4.8 Đa tổ chức & workflow engine ([ADR-0007](decisions/0007-workflow-engine-dong-per-tenant.md), [ADR-0008](decisions/0008-keycloak-idp-dang-nhap-email-otp.md))
 
@@ -251,10 +299,53 @@ multi-tenant; mọi thực thể nghiệp vụ FK `tenantId` về đây (RLS the
 **WorkflowStep** (`id`, `templateId`, `code`, `name`, `statusSemantic` enum §3.1, `isInitial`, `isFinal`, `order`) — một trạng thái; `code` do tổ chức đặt, `statusSemantic` để chuẩn hoá.
 **WorkflowTransition** (`id`, `templateId`, `fromStepId` nullable, `toStepId`, `code`, `allowedRoles` (role RMS), `requiresComment`, `guards` string[], `effects` string[]) — `guards`/`effects` chọn từ catalog cố định trong code.
 **WorkflowInstance** (`id`, `templateId`, `entityType`, `entityId`, `currentStepId`) — vòng đời của một đề tài; unique theo (`entityId`,`entityType`).
-**WorkflowHistory** (`id`, `instanceId`, `fromStepId`, `toStepId`, `transitionId`, `triggeredBy`, `comment`, `metadata` jsonb, `createdAt`) — append-only, song hành `AuditLog`.
+**WorkflowHistory** (`id`, `instanceId`, `fromStepId`, `toStepId`, `transitionId`, `triggeredBy`, `triggeredByActorType` `HUMAN`|`SYSTEM`|`AI_AGENT`, `comment`, `metadata` jsonb, `createdAt`) — append-only, song hành `AuditLog`. Actor mở rộng theo [ADR-0010](decisions/0010-chuan-du-lieu-cho-ai-tham-gia.md).
+
+### 4.9 Chuẩn dữ liệu cho AI & sự kiện ([ADR-0010](decisions/0010-chuan-du-lieu-cho-ai-tham-gia.md))
+
+> Bake sẵn để AI tham gia về sau **không cần migration phá vỡ**. **Ranh giới vàng:** AI không tự ghi sự thật
+> authoritative (đổi `status`, ghi `ScoreSheet`…); mọi tác động đi qua *đề xuất → con người duyệt → domain service
+> dùng chung* ([ADR-0007](decisions/0007-workflow-engine-dong-per-tenant.md)).
+
+**AiSuggestion** — đề xuất của AI, tách khỏi sự thật authoritative; có cổng duyệt của con người.
+
+| Trường | Kiểu | Ràng buộc | Mô tả |
+|---|---|---|---|
+| `id` | uuid | PK | |
+| `targetType` / `targetId` | string / uuid | not null | Thực thể được đề xuất (vd `ResearchProject`) |
+| `suggestionType` | string | not null | Loại đề xuất (vd `CLASSIFY_FIELD`, `PRESCORE`, `SUGGEST_TRANSITION`) |
+| `payload` | jsonb | not null | Nội dung đề xuất (typed theo `suggestionType`) |
+| `status` | enum | `PENDING`\|`ACCEPTED`\|`REJECTED` | Khi `ACCEPTED` mới gọi domain service tạo tác động thật |
+| `decidedBy` | uuid | FK → User, nullable | Người duyệt/từ chối |
+| `decidedAt` | timestamptz | nullable | |
+| `modelId` | string | not null | Provenance: model sinh đề xuất |
+| `promptVersion` | string | not null | Provenance: phiên bản prompt |
+| `inputHash` | string | | Provenance: hash/snapshot input để tái lập & eval |
+| `confidence` | float | | Độ tự tin (0–1) |
+| `sources` | jsonb | | Dẫn nguồn/citations |
+
+> Append-only về mặt nghiệp vụ: không sửa `payload` sau khi tạo; vòng đời chỉ đi qua `status`/`decided*`.
+
+**DomainEvent** — sự kiện nghiệp vụ chuẩn hoá; ghi qua **outbox trong cùng transaction lõi** (cổng để AI *quan sát*
+hệ thống và là nền cho lộ trình Event Stream; tải vận chuyển in-process→broker thuộc ADR riêng).
+
+| Trường | Kiểu | Ràng buộc | Mô tả |
+|---|---|---|---|
+| `id` | uuid | PK | Khoá idempotency cho consumer |
+| `eventType` | string | not null | Đặt theo `statusSemantic` (§3.1) → ổn định xuyên tổ chức |
+| `schemaVersion` | int | not null | Phiên bản `payload` |
+| `payload` | jsonb | not null | Typed trong `packages/domain-types` |
+| `actorType` / `actorId` / `onBehalfOf` | — | | Actor phát sự kiện (như §1) |
+| `aggregateType` / `aggregateId` | string / uuid | not null | Thực thể gốc (vd `ResearchProject`) |
+| `occurredAt` | timestamptz | not null | |
+| `dispatchedAt` | timestamptz | nullable | Outbox: thời điểm đã giao consumer (null = chưa) |
+
+> Append-only. `WorkflowHistory` (§4.8) vẫn là nhật ký chuyển bước; `DomainEvent` là lớp sự kiện chuẩn hoá để tiêu thụ.
 
 ## 5. Ghi chú toàn vẹn
 
 - Mọi FK trỏ tới danh mục dùng `ON DELETE RESTRICT` — danh mục đang được tham chiếu không xóa cứng được.
 - `ResearchProject.status` chỉ được đổi qua domain service, không update trực tiếp từ API CRUD.
 - Bảng nối nhiều-nhiều (`User_Role`, `Role_Permission`, `CommitteeMember`) có unique constraint trên cặp khóa để tránh trùng.
+- `AiSuggestion` **không** trực tiếp đổi trạng thái nghiệp vụ: chỉ khi `status = ACCEPTED` mới gọi domain service dùng chung để tạo tác động thật (giữ luật bất biến [AGENTS.md §4.1/§4.2](../../AGENTS.md)).
+- `AuditLog`, `WorkflowHistory`, `DomainEvent` append-only; AI là actor chịu RLS (`app.current_tenant`) + RBAC như mọi actor ([ADR-0010](decisions/0010-chuan-du-lieu-cho-ai-tham-gia.md)).
