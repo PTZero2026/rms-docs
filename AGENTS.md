@@ -13,11 +13,10 @@ khi sinh/sửa code phải bám `docs/features/<feature>/spec.md` (acceptance cr
 | Thư mục | Nội dung | Agent dùng để |
 |---|---|---|
 | `docs/` | product, architecture (+ADR), features, guides, templates | Truy hồi spec, AC, kiến trúc, quyết định |
-| `apps/fe-portal` | SPA nhà khoa học | Code giao diện người dùng cuối |
-| `apps/bo-admin` | SPA quản trị/hội đồng | Code giao diện back-office |
+| `apps/web` | SPA hợp nhất, điều hướng theo phân quyền | Code toàn bộ giao diện (mọi vai trò) |
 | `apps/backend` | Modular monolith, `src/modules/<module>` | Domain logic; 1 module ↔ 1 feature |
 | `packages/api-contracts` | OpenAPI + type sinh ra | Hợp đồng API dùng chung FE/BE |
-| `packages/ui` | Design system dùng chung | Component FE + BO |
+| `packages/ui` | Design system dùng chung | Component giao diện dùng chung |
 | `packages/domain-types` | Enum/model dùng chung (vd trạng thái `ResearchProject`) | Type chia sẻ |
 | `packages/config` | eslint/tsconfig/prettier | Cấu hình dùng chung |
 | `ai/context` | Spec dạng máy-đọc (trích từ `docs/features`) | Truy hồi AC có cấu trúc |
@@ -32,7 +31,7 @@ khi sinh/sửa code phải bám `docs/features/<feature>/spec.md` (acceptance cr
 Nguồn: [overview.md §3](docs/architecture/overview.md).
 
 ## 4. Luật bất biến (đọc trước khi sửa)
-1. **Phân quyền ở backend** cho mọi API; FE/BO chỉ ẩn/hiện theo quyền, không phải lớp bảo vệ. ([ADR-0005](docs/architecture/decisions/0005-sso-va-rbac.md))
+1. **Một web app, phân quyền ở backend** cho mọi API; UI chỉ ẩn/hiện theo quyền, không phải lớp bảo vệ. ([ADR-0005](docs/architecture/decisions/0005-sso-va-rbac.md), [ADR-0009](docs/architecture/decisions/0009-hop-nhat-mot-web-phan-quyen.md))
 2. **Vòng đời `ResearchProject`** chuyển trạng thái qua domain service dùng chung — KHÔNG tự update enum ở màn hình.
 3. **Hợp đồng API**: sửa ở `packages/api-contracts` rồi sinh type; không tự gõ type lệch hai phía.
 4. **Audit**: mọi hành động đổi trạng thái nghiệp vụ ghi `AuditLog` (append-only).

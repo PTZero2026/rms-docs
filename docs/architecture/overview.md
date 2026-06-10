@@ -18,34 +18,32 @@ flowchart TB
     CV["🧑‍💼 Chuyên viên QL KHCN<br/>Hội đồng · Admin"]
 
     subgraph RMS["Hệ thống RMS"]
-        FE["Portal người dùng (FE)"]
-        BO["BackOffice (BO)"]
+        WEB["Web app (SPA)<br/>điều hướng theo phân quyền"]
         BE["Backend service + CSDL"]
-        FE --> BE
-        BO --> BE
+        WEB --> BE
     end
 
     SSO["SSO nội bộ<br/>(OIDC/SAML)"]
     MAIL["Email/SMS gateway"]
     FIN["Hệ thống tài chính"]
 
-    NKH --> FE
-    CV --> BO
+    NKH --> WEB
+    CV --> WEB
     BE -->|xác thực| SSO
     BE -->|gửi thông báo| MAIL
     BE -->|đối soát kinh phí| FIN
 ```
 
-Hệ thống phục vụ hai nhóm người dùng qua **hai cổng giao diện riêng** nhưng **dùng chung một backend
-và một CSDL** — tránh lệch dữ liệu giữa hai mặt (xem [ADR-0002](decisions/0002-kien-truc-hai-mat-mot-backend.md)).
+Mọi nhóm người dùng truy cập **một web app duy nhất**; chức năng hiển thị **theo phân quyền (RBAC)**,
+dùng chung một backend và một CSDL (xem [ADR-0009](decisions/0009-hop-nhat-mot-web-phan-quyen.md),
+supersede [ADR-0002](decisions/0002-kien-truc-hai-mat-mot-backend.md)).
 
 ## 2. Container (C4 - mức 2)
 
 ```mermaid
 flowchart LR
     subgraph Client
-        FE["FE Portal<br/>SPA web"]
-        BO["BO Admin<br/>SPA web"]
+        WEB["Web app<br/>SPA, điều hướng theo quyền"]
     end
     GW["API Gateway / BFF<br/>REST + JSON"]
     APP["Backend<br/>(modular monolith)"]
@@ -53,8 +51,7 @@ flowchart LR
     OBJ[("Object storage<br/>file đính kèm")]
     JOB["Job scheduler<br/>(nhắc hạn, đối soát)"]
 
-    FE --> GW
-    BO --> GW
+    WEB --> GW
     GW --> APP
     APP --> DB
     APP --> OBJ
@@ -66,8 +63,7 @@ flowchart LR
 
 | Thành phần | Trách nhiệm | Stack khuyến nghị |
 |---|---|---|
-| FE Portal | Giao diện nhà khoa học | SPA (React/Vue), gọi REST |
-| BO Admin | Giao diện quản trị/hội đồng | SPA cùng nền tảng FE, khác bộ route & quyền |
+| Web app | Giao diện cho mọi vai trò; route & menu render theo `Permission` | SPA (React/Vue), gọi REST |
 | API Gateway/BFF | Xác thực token, định tuyến, rate-limit | Reverse proxy + lớp BFF mỏng |
 | Backend | Toàn bộ domain logic, vòng đời đề tài | **Modular monolith** chia module theo feature (F01–F08, B01–B04) |
 | CSDL | Lưu trữ giao dịch | PostgreSQL (RDBMS, transaction, jsonb) |
@@ -96,7 +92,7 @@ qua interface rõ ràng. Thực thể dùng chung định nghĩa ở `data-model
 - **Xác thực:** SSO nội bộ qua OIDC/SAML (xem `integrations.md`); backend cấp access token nội bộ
   (JWT) sau khi xác thực. Tài khoản nội bộ chỉ dùng cho trường hợp không có trên SSO.
 - **Phân quyền:** RBAC — `Permission` (nguyên tử `MODULE.ACTION`) gom vào `Role`, gán cho `User`.
-  Kiểm tra quyền ở backend cho mọi API; FE/BO chỉ ẩn/hiện theo quyền, **không** là lớp bảo vệ.
+  Kiểm tra quyền ở backend cho mọi API; web app chỉ ẩn/hiện theo quyền, **không** là lớp bảo vệ.
 - Phạm vi dữ liệu (data scoping): chủ nhiệm chỉ thấy đề tài của mình; chuyên viên thấy theo đơn vị/kỳ.
   Xem [ADR-0005](decisions/0005-sso-va-rbac.md).
 

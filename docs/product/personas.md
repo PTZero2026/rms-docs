@@ -68,4 +68,4 @@ updated: 2026-06-01
 ---
 
 > Quyền cụ thể của từng persona trong mỗi feature được định nghĩa ở **Permission matrix** trong
-> `features/<feature>/backoffice.md`. Trang này chỉ mô tả người dùng ở mức sản phẩm.
+> `features/<feature>/ui.md`. Trang này chỉ mô tả người dùng ở mức sản phẩm.

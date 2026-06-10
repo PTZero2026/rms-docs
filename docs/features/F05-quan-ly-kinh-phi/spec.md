@@ -10,7 +10,7 @@ updated: 2026-06-05
 # Quản lý kinh phí
 
 > Nguồn sự thật về **nghiệp vụ** của feature. Mọi luật, dữ liệu, tiêu chí nghiệm thu
-> nằm ở đây. `frontend.md` và `backoffice.md` chỉ mô tả giao diện và trỏ ngược về file này.
+> nằm ở đây. `ui.md` mô tả giao diện và trỏ ngược về file này.
 
 ## 1. Bối cảnh & mục tiêu
 

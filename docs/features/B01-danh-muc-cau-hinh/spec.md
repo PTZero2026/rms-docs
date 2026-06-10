@@ -10,7 +10,7 @@ updated: 2026-06-01
 # Danh mục & cấu hình
 
 > Nguồn sự thật về **nghiệp vụ** của feature. Mọi luật, dữ liệu, tiêu chí nghiệm thu
-> nằm ở đây. `backoffice.md` chỉ mô tả giao diện và trỏ ngược về file này.
+> nằm ở đây. `ui.md` mô tả giao diện và trỏ ngược về file này.
 
 ## 1. Bối cảnh & mục tiêu
 
@@ -92,7 +92,7 @@ và **cảnh báo** nếu khác 100% (không chặn lưu — xem BR-07).
 | BR-07 | Tổng trọng số bộ tiêu chí nên bằng 100% | Tổng `weight` các `EvaluationCriterion` trong một `CriteriaSet` **nên** bằng 100%. Nếu khác, hệ thống **cảnh báo** nhưng vẫn cho lưu. | Không chặn cứng để hỗ trợ bộ tiêu chí đang soạn dở. |
 | BR-08 | Mỗi tiêu chí có điểm tối đa & trọng số hợp lệ | `EvaluationCriterion.maxScore > 0` và `0 ≤ weight ≤ 100`. | Đảm bảo F03/F06 tính điểm tổng hợp được. |
 | BR-09 | `ProductType.category` thuộc tập cố định | `category` chỉ nhận một trong `ARTICLE` \| `PATENT` \| `SOLUTION` \| `TRAINING` \| `OTHER`. | Enum chốt cứng ở data-model, không sửa qua UI. |
-| BR-10 | Phân quyền theo vai trò | Chỉ **Quản trị hệ thống** được CRUD toàn bộ danh mục. **Chuyên viên QL KHCN** chỉ được xem; riêng **CriteriaSet/EvaluationCriterion** được quản lý (tạo/sửa) theo phân quyền nghiệp vụ. | Chi tiết ở `backoffice.md` §2 Permission matrix. |
+| BR-10 | Phân quyền theo vai trò | Chỉ **Quản trị hệ thống** được CRUD toàn bộ danh mục. **Chuyên viên QL KHCN** chỉ được xem; riêng **CriteriaSet/EvaluationCriterion** được quản lý (tạo/sửa) theo phân quyền nghiệp vụ. | Chi tiết ở `ui.md` §2 Permission matrix. |
 
 ## 5. Dữ liệu
 
@@ -161,4 +161,4 @@ data-model §5.
   1. Thực thể `BieuMauThuyetMinh` chưa có trong data-model — cần ADR/PR bổ sung trước khi triển khai
      phần quản lý mẫu biểu (xem §5 "đề xuất bổ sung").
   2. Ranh giới phân quyền `CriteriaSet` giữa Quản trị hệ thống và Chuyên viên QL KHCN cần PO chốt cuối
-     (hiện đặt theo BR-10 và Permission matrix ở `backoffice.md`).
+     (hiện đặt theo BR-10 và Permission matrix ở `ui.md`).

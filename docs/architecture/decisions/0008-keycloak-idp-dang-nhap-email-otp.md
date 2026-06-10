@@ -24,8 +24,11 @@ Giai đoạn đầu chỉ cần **một luồng đăng nhập đơn giản**: ng
   Authentication Flow + Authenticator SPI (plugin Email-OTP)**, dùng **SMTP cấu hình theo từng realm**.
 - **Keycloak = authN; RMS = authZ.** Token chỉ mang danh tính (`sub`, `email`); **quyền lấy từ RBAC của RMS**
   ([ADR-0005](0005-sso-va-rbac.md)), không đọc role từ claim Keycloak.
+- **Auto-provision khi đăng nhập lần đầu (giai đoạn đầu):** email mới + verify OTP thành công lần đầu → RMS
+  **tự tạo tài khoản** và gán **role thấp nhất `USER`**. Admin **B03 nâng quyền sau** (USER → role cao hơn);
+  không cần tạo tài khoản trước.
 - **Phạm vi giai đoạn đầu (cố ý loại bỏ):**
-  - ❌ Tự đăng ký (self-registration) — tài khoản do **admin B03** tạo qua **Admin REST API**.
+  - ❌ Form tự đăng ký (self-registration) riêng — không có; danh tính khởi tạo ngầm qua chính luồng email-OTP.
   - ❌ Quên mật khẩu — không áp dụng vì passwordless (không có mật khẩu).
   - ❌ Social login / liên kết IdP ngoài, MFA bổ sung — để sau.
 
@@ -42,14 +45,23 @@ Giai đoạn đầu chỉ cần **một luồng đăng nhập đơn giản**: ng
 **Được:**
 - Không lưu mật khẩu trong RMS lẫn Keycloak (passwordless) → giảm bề mặt rủi ro; bỏ hẳn flow quên mật khẩu.
 - Cô lập tổ chức ở mức realm; onboard tổ chức mới = tạo realm + cấu hình SMTP qua Admin API.
+- Onboard người dùng không cần admin tạo trước: tự đăng nhập là có ngay tài khoản `USER` chờ nâng quyền.
 
 **Phải làm tiếp / lưu ý:**
 - **Sửa khi lift:** bỏ đoạn decode role từ JWT của code cũ; backend chỉ map `sub`→user RMS rồi check quyền RMS
   (phân quyền thực thi ở backend — [AGENTS.md §4.1](../../../AGENTS.md)).
-- DB RMS giữ **bản sao profile** khoá theo `keycloak_id` (= `sub`); đồng bộ từ Keycloak qua webhook/event hoặc
-  upsert khi B03 tạo user.
+- DB RMS giữ **bản sao profile** khoá theo `keycloak_id` (= `sub`); upsert khi đăng nhập lần đầu (auto-provision),
+  đồng bộ tiếp từ Keycloak qua webhook/event.
+- **Auto-provision:** khi map `sub`→user mà chưa tồn tại → tạo user RMS với role `USER`. Quyền `USER` thấp nhất:
+  - Chỉ **xem thông tin đề tài đã publish**, và **không phải full đề tài** mà chỉ các trường do **admin quy định
+    được công khai** (ví dụ Abstract / tóm tắt …).
+  - Chưa có quyền thao tác nghiệp vụ nào khác cho tới khi B03 nâng quyền.
+  - (Chi tiết danh sách trường công khai + quyền đầy đủ đưa vào spec B03 / B01 cấu hình.)
+- **User enumeration:** auto-provision đồng nghĩa **mọi email gửi được OTP đều đăng nhập được** → mất cơ chế "không
+  thực gửi cho email lạ" của bản trước. Chấp nhận ở giai đoạn đầu; bù bằng **throttling theo email/IP** và việc
+  USER chưa có quyền gì đáng kể cho tới khi B03 nâng. Cân nhắc allowlist domain nếu cần siết sau.
 - **Vận hành đa realm:** mỗi realm cần cấu hình **SMTP riêng** + cài plugin Email-OTP; cần quy trình quản lý
   template mail OTP nhất quán giữa các realm.
-- **Chống user enumeration:** email chưa tồn tại vẫn trả "đã gửi mã" (không thực gửi), không tiết lộ email nào có trong hệ thống.
-- **Cấp tài khoản:** B03 tạo user qua Admin REST API (không có self-registration); cần màn hình/endpoint quản trị tương ứng.
+- **Quản trị:** B03 cần màn hình/endpoint **nâng/hạ quyền** user (thay cho luồng tạo tài khoản); vẫn giữ Admin REST
+  API để tạo/khoá user thủ công khi cần.
 - OTP: chốt thời hạn hiệu lực + số lần thử + throttling (chống brute-force) — đưa vào spec B03.

@@ -1,11 +1,16 @@
 ---
 title: "ADR-0002: Kiến trúc hai mặt giao diện trên một backend (modular monolith)"
-status: Accepted
+status: Superseded
+superseded_by: "0009-hop-nhat-mot-web-phan-quyen"
 date: 2026-06-01
 deciders: "SA, Tech lead, PO"
 ---
 
 # ADR-0002: Kiến trúc hai mặt giao diện trên một backend (modular monolith)
+
+> ⚠️ **Superseded bởi [ADR-0009](0009-hop-nhat-mot-web-phan-quyen.md)** (2026-06-09) ở phần *tầng
+> giao diện*: hai SPA (FE + BO) đã hợp nhất thành **một web app điều hướng theo phân quyền**.
+> Phần "một backend modular monolith, một CSDL" dưới đây **vẫn còn hiệu lực**.
 
 ## Bối cảnh
 RMS phục vụ hai nhóm rất khác nhau: nhà khoa học (Portal FE) và quản trị/hội đồng (BackOffice BO).

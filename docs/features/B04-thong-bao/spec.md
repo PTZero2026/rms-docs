@@ -10,7 +10,7 @@ updated: 2026-06-05
 # Thông báo
 
 > Nguồn sự thật về **nghiệp vụ** của feature. Mọi luật, dữ liệu, tiêu chí nghiệm thu
-> nằm ở đây. `frontend.md` và `backoffice.md` chỉ mô tả giao diện và trỏ ngược về file này.
+> nằm ở đây. `ui.md` mô tả giao diện và trỏ ngược về file này.
 
 ## 1. Bối cảnh & mục tiêu
 
@@ -80,7 +80,7 @@ flowchart TD
 ### Bảng sự kiện ↔ kênh ↔ người nhận
 
 `eventType` là enum chuỗi; tên gợi ý dưới đây dùng nhất quán trong toàn hệ thống. Cột "Kênh mặc định"
-là cấu hình khởi tạo, Quản trị có thể bật/tắt ở BO (xem `backoffice.md`). "Ưu tiên" = cao thì mới mở SMS.
+là cấu hình khởi tạo, Quản trị có thể bật/tắt ở BO (xem `ui.md`). "Ưu tiên" = cao thì mới mở SMS.
 
 | eventType | Sự kiện (feature) | Người nhận | Kênh mặc định | Ưu tiên |
 |---|---|---|---|---|
@@ -112,7 +112,7 @@ là cấu hình khởi tạo, Quản trị có thể bật/tắt ở BO (xem `ba
 | BR-07 | Nhắc hạn do job định kỳ | `PROGRESS_REPORT_DUE_SOON` / `PROGRESS_REPORT_OVERDUE` do job scheduler chạy định kỳ phát sinh, dựa trên số ngày cấu hình ở B01 (`SystemSetting`, ví dụ khóa `progressReport.reminderDaysBeforeDue`). Mỗi (đề tài × kỳ × mốc) chỉ nhắc **một lần** để tránh trùng. | Idempotent theo khóa `(eventType, targetId, reminderMilestone)`. |
 | BR-08 | Thông báo bắt buộc không tắt được | Một số `eventType` đánh dấu **bắt buộc** (ví dụ `PROPOSAL_REVIEW_APPROVED`, `ACCEPTANCE_RESULT`, `PROGRESS_REPORT_OVERDUE`): người dùng không được tắt EMAIL cho nhóm này; SMS vẫn theo BR-03. | Tránh người dùng tự bỏ lỡ kết quả/hạn quan trọng. |
 | BR-09 | Đánh dấu đã đọc chỉ cho IN_APP | `READ` chỉ áp dụng cho bản ghi `IN_APP` khi người nhận mở thông báo. EMAIL/SMS không có trạng thái đọc (dừng ở `SUBMITTED`/`ERROR`). | "Đánh dấu tất cả đã đọc" chỉ tác động bản ghi IN_APP của chính người dùng. |
-| BR-10 | Người nhận chỉ thấy thông báo của mình | Trung tâm thông báo (FE) chỉ trả về `Notification` có `recipientId = người đang đăng nhập`. Nhật ký gửi (BO) chỉ chuyên viên/quản trị có quyền mới xem, theo phạm vi dữ liệu (data scoping). | Xem Permission matrix ở `backoffice.md`. |
+| BR-10 | Người nhận chỉ thấy thông báo của mình | Trung tâm thông báo (FE) chỉ trả về `Notification` có `recipientId = người đang đăng nhập`. Nhật ký gửi (BO) chỉ chuyên viên/quản trị có quyền mới xem, theo phạm vi dữ liệu (data scoping). | Xem Permission matrix ở `ui.md`. |
 
 ## 5. Dữ liệu
 

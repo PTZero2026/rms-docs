@@ -10,7 +10,7 @@ updated: 2026-06-01
 # Đề xuất đề tài
 
 > Nguồn sự thật về **nghiệp vụ** của feature. Mọi luật, dữ liệu, tiêu chí nghiệm thu
-> nằm ở đây. `frontend.md` và `backoffice.md` chỉ mô tả giao diện và trỏ ngược về file này.
+> nằm ở đây. `ui.md` mô tả giao diện và trỏ ngược về file này.
 
 ## 1. Bối cảnh & mục tiêu
 
@@ -88,7 +88,7 @@ Diễn giải các bước:
 | BR-02 | Đủ trường bắt buộc của biểu mẫu | Phải đủ trường bắt buộc của `ResearchProject` (`name`, `researchFieldId`, `durationMonths`, `requestedBudget`) và mọi trường bắt buộc trong `proposalDocument` theo `proposalTemplateId` của kỳ mới được nộp. | Validate tại backend; FE chỉ phản ánh sớm. |
 | BR-03 | Lĩnh vực hợp lệ với kỳ | `ResearchProject.researchFieldId` phải thuộc `ProposalCall.researchFieldIds` của kỳ nộp. | Nếu kỳ không giới hạn lĩnh vực thì bỏ qua. |
 | BR-04 | Mỗi đề xuất một chủ nhiệm | Một `ResearchProject` có đúng một `principalInvestigatorId` và đúng một `ProjectMember` vai trò `PRINCIPAL_INVESTIGATOR`. | Chủ nhiệm là người tạo đề xuất. |
-| BR-05 | Chủ nhiệm chỉ sửa khi `DRAFT` | Chủ nhiệm/thành viên chỉ chỉnh sửa hồ sơ (thuyết minh, thành viên, dự toán, đính kèm) khi `ResearchProject.status = DRAFT`. Sau `SUBMITTED` hồ sơ khóa. | Quyền sửa nội dung: chủ nhiệm; thành viên xem (xem `frontend.md`). |
+| BR-05 | Chủ nhiệm chỉ sửa khi `DRAFT` | Chủ nhiệm/thành viên chỉ chỉnh sửa hồ sơ (thuyết minh, thành viên, dự toán, đính kèm) khi `ResearchProject.status = DRAFT`. Sau `SUBMITTED` hồ sơ khóa. | Quyền sửa nội dung: chủ nhiệm; thành viên xem (xem `ui.md`). |
 | BR-06 | Trả lại mới mở khóa sửa | Sau `SUBMITTED`, hồ sơ chỉ sửa tiếp được khi chuyên viên trả lại bổ sung (`SUBMITTED` → `DRAFT`) kèm `reason`, và chỉ khi kỳ còn hạn. | Chuyển lùi bắt buộc có `reason` (data-model §3). |
 | BR-07 | `projectCode` tự động & duy nhất | `projectCode` sinh tự động tại thời điểm nộp lần đầu, theo định dạng `<callCode>-<số thứ tự>` và **unique** toàn hệ thống; giữ nguyên qua các lần trả lại/nộp lại. | `projectCode` chỉ sinh một lần. |
 | BR-08 | Thành viên không trùng | Trong một `ResearchProject`, một `userId` chỉ xuất hiện một lần ở `ProjectMember`. | Unique cặp (`researchProjectId`, `userId`). |
