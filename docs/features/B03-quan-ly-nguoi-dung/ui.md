@@ -3,8 +3,8 @@ title: "Quản lý người dùng — Giao diện (một web app, phân quyền)
 spec: "./spec.md"
 owner: "PO/BA"
 status: Draft
-version: 0.1
-updated: 2026-06-09
+version: 0.2
+updated: 2026-06-11
 ---
 
 # Quản lý người dùng — Giao diện
@@ -29,7 +29,7 @@ Cột là vai trò liên quan thực tế. Quyền nguyên tử (`MODULE.ACTION`
 | Hành động | Quyền | Quản trị hệ thống | Chuyên viên QL KHCN |
 |-----------|-------|:-----------------:|:-------------------:|
 | Xem danh sách & chi tiết người dùng | `USER.VIEW` | ✓ | ✓ |
-| Tạo tài khoản nội bộ | `USER.CREATE` | ✓ | – |
+| Tạo tài khoản (admin) | `USER.CREATE` | ✓ | – |
 | Sửa thông tin tài khoản | `USER.UPDATE` | ✓ | – |
 | Khóa / mở khóa tài khoản | `USER.LOCK` | ✓ | – |
 | Vô hiệu / kích hoạt lại tài khoản | `USER.DISABLE` | ✓ | – |
@@ -48,7 +48,7 @@ Cột là vai trò liên quan thực tế. Quyền nguyên tử (`MODULE.ACTION`
 | Mã MH | Tên màn hình | Mục đích |
 |-------|--------------|----------|
 | BO-01 | Danh sách người dùng | Tra cứu, lọc, phân trang danh sách `User`; vào chi tiết. |
-| BO-02 | Tạo / sửa người dùng | Tạo tài khoản nội bộ, sửa thông tin; xem thông tin tài khoản SSO. |
+| BO-02 | Tạo / sửa người dùng | Admin tạo tài khoản, sửa thông tin; xem cả tài khoản tự sinh (auto-provision). |
 | BO-03 | Chi tiết người dùng & vai trò | Xem hồ sơ, khóa/mở/vô hiệu, gán/gỡ vai trò. |
 | BO-04 | Danh sách & cấu hình vai trò | CRUD `Role`; cấu hình tập `Permission` cho mỗi vai trò. |
 | BO-05 | Danh mục quyền | Quản lý `Permission` nguyên tử (`MODULE.ACTION`). |
@@ -57,15 +57,15 @@ Cột là vai trò liên quan thực tế. Quyền nguyên tử (`MODULE.ACTION`
 ## 4. Mô tả màn hình & thao tác
 
 ### BO-01 — Danh sách người dùng
-- **Bộ lọc:** từ khóa (họ tên / email / mã), đơn vị (`unitId`), vai trò, `accountSource` (SSO / INTERNAL),
+- **Bộ lọc:** từ khóa (họ tên / email / mã), đơn vị (`unitId`), vai trò, `accountSource` (AUTO / ADMIN),
   `status` (ACTIVE / LOCKED / INACTIVE).
 - **Bảng:** Họ tên · Email · Đơn vị · Vai trò (chip nhiều) · Nguồn · Trạng thái (badge màu) · Hành động.
 - **Phân trang server-side** (NFR < 2s). Hành động hàng: Xem chi tiết. Nút: "Tạo người dùng" (cần `USER.CREATE`).
 
 ### BO-02 — Tạo / sửa người dùng
 - **Trường:** `fullName`*, `email`*, `userCode`, `phoneNumber`, `unitId`*, `academicTitle`.
-- Tạo mới: mặc định `accountSource = INTERNAL`, `status = ACTIVE`. Kiểm tra trùng email (không phân biệt hoa/thường, BR-01) trước khi lưu.
-- Với tài khoản `accountSource = SSO`: trường `email` **chỉ đọc** (BR-09); cảnh báo "Email đồng bộ từ SSO".
+- Tạo mới: `accountSource = ADMIN`, `status = ACTIVE`; admin nhập email → tạo user Keycloak tương ứng. Kiểm tra trùng email/`keycloakId` (không phân biệt hoa/thường, BR-01) trước khi lưu.
+- Sau khi tạo, `email` do Keycloak quản → **chỉ đọc** tại RMS (BR-09); tài khoản tự sinh (`AUTO`) luôn chỉ đọc email. Cảnh báo "Email đồng bộ từ Keycloak".
 - Lưu thành công → ghi `AuditLog` `CREATE_USER` hoặc `UPDATE_USER`.
 
 ### BO-03 — Chi tiết người dùng & vai trò
@@ -73,8 +73,9 @@ Cột là vai trò liên quan thực tế. Quyền nguyên tử (`MODULE.ACTION`
 - **Hành động trạng thái:** Khóa / Mở khóa (`USER.LOCK`), Vô hiệu / Kích hoạt lại (`USER.DISABLE`)
   theo state machine spec §3.3. Nút Khóa/Vô hiệu **bị vô hiệu hóa** nếu là tài khoản đang đăng nhập (BR-02).
   Không hiển thị nút "Xóa cứng" nếu tài khoản đã phát sinh dữ liệu (BR-04) — thay bằng "Vô hiệu".
-- **Vai trò:** danh sách vai trò đang gán; thêm/gỡ vai trò (multi-select, BR-05/BR-06). Gỡ vai trò hiện cảnh báo
-  "Gỡ vai trò không xóa dữ liệu người dùng đã tạo".
+- **Vai trò:** danh sách vai trò đang gán; thêm/gỡ vai trò (multi-select, BR-05/BR-06) — đây là luồng **nâng/hạ
+  quyền** (spec §3.5): tài khoản tự sinh (`AUTO`) mặc định chỉ có `USER`, admin nâng bằng cách gán vai trò nghiệp
+  vụ. Gỡ vai trò hiện cảnh báo "Gỡ vai trò không xóa dữ liệu người dùng đã tạo".
 - Mỗi thao tác ghi audit tương ứng (xem §5).
 
 ### BO-04 — Danh sách & cấu hình vai trò
@@ -97,8 +98,8 @@ Mọi hành động dưới đây ghi `AuditLog` (append-only, không sửa/xóa
 
 | Hành động | `action` | `targetType` |
 |-----------|-----------|----------------|
-| Tạo tài khoản nội bộ | `CREATE_USER` | USER |
-| Tạo tài khoản JIT từ SSO | `CREATE_USER_JIT` | USER |
+| Admin tạo tài khoản | `CREATE_USER` | USER |
+| Auto-provision (đăng nhập email-OTP lần đầu) | `AUTO_PROVISION_USER` | USER |
 | Sửa thông tin tài khoản | `UPDATE_USER` | USER |
 | Khóa / mở khóa | `LOCK_USER` / `UNLOCK_USER` | USER |
 | Vô hiệu / kích hoạt lại | `DISABLE_USER` / `ENABLE_USER` | USER |
@@ -114,9 +115,9 @@ Ai xem được: Quản trị hệ thống và Chuyên viên QL KHCN (quyền `A
 
 | Màn hình | AC liên quan (spec.md §6) |
 |----------|---------------------------|
-| BO-02 (Tạo/sửa) | AC-01, AC-03 (trùng email & email SSO chỉ đọc) |
-| Luồng SSO JIT (§3.2, không có MH BO) | AC-02, AC-09 |
-| BO-03 (Chi tiết & vai trò) | AC-04, AC-06, AC-07, AC-08, AC-10 |
+| BO-02 (Tạo/sửa) | AC-01, AC-03 (trùng email & email chỉ đọc) |
+| Luồng đăng nhập email-OTP / auto-provision (§3.2, không có MH BO) | AC-02, AC-09, AC-11 |
+| BO-03 (Chi tiết & vai trò, nâng/hạ quyền §3.5) | AC-04, AC-06, AC-07, AC-08, AC-10, AC-12 |
 | BO-04 (Vai trò) | AC-05, AC-06 |
 | BO-05 (Quyền) | AC-05 (nền), BR-07 |
 | BO-06 (Nhật ký) | AC-01, AC-02, AC-06, AC-07, AC-09 (truy vết audit) |

@@ -2,7 +2,7 @@
 title: "Bản đồ migrate: backend cũ → monorepo RMS"
 status: Draft
 version: 0.1
-updated: 2026-06-07
+updated: 2026-06-11
 source_repo: https://github.com/ducnv2509/BE_NCKH
 ---
 
@@ -99,7 +99,7 @@ source_repo: https://github.com/ducnv2509/BE_NCKH
 | `startDate`/`endDate`/`durationMonths` | `durationMonths` (+ phái sinh) | 🧩 | Cân nhắc giữ start/end ở giai đoạn thực hiện (F04) |
 | `version` | (optimistic lock) | = | |
 | `revisionRequest`/`revisionDeadline`/`lastRevisionSubmittedAt` | (effect `setRevisionDeadline` — ADR-0007) | 🧩 | Chuyển thành side-effect của transition, không phải cột rời |
-| `ethicsRequired`/`ethicsApprovedAt`/`ethicsApprovedById`/`ethicsMeetingId` | — | ⚠️ | **Đạo đức nghiên cứu**: target chưa mô hình hoá. Cần hỏi owner: thuộc F03 hay feature riêng? |
+| `ethicsRequired`/`ethicsApprovedAt`/`ethicsApprovedById`/`ethicsMeetingId` | `EvaluationCommittee(type=ETHICS_REVIEW)` + `Meeting` | 🧩 | ✅ **Đã chốt (2026-06-11):** đạo đức thuộc **F03**, tái dùng `EvaluationCommittee` `type=ETHICS_REVIEW`, **phê duyệt song song** xét duyệt khoa học. Cần thêm `Meeting` + giá trị enum vào `data-model.md` và scope/BR F03. |
 | `level` (`ProjectLevel`), `year` | — | ⚠️ | Cấp đề tài / năm — target chưa có; `year` có thể về `ProposalCall` |
 | `approvalDecisionUrl` | `Attachment` | 🧩 | File → object storage qua `Attachment` |
 
@@ -125,6 +125,6 @@ source_repo: https://github.com/ducnv2509/BE_NCKH
 | `version`/`submittedAt`/`status` (`ProposalStatus`)/`revisionNote` | Vòng đời ở `WorkflowInstance` + `statusSemantic` | 🧩 | Trạng thái proposal hợp nhất vào workflow đề tài |
 
 ### Việc phát sinh cần hỏi owner/DEV
-- ⚠️ **Đạo đức nghiên cứu** (`ethics*`): legacy có hẳn luồng (ethicsMeeting); target chưa mô hình hoá → quyết định thuộc F03 hay feature mới.
+- ✅ **Đạo đức nghiên cứu** (`ethics*`) — **đã chốt (2026-06-11):** thuộc **F03**, tái dùng `EvaluationCommittee` `type=ETHICS_REVIEW`, **phê duyệt song song** xét duyệt khoa học (đề tài phải đạt cả hai). Còn lại: mô hình `Meeting` + `ETHICS_REVIEW` trong `data-model.md`, bổ sung scope/BR vào F03 spec.
 - ⚠️ **Cấp đề tài** (`level`) và **năm** (`year`): bổ sung vào target ở đâu.
 - 🧩 Map chi tiết `ProjectStatus` (enum legacy) → `statusSemantic` (§3.1) cần làm khi dựng workflow mặc định.

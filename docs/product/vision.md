@@ -1,7 +1,7 @@
 ---
 title: "Tầm nhìn sản phẩm — RMS"
-status: Draft
-updated: 2026-06-01
+status: Approved
+updated: 2026-06-11
 ---
 
 # Tầm nhìn sản phẩm
@@ -52,13 +52,46 @@ Chi tiết từng nhóm: xem `personas.md`.
   hệ thống định danh tập trung (dùng lại **SSO** qua OIDC/SAML), cổng email/SMS (tích hợp,
   không tự xây). Xem `../architecture/integrations.md`.
 
+## Định hướng mở rộng — quản lý công trình học thuật (sau giai đoạn đầu)
+
+> Giai đoạn đầu tập trung **đề tài nghiên cứu khoa học**. Định hướng dài hạn: mở rộng RMS thành nền tảng
+> quản lý **vòng đời mọi công trình học thuật** cho trường đại học, trên cùng một lõi dùng chung.
+
+Các loại công trình này tuy khác nhau về quy mô nhưng cùng một "xương sống": *đăng ký đề tài → phân công
+người hướng dẫn → thực hiện → bảo vệ/đánh giá qua hội đồng → công bố & lưu chiểu*. Chúng tái dùng được phần
+lớn nền tảng đã có — đa tổ chức theo từng trường, mô hình hội đồng đánh giá, phân quyền theo vai trò, audit,
+thông báo. RMS hướng tới quản lý thêm:
+
+- **Luận án tiến sĩ** — nghiên cứu sinh; nhiều cấp bảo vệ (cấp cơ sở, cấp trường/nhà nước), phản biện độc lập, nộp lưu chiểu.
+- **Luận văn thạc sĩ** — học viên cao học; người hướng dẫn; kiểm tra trùng lặp; một cấp bảo vệ.
+- **Tiểu luận / khóa luận / đồ án tốt nghiệp** — sinh viên đại học; quy trình nhẹ, chấm điểm thay cho hội đồng đầy đủ.
+- **Báo cáo NCKH sinh viên** — đề tài nghiên cứu cấp sinh viên/trường, gần với đề tài NCKH hiện có.
+
+Đây là **định hướng tầm nhìn**, chưa thuộc phạm vi cam kết của giai đoạn đầu. Thiết kế chi tiết (mô hình dữ
+liệu, vòng đời riêng cho từng loại, nhóm feature đào tạo) sẽ tách thành ADR và tài liệu feature khi triển khai;
+giai đoạn đầu chỉ cần giữ kiến trúc **không khoá đường** mở rộng sang nhiều loại công trình về sau.
+
 ## Success metrics
 
-- Thời gian xử lý hồ sơ đề xuất **giảm X%**.
-- Tỷ lệ đề tài nộp báo cáo tiến độ **đúng hạn tăng lên Y%**.
+> Mục tiêu đo lường bám sát các **vấn đề** ở trên. Các con số dưới đây là **mục tiêu đề xuất**,
+> ghi theo hai mốc *giai đoạn đầu → khi vận hành ổn định*; sẽ được **hiệu chỉnh sau khi đo baseline**
+> trên quy trình hiện tại.
+
+**Hiệu quả xử lý quy trình**
+- Thời gian trung bình xử lý một hồ sơ đề xuất (từ nộp đến có kết quả xét duyệt) **giảm ≥ 30% → ≥ 50%** so với baseline.
+- Thời gian tổng hợp một báo cáo thống kê định kỳ **giảm từ 3–5 ngày xuống còn trong ngày (≤ vài giờ)**.
+
+**Theo dõi & minh bạch**
+- Tỷ lệ đề tài nộp báo cáo tiến độ **đúng hạn ≥ 80% → ≥ 90%**.
+- Tỷ lệ hồ sơ xét duyệt / nghiệm thu được xử lý **hoàn toàn trên hệ thống** (không qua giấy hay email rời) **≥ 70% → ≥ 95%**.
+- **100%** hành động quan trọng (duyệt, nghiệm thu, chi kinh phí) có nhật ký truy vết đầy đủ.
+
+**Toàn vẹn & kết nối dữ liệu**
 - **100%** sản phẩm khoa học gắn được với đề tài nguồn.
-- *(Bổ sung khi có baseline)* Tỷ lệ hồ sơ xét duyệt/nghiệm thu xử lý hoàn toàn trên hệ thống;
-  thời gian tổng hợp báo cáo thống kê.
+- **100%** khoản chi kinh phí đối soát được với hệ thống tài chính qua API.
+
+**Mức độ sử dụng**
+- Tỷ lệ người dùng (nhà khoa học, chuyên viên) **hoạt động hằng tháng** trên tổng số tài khoản được cấp **≥ 60% → ≥ 80%**.
 
 ## Nguyên tắc định hướng
 
@@ -77,3 +110,10 @@ Chi tiết từng nhóm: xem `personas.md`.
 | Hệ thống tài chính | Đối soát kinh phí | F05 |
 
 Chi tiết: `../architecture/integrations.md`.
+
+## Changelog
+
+| Ngày | Trạng thái | Thay đổi |
+|------|------------|----------|
+| 2026-06-11 | Approved | Viết lại mục *Success metrics* — cơ cấu lại theo 4 nhóm, thêm mục tiêu đề xuất theo hai mốc (giai đoạn đầu → ổn định); duyệt & chuyển Draft → Approved. |
+| 2026-06-01 | Draft | Bản thảo đầu tiên. |

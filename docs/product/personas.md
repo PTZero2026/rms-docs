@@ -1,23 +1,26 @@
 ---
 title: "Personas — RMS"
-status: Draft
-updated: 2026-06-01
+status: Approved
+updated: 2026-06-11
 ---
 
 # Personas
 
-5 nhóm người dùng chính, chia theo hai mặt hệ thống: **FE** (Portal nhà khoa học) và
-**BO** (BackOffice quản trị). Bảng tổng quan trước, mô tả chi tiết bên dưới.
+7 nhóm người dùng, chia theo hai mặt hệ thống: **FE** (Portal nhà khoa học — gồm cả khu vực
+nội dung công khai dành cho **Khách**) và **BO** (BackOffice quản trị). Bảng tổng quan trước,
+mô tả chi tiết bên dưới.
 
 ## Tổng quan
 
 | Persona | Vai trò | Nhu cầu chính | Mặt dùng | Feature chính |
 |---------|---------|---------------|----------|---------------|
 | Chủ nhiệm đề tài | Nhà khoa học | Nộp đề xuất, báo cáo tiến độ, kê khai sản phẩm | FE | F01, F04, F05, F07, F08 |
+| Thư ký đề tài | Nhà khoa học | Cập nhật nội dung đề tài thay mặt nhóm | FE | F01, F04, F05, F07 |
 | Thành viên đề tài | Nhà khoa học | Tham gia, xem thông tin đề tài | FE | F01, F04, F07 |
 | Chuyên viên QL KHCN | Quản trị | Tiếp nhận, kiểm tra, theo dõi toàn bộ vòng đời | BO | F01–F06, B02 |
 | Thành viên hội đồng | Đánh giá | Chấm điểm, nghiệm thu | BO | F03, F06 |
 | Quản trị hệ thống | Admin | Cấu hình danh mục, phân quyền | BO | B01, B03 |
+| Khách | Người xem công khai | Tra cứu nội dung đề tài đã công bố | FE (công khai) | F01, F07 (chỉ đọc) |
 
 ---
 
@@ -29,6 +32,15 @@ updated: 2026-06-01
   theo dõi/giải trình kinh phí (F05); chuẩn bị nghiệm thu (F06); kê khai sản phẩm khoa học (F07);
   cập nhật lý lịch khoa học (F08).
 - **Pain point:** Hồ sơ rải rác qua email/giấy tờ; không rõ trạng thái hồ sơ; dễ trễ hạn báo cáo.
+- **Mặt dùng:** FE.
+
+## Thư ký đề tài
+
+- **Vai trò:** Thành viên trong nhóm đề tài, được chủ nhiệm uỷ quyền cập nhật hồ sơ thay mặt cả nhóm.
+- **Mục tiêu:** Giảm tải cho chủ nhiệm trong việc nhập liệu và giữ hồ sơ đề tài đầy đủ, đúng hạn.
+- **Tác vụ:** Soạn/cập nhật thuyết minh (F01); nộp báo cáo tiến độ (F04); cập nhật chứng từ, giải trình
+  kinh phí (F05); kê khai sản phẩm khoa học (F07) — đều **thay mặt nhóm**, dưới quyền chủ nhiệm.
+- **Pain point:** Không có quyền chỉnh sửa chính thức nên phải nhờ chủ nhiệm thao tác; dễ tắc khi chủ nhiệm bận.
 - **Mặt dùng:** FE.
 
 ## Thành viên đề tài
@@ -65,7 +77,23 @@ updated: 2026-06-01
 - **Pain point:** Phân quyền sai gây lộ/lệch dữ liệu; danh mục không thống nhất giữa các feature.
 - **Mặt dùng:** BO.
 
+## Khách
+
+- **Vai trò:** Người truy cập khu vực công khai, không cần tài khoản nội bộ.
+- **Mục tiêu:** Tra cứu, tham khảo các đề tài và kết quả nghiên cứu đã được công bố.
+- **Tác vụ:** Xem **nội dung đã publish** (chỉ đọc): tóm tắt đề tài (F01), bài báo / sản phẩm khoa học
+  công bố (F07), danh sách thành viên nhóm. Không thấy dữ liệu nội bộ (thuyết minh đầy đủ, kinh phí, chấm điểm…).
+- **Pain point:** Chưa có nơi tập trung để tra cứu công khai kết quả nghiên cứu đã nghiệm thu/công bố.
+- **Mặt dùng:** FE (khu vực công khai).
+
 ---
 
 > Quyền cụ thể của từng persona trong mỗi feature được định nghĩa ở **Permission matrix** trong
 > `features/<feature>/ui.md`. Trang này chỉ mô tả người dùng ở mức sản phẩm.
+
+## Changelog
+
+| Ngày | Trạng thái | Thay đổi |
+|------|------------|----------|
+| 2026-06-11 | Approved | Thêm persona *Thư ký đề tài* và *Khách*; cập nhật câu mở đầu (5 → 7 nhóm) và bảng tổng quan; duyệt & chuyển Draft → Approved. |
+| 2026-06-01 | Draft | Bản thảo đầu tiên. |
