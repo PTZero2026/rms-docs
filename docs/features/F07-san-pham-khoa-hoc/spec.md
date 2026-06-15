@@ -1,6 +1,7 @@
 ---
 title: "Sản phẩm khoa học"
 id: "F07"
+epic: "E3"
 owner: "<PO/BA phụ trách>"
 status: Draft        # Draft | Review | Approved
 version: 0.1

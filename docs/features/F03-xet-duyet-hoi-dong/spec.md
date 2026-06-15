@@ -1,6 +1,7 @@
 ---
 title: "Xét duyệt hội đồng"
 id: "F03"
+epic: "E1"
 owner: "PO/BA"
 status: Draft        # Draft | Review | Approved
 version: 0.1

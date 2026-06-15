@@ -1,6 +1,7 @@
 ---
 title: "Thông báo"
 id: "B04"
+epic: "E0"
 owner: "PO/BA"
 status: Draft        # Draft | Review | Approved
 version: 0.1

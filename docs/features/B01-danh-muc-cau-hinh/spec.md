@@ -1,6 +1,7 @@
 ---
 title: "Danh mục & cấu hình"
 id: "B01"
+epic: "E0"
 owner: "PO/BA"
 status: Draft        # Draft | Review | Approved
 version: 0.2

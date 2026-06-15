@@ -27,7 +27,8 @@ khi sinh/sửa code phải bám `docs/features/<feature>/spec.md` (acceptance cr
 
 ## 3. Ánh xạ feature ↔ module backend (BẮT BUỘC giữ)
 `F01→proposal · F02→call · F03→review · F04→progress · F05→budget · F06→acceptance · F07→product · F08→profile`
-`B01→catalog · B02→report · B03→iam · B04→notification` (+ `audit` xuyên suốt).
+`B01→catalog · B02→report · B03→iam · B04→notification`.
+`P01→workflow (kernel dùng chung) · P02→audit` — **Platform spec** (năng lực nền do Kiến trúc/DEV sở hữu, không phải feature CRUD; xuyên suốt mọi feature).
 Nguồn: [overview.md §3](docs/architecture/overview.md).
 
 ## 4. Luật bất biến (đọc trước khi sửa)
@@ -52,3 +53,19 @@ lint:      <pnpm lint>
 - Có test khớp `test-plan.md`; lint & build sạch.
 - Không phá ánh xạ feature↔module và 5 luật bất biến ở §4.
 - PR mô tả thay đổi và liên kết feature/ADR liên quan.
+
+## 7. Quy trình Spec-Driven (GitHub Spec Kit)
+Repo dùng **Spec Kit** (chạy trong Claude Code, không cần API) qua các skill `/speckit-*`:
+`constitution → specify → clarify(tùy chọn) → plan → tasks → analyze(tùy chọn) → implement`.
+- **Hiến pháp**: `.specify/memory/constitution.md` là bản *chiếu* của file này (§4 + §6); khi đổi
+  luật, sửa AGENTS.md trước rồi đồng bộ (chạy `/speckit-constitution`). AGENTS.md là canonical.
+- **Hai nơi chứa spec, không thay thế nhau**:
+  - `specs/NNN-slug/` — *xưởng* SDD: nơi `/speckit-*` sinh `spec.md`, `plan.md`, `tasks.md`,
+    `research.md`… (đánh số tuần tự, kèm nhánh git). Artifact trung gian của quy trình.
+  - `docs/features/<feature>/` — **nguồn sự thật nghiệp vụ đã chốt** (`spec.md`/`design.md`/
+    `ui.md`/`test-plan.md`, truy vết `BR-xx`/`AC-xx`). Khi nội dung ở `specs/` đã chín thì
+    chắt lọc về đây.
+- **Lớp Epic**: `docs/epics/` gom feature theo vòng đời (E0 nền tảng + E1–E3). Phân tầng đầy đủ:
+  **Epic (`docs/epics/`) → Feature (`docs/features/`) → Spec làm việc (`specs/`)**. Bản đồ & phụ thuộc ở
+  [docs/epics/README.md](docs/epics/README.md); gắn feature↔epic qua field `epic:` trong frontmatter spec.
+- Dự án đang ở pha **docs-first**: `plan`/`tasks`/`implement` chỉ dùng khi bước sang thực thi code.

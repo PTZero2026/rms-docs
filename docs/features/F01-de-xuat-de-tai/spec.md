@@ -1,6 +1,7 @@
 ---
 title: "Đề xuất đề tài"
 id: "F01"
+epic: "E1"
 owner: "PO/BA"
 status: Draft        # Draft | Review | Approved
 version: 0.2

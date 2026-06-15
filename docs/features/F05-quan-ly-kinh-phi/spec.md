@@ -1,6 +1,7 @@
 ---
 title: "Quản lý kinh phí"
 id: "F05"
+epic: "E2"
 owner: "PO/BA"
 status: Draft        # Draft | Review | Approved
 version: 0.1

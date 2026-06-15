@@ -1,6 +1,7 @@
 ---
 title: "Lý lịch khoa học"
 id: "F08"
+epic: "E3"
 owner: "<PO/BA phụ trách>"
 status: Draft        # Draft | Review | Approved
 version: 0.1

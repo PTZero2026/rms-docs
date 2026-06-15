@@ -1,6 +1,7 @@
 ---
 title: "Quản lý tiến độ"
 id: "F04"
+epic: "E2"
 owner: "PO/BA"
 status: Draft        # Draft | Review | Approved
 version: 0.1

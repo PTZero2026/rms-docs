@@ -9,6 +9,9 @@ updated: 2026-06-11
 > File này là mục lục và checklist rà soát toàn bộ tài liệu trong `docs/features/`.
 > Nguồn sự thật nghiệp vụ của từng feature vẫn là `spec.md` trong thư mục tương ứng.
 
+> Đánh giá độ chín hiện tại (bản chụp mốc): [REVIEW.md](REVIEW.md). Mỗi feature thuộc một **Epic** (E0–E3,
+> xem §2) — định nghĩa Epic chi tiết ở thư mục `docs/epics/`.
+
 ## 1. Cách sử dụng
 
 ### Cấu trúc & chủ sở hữu mỗi feature
@@ -48,20 +51,25 @@ Quy ước tiến độ:
 
 ## 2. Tổng quan feature
 
-| Mã | Tính năng | Module backend | Mặt dùng | Giai đoạn | Hiện trạng tài liệu |
-|---|---|---|---|---|---|
-| F01 | [Đề xuất đề tài](F01-de-xuat-de-tai/) | `proposal` | FE, BO, công khai một phần | Now | Đã có nội dung; **đã tách spec↔design (mẫu)** |
-| F02 | [Kỳ nhận đề xuất](F02-dot-keu-goi/) | `call` | FE, BO | Now | Đã có nội dung |
-| F03 | [Xét duyệt hội đồng](F03-xet-duyet-hoi-dong/) | `review` | FE, BO | Now | Đã có nội dung; cần bổ sung đạo đức & cuộc họp |
-| F04 | [Quản lý tiến độ](F04-quan-ly-tien-do/) | `progress` | FE, BO | Next | Đã có nội dung |
-| F05 | [Quản lý kinh phí](F05-quan-ly-kinh-phi/) | `budget` | FE, BO | Next | Đã có nội dung + prototype |
-| F06 | [Nghiệm thu](F06-nghiem-thu/) | `acceptance` | FE, BO | Next | Spec/UI có nội dung; test plan còn khung |
-| F07 | [Sản phẩm khoa học](F07-san-pham-khoa-hoc/) | `product` | FE, BO, công khai một phần | Later | Còn khung mẫu |
-| F08 | [Lý lịch khoa học](F08-ly-lich-khoa-hoc/) | `profile` | FE, BO | Later | Còn khung mẫu |
-| B01 | [Danh mục & cấu hình](B01-danh-muc-cau-hinh/) | `catalog` | BO | Now | Đã có nội dung |
-| B02 | [Báo cáo & thống kê](B02-bao-cao-thong-ke/) | `report` | BO | Later | Còn khung mẫu |
-| B03 | [Quản lý người dùng](B03-quan-ly-nguoi-dung/) | `iam` | BO | Now | Đã có nội dung; **đã tách spec↔design (mẫu)** |
-| B04 | [Thông báo](B04-thong-bao/) | `notification` | FE, BO | Xuyên suốt | Đã có nội dung |
+| Mã | Epic | Tính năng | Module backend | Mặt dùng | Giai đoạn | Hiện trạng tài liệu |
+|---|:--:|---|---|---|---|---|
+| F01 | E1 | [Đề xuất đề tài](F01-de-xuat-de-tai/) | `proposal` | FE, BO, công khai một phần | Now | Đã có nội dung; **đã tách spec↔design (mẫu)** |
+| F02 | E1 | [Kỳ nhận đề xuất](F02-dot-keu-goi/) | `call` | FE, BO | Now | Đã có nội dung |
+| F03 | E1 | [Xét duyệt hội đồng](F03-xet-duyet-hoi-dong/) | `review` | FE, BO | Now | Đã có nội dung; cần bổ sung đạo đức & cuộc họp |
+| F04 | E2 | [Quản lý tiến độ](F04-quan-ly-tien-do/) | `progress` | FE, BO | Next | Đã có nội dung |
+| F05 | E2 | [Quản lý kinh phí](F05-quan-ly-kinh-phi/) | `budget` | FE, BO | Next | Đã có nội dung + prototype |
+| F06 | E2 | [Nghiệm thu](F06-nghiem-thu/) | `acceptance` | FE, BO | Next | Spec/UI có nội dung; test plan còn khung |
+| F07 | E3 | [Sản phẩm khoa học](F07-san-pham-khoa-hoc/) | `product` | FE, BO, công khai một phần | Later | Còn khung mẫu |
+| F08 | E3 | [Lý lịch khoa học](F08-ly-lich-khoa-hoc/) | `profile` | FE, BO | Later | Còn khung mẫu |
+| B01 | E0 | [Danh mục & cấu hình](B01-danh-muc-cau-hinh/) | `catalog` | BO | Now | Đã có nội dung |
+| B02 | E3 | [Báo cáo & thống kê](B02-bao-cao-thong-ke/) | `report` | BO | Later | Còn khung mẫu |
+| B03 | E0 | [Quản lý người dùng](B03-quan-ly-nguoi-dung/) | `iam` | BO | Now | Đã có nội dung; **đã tách spec↔design (mẫu)** |
+| B04 | E0 | [Thông báo](B04-thong-bao/) | `notification` | FE, BO | Xuyên suốt | Đã có nội dung |
+| P01 | E0 | [Workflow engine](P01-workflow-engine/) | workflow (kernel) | BE/nền tảng | Now | Spec nền (tech) từ ADR-0007 |
+| P02 | E0 | [Audit](P02-audit/) | `audit` | BE/xuyên suốt | Xuyên suốt | Spec nền (tech) từ ADR-0010 + §4.4 |
+
+> **Epic:** E0 Nền tảng · E1 Tiếp nhận & Xét duyệt · E2 Thực hiện & Nghiệm thu · E3 Đầu ra, Lý lịch & Báo cáo.
+> Định nghĩa Epic (mục tiêu, phụ thuộc, DoD) ở thư mục `docs/epics/`.
 
 ## 3. Danh sách capability cần rà
 
@@ -176,25 +184,48 @@ Quy ước tiến độ:
 - Quản lý tùy chọn nhận thông báo của người dùng.
 - Quản lý mẫu, ma trận sự kiện-kênh và nhật ký gửi.
 
+### P01 — Workflow engine *(Platform)*
+
+> Spec nền do Kiến trúc/DEV sở hữu; nguồn [ADR-0007](../architecture/decisions/0007-workflow-engine-dong-per-tenant.md).
+
+- Vòng đời `ResearchProject` cấu hình động per-tenant theo mô hình 3 tầng.
+- `statusSemantic` chuẩn hoá để báo cáo & business rule chạy xuyên tổ chức.
+- Versioning instance; validate graph khi kích hoạt; ghi lịch sử chuyển bước.
+- Dependency cứng của F01–F06.
+
+### P02 — Audit *(Platform)*
+
+> Spec nền do Kiến trúc/DEV sở hữu; nguồn [AGENTS.md §4.4](../../AGENTS.md) + [ADR-0010](../architecture/decisions/0010-chuan-du-lieu-cho-ai-tham-gia.md).
+
+- Ghi `AuditLog` append-only cho mọi hành động đổi trạng thái nghiệp vụ.
+- Mô hình actor mở rộng (`HUMAN`/`SYSTEM`/`AI_AGENT`) + `onBehalfOf`.
+- Ghi cùng transaction với thay đổi; xem nhật ký theo quyền & tenant.
+- Dependency cứng của mọi feature đổi trạng thái.
+
 ## 4. Checklist rà soát theo feature
 
-| Mã | `spec.md` | `design.md` | `ui.md` | `test-plan.md` | Kiến trúc & tài liệu dùng chung |
-|---|:---:|:---:|:---:|:---:|:---:|
-| F01 | [ ] | [ ] | [ ] | [ ] | [ ] |
-| F02 | [ ] | – | [ ] | [ ] | [ ] |
-| F03 | [ ] | – | [ ] | [ ] | [ ] |
-| F04 | [ ] | – | [ ] | [ ] | [ ] |
-| F05 | [ ] | – | [ ] | [ ] | [ ] |
-| F06 | [ ] | – | [ ] | [ ] | [ ] |
-| F07 | [ ] | – | [ ] | [ ] | [ ] |
-| F08 | [ ] | – | [ ] | [ ] | [ ] |
-| B01 | [ ] | – | [ ] | [ ] | [ ] |
-| B02 | [ ] | – | [ ] | [ ] | [ ] |
-| B03 | [ ] | [ ] | [ ] | [ ] | [ ] |
-| B04 | [ ] | – | [ ] | [ ] | [ ] |
+| Mã | Epic | spec | design | ui | test-plan | BR/AC | Sẵn sàng SDD | Đã rà |
+|---|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
+| F01 | E1 | ✅ | ✅ | ✅ | ✅ | 11/11 | 🟢 | [ ] |
+| F02 | E1 | ✅ | – | ✅ | ✅ | 8/8 | 🟡 | [ ] |
+| F03 | E1 | ✅ | – | ✅ | ✅ | 11/10 | 🟡 | [ ] |
+| F04 | E2 | ✅ | – | ✅ | ✅ | 15/15 | 🟡 | [ ] |
+| F05 | E2 | ✅ | – | ✅ | ✅ | 14/16 | 🟡 | [ ] |
+| F06 | E2 | ✅ | – | ✅ | 🔴 | 12/12 | 🟠 | [ ] |
+| F07 | E3 | 🔴 | – | 🟡 | 🔴 | 1/2 | 🔴 | [ ] |
+| F08 | E3 | 🔴 | – | 🟡 | 🔴 | 1/2 | 🔴 | [ ] |
+| B01 | E0 | ✅ | – | ✅ | ✅ | 13/14 | 🟡 | [ ] |
+| B02 | E3 | 🔴 | – | 🔴 | 🔴 | 1/2 | 🔴 | [ ] |
+| B03 | E0 | ✅ | ✅ | ✅ | ✅ | 11/12 | 🟢 | [ ] |
+| B04 | E0 | ✅ | – | ✅ | ✅ | 10/10 | 🟡 | [ ] |
+| P01 | E0 | ✅ | – | – | 🔴 | 9/8 | 🟡 | [ ] |
+| P02 | E0 | ✅ | – | – | 🔴 | 7/5 | 🟡 | [ ] |
 
-> Cột `design.md`: `–` = chưa tách (nội dung kỹ thuật còn nằm trong `spec.md`). F01 và B03 là hai mẫu
-> đã tách; các feature còn lại tách dần khi PO duyệt mẫu.
+> **Cột độ chín** (`spec/design/ui/test-plan`): ✅ đầy đủ · 🟡 một phần · 🔴 khung mẫu · `–` chưa tách.
+> **BR/AC**: số mã `BR-xx`/`AC-xx` duy nhất trong `spec.md`. **Sẵn sàng SDD**: 🟢 sẵn sàng · 🟡 gần sẵn sàng
+> (thiếu `design.md`) · 🟠 gần đủ nhưng test-plan còn khung · 🔴 chưa sẵn sàng (spec khung mẫu).
+> **Đã rà**: đánh `[x]` khi đã rà soát & hết điểm mở chặn duyệt (gồm đối chiếu kiến trúc & tài liệu dùng chung).
+> Trạng thái độ chín lấy từ [REVIEW.md](REVIEW.md) (2026-06-12); cập nhật khi tài liệu thay đổi.
 
 Tài liệu dùng chung cần đối chiếu:
 
@@ -208,8 +239,8 @@ Tài liệu dùng chung cần đối chiếu:
 
 Các mục dưới đây phải được rà trong nhiều feature, không tự tạo module nghiệp vụ mới nếu chưa có quyết định:
 
-- **Audit:** mọi hành động đổi trạng thái nghiệp vụ phải ghi `AuditLog` append-only.
-- **Workflow đề tài:** mọi chuyển trạng thái `ResearchProject` đi qua domain service dùng chung.
+- **Audit** ([P02](P02-audit/)): mọi hành động đổi trạng thái nghiệp vụ phải ghi `AuditLog` append-only.
+- **Workflow đề tài** ([P01](P01-workflow-engine/)): mọi chuyển trạng thái `ResearchProject` đi qua domain service dùng chung.
 - **Multi-tenant & RBAC:** backend kiểm tra tenant, quyền và phạm vi dữ liệu cho mọi API.
 - **Tệp đính kèm:** quyền tải/xem file phải bám quyền của thực thể nghiệp vụ nguồn.
 - **Thời gian & tiền:** lưu UTC, hiển thị Asia/Ho_Chi_Minh; ngày `dd/MM/yyyy`; tiền VND.
@@ -218,10 +249,10 @@ Các mục dưới đây phải được rà trong nhiều feature, không tự 
 
 ## 6. Thứ tự rà soát đề xuất
 
-1. **Nền tảng:** B03 → B01 → B04.
-2. **Đầu vòng đời:** F02 → F01 → F03.
-3. **Thực hiện đề tài:** F04 → F05 → F06.
-4. **Đầu ra & phân tích:** F07 → F08 → B02.
+1. **Nền tảng (E0):** B03 → B01 → P01 → P02 → B04.
+2. **Đầu vòng đời (E1):** F02 → F01 → F03.
+3. **Thực hiện đề tài (E2):** F04 → F05 → F06.
+4. **Đầu ra & phân tích (E3):** F07 → F08 → B02.
 5. **Rà xuyên suốt:** workflow, audit, RBAC, data model, tích hợp và cổng công khai.
 
 ## 7. Khoảng trống đã nhận diện
@@ -231,6 +262,7 @@ Các mục dưới đây phải được rà trong nhiều feature, không tự 
 - F03 cần cập nhật đầy đủ phê duyệt đạo đức song song và mô hình cuộc họp/biên bản theo roadmap.
 - F06 cần đồng bộ phần cuộc họp nghiệm thu dùng chung từ F03.
 - Cổng công khai chưa có mã feature riêng; cần quyết định tách feature nếu phạm vi tiếp tục mở rộng.
+- F03 có AC (10) ít hơn BR (11) — soát lại BR nào chưa có AC phủ. (B01 BR=13/AC=14 là bình thường, không phải lỗi.)
 
 ## Changelog
 
@@ -238,3 +270,5 @@ Các mục dưới đây phải được rà trong nhiều feature, không tự 
 |---|---|---|
 | 2026-06-11 | Draft | Tạo danh sách 12 feature, capability chính, checklist rà soát và khoảng trống tài liệu ban đầu. |
 | 2026-06-11 | Draft | Thêm quy ước tách `spec.md` (nghiệp vụ, PO/BA) ↔ `design.md` (kỹ thuật, DEV); làm mẫu trên F01 và B03; thêm cột `design.md` vào checklist; thêm template `design.md`. |
+| 2026-06-12 | Draft | Thêm lớp **Epic** (E0–E3): cột Epic ở §2, nhãn Epic ở §6, field `epic:` trong frontmatter 12 spec. Nâng §4 thành checklist sẵn-sàng-SDD (độ chín spec/design/ui/test + BR/AC + mức sẵn sàng); số liệu từ [REVIEW.md](REVIEW.md). |
+| 2026-06-12 | Draft | Nâng năng lực nền **Workflow engine** & **Audit** thành spec riêng [P01](P01-workflow-engine/)/[P02](P02-audit/) (Platform, tech-led) bám ADR-0007/0010; thêm vào E0 & bản đồ Epic; đăng ký P-series ở [AGENTS.md §3](../../AGENTS.md). |

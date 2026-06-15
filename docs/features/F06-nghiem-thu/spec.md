@@ -1,6 +1,7 @@
 ---
 title: "Nghiệm thu"
 id: "F06"
+epic: "E2"
 owner: "PO/BA"
 status: Draft        # Draft | Review | Approved
 version: 0.1

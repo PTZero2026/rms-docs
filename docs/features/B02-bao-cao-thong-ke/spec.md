@@ -1,6 +1,7 @@
 ---
 title: "Báo cáo & thống kê"
 id: "B02"
+epic: "E3"
 owner: "<PO/BA phụ trách>"
 status: Draft        # Draft | Review | Approved
 version: 0.1

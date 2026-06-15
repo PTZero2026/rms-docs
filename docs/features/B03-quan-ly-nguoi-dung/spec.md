@@ -1,6 +1,7 @@
 ---
 title: "Quản lý người dùng"
 id: "B03"
+epic: "E0"
 owner: "PO/BA"
 status: Draft        # Draft | Review | Approved
 version: 0.3
