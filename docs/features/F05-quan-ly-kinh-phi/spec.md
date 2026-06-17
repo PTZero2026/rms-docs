@@ -86,21 +86,21 @@ sequenceDiagram
 
     Note over CV,SYS: Đề tài đã IN_PROGRESS (F04)
     CV->>SYS: Xác nhận tổng kinh phí được cấp (mặc định = approvedBudget) [BR-08]
-    SYS->>SYS: Tách phí quản lý (= tỷ lệ cấu hình × cấp, có trần) & kinh phí thực hiện; cho override [BR-10]
+    SYS->>SYS: Tách phí quản lý (= tỷ lệ cấu hình × cấp, có trần) và kinh phí thực hiện, cho override [BR-10]
     SYS->>SYS: Ghi nhận kinh phí được cấp cho đề tài (xác nhận 1 lần)
     SYS-->>CN: Thông báo đã cấp kinh phí (B04)
 
     loop Trong quá trình thực hiện
         CN->>SYS: Tạo khoản chi (số tiền, mô tả, ngày) + đính chứng từ [BR-04]
-        SYS->>SYS: Cập nhật tổng đã chi & còn lại; cảnh báo nếu vượt kinh phí thực hiện [BR-03]
+        SYS->>SYS: Cập nhật tổng đã chi và còn lại, cảnh báo nếu vượt kinh phí thực hiện [BR-03]
     end
 
     CV->>SYS: Xem danh sách khoản chi kèm chứng từ [BR-04]
 
     Note over CV,SYS: Khi đề tài PASSED (F06) → quyết toán
-    CV->>SYS: Yêu cầu quyết toán & đóng đề tài [BR-07]
-    SYS->>SYS: ResearchProject: PASSED → COMPLETED (phối hợp F06); khóa kinh phí
-    SYS-->>CN: Thông báo đề tài đã quyết toán & hoàn thành
+    CV->>SYS: Yêu cầu quyết toán và đóng đề tài [BR-07]
+    SYS->>SYS: ResearchProject PASSED → COMPLETED (phối hợp F06), khóa kinh phí
+    SYS-->>CN: Thông báo đề tài đã quyết toán và hoàn thành
 ```
 
 ### 3.2 Chuyển trạng thái đề tài trong phạm vi F05
@@ -108,7 +108,7 @@ sequenceDiagram
 ```mermaid
 stateDiagram-v2
     IN_PROGRESS --> IN_PROGRESS : Xác nhận cấp kinh phí, ghi khoản chi (không đổi trạng thái)
-    PASSED --> COMPLETED : Quyết toán & đóng đề tài [BR-07]
+    PASSED --> COMPLETED : Quyết toán và đóng đề tài [BR-07]
     COMPLETED --> [*]
 ```
 
