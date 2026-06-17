@@ -186,7 +186,7 @@ không cần migration). Toàn bộ do B01 quản trị trên một màn hình h
 ngành nghiên cứu; `ResearchProject.researchFieldId`, `ProposalCall.researchFieldIds` trỏ tới.
 **ProductType** (`id`, `code`, `name`, `category` enum `ARTICLE`|`PATENT`|`SOLUTION`|`TRAINING`|`OTHER`);
 `ResearchOutput.productTypeId` trỏ tới.
-**SystemSetting** (`key` PK, `value`, `dataType`, `description`) — tham số chạy (ngưỡng điểm, hạn nhắc…).
+**SystemSetting** (`key` PK, `value`, `dataType`, `description`) — tham số chạy (ngưỡng điểm, hạn nhắc, **tỷ lệ phí quản lý** `budget.managementFeeRate` và **trần** `budget.managementFeeCap` cấp tổ chức — F05 BR-10…).
 
 **(b) Danh mục lookup chung (generic):**
 
@@ -274,7 +274,7 @@ ngành nghiên cứu; `ResearchProject.researchFieldId`, `ProposalCall.researchF
 
 **ProgressReport** (`id`, `researchProjectId`, `period` int, `dueDate` date, `submittedAt`, `content` text, `status` `PENDING_SUBMISSION`|`SUBMITTED`|`PASSED`|`REVISION_REQUESTED`, `officerComment`).
 **BudgetEstimate** (`id`, `researchProjectId`, `budgetLine`, `estimatedAmount` bigint, `period`, `settlementMode` `LUMP_SUM`|`ACTUAL_EXPENSE`|`MIXED`).
-**BudgetAllocation** (`id`, `researchProjectId`, `allocationNo`, `amount` bigint, `plannedDate` date, `actualDate` date, `status` `PLANNED`|`DISBURSED`|`CANCELLED`).
+**BudgetAllocation** (`id`, `researchProjectId`, `allocationNo`, `amount` bigint, `managementFeeAmount` bigint (≥ 0, ≤ `amount`; phần **phí quản lý** tổ chức chủ trì giữ lại — F05, BR-10; *kinh phí thực hiện* = `amount − managementFeeAmount`, dẫn xuất), `plannedDate` date, `actualDate` date, `status` `PLANNED`|`DISBURSED`|`CANCELLED`).
 **BudgetTransaction** (`id`, `researchProjectId`, `budgetLine`, `amount` bigint, `type` `DISBURSEMENT`|`EXPENSE`, `date`, `reconciliationStatus` `UNRECONCILED`|`MATCHED`|`MISMATCHED`, `financeTransactionCode`).
 
 ### 4.6 Sản phẩm & lý lịch (F07, F08)

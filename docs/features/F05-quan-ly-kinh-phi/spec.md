@@ -4,7 +4,7 @@ id: "F05"
 epic: "E2"
 owner: "PO/BA"
 status: Draft        # Draft | Review | Approved
-version: 0.3
+version: 0.4
 updated: 2026-06-17
 ---
 
@@ -22,7 +22,9 @@ nhiệm không biết còn lại bao nhiêu, chứng từ khoản chi rời rạ
 tiêu của đề tài.
 
 F05 (bản đơn giản, giai đoạn này) số hóa **vòng đời kinh phí cơ bản của một đề tài**:
-- **Chuyên viên QL KHCN** xác nhận **tổng kinh phí được cấp** cho đề tài.
+- **Chuyên viên QL KHCN** xác nhận **tổng kinh phí được cấp** cho đề tài; khi xác nhận, hệ thống **tách
+  phần phí quản lý mà tổ chức chủ trì (trường/viện) giữ lại** theo tỷ lệ cấu hình, phần còn lại là **kinh
+  phí thực hiện nghiên cứu**.
 - **Chủ nhiệm đề tài** xem kinh phí được cấp, **tạo các khoản chi** và **đính kèm chứng từ**.
 - **Chuyên viên** xem danh sách khoản chi kèm chứng từ và **quyết toán/đóng đề tài** khi nghiệm thu đạt.
 
@@ -34,9 +36,11 @@ RMS **không thay thế kế toán** — RMS chỉ ghi nhận và gắn chi tiê
 > [ADR-0004](../../architecture/decisions/0004-doi-soat-kinh-phi-qua-api.md), đã hoãn).
 
 **Kết quả mong đợi:**
-- Mỗi đề tài `IN_PROGRESS` có một **tổng kinh phí được cấp** đã được chuyên viên xác nhận.
+- Mỗi đề tài `IN_PROGRESS` có một **tổng kinh phí được cấp** đã được chuyên viên xác nhận, kèm **phí quản lý
+  (trường giữ)** và **kinh phí thực hiện nghiên cứu** được tách rõ.
 - Chủ nhiệm ghi nhận được các khoản chi của đề tài mình, mỗi khoản có thể đính kèm chứng từ.
-- Chủ nhiệm và chuyên viên xem được tổng cấp – tổng đã chi – còn lại, và danh sách khoản chi + chứng từ.
+- Chủ nhiệm và chuyên viên xem được tổng cấp – phí quản lý – kinh phí thực hiện – tổng đã chi – còn lại, và
+  danh sách khoản chi + chứng từ.
 - Khi đề tài `PASSED`, chuyên viên quyết toán và đóng đề tài (`COMPLETED`, phối hợp F06).
 
 ## 2. Phạm vi
@@ -44,15 +48,21 @@ RMS **không thay thế kế toán** — RMS chỉ ghi nhận và gắn chi tiê
 - **Trong phạm vi:**
   - **Xác nhận kinh phí được cấp** cho đề tài `IN_PROGRESS` (chuyên viên), mặc định lấy
     `ProjectAssignment.approvedBudget` từ F04 làm tổng — xác nhận **một lần** cho cả đề tài.
+  - **Cấu hình phí quản lý cấp tổ chức**: một **tỷ lệ phẳng (flat-rate, %)** dùng chung toàn trường, có
+    **trần tùy chọn** (số tuyệt đối VND). Khi xác nhận cấp kinh phí, hệ thống tự tính phí quản lý và **cho
+    phép chuyên viên override** giá trị theo từng đề tài (ghi audit). Cấu hình do **quản trị** quản lý.
   - **Tạo/sửa/xóa khoản chi** (`BudgetTransaction`) cho đề tài: số tiền, mô tả, ngày chi (chủ nhiệm).
   - **Đính kèm chứng từ** cho khoản chi (`Attachment`).
-  - Xem **tổng quan kinh phí** đề tài: tổng được cấp – tổng đã chi – còn lại; cảnh báo khi vượt.
+  - Xem **tổng quan kinh phí** đề tài: tổng được cấp – phí quản lý – kinh phí thực hiện – tổng đã chi – còn
+    lại; cảnh báo khi tổng đã chi vượt **kinh phí thực hiện** (= cấp − phí quản lý).
   - **Xem danh sách khoản chi** kèm chứng từ (chuyên viên xem mọi đề tài; chủ nhiệm xem đề tài mình).
   - **Quyết toán & đóng đề tài** khi `PASSED` → `COMPLETED` (chuyên viên, phối hợp F06).
   - Thông báo xác nhận cấp kinh phí & kết quả quyết toán (qua **B04**).
 - **Ngoài phạm vi (giai đoạn sau):**
   - Dự toán/khoán theo **khoản mục** (`BudgetEstimate`) và cơ chế quyết toán theo khoản mục
     (`settlementMode`: `LUMP_SUM`/`ACTUAL_EXPENSE`/`MIXED`).
+  - **Phí quản lý nâng cao**: nhiều mức tỷ lệ theo **nguồn kinh phí/loại đề tài**, phí quản lý gắn với từng
+    khoản mục, hay hạch toán phí quản lý như một dòng chi/thu riêng. Bản đơn giản chỉ một tỷ lệ phẳng chung.
   - **Nhiều đợt cấp** kinh phí theo kế hoạch/thực tế (`BudgetAllocation` nhiều dòng, vòng đời
     `PLANNED → DISBURSED/CANCELLED`).
   - **Đối soát** giao dịch RMS với hệ thống tài chính (API hoặc nhập file), xử lý chênh lệch — **hoãn**
@@ -76,12 +86,13 @@ sequenceDiagram
 
     Note over CV,SYS: Đề tài đã IN_PROGRESS (F04)
     CV->>SYS: Xác nhận tổng kinh phí được cấp (mặc định = approvedBudget) [BR-08]
+    SYS->>SYS: Tách phí quản lý (= tỷ lệ cấu hình × cấp, có trần) & kinh phí thực hiện; cho override [BR-10]
     SYS->>SYS: Ghi nhận kinh phí được cấp cho đề tài (xác nhận 1 lần)
     SYS-->>CN: Thông báo đã cấp kinh phí (B04)
 
     loop Trong quá trình thực hiện
         CN->>SYS: Tạo khoản chi (số tiền, mô tả, ngày) + đính chứng từ [BR-04]
-        SYS->>SYS: Cập nhật tổng đã chi & còn lại; cảnh báo nếu vượt kinh phí được cấp [BR-03]
+        SYS->>SYS: Cập nhật tổng đã chi & còn lại; cảnh báo nếu vượt kinh phí thực hiện [BR-03]
     end
 
     CV->>SYS: Xem danh sách khoản chi kèm chứng từ [BR-04]
@@ -111,13 +122,14 @@ stateDiagram-v2
 |-------|---------|-------|---------|
 | BR-01 | Chỉ quản kinh phí khi đang thực hiện | Chỉ xác nhận cấp kinh phí và ghi/sửa khoản chi cho đề tài có `status=IN_PROGRESS` (hoặc `SUSPENDED` — chỉ xem, không thêm chi mới). Đề tài chưa giao hoặc đã `COMPLETED` không nhận thay đổi kinh phí mới. | Phụ thuộc F04 |
 | BR-02 | Số tiền hợp lệ | Số tiền kinh phí được cấp và `amount` của khoản chi là **số nguyên VND > 0** (`bigint`), không số thực, không âm/không 0. Đơn vị thống nhất VND. | Tiền tệ lưu `bigint` ([data-model §1](../../architecture/data-model.md#1-quy-ước-chung)) |
-| BR-03 | Cảnh báo vượt kinh phí được cấp | Khi tổng các khoản chi của đề tài **vượt** tổng kinh phí được cấp, hệ thống **vẫn cho ghi** khoản chi nhưng hiển thị **cảnh báo vượt kinh phí**. Không chặn ở bản đơn giản. | Chế độ chặn (`BLOCK`) là cấu hình giai đoạn sau (B01) |
+| BR-03 | Cảnh báo vượt kinh phí thực hiện | Khi tổng các khoản chi của đề tài **vượt kinh phí thực hiện nghiên cứu** (= kinh phí được cấp − phí quản lý), hệ thống **vẫn cho ghi** khoản chi nhưng hiển thị **cảnh báo vượt kinh phí**. Không chặn ở bản đơn giản. | Mốc so sánh là kinh phí thực hiện, không phải tổng cấp ([BR-10]). Chế độ chặn (`BLOCK`) là cấu hình giai đoạn sau (B01) |
 | BR-04 | Phân quyền theo vai trò | **Chủ nhiệm đề tài**: xem kinh phí và **tạo/sửa/xóa khoản chi + đính chứng từ** cho **đề tài của mình**; **không** xác nhận cấp kinh phí, **không** quyết toán. **Chuyên viên QL KHCN**: **xác nhận cấp kinh phí**, **xem** khoản chi + chứng từ của các đề tài, **quyết toán**; không tạo khoản chi thay chủ nhiệm. | RBAC + data scoping (overview §4.1) |
 | BR-05 | Chứng từ khoản chi | Mỗi khoản chi có thể đính kèm **một hoặc nhiều** chứng từ (`Attachment`, lưu object storage). Việc bắt buộc chứng từ theo loại khoản chi để giai đoạn sau (gắn với cơ chế quyết toán theo khoản mục). | File theo quy ước Attachment chung |
 | BR-06 | Khóa kinh phí sau khi đóng đề tài | Sau khi đề tài `COMPLETED`, khoản chi và kinh phí được cấp bị **khóa**, không sửa/xóa. Trước đó chủ nhiệm sửa/xóa được khoản chi của mình khi đề tài còn `IN_PROGRESS`. | Giữ toàn vẹn quyết toán |
 | BR-07 | Quyết toán & đóng đề tài | Khi đề tài `PASSED`, **Chuyên viên QL KHCN** thực hiện quyết toán và chuyển `ResearchProject: PASSED → COMPLETED` (qua domain service, phối hợp F06). Bản đơn giản **không** có điều kiện chặn tự động (không đối soát, không bắt buộc chứng từ cứng); chuyên viên rà soát thủ công trước khi đóng. Ghi audit. | Phối hợp F06; điều kiện chặt hơn để giai đoạn sau |
-| BR-08 | Xác nhận cấp kinh phí một lần | **Chuyên viên** xác nhận tổng kinh phí được cấp cho đề tài, mặc định bằng `ProjectAssignment.approvedBudget`; tổng cấp **không vượt** `approvedBudget`. Xác nhận một lần cho cả đề tài; điều chỉnh phải ghi audit. | Nhiều đợt cấp để giai đoạn sau |
-| BR-09 | Truy vết mọi thay đổi kinh phí | Xác nhận/điều chỉnh cấp kinh phí, tạo/sửa/xóa khoản chi, đính/gỡ chứng từ, quyết toán đều ghi `AuditLog` (append-only). | Audit (overview §4.2) |
+| BR-08 | Xác nhận cấp kinh phí một lần | **Chuyên viên** xác nhận tổng kinh phí được cấp cho đề tài, mặc định bằng `ProjectAssignment.approvedBudget`; tổng cấp **không vượt** `approvedBudget`. Khi xác nhận, hệ thống tách phí quản lý & kinh phí thực hiện ([BR-10]). Xác nhận một lần cho cả đề tài; điều chỉnh phải ghi audit. | Nhiều đợt cấp để giai đoạn sau |
+| BR-09 | Truy vết mọi thay đổi kinh phí | Xác nhận/điều chỉnh cấp kinh phí, **thay đổi cấu hình phí quản lý & override phí quản lý theo đề tài**, tạo/sửa/xóa khoản chi, đính/gỡ chứng từ, quyết toán đều ghi `AuditLog` (append-only). | Audit (overview §4.2) |
+| BR-10 | Phí quản lý cấp tổ chức (flat-rate) | Tổ chức cấu hình **một tỷ lệ phẳng** `managementFeeRate` (%) dùng chung, có **trần tùy chọn** `managementFeeCap` (VND). Khi xác nhận cấp: `managementFeeAmount = min(floor(allocation × rate), cap)` (làm tròn **xuống** đến đồng); `kinh phí thực hiện = allocation − managementFeeAmount`. Chuyên viên **được override** `managementFeeAmount` theo đề tài, ràng buộc `0 ≤ managementFeeAmount ≤ allocation` (ghi audit). Chỉ **quản trị** sửa được tỷ lệ/trần cấu hình; thay đổi cấu hình **không** hồi tố các đề tài đã xác nhận. | Nhiều mức theo nguồn KP/khoản mục để giai đoạn sau |
 
 ## 5. Dữ liệu
 
@@ -129,7 +141,8 @@ Bản đơn giản thao tác trên `BudgetAllocation` (kinh phí được cấp)
 |---|---|---|
 | `ResearchProject` | Đối tượng có kinh phí | `status` (`IN_PROGRESS`/`PASSED`/`COMPLETED`), `principalInvestigatorId` |
 | `ProjectAssignment` | Căn cứ tổng kinh phí được phê duyệt từ F04 | `researchProjectId`, `approvedBudget`, `status=EFFECTIVE` |
-| `BudgetAllocation` | **Kinh phí được cấp** (xác nhận 1 lần / đề tài) | `researchProjectId`, `amount` (`bigint` VND, > 0), `status` (`CONFIRMED`/`CANCELLED`), `confirmedBy`, `confirmedAt` |
+| `BudgetAllocation` | **Kinh phí được cấp** (xác nhận 1 lần / đề tài) | `researchProjectId`, `amount` (`bigint` VND, > 0), `managementFeeAmount` (`bigint` VND, ≥ 0, ≤ `amount`), `status` (`CONFIRMED`/`CANCELLED`), `confirmedBy`, `confirmedAt` |
+| `SystemSetting` | **Cấu hình phí quản lý** cấp tổ chức (flat-rate) | key `budget.managementFeeRate` (% ≥ 0), `budget.managementFeeCap` (VND, tùy chọn) — [data-model §4.2](../../architecture/data-model.md#42-danh-mục-dùng-chung-b01) |
 | `BudgetTransaction` | **Khoản chi** của đề tài | `researchProjectId`, `amount` (`bigint` VND, > 0), `description`, `date`, `type=EXPENSE`, `createdBy` |
 | `Attachment` | Chứng từ khoản chi | `targetType=BudgetTransaction`, `targetId`, `storageKey` (object storage) |
 | `Notification` | Thông báo cấp kinh phí & quyết toán | Sinh khi xác nhận cấp kinh phí và khi quyết toán/`COMPLETED` (B04) |
@@ -137,7 +150,9 @@ Bản đơn giản thao tác trên `BudgetAllocation` (kinh phí được cấp)
 
 > **Trường có thể cần bổ sung/điều chỉnh ở data-model (cùng PR khi chốt):** `BudgetTransaction.description`,
 > `BudgetTransaction.createdBy`; `BudgetAllocation` rút gọn còn một bản ghi/đề tài với `status`
-> `CONFIRMED`/`CANCELLED` + `confirmedBy`/`confirmedAt`. Ràng buộc: `amount > 0`.
+> `CONFIRMED`/`CANCELLED` + `confirmedBy`/`confirmedAt` + `managementFeeAmount` (đã thêm ở data-model §4.5);
+> cấu hình phí quản lý lưu ở `SystemSetting` (`budget.managementFeeRate`, `budget.managementFeeCap`). Ràng buộc:
+> `amount > 0`, `0 ≤ managementFeeAmount ≤ amount`. **Kinh phí thực hiện** = `amount − managementFeeAmount` (dẫn xuất, không lưu).
 >
 > **Giai đoạn sau:** `BudgetEstimate` (khoản mục + `settlementMode`), `BudgetAllocation` nhiều đợt
 > (`PLANNED`/`DISBURSED`), và các trường đối soát (`reconciliationStatus`, `financeTransactionCode`…) chỉ
@@ -146,18 +161,20 @@ Bản đơn giản thao tác trên `BudgetAllocation` (kinh phí được cấp)
 
 ## 6. Acceptance criteria
 
-- **AC-01 (Happy — xác nhận cấp kinh phí)** — Given một đề tài `IN_PROGRESS` đã có `ProjectAssignment.EFFECTIVE`
-  với `approvedBudget` > 0; When chuyên viên xác nhận cấp kinh phí cho đề tài; Then hệ thống ghi nhận tổng
-  kinh phí được cấp (≤ `approvedBudget`), thông báo cho chủ nhiệm (B04) và ghi audit (BR-08).
+- **AC-01 (Happy — xác nhận cấp kinh phí + tách phí quản lý)** — Given một đề tài `IN_PROGRESS` đã có
+  `ProjectAssignment.EFFECTIVE` với `approvedBudget` > 0 và cấu hình `managementFeeRate`; When chuyên viên xác
+  nhận cấp kinh phí cho đề tài; Then hệ thống ghi nhận tổng kinh phí được cấp (≤ `approvedBudget`), tính
+  `managementFeeAmount = min(floor(amount × rate), cap)` và kinh phí thực hiện = `amount − managementFeeAmount`,
+  thông báo cho chủ nhiệm (B04) và ghi audit (BR-08, BR-10).
 - **AC-02 (Happy — chủ nhiệm tạo khoản chi + chứng từ)** — Given đề tài `IN_PROGRESS` của chủ nhiệm;
   When chủ nhiệm tạo một khoản chi với `amount` > 0, mô tả, ngày chi và đính kèm chứng từ; Then khoản chi
   được lưu, chứng từ gắn vào khoản chi, cập nhật tổng đã chi & còn lại, ghi audit (BR-04, BR-05).
 - **AC-03 (Happy — chuyên viên xem khoản chi)** — Given đề tài đã có các khoản chi; When chuyên viên mở
   danh sách kinh phí của đề tài; Then hệ thống hiển thị tổng được cấp – tổng đã chi – còn lại và danh
   sách khoản chi kèm chứng từ (BR-04).
-- **AC-04 (Biên — vượt kinh phí được cấp)** — Given tổng đã chi sắp vượt tổng kinh phí được cấp; When chủ
-  nhiệm tạo khoản chi làm tổng chi vượt mức cấp; Then hệ thống **vẫn lưu** khoản chi và hiển thị **cảnh báo
-  vượt kinh phí** (BR-03).
+- **AC-04 (Biên — vượt kinh phí thực hiện)** — Given tổng đã chi sắp vượt **kinh phí thực hiện** (= cấp −
+  phí quản lý); When chủ nhiệm tạo khoản chi làm tổng chi vượt mức thực hiện; Then hệ thống **vẫn lưu** khoản
+  chi và hiển thị **cảnh báo vượt kinh phí** (BR-03).
 - **AC-05 (Happy — quyết toán & đóng đề tài)** — Given đề tài `PASSED`; When chuyên viên thực hiện quyết
   toán & đóng đề tài; Then `ResearchProject` chuyển `PASSED → COMPLETED` (qua domain service, phối hợp F06),
   kinh phí bị khóa, chủ nhiệm nhận thông báo, ghi audit (BR-06, BR-07).
@@ -170,6 +187,14 @@ Bản đơn giản thao tác trên `BudgetAllocation` (kinh phí được cấp)
   không thuộc A; Then hệ thống từ chối (403/ẩn), chỉ thấy đề tài của mình (BR-04).
 - **AC-09 (Negative — ghi khoản chi khi chưa/không còn thực hiện)** — Given đề tài chưa `IN_PROGRESS`
   (vd `APPROVED`) hoặc đã `COMPLETED`; When tạo/sửa khoản chi mới; Then hệ thống chặn (BR-01, BR-06).
+- **AC-10 (Happy — override phí quản lý theo đề tài)** — Given chuyên viên đang xác nhận cấp kinh phí và
+  muốn dùng mức phí quản lý khác mặc định; When nhập `managementFeeAmount` với `0 ≤ giá trị ≤ amount`; Then
+  hệ thống lưu giá trị override, tính lại kinh phí thực hiện và ghi audit (BR-10, BR-09).
+- **AC-11 (Negative — phí quản lý ngoài khoảng)** — Given nhập `managementFeeAmount` < 0 hoặc > tổng kinh phí
+  được cấp; When lưu xác nhận cấp; Then hệ thống báo lỗi validate, không lưu (BR-10, BR-02).
+- **AC-12 (Negative — không phải quản trị sửa cấu hình)** — Given người dùng là Chuyên viên hoặc Chủ nhiệm
+  (không phải quản trị); When sửa `managementFeeRate`/`managementFeeCap` cấp tổ chức; Then hệ thống trả 403,
+  không thay đổi cấu hình (BR-10, BR-04).
 
 ## 7. Phụ thuộc & rủi ro
 
@@ -179,7 +204,7 @@ Bản đơn giản thao tác trên `BudgetAllocation` (kinh phí được cấp)
 - **F06** — kết luận nghiệm thu `PASSED` là tiền đề quyết toán; chuyển `PASSED → COMPLETED` là điểm phối
   hợp chung giữa F05 (quyết toán kinh phí) và F06 (đóng đề tài) — xem
   [data-model §3](../../architecture/data-model.md#3-vòng-đời-đề-tài-state-machine).
-- **B03** — vai trò & quyền (Chuyên viên QL KHCN; Chủ nhiệm đề tài) và data scoping.
+- **B03** — vai trò & quyền (Chuyên viên QL KHCN; Chủ nhiệm đề tài; **Quản trị** sửa cấu hình phí quản lý) và data scoping.
 - **B04** — kênh thông báo xác nhận cấp kinh phí và kết quả quyết toán.
 
 **Rủi ro & điểm cần làm rõ:**
@@ -191,6 +216,9 @@ Bản đơn giản thao tác trên `BudgetAllocation` (kinh phí được cấp)
   hay cần tối thiểu cảnh báo khi tổng chi vượt mức cấp lúc quyết toán.
 - **Điều chỉnh kinh phí được cấp:** có cho chuyên viên sửa tổng cấp sau khi đã xác nhận (≤ `approvedBudget`)
   không, và xử lý ra sao khi tổng đã chi đã vượt mức cấp mới.
+- **Phí quản lý:** bản đơn giản dùng **một tỷ lệ phẳng cấp tổ chức + cho override theo đề tài**, thay đổi
+  cấu hình **không hồi tố** đề tài đã xác nhận (BR-10). Cần PO xác nhận: mức tỷ lệ/trần khởi tạo, và có cần
+  phân biệt tỷ lệ theo **nguồn kinh phí/loại đề tài** ngay không (hiện xếp giai đoạn sau).
 - **Mở rộng giai đoạn sau:** khoản mục/dự toán (`BudgetEstimate` + `settlementMode`), nhiều đợt cấp
   (`BudgetAllocation`), và đối soát với hệ thống tài chính ([ADR-0004](../../architecture/decisions/0004-doi-soat-kinh-phi-qua-api.md))
   sẽ được thiết kế lại khi mở phạm vi — giữ data-model tương thích để không phải migrate lớn.

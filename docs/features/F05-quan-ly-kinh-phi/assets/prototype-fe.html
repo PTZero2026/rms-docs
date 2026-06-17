@@ -101,6 +101,7 @@
   <div class="roleSwitch">
     <button id="roleFe" class="active" data-role="fe">Chủ nhiệm đề tài</button>
     <button id="roleBo" data-role="bo">Chuyên viên QLKHCN</button>
+    <button id="roleSy" data-role="sy">Quản trị HT</button>
   </div>
   <div class="box" style="padding:6px 12px;color:var(--muted);font-size:12px">🔍 Tìm kiếm</div>
   <div class="box" style="width:34px;height:34px;display:grid;place-items:center;color:var(--muted)">🔔</div>
@@ -129,8 +130,15 @@
     <a><span class="ic"></span>Báo cáo (B02)</a>
   </nav>
 
+  <nav class="side" id="sideSy" style="display:none">
+    <div class="grp">Cấu hình kinh phí</div>
+    <a class="active" data-go="sy01"><span class="ic"></span>SY-01 · Cấu hình phí quản lý</a>
+    <div class="grp">Khác</div>
+    <a><span class="ic"></span>Tham số hệ thống (B01)</a>
+  </nav>
+
   <main>
-    <div class="wf-banner">⚠ Wireframe lo-fi · dữ liệu minh hoạ · F05 Quản lý kinh phí (bản đơn giản): xác nhận cấp kinh phí · tạo khoản chi + chứng từ · xem khoản chi · quyết toán &amp; đóng đề tài</div>
+    <div class="wf-banner">⚠ Wireframe lo-fi · dữ liệu minh hoạ · F05 Quản lý kinh phí (bản đơn giản): cấu hình phí quản lý · xác nhận cấp kinh phí (tách phí quản lý) · tạo khoản chi + chứng từ · xem khoản chi · quyết toán &amp; đóng đề tài</div>
 
     <!-- ===================== FE-01 Tổng quan kinh phí ===================== -->
     <section class="screen active" id="fin">
@@ -147,10 +155,12 @@
         <button>Nghiệm thu</button>
       </div>
 
-      <div class="stats">
+      <div class="stats" style="grid-template-columns:repeat(5,1fr)">
         <div class="stat"><div class="k">Kinh phí được cấp</div><div class="v">300.000.000 đ</div></div>
+        <div class="stat"><div class="k">Phí quản lý (5%)</div><div class="v">15.000.000 đ</div></div>
+        <div class="stat"><div class="k">Kinh phí thực hiện</div><div class="v">285.000.000 đ</div></div>
         <div class="stat"><div class="k">Đã chi</div><div class="v">84.500.000 đ</div></div>
-        <div class="stat"><div class="k">Còn lại</div><div class="v">215.500.000 đ</div></div>
+        <div class="stat"><div class="k">Còn lại</div><div class="v">200.500.000 đ</div></div>
       </div>
 
       <div class="panel">
@@ -168,7 +178,7 @@
               <td><button class="btn" style="padding:4px 10px" data-go="expform">Sửa</button> <button class="btn danger" style="padding:4px 10px">Xóa</button></td></tr>
           </tbody>
         </table>
-        <div class="note">Số liệu lấy từ backend (không tự tính ở frontend). Nếu tổng đã chi vượt kinh phí được cấp → hiển thị cảnh báo nhưng vẫn cho ghi (BR-03, AC-04). Đề tài <code>COMPLETED</code> → khóa, chỉ đọc (BR-06).</div>
+        <div class="note">Số liệu lấy từ backend (không tự tính ở frontend). <b>Kinh phí thực hiện</b> = kinh phí được cấp − phí quản lý (trường giữ, BR-10). Nếu tổng đã chi vượt kinh phí thực hiện → hiển thị cảnh báo nhưng vẫn cho ghi (BR-03, AC-04). Đề tài <code>COMPLETED</code> → khóa, chỉ đọc (BR-06).</div>
         <div class="btns">
           <button class="btn primary" data-go="expform">+ Thêm khoản chi</button>
           <button class="btn" data-go="exp">Quản lý khoản chi &amp; chứng từ</button>
@@ -182,10 +192,12 @@
       <h1>Khoản chi &amp; chứng từ</h1>
       <p class="sub">Tạo, sửa, xóa khoản chi của đề tài và đính kèm chứng từ. Quyền: <b>BUDGET.EXPENSE</b> (đề tài của mình).</p>
 
-      <div class="stats">
+      <div class="stats" style="grid-template-columns:repeat(5,1fr)">
         <div class="stat"><div class="k">Kinh phí được cấp</div><div class="v">300.000.000 đ</div></div>
+        <div class="stat"><div class="k">Phí quản lý (5%)</div><div class="v">15.000.000 đ</div></div>
+        <div class="stat"><div class="k">Kinh phí thực hiện</div><div class="v">285.000.000 đ</div></div>
         <div class="stat"><div class="k">Đã chi</div><div class="v">84.500.000 đ</div></div>
-        <div class="stat"><div class="k">Còn lại</div><div class="v">215.500.000 đ</div></div>
+        <div class="stat"><div class="k">Còn lại</div><div class="v">200.500.000 đ</div></div>
       </div>
 
       <div class="panel">
@@ -217,7 +229,7 @@
         <div class="form-row"><label>Số tiền</label><input class="inp" value="12.500.000" /></div>
         <div class="form-row"><label>Ngày chi</label><input class="inp" value="08/06/2026" /></div>
         <div class="form-row" style="align-items:start"><label>Nội dung chi</label><textarea class="ta">Mua vật tư thí nghiệm đợt 2 phục vụ mẫu thử tháng 06</textarea></div>
-        <div class="note">Số tiền là số nguyên VND &gt; 0 (BR-02). Nếu khoản chi làm tổng chi vượt kinh phí được cấp, hệ thống cảnh báo và <b>vẫn cho lưu</b> (BR-03).</div>
+        <div class="note">Số tiền là số nguyên VND &gt; 0 (BR-02). Nếu khoản chi làm tổng chi vượt <b>kinh phí thực hiện</b> (= cấp − phí quản lý), hệ thống cảnh báo và <b>vẫn cho lưu</b> (BR-03).</div>
       </div>
 
       <div class="panel">
@@ -250,6 +262,16 @@
         <div class="form-row"><label>Tổng kinh phí cấp</label><input class="inp" value="300.000.000" /></div>
         <div class="hint" style="margin-left:184px">≤ mức được phê duyệt 300.000.000 đ; số nguyên VND &gt; 0 (BR-08, BR-02).</div>
         <div class="note">Mặc định bằng <code>ProjectAssignment.approvedBudget</code>. Sau khi xác nhận: ghi nhận kinh phí được cấp, gửi thông báo cho chủ nhiệm (B04) và ghi <code>AuditLog</code> (BR-09). Nhiều đợt cấp thuộc giai đoạn sau.</div>
+      </div>
+
+      <div class="panel">
+        <h3>Phí quản lý (trường giữ)</h3>
+        <div class="form-row"><label>Tỷ lệ cấu hình</label><input class="inp" value="5%  ·  trần: không giới hạn" disabled style="background:var(--fill);color:var(--muted)" /></div>
+        <div class="form-row"><label>Phí quản lý (đ)</label><input class="inp" value="15.000.000" /></div>
+        <div class="hint" style="margin-left:184px">Tự tính = min(⌊tổng cấp × tỷ lệ⌋, trần); chuyên viên có thể <b>override</b>. Ràng buộc 0 ≤ phí quản lý ≤ tổng cấp (BR-10); override ghi audit.</div>
+        <div class="form-row"><label>Kinh phí thực hiện</label><input class="inp" value="285.000.000" disabled style="background:var(--fill);font-weight:600" /></div>
+        <div class="hint" style="margin-left:184px">= Tổng cấp − phí quản lý. Đây là mức để chủ nhiệm chi; cảnh báo vượt tính trên mức này (BR-03).</div>
+        <div class="note">Tỷ lệ/trần do <b>Quản trị hệ thống</b> đặt ở SY-01; thay đổi cấu hình <b>không hồi tố</b> đề tài đã xác nhận.</div>
         <div class="btns">
           <button class="btn primary">Xác nhận cấp kinh phí</button>
         </div>
@@ -262,10 +284,12 @@
       <h1>BO-02 · Danh sách khoản chi</h1>
       <p class="sub">Xem khoản chi và chứng từ của các đề tài. Quyền: <b>BUDGET.VIEW</b> (chỉ đọc, không sửa khoản chi của chủ nhiệm).</p>
 
-      <div class="stats">
+      <div class="stats" style="grid-template-columns:repeat(5,1fr)">
         <div class="stat"><div class="k">Tổng kinh phí được cấp</div><div class="v">300.000.000 đ</div></div>
+        <div class="stat"><div class="k">Phí quản lý (5%)</div><div class="v">15.000.000 đ</div></div>
+        <div class="stat"><div class="k">Kinh phí thực hiện</div><div class="v">285.000.000 đ</div></div>
         <div class="stat"><div class="k">Tổng đã chi</div><div class="v">84.500.000 đ</div></div>
-        <div class="stat"><div class="k">Còn lại</div><div class="v">215.500.000 đ</div></div>
+        <div class="stat"><div class="k">Còn lại</div><div class="v">200.500.000 đ</div></div>
       </div>
 
       <div class="panel">
@@ -292,11 +316,15 @@
       <h1>BO-03 · Quyết toán &amp; đóng đề tài <span class="badge">PASSED</span></h1>
       <p class="sub">Rà soát kinh phí, quyết toán và chuyển <code>PASSED → COMPLETED</code>. Quyền: <b>BUDGET.SETTLE</b>.</p>
 
-      <div class="stats">
+      <div class="stats" style="grid-template-columns:repeat(5,1fr)">
         <div class="stat"><div class="k">Kinh phí được cấp</div><div class="v">300.000.000 đ</div></div>
+        <div class="stat"><div class="k">Phí quản lý (5%)</div><div class="v">15.000.000 đ</div></div>
+        <div class="stat"><div class="k">Kinh phí thực hiện</div><div class="v">285.000.000 đ</div></div>
         <div class="stat"><div class="k">Tổng đã chi</div><div class="v">284.500.000 đ</div></div>
-        <div class="stat"><div class="k">Còn lại</div><div class="v">15.500.000 đ</div></div>
+        <div class="stat"><div class="k">Còn lại</div><div class="v">500.000 đ</div></div>
       </div>
+
+      <div class="alert">⚠ Tổng đã chi (284.500.000 đ) gần chạm kinh phí thực hiện (285.000.000 đ). Bản đơn giản không chặn; chuyên viên rà soát thủ công trước khi đóng (BR-03, BR-07).</div>
 
       <div class="panel">
         <h3>Rà soát khoản chi trước khi đóng</h3>
@@ -316,6 +344,29 @@
       </div>
     </section>
 
+    <!-- ===================== SY-01 Cấu hình phí quản lý ===================== -->
+    <section class="screen" id="sy01">
+      <div class="crumbs">Cấu hình kinh phí › Cấu hình phí quản lý</div>
+      <h1>SY-01 · Cấu hình phí quản lý</h1>
+      <p class="sub">Đặt tỷ lệ phí quản lý cấp tổ chức (flat-rate) áp dụng chung khi xác nhận cấp kinh phí. Quyền: <b>BUDGET.CONFIG</b> (Quản trị hệ thống).</p>
+
+      <div class="panel">
+        <h3>Tham số phí quản lý cấp tổ chức</h3>
+        <div class="form-row"><label>Tỷ lệ phí quản lý (%)</label><input class="inp" value="5" /></div>
+        <div class="hint" style="margin-left:184px">Số ≥ 0. Lưu ở <code>SystemSetting.budget.managementFeeRate</code> (BR-10).</div>
+        <div class="form-row"><label>Trần phí quản lý (đ)</label><input class="inp" value="" placeholder="Để trống = không giới hạn" /></div>
+        <div class="hint" style="margin-left:184px">Tùy chọn, số nguyên VND. Lưu ở <code>SystemSetting.budget.managementFeeCap</code>.</div>
+        <div class="note">Công thức khi xác nhận cấp: phí quản lý = min(⌊tổng cấp × tỷ lệ⌋, trần), làm tròn xuống đến đồng. Thay đổi cấu hình <b>không hồi tố</b> đề tài đã xác nhận; mọi thay đổi ghi <code>AuditLog</code> (BR-09).</div>
+        <div class="kv" style="margin-top:6px">
+          <div class="lbl">Cập nhật gần nhất</div><div>17/06/2026 · Quản trị viên</div>
+        </div>
+        <div class="btns">
+          <button class="btn primary">Lưu cấu hình</button>
+          <button class="btn ghost">Hủy</button>
+        </div>
+      </div>
+    </section>
+
   </main>
 </div>
 
@@ -330,12 +381,14 @@
 
   const roles = {
     fe:{home:'fin', side:'sideFe', sub:'Cổng nhà khoa học · fe-portal'},
-    bo:{home:'bo01', side:'sideBo', sub:'Back-office quản trị · bo-admin'}
+    bo:{home:'bo01', side:'sideBo', sub:'Back-office quản trị · bo-admin'},
+    sy:{home:'sy01', side:'sideSy', sub:'Quản trị hệ thống · sys-admin'}
   };
   function setRole(r){
     const cfg = roles[r];
     document.getElementById('sideFe').style.display = r==='fe' ? '' : 'none';
     document.getElementById('sideBo').style.display = r==='bo' ? '' : 'none';
+    document.getElementById('sideSy').style.display = r==='sy' ? '' : 'none';
     document.getElementById('appSub').textContent = cfg.sub;
     document.querySelectorAll('.roleSwitch button').forEach(b=>b.classList.toggle('active', b.dataset.role===r));
     go(cfg.home);
