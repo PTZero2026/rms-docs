@@ -1,313 +1,191 @@
 ---
-title: "Prototype nghiệp vụ — Quản lý tài chính đề tài"
+title: "Prototype nghiệp vụ — Quản lý kinh phí đề tài (bản đơn giản)"
 spec: "./spec.md"
 owner: "PO/BA"
 status: Draft
-updated: 2026-06-08
+updated: 2026-06-17
 ---
 
-# Prototype nghiệp vụ — Quản lý tài chính đề tài
+# Prototype nghiệp vụ — Quản lý kinh phí đề tài (bản đơn giản)
 
-> Bản nháp để hình dung luồng và màn hình trước khi chốt `spec.md`. Phạm vi prototype này là
-> **nghiệp vụ nội bộ trường**, chưa tích hợp hệ thống kế toán/tài chính ngoài.
+> Bản nháp để hình dung luồng và màn hình. Bám theo **bản đơn giản** đã chốt ở `spec.md`:
+> xác nhận tổng kinh phí được cấp → chủ nhiệm tạo khoản chi + chứng từ → chuyên viên xem khoản chi →
+> quyết toán & đóng đề tài. Khoản mục/dự toán, nhiều đợt cấp, đối soát tài chính, và quy trình phê
+> duyệt thanh toán nhiều bước thuộc **giai đoạn sau** (xem `spec.md` §2).
 
 ## 1. Giả định cho prototype v0
 
-- RMS quản lý tài chính ở mức hồ sơ nghiệp vụ nội bộ: dự toán, khoản mục, đợt cấp, đề nghị thanh toán,
-  chứng từ, phê duyệt và quyết toán.
-- Chưa tích hợp hệ thống kế toán/tài chính hiện có; Phòng Tài chính thao tác trực tiếp trên RMS.
-- Vai trò chính: **Chủ nhiệm đề tài**, **Thư ký đề tài**, **Phòng KHCN**, **Phòng Tài chính**.
-- Chứng từ lưu cả metadata và file đính kèm qua `Attachment`.
-- Quy trình thật chưa chốt, nên prototype dùng luồng trung dung:
-  **lập dự toán → thẩm định/duyệt → ghi nhận cấp kinh phí → đề nghị thanh toán → duyệt thanh toán → quyết toán/khóa tài chính**.
+- Phạm vi nội bộ trường, **chưa** tích hợp hệ thống kế toán/tài chính ngoài.
+- Chỉ hai vai trò tham gia trực tiếp: **Chủ nhiệm đề tài** và **Chuyên viên QL KHCN**.
+- Một đề tài có **một tổng kinh phí được cấp** (chuyên viên xác nhận một lần, mặc định = `approvedBudget`
+  từ F04), không tách khoản mục, không nhiều đợt cấp ở bản này.
+- Khoản chi gồm: số tiền, mô tả, ngày chi, và **chứng từ** đính kèm (`Attachment`).
+- Vượt kinh phí được cấp → **cảnh báo** nhưng vẫn cho ghi.
 
 ## 2. Vai trò & trách nhiệm
 
 | Vai trò | Việc được làm |
 |---|---|
-| Chủ nhiệm đề tài | Xem ngân sách, tạo đề nghị thanh toán/quyết toán, giải trình khoản chi, nộp chứng từ |
-| Thư ký đề tài | Nhập thay/chỉnh hồ sơ tài chính ở trạng thái nháp, chuẩn bị chứng từ cho chủ nhiệm |
-| Phòng KHCN | Kiểm tra tính phù hợp với đề tài, tiến độ, nội dung được duyệt; chuyển Phòng Tài chính thẩm định |
-| Phòng Tài chính | Thẩm định dự toán, ghi nhận cấp kinh phí, duyệt/từ chối/yêu cầu bổ sung thanh toán, khóa tài chính |
+| Chủ nhiệm đề tài | Xem kinh phí được cấp của đề tài mình; tạo/sửa/xóa khoản chi; đính kèm chứng từ |
+| Chuyên viên QL KHCN | Xác nhận tổng kinh phí được cấp; xem danh sách khoản chi + chứng từ; quyết toán & đóng đề tài |
 
 ## 3. Luồng tổng quát
 
 ```mermaid
 flowchart TD
-    A["Đề tài đã được giao<br/>ResearchProject = IN_PROGRESS"] --> B["Lập ngân sách theo khoản mục"]
-    B --> C["Phòng KHCN kiểm tra"]
-    C -->|Yêu cầu sửa| B
-    C --> D["Phòng Tài chính thẩm định"]
-    D -->|Yêu cầu sửa| B
-    D --> E["Duyệt ngân sách baseline"]
-    E --> F["Ghi nhận đợt cấp kinh phí"]
-    E --> G["Chủ nhiệm/Thư ký tạo đề nghị thanh toán"]
-    G --> H["Đính chứng từ + metadata"]
-    H --> I["Phòng KHCN kiểm tra nghiệp vụ"]
-    I -->|Yêu cầu bổ sung| G
-    I --> J["Phòng Tài chính duyệt thanh toán"]
-    J -->|Từ chối| K["Kết thúc hồ sơ thanh toán"]
-    J -->|Yêu cầu bổ sung| G
-    J -->|Duyệt| L["Ghi nhận đã thanh toán/quyết toán khoản chi"]
-    L --> M["Tổng hợp quyết toán đề tài"]
-    M --> N["Khóa tài chính khi đề tài nghiệm thu/hoàn tất"]
+    A["Đề tài đã được giao<br/>ResearchProject = IN_PROGRESS"] --> B["Chuyên viên xác nhận<br/>tổng kinh phí được cấp"]
+    B --> C["Chủ nhiệm tạo khoản chi<br/>+ đính chứng từ"]
+    C --> D{"Tổng chi vượt<br/>kinh phí được cấp?"}
+    D -->|Có| E["Vẫn lưu + cảnh báo vượt"]
+    D -->|Không| F["Lưu khoản chi"]
+    E --> G["Chuyên viên xem<br/>danh sách khoản chi + chứng từ"]
+    F --> G
+    G --> H{"Đề tài PASSED?"}
+    H -->|Chưa| C
+    H -->|Rồi| I["Chuyên viên quyết toán<br/>& đóng đề tài"]
+    I --> J["ResearchProject: PASSED → COMPLETED<br/>khóa kinh phí"]
 ```
 
-## 4. Trạng thái đề xuất
+## 4. Trạng thái
 
-### 4.1 Ngân sách đề tài
+### 4.1 Kinh phí được cấp (`BudgetAllocation`, một bản ghi/đề tài)
 
 ```text
-DRAFT
-SUBMITTED_TO_KHCN
-KHCN_REVISION_REQUESTED
-KHCN_APPROVED
-FINANCE_REVISION_REQUESTED
-FINANCE_APPROVED
-LOCKED
+(chưa có)  → CONFIRMED   : chuyên viên xác nhận cấp
+CONFIRMED  → CANCELLED   : hủy xác nhận (kèm lý do, ghi audit) — nếu cho phép
 ```
 
-- `FINANCE_APPROVED` là baseline ngân sách đang hiệu lực.
-- `LOCKED` dùng khi đề tài đã quyết toán/đóng tài chính.
-- Nếu cần điều chỉnh ngân sách sau duyệt, tạo phiên bản điều chỉnh thay vì sửa đè baseline cũ.
+- `CONFIRMED` là tổng kinh phí được cấp đang hiệu lực, dùng làm mốc tính "còn lại" và cảnh báo vượt.
 
-### 4.2 Đề nghị thanh toán
+### 4.2 Khoản chi (`BudgetTransaction`, type `EXPENSE`)
 
-```text
-DRAFT
-SUBMITTED
-KHCN_REVIEWING
-KHCN_REVISION_REQUESTED
-FINANCE_REVIEWING
-FINANCE_REVISION_REQUESTED
-APPROVED
-PAID
-REJECTED
-CANCELLED
-```
+- Không có máy trạng thái phê duyệt ở bản đơn giản. Khoản chi tồn tại khi đề tài `IN_PROGRESS`; chủ nhiệm
+  sửa/xóa được khoản chi của mình cho tới khi đề tài `COMPLETED` thì **khóa** (BR-06).
 
-- `APPROVED`: Phòng Tài chính đã duyệt nghiệp vụ.
-- `PAID`: đã ghi nhận chi trả/thanh toán trong RMS.
-- `REJECTED`: hồ sơ không hợp lệ và kết thúc.
-- `CANCELLED`: người tạo hủy khi còn được phép.
+## 5. Prototype màn hình FE (Chủ nhiệm)
 
-## 5. Prototype màn hình FE
-
-### FE-01 — Tab "Tài chính" trong chi tiết đề tài
+### FE-01 — Tab "Kinh phí" trong chi tiết đề tài
 
 ```text
 +--------------------------------------------------------------------------------+
 | Đề tài: Nghiên cứu mô hình RMS AI-first                         IN_PROGRESS     |
 +--------------------------------------------------------------------------------+
-| Tổng được duyệt     Đã cấp              Đã thanh toán       Còn lại             |
-| 300.000.000 VND     120.000.000 VND     84.500.000 VND      215.500.000 VND     |
+| Kinh phí được cấp        Đã chi               Còn lại                           |
+| 300.000.000 VND          84.500.000 VND       215.500.000 VND                   |
 +--------------------------------------------------------------------------------+
-| Khoản mục ngân sách                                                            |
+| Khoản chi                                                       [+ Thêm khoản chi]
 | ------------------------------------------------------------------------------ |
-| Khoản mục            Dự toán        Đã thanh toán   Còn lại       Trạng thái    |
-| Nhân công            90.000.000     30.000.000      60.000.000    Bình thường   |
-| Vật tư               80.000.000     42.500.000      37.500.000    Bình thường   |
-| Hội thảo             50.000.000     12.000.000      38.000.000    Bình thường   |
-| Khác                 80.000.000     0               80.000.000    Chưa chi      |
-+--------------------------------------------------------------------------------+
-| [Tạo đề nghị thanh toán] [Xem đợt cấp] [Xem chứng từ]                           |
+| Ngày          Nội dung chi               Số tiền        Chứng từ               |
+| 08/06/2026    Mua vật tư thí nghiệm       12.500.000     2 tệp   [Sửa] [Xóa]    |
+| 15/05/2026    Thù lao nhân công đợt 1      30.000.000     1 tệp   [Sửa] [Xóa]    |
+| 02/05/2026    Chi phí hội thảo             12.000.000     3 tệp   [Sửa] [Xóa]    |
 +--------------------------------------------------------------------------------+
 ```
 
 Mục tiêu:
-- Chủ nhiệm/Thư ký nhìn nhanh tổng quan tài chính đề tài.
-- Các số liệu chỉ lấy từ backend; không tự tính ở frontend để tránh lệch.
-- Nếu một khoản mục vượt hoặc gần vượt dự toán, hiển thị cảnh báo rõ ở hàng khoản mục.
+- Chủ nhiệm nhìn nhanh tổng được cấp – đã chi – còn lại và quản lý khoản chi.
+- Các số liệu lấy từ backend; không tự tính ở frontend để tránh lệch.
+- Nếu tổng đã chi vượt kinh phí được cấp, hiển thị **cảnh báo** rõ ở thẻ tổng (vẫn cho thêm chi).
 
-### FE-02 — Tạo đề nghị thanh toán
+### FE-02 — Tạo/sửa khoản chi
 
 ```text
 +--------------------------------------------------------------------------------+
-| Tạo đề nghị thanh toán                                                         |
+| Thêm khoản chi                                                                 |
 +--------------------------------------------------------------------------------+
-| Loại hồ sơ           ( ) Thanh toán trong kỳ   ( ) Quyết toán cuối đề tài       |
-| Khoản mục            [Vật tư                                      v]            |
-| Số tiền đề nghị      [12.500.000] VND                                             |
-| Ngày phát sinh       [08/06/2026]                                                |
-| Nội dung chi         [Mua vật tư thí nghiệm đợt 2                  ]             |
-| Giải trình           [Theo kế hoạch triển khai mẫu thử tháng 06...]             |
+| Số tiền             [12.500.000] VND                                            |
+| Ngày chi            [08/06/2026]                                                 |
+| Nội dung chi        [Mua vật tư thí nghiệm đợt 2                  ]             |
 +--------------------------------------------------------------------------------+
 | Chứng từ                                                                         |
 | ------------------------------------------------------------------------------ |
-| Loại chứng từ       Số chứng từ      Ngày chứng từ    File                     |
-| Hóa đơn             HD-2026-001      07/06/2026      hoa-don.pdf               |
-| Biên bản bàn giao    BB-2026-012      08/06/2026      bien-ban.pdf              |
-| [+ Thêm chứng từ]                                                               |
+| Tên tệp                         Kích thước     Thao tác                         |
+| hoa-don-HD2026-001.pdf          240 KB         [Xem] [Xóa]                      |
+| bien-ban-ban-giao.pdf           180 KB         [Xem] [Xóa]                      |
+| [+ Đính kèm chứng từ]                                                           |
 +--------------------------------------------------------------------------------+
-| [Lưu nháp]                                           [Nộp Phòng KHCN]           |
+| [Hủy]                                                          [Lưu khoản chi]  |
 +--------------------------------------------------------------------------------+
 ```
 
-Metadata chứng từ nên có tối thiểu:
-- `documentType`: hóa đơn, hợp đồng, biên bản nghiệm thu, bảng kê, quyết định, khác.
-- `documentNo`: số chứng từ.
-- `documentDate`: ngày chứng từ.
-- `issuer`: đơn vị/cá nhân phát hành nếu có.
-- `amount`: số tiền trên chứng từ nếu cần đối chiếu.
-- `attachmentId`: file đính kèm.
+- `Số tiền` validate số nguyên VND > 0 (BR-02). Chứng từ có thể đính một hoặc nhiều tệp (BR-05).
+- Khi lưu làm tổng chi vượt kinh phí được cấp: hiển thị cảnh báo và **vẫn lưu** (BR-03).
 
-### FE-03 — Danh sách đề nghị thanh toán
+## 6. Prototype màn hình BackOffice (Chuyên viên)
+
+### BO-01 — Xác nhận cấp kinh phí
 
 ```text
 +--------------------------------------------------------------------------------+
-| Đề nghị thanh toán                                                              |
+| Xác nhận cấp kinh phí: Nghiên cứu mô hình RMS AI-first            IN_PROGRESS   |
 +--------------------------------------------------------------------------------+
-| Mã hồ sơ      Ngày nộp     Khoản mục   Số tiền        Trạng thái                |
-| TT-00021      08/06/2026   Vật tư      12.500.000     FINANCE_REVIEWING         |
-| TT-00018      15/05/2026   Nhân công   30.000.000     PAID                      |
-| TT-00016      02/05/2026   Hội thảo    12.000.000     KHCN_REVISION_REQUESTED   |
+| Kinh phí được phê duyệt (F04):   300.000.000 VND                                |
+| Tổng kinh phí cấp cho đề tài:    [300.000.000] VND   (≤ mức phê duyệt)          |
 +--------------------------------------------------------------------------------+
-| Khi bị yêu cầu bổ sung: hiển thị ghi chú xử lý và nút [Bổ sung hồ sơ].          |
+| [Hủy]                                                  [Xác nhận cấp kinh phí]  |
 +--------------------------------------------------------------------------------+
 ```
 
-## 6. Prototype màn hình BackOffice
+- Số cấp mặc định = `approvedBudget`; validate > 0 và **không vượt** `approvedBudget` (BR-08).
+- Sau khi xác nhận: hiển thị người xác nhận & thời điểm, gửi thông báo cho chủ nhiệm (B04), ghi audit.
 
-### BO-01 — Hồ sơ ngân sách đề tài
+### BO-02 — Danh sách khoản chi
 
 ```text
 +--------------------------------------------------------------------------------+
-| Hồ sơ ngân sách: Nghiên cứu mô hình RMS AI-first                  IN_PROGRESS   |
+| Khoản chi đề tài                                                                |
 +--------------------------------------------------------------------------------+
-| Kinh phí được giao từ F04: 300.000.000 VND                                      |
-| Tổng dự toán hiện tại:       300.000.000 VND                                    |
-| Phiên bản ngân sách:         v1 - FINANCE_APPROVED                              |
+| Bộ lọc: đề tài, từ ngày/đến ngày, có/không chứng từ                             |
 +--------------------------------------------------------------------------------+
-| Khoản mục            Dự toán          Cơ chế thanh toán      Ghi chú            |
-| Nhân công            90.000.000       Khoán/định mức         Theo thuyết minh   |
-| Vật tư               80.000.000       Theo chứng từ          Hóa đơn bắt buộc   |
-| Hội thảo             50.000.000       Theo chứng từ          Có chương trình    |
-| Khác                 80.000.000       Hỗn hợp                Cần giải trình     |
+| Đề tài            Ngày         Nội dung chi          Số tiền       Chứng từ     |
+| RMS AI-first      08/06/2026   Mua vật tư            12.500.000    [Xem 2 tệp]  |
+| RMS AI-first      15/05/2026   Thù lao nhân công      30.000.000    [Xem 1 tệp]  |
+| Hệ đo lường       20/05/2026   Chi phí khảo sát       18.000.000    [Xem 1 tệp]  |
 +--------------------------------------------------------------------------------+
-| [Yêu cầu sửa] [Phòng KHCN duyệt] [Chuyển Phòng Tài chính] [Tài chính duyệt]     |
+| Tổng cấp: 300.000.000   Đã chi: 84.500.000   Còn lại: 215.500.000              |
 +--------------------------------------------------------------------------------+
 ```
 
-Ghi chú về "khoản mục":
-- Khoản mục là nhóm chi để kiểm soát ngân sách.
-- Danh mục nên cấu hình ở B01, không hard-code vào code.
-- Mỗi khoản mục có thể chọn cơ chế kiểm soát chứng từ khác nhau.
+- Chuyên viên chỉ **xem** (không sửa khoản chi của chủ nhiệm). Mở chứng từ để kiểm tra.
 
-### BO-02 — Đợt cấp kinh phí
+### BO-03 — Quyết toán & đóng đề tài
 
 ```text
 +--------------------------------------------------------------------------------+
-| Đợt cấp kinh phí                                                                |
+| Quyết toán đề tài: Nghiên cứu mô hình RMS AI-first                    PASSED    |
 +--------------------------------------------------------------------------------+
-| Đợt     Kế hoạch       Thực cấp       Số tiền        Trạng thái                 |
-| Đợt 1   01/04/2026     05/04/2026     120.000.000    RELEASED                  |
-| Đợt 2   01/08/2026     -              100.000.000    PLANNED                   |
-| Đợt 3   01/12/2026     -               80.000.000    PLANNED                   |
+| Tổng kinh phí được cấp     300.000.000 VND                                      |
+| Tổng đã chi                284.500.000 VND                                      |
+| Còn lại                     15.500.000 VND                                      |
 +--------------------------------------------------------------------------------+
-| [Thêm đợt cấp] [Ghi nhận đã cấp] [Hủy đợt cấp]                                  |
+| Danh sách khoản chi (để chuyên viên rà soát thủ công)              [Xem chi tiết]
 +--------------------------------------------------------------------------------+
-```
-
-Luật gợi ý:
-- Tổng các đợt đã cấp không vượt tổng ngân sách được duyệt.
-- Hủy đợt cấp bắt buộc nhập lý do và ghi `AuditLog`.
-- Đợt đã cấp không xóa cứng.
-
-### BO-03 — Hàng đợi duyệt thanh toán
-
-```text
-+--------------------------------------------------------------------------------+
-| Hàng đợi duyệt thanh toán                                                       |
-+--------------------------------------------------------------------------------+
-| Mã hồ sơ  Đề tài                 Người nộp   Số tiền      Trạng thái            |
-| TT-00021  RMS AI-first           Nguyễn A    12.500.000   FINANCE_REVIEWING     |
-| TT-00020  Hệ đo lường mẫu thử    Trần B      18.000.000   KHCN_REVIEWING        |
-| TT-00016  RMS AI-first           Nguyễn A    12.000.000   KHCN_REVISION_REQUESTED|
-+--------------------------------------------------------------------------------+
-| Bộ lọc: đơn vị, đề tài, trạng thái, khoản mục, từ ngày/đến ngày, thiếu chứng từ |
+| [Xuất bảng tổng hợp]                              [Quyết toán & đóng đề tài]    |
 +--------------------------------------------------------------------------------+
 ```
 
-### BO-04 — Chi tiết duyệt thanh toán
+- Chỉ bật khi đề tài `PASSED` (BR-07). Bản đơn giản **không** có điều kiện chặn tự động; chuyên viên rà
+  soát thủ công rồi đóng.
+- "Quyết toán & đóng đề tài" → chuyển `ResearchProject: PASSED → COMPLETED` qua domain service dùng chung,
+  khóa kinh phí, gửi thông báo (B04) và ghi `AuditLog`.
 
-```text
-+--------------------------------------------------------------------------------+
-| Hồ sơ TT-00021                                                                  |
-+--------------------------------------------------------------------------------+
-| Đề tài             RMS AI-first                                                  |
-| Người nộp          Nguyễn A                                                      |
-| Khoản mục          Vật tư                                                        |
-| Số tiền đề nghị    12.500.000 VND                                                |
-| Ngân sách còn lại  37.500.000 VND                                                |
-+--------------------------------------------------------------------------------+
-| Chứng từ                                                                         |
-| Hóa đơn HD-2026-001       07/06/2026      12.500.000      [Xem file]            |
-| Biên bản BB-2026-012      08/06/2026       -              [Xem file]            |
-+--------------------------------------------------------------------------------+
-| Ý kiến Phòng KHCN     [Phù hợp nội dung triển khai giai đoạn 2...]              |
-| Ý kiến Tài chính      [Đủ chứng từ, đề nghị thanh toán...]                      |
-+--------------------------------------------------------------------------------+
-| [Yêu cầu bổ sung] [Từ chối] [Duyệt thanh toán] [Ghi nhận đã thanh toán]          |
-+--------------------------------------------------------------------------------+
-```
+## 7. Dữ liệu nghiệp vụ (theo data-model hiện hành)
 
-Điểm cần làm rõ ở bước này:
-- Phòng KHCN có bắt buộc duyệt trước Phòng Tài chính mọi hồ sơ không?
-- Phòng Tài chính có thể trả thẳng về người nộp hay phải qua Phòng KHCN?
-- `APPROVED` và `PAID` có tách riêng không? Prototype đang tách để phản ánh "duyệt" và "đã chi trả" là hai việc khác nhau.
-
-### BO-05 — Quyết toán & khóa tài chính
-
-```text
-+--------------------------------------------------------------------------------+
-| Quyết toán tài chính đề tài                                                     |
-+--------------------------------------------------------------------------------+
-| Tổng được duyệt       300.000.000 VND                                           |
-| Tổng đã cấp           300.000.000 VND                                           |
-| Tổng đã thanh toán    284.500.000 VND                                           |
-| Chưa sử dụng           15.500.000 VND                                           |
-+--------------------------------------------------------------------------------+
-| Điều kiện khóa tài chính                                                        |
-| [x] Không còn hồ sơ thanh toán đang xử lý                                       |
-| [x] Không còn khoản thực thanh thiếu chứng từ bắt buộc                          |
-| [x] Đề tài đã nghiệm thu / đủ điều kiện đóng theo F06                           |
-| [ ] Đã xác nhận số dư/chênh lệch cuối kỳ                                        |
-+--------------------------------------------------------------------------------+
-| [Xuất bảng tổng hợp] [Yêu cầu bổ sung] [Khóa tài chính đề tài]                  |
-+--------------------------------------------------------------------------------+
-```
-
-Sau khi khóa:
-- Không cho tạo đề nghị thanh toán mới.
-- Không cho sửa chứng từ/giao dịch, trừ quyền mở lại đặc biệt.
-- Nếu chuyển `ResearchProject` sang `COMPLETED`, phải đi qua domain service dùng chung và ghi `AuditLog`.
-
-## 7. Dữ liệu nghiệp vụ đề xuất
-
-| Thực thể | Mục đích |
+| Thực thể | Mục đích trong bản đơn giản |
 |---|---|
-| `ProjectBudget` | Header ngân sách của đề tài, tổng tiền, trạng thái, phiên bản baseline |
-| `BudgetLineItem` | Dòng ngân sách theo khoản mục, số tiền duyệt, cơ chế chứng từ |
-| `BudgetRevision` | Điều chỉnh ngân sách sau duyệt, lưu phiên bản và lý do |
-| `Disbursement` | Đợt cấp kinh phí nội bộ |
-| `PaymentRequest` | Hồ sơ đề nghị thanh toán/quyết toán |
-| `PaymentLineItem` | Chi tiết khoản chi trong một đề nghị thanh toán |
-| `FinancialDocument` | Metadata chứng từ |
-| `Attachment` | File chứng từ dùng chung |
-| `FinancialApproval` | Lịch sử duyệt/yêu cầu sửa/từ chối theo từng bước |
-| `AuditLog` | Nhật ký append-only cho mọi thay đổi trạng thái/số tiền |
+| `ProjectAssignment` | Cung cấp `approvedBudget` (mức phê duyệt) từ F04 |
+| `BudgetAllocation` | Kinh phí được cấp cho đề tài (một bản ghi, `CONFIRMED`/`CANCELLED`) |
+| `BudgetTransaction` | Khoản chi (type `EXPENSE`): số tiền, mô tả, ngày |
+| `Attachment` | Chứng từ đính kèm khoản chi |
+| `Notification` | Thông báo xác nhận cấp & quyết toán (B04) |
+| `AuditLog` | Nhật ký append-only cho mọi thay đổi |
 
-> `data-model.md` hiện đang có `BudgetEstimate`, `BudgetAllocation`, `BudgetTransaction`. Khi chốt prototype,
-> có thể chọn một trong hai hướng:
-> 1. Giữ tên hiện tại và bổ sung trường/trạng thái cho thanh toán nội bộ.
-> 2. Đổi sang bộ tên giàu nghiệp vụ hơn (`ProjectBudget`, `PaymentRequest`, `FinancialDocument`) nếu muốn tách rõ
-> dự toán, đợt cấp và hồ sơ thanh toán.
+> Giai đoạn sau, khi mở rộng: bổ sung `BudgetEstimate` (khoản mục + `settlementMode`), `BudgetAllocation`
+> nhiều đợt, và các trường đối soát. Giữ data-model tương thích để không phải migrate lớn.
 
 ## 8. Câu hỏi cần chốt tiếp
 
-1. Phòng KHCN có duyệt mọi đề nghị thanh toán trước Phòng Tài chính không, hay chỉ duyệt các khoản liên quan nội dung chuyên môn?
-2. Có cần phân biệt **thanh toán trong quá trình thực hiện** và **quyết toán cuối đề tài** bằng hai form khác nhau không?
-3. Khi chi vượt khoản mục nhưng vẫn trong tổng ngân sách đề tài, hệ thống nên **chặn**, **cảnh báo**, hay cho phép nếu Phòng Tài chính duyệt?
-4. Có cần quản lý **tạm ứng và hoàn ứng** riêng không?
-5. Có cần xuất biểu mẫu/bảng kê tài chính theo mẫu trường không?
-6. Ai được quyền mở lại hồ sơ tài chính đã khóa?
+1. Có bắt buộc tối thiểu 1 chứng từ cho mỗi khoản chi không, hay để tùy chọn như bản hiện tại?
+2. Khi quyết toán mà tổng chi vượt kinh phí được cấp, có cần cảnh báo/xác nhận thêm trước khi đóng không?
+3. Có cho chuyên viên điều chỉnh tổng kinh phí được cấp sau khi đã xác nhận không? Xử lý ra sao khi đã chi vượt?
+4. Chủ nhiệm tạo khoản chi khi chưa xác nhận cấp kinh phí: cho phép hay yêu cầu cấp trước?

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>F05 Kinh phí — Prototype người dùng (Chủ nhiệm đề tài)</title>
+<title>F05 Kinh phí — Prototype (bản đơn giản)</title>
 <style>
   :root{
     --line:#9aa0a6; --line-2:#c7ccd1; --ink:#2b2f33; --muted:#6b7177;
@@ -48,7 +48,7 @@
   .tabs button{border:none;background:none;padding:10px 14px;cursor:pointer;color:var(--muted);font-size:13.5px;border-bottom:2px solid transparent}
   .tabs button.active{color:var(--ink);font-weight:600;border-bottom-color:var(--accent)}
   /* cards */
-  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
   .stat{background:var(--panel);border:1px solid var(--line-2);border-radius:8px;padding:14px 16px}
   .stat .k{font-size:12px;color:var(--muted);margin-bottom:8px}
   .stat .v{font-size:18px;font-weight:700}
@@ -63,26 +63,21 @@
   .pill{display:inline-block;padding:1px 9px;border-radius:20px;font-size:11.5px;border:1px solid var(--line-2);color:var(--muted)}
   .pill.warn{border-style:solid;border-color:var(--accent);color:var(--accent);font-weight:600}
   .pill.dot::before{content:"●";margin-right:5px;color:var(--line)}
-  /* progress */
-  .bar{height:7px;background:var(--fill-2);border-radius:5px;overflow:hidden;min-width:90px}
-  .bar > span{display:block;height:100%;background:var(--line)}
-  .bar.over > span{background:var(--accent)}
   /* buttons */
   .btns{display:flex;gap:10px;flex-wrap:wrap;padding:14px 0 8px}
   .btn{border:1px solid var(--line);background:var(--panel);border-radius:6px;padding:8px 16px;cursor:pointer;font-size:13px;color:var(--ink)}
   .btn:hover{background:var(--fill)}
   .btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
   .btn.ghost{border-style:dashed;color:var(--muted)}
+  .btn.danger{color:var(--accent)}
   /* forms */
   .form-row{display:grid;grid-template-columns:170px 1fr;gap:14px;align-items:center;padding:9px 0}
   .form-row > label{color:var(--muted);font-size:13px}
   .inp,.sel,.ta{width:100%;border:1px solid var(--line-2);border-radius:6px;padding:9px 11px;font-size:13px;background:var(--panel);font-family:inherit}
   .ta{min-height:64px;resize:vertical}
-  .radios{display:flex;gap:22px}
-  .radios label{display:flex;gap:7px;align-items:center;color:var(--ink);cursor:pointer}
-  .radios input{accent-color:var(--accent)}
   .hint{color:var(--muted);font-size:12px;margin:4px 0 0}
   .note{background:var(--fill);border:1px dashed var(--line-2);border-radius:6px;padding:10px 12px;color:var(--muted);font-size:12.5px;margin:10px 0}
+  .alert{background:#fff;border:1px solid var(--accent);border-left-width:4px;border-radius:6px;padding:10px 14px;color:var(--accent);font-size:13px;font-weight:600;margin:0 0 18px}
   .empty{text-align:center;color:var(--muted);padding:34px;border:1px dashed var(--line-2);border-radius:8px}
   .screen{display:none}
   .screen.active{display:block}
@@ -92,12 +87,10 @@
   .roleSwitch button{border:none;background:var(--panel);padding:7px 14px;cursor:pointer;font-size:12.5px;color:var(--muted)}
   .roleSwitch button + button{border-left:1px solid var(--line-2)}
   .roleSwitch button.active{background:var(--accent);color:#fff;font-weight:600}
-  .checks label{display:flex;gap:9px;align-items:center;padding:7px 0;color:var(--ink)}
-  .checks input{accent-color:var(--accent);width:15px;height:15px}
-  .twocol{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-  .kv{display:grid;grid-template-columns:200px 1fr;row-gap:9px;font-size:13px}
+  .kv{display:grid;grid-template-columns:220px 1fr;row-gap:9px;font-size:13px}
   .kv .lbl{color:var(--muted)}
-  .uploadzone{border:1.5px dashed var(--line-2);border-radius:8px;padding:22px;text-align:center;color:var(--muted);font-size:13px}
+  .uploadzone{border:1.5px dashed var(--line-2);border-radius:8px;padding:22px;text-align:center;color:var(--muted);font-size:13px;margin-bottom:6px}
+  .filechip{display:flex;align-items:center;justify-content:space-between;border:1px solid var(--line-2);border-radius:6px;padding:7px 11px;margin-top:8px;font-size:13px}
 </style>
 </head>
 <body>
@@ -122,29 +115,24 @@
     <a><span class="ic"></span>Lý lịch khoa học</a>
     <div class="grp">Đề tài đang mở</div>
     <a data-go="fin"><span class="ic"></span>Tổng quan kinh phí</a>
-    <a data-go="alloc"><span class="ic"></span>Đợt cấp & giao dịch</a>
-    <a data-go="list"><span class="ic"></span>Đề nghị thanh toán</a>
+    <a data-go="exp"><span class="ic"></span>Khoản chi &amp; chứng từ</a>
     <a><span class="ic"></span>Tiến độ (F04)</a>
     <a><span class="ic"></span>Nghiệm thu (F06)</a>
   </nav>
 
   <nav class="side" id="sideBo" style="display:none">
     <div class="grp">Quản trị kinh phí</div>
-    <a class="active" data-go="bo01"><span class="ic"></span>BO-01 · Khoán kinh phí</a>
-    <a data-go="bo02"><span class="ic"></span>BO-02 · Đợt cấp kinh phí</a>
-    <a data-go="bo03"><span class="ic"></span>BO-03 · Sổ giao dịch</a>
-    <a data-go="bo04"><span class="ic"></span>BO-04 · Đối soát</a>
-    <a data-go="bo05"><span class="ic"></span>BO-05 · Xử lý chênh lệch</a>
-    <a data-go="bo06"><span class="ic"></span>BO-06 · Quyết toán & đóng</a>
+    <a class="active" data-go="bo01"><span class="ic"></span>BO-01 · Xác nhận cấp kinh phí</a>
+    <a data-go="bo02"><span class="ic"></span>BO-02 · Danh sách khoản chi</a>
+    <a data-go="bo03"><span class="ic"></span>BO-03 · Quyết toán &amp; đóng</a>
     <div class="grp">Khác</div>
-    <a><span class="ic"></span>Hàng đợi duyệt</a>
     <a><span class="ic"></span>Báo cáo (B02)</a>
   </nav>
 
   <main>
-    <div class="wf-banner">⚠ Wireframe lo-fi · dữ liệu minh hoạ · F05 Quản lý kinh phí — góc nhìn Chủ nhiệm đề tài (chỉ đọc số liệu, chỉ tạo đề nghị/giải trình/đính chứng từ)</div>
+    <div class="wf-banner">⚠ Wireframe lo-fi · dữ liệu minh hoạ · F05 Quản lý kinh phí (bản đơn giản): xác nhận cấp kinh phí · tạo khoản chi + chứng từ · xem khoản chi · quyết toán &amp; đóng đề tài</div>
 
-    <!-- ===================== FE-01 Tổng quan ===================== -->
+    <!-- ===================== FE-01 Tổng quan kinh phí ===================== -->
     <section class="screen active" id="fin">
       <div class="crumbs">Đề tài của tôi › Nghiên cứu mô hình RMS AI-first › Kinh phí</div>
       <h1>Nghiên cứu mô hình RMS AI-first <span class="badge">IN_PROGRESS</span></h1>
@@ -160,285 +148,170 @@
       </div>
 
       <div class="stats">
-        <div class="stat"><div class="k">Kinh phí được giao</div><div class="v">300.000.000 đ</div></div>
-        <div class="stat"><div class="k">Đã cấp</div><div class="v">120.000.000 đ</div></div>
-        <div class="stat"><div class="k">Đã chi / thanh toán</div><div class="v">84.500.000 đ</div></div>
+        <div class="stat"><div class="k">Kinh phí được cấp</div><div class="v">300.000.000 đ</div></div>
+        <div class="stat"><div class="k">Đã chi</div><div class="v">84.500.000 đ</div></div>
         <div class="stat"><div class="k">Còn lại</div><div class="v">215.500.000 đ</div></div>
       </div>
 
       <div class="panel">
-        <h3>Khoán kinh phí theo khoản mục</h3>
+        <h3>Khoản chi của đề tài</h3>
         <table>
           <thead><tr>
-            <th>Khoản mục</th><th>Cơ chế</th><th class="num">Dự toán</th>
-            <th class="num">Đã chi</th><th class="num">Còn lại</th><th>% giải ngân</th><th>Trạng thái</th>
+            <th>Ngày</th><th>Nội dung chi</th><th class="num">Số tiền</th><th>Chứng từ</th><th></th>
           </tr></thead>
           <tbody>
-            <tr><td>Nhân công</td><td>Khoán (LUMP_SUM)</td><td class="num">90.000.000</td><td class="num">30.000.000</td><td class="num">60.000.000</td>
-              <td><div class="bar"><span style="width:33%"></span></div></td><td><span class="pill dot">Bình thường</span></td></tr>
-            <tr><td>Vật tư</td><td>Theo chứng từ (ACTUAL)</td><td class="num">80.000.000</td><td class="num">42.500.000</td><td class="num">37.500.000</td>
-              <td><div class="bar"><span style="width:53%"></span></div></td><td><span class="pill dot">Bình thường</span></td></tr>
-            <tr><td>Hội thảo</td><td>Hỗn hợp (MIXED)</td><td class="num">50.000.000</td><td class="num">47.000.000</td><td class="num">3.000.000</td>
-              <td><div class="bar over"><span style="width:94%"></span></div></td><td><span class="pill warn">Gần vượt</span></td></tr>
-            <tr><td>Khác</td><td>Theo chứng từ (ACTUAL)</td><td class="num">80.000.000</td><td class="num">0</td><td class="num">80.000.000</td>
-              <td><div class="bar"><span style="width:0%"></span></div></td><td><span class="pill dot">Chưa chi</span></td></tr>
+            <tr><td>08/06/2026</td><td>Mua vật tư thí nghiệm đợt 2</td><td class="num">12.500.000</td><td><span class="pill">2 tệp</span></td>
+              <td><button class="btn" style="padding:4px 10px" data-go="expform">Sửa</button> <button class="btn danger" style="padding:4px 10px">Xóa</button></td></tr>
+            <tr><td>15/05/2026</td><td>Thù lao nhân công đợt 1</td><td class="num">30.000.000</td><td><span class="pill">1 tệp</span></td>
+              <td><button class="btn" style="padding:4px 10px" data-go="expform">Sửa</button> <button class="btn danger" style="padding:4px 10px">Xóa</button></td></tr>
+            <tr><td>02/05/2026</td><td>Chi phí hội thảo khoa học</td><td class="num">42.000.000</td><td><span class="pill">3 tệp</span></td>
+              <td><button class="btn" style="padding:4px 10px" data-go="expform">Sửa</button> <button class="btn danger" style="padding:4px 10px">Xóa</button></td></tr>
           </tbody>
         </table>
-        <div class="note">Số liệu lấy từ backend, chủ nhiệm chỉ xem (BR-08). Hàng tô đậm khi khoản mục chi vượt/gần vượt dự toán (AC-09).</div>
+        <div class="note">Số liệu lấy từ backend (không tự tính ở frontend). Nếu tổng đã chi vượt kinh phí được cấp → hiển thị cảnh báo nhưng vẫn cho ghi (BR-03, AC-04). Đề tài <code>COMPLETED</code> → khóa, chỉ đọc (BR-06).</div>
         <div class="btns">
-          <button class="btn primary" data-go="new">+ Tạo đề nghị thanh toán</button>
-          <button class="btn" data-go="alloc">Xem đợt cấp & giao dịch</button>
-          <button class="btn" data-go="list">Đề nghị thanh toán của tôi</button>
+          <button class="btn primary" data-go="expform">+ Thêm khoản chi</button>
+          <button class="btn" data-go="exp">Quản lý khoản chi &amp; chứng từ</button>
         </div>
       </div>
     </section>
 
-    <!-- ===================== FE-02 Đợt cấp & giao dịch ===================== -->
-    <section class="screen" id="alloc">
-      <div class="crumbs">Đề tài của tôi › RMS AI-first › Kinh phí › Đợt cấp & giao dịch</div>
-      <h1>Đợt cấp & giao dịch</h1>
-      <p class="sub">Theo dõi đợt cấp kinh phí và giao dịch chi của đề tài. Chỉ đọc.</p>
+    <!-- ===================== FE-02 Khoản chi & chứng từ ===================== -->
+    <section class="screen" id="exp">
+      <div class="crumbs">Đề tài của tôi › RMS AI-first › Kinh phí › Khoản chi &amp; chứng từ</div>
+      <h1>Khoản chi &amp; chứng từ</h1>
+      <p class="sub">Tạo, sửa, xóa khoản chi của đề tài và đính kèm chứng từ. Quyền: <b>BUDGET.EXPENSE</b> (đề tài của mình).</p>
 
-      <div class="panel">
-        <h3>Đợt cấp kinh phí (BudgetAllocation)</h3>
-        <table>
-          <thead><tr><th>Đợt</th><th>Kế hoạch</th><th>Thực cấp</th><th class="num">Số tiền</th><th>Trạng thái</th></tr></thead>
-          <tbody>
-            <tr><td>Đợt 1</td><td>01/04/2026</td><td>05/04/2026</td><td class="num">120.000.000</td><td><span class="pill">DISBURSED</span></td></tr>
-            <tr><td>Đợt 2</td><td>01/08/2026</td><td>—</td><td class="num">100.000.000</td><td><span class="pill">PLANNED</span></td></tr>
-            <tr><td>Đợt 3</td><td>01/12/2026</td><td>—</td><td class="num">80.000.000</td><td><span class="pill">PLANNED</span></td></tr>
-          </tbody>
-        </table>
+      <div class="stats">
+        <div class="stat"><div class="k">Kinh phí được cấp</div><div class="v">300.000.000 đ</div></div>
+        <div class="stat"><div class="k">Đã chi</div><div class="v">84.500.000 đ</div></div>
+        <div class="stat"><div class="k">Còn lại</div><div class="v">215.500.000 đ</div></div>
       </div>
 
       <div class="panel">
-        <h3>Giao dịch kinh phí (BudgetTransaction)</h3>
+        <h3>Danh sách khoản chi</h3>
         <table>
-          <thead><tr><th>Ngày</th><th>Khoản mục</th><th>Loại</th><th class="num">Số tiền</th><th>Đối soát</th><th>Chứng từ</th><th></th></tr></thead>
+          <thead><tr><th>Ngày</th><th>Nội dung chi</th><th class="num">Số tiền</th><th>Chứng từ</th><th></th></tr></thead>
           <tbody>
-            <tr><td>05/04/2026</td><td>—</td><td>DISBURSEMENT</td><td class="num">120.000.000</td><td><span class="pill dot">MATCHED</span></td><td>—</td><td></td></tr>
-            <tr><td>20/04/2026</td><td>Nhân công</td><td>EXPENSE</td><td class="num">30.000.000</td><td><span class="pill dot">MATCHED</span></td><td>2 file</td><td><button class="btn" style="padding:4px 10px">Giải trình</button></td></tr>
-            <tr><td>12/05/2026</td><td>Vật tư</td><td>EXPENSE</td><td class="num">42.500.000</td><td><span class="pill dot">UNRECONCILED</span></td><td>1 file</td><td><button class="btn" style="padding:4px 10px">Đính chứng từ</button></td></tr>
-            <tr><td>02/06/2026</td><td>Hội thảo</td><td>EXPENSE</td><td class="num">47.000.000</td><td><span class="pill warn">MISMATCHED</span></td><td>1 file</td><td><button class="btn ghost" style="padding:4px 10px" disabled>Chờ xử lý</button></td></tr>
+            <tr><td>08/06/2026</td><td>Mua vật tư thí nghiệm đợt 2</td><td class="num">12.500.000</td><td><span class="pill">hoa-don.pdf · +1</span></td>
+              <td><button class="btn" style="padding:4px 10px" data-go="expform">Sửa</button> <button class="btn danger" style="padding:4px 10px">Xóa</button></td></tr>
+            <tr><td>15/05/2026</td><td>Thù lao nhân công đợt 1</td><td class="num">30.000.000</td><td><span class="pill">bang-ke.pdf</span></td>
+              <td><button class="btn" style="padding:4px 10px" data-go="expform">Sửa</button> <button class="btn danger" style="padding:4px 10px">Xóa</button></td></tr>
+            <tr><td>02/05/2026</td><td>Chi phí hội thảo khoa học</td><td class="num">42.000.000</td><td><span class="pill">hop-dong.pdf · +2</span></td>
+              <td><button class="btn" style="padding:4px 10px" data-go="expform">Sửa</button> <button class="btn danger" style="padding:4px 10px">Xóa</button></td></tr>
           </tbody>
         </table>
-        <div class="note">Giao dịch <b>MISMATCHED</b> được nêu bật kèm ghi chú “đang chờ chuyên viên xử lý” — chủ nhiệm không tự đối soát/đổi trạng thái (BR-08, AC-10). Đề tài <code>COMPLETED</code> → toàn bộ ở chế độ khóa, chỉ đọc (BR-10).</div>
+        <div class="note">Sửa/xóa khoản chi chỉ khi đề tài còn <code>IN_PROGRESS</code> (BR-01). Mỗi khoản chi có thể đính một hoặc nhiều chứng từ (BR-05).</div>
+        <div class="btns"><button class="btn primary" data-go="expform">+ Thêm khoản chi</button></div>
       </div>
     </section>
 
-    <!-- ===================== FE-03 Danh sách đề nghị ===================== -->
-    <section class="screen" id="list">
-      <div class="crumbs">Đề tài của tôi › RMS AI-first › Kinh phí › Đề nghị thanh toán</div>
-      <h1>Đề nghị thanh toán</h1>
-      <p class="sub">Các hồ sơ đề nghị thanh toán/quyết toán bạn đã tạo cho đề tài này.</p>
-      <div class="btns" style="padding-top:0">
-        <button class="btn primary" data-go="new">+ Tạo đề nghị thanh toán</button>
-      </div>
-      <div class="panel">
-        <table>
-          <thead><tr><th>Mã hồ sơ</th><th>Ngày nộp</th><th>Khoản mục</th><th class="num">Số tiền</th><th>Trạng thái</th><th></th></tr></thead>
-          <tbody>
-            <tr><td>TT-00021</td><td>08/06/2026</td><td>Vật tư</td><td class="num">12.500.000</td><td><span class="pill">FINANCE_REVIEWING</span></td><td><button class="btn" style="padding:4px 10px">Xem</button></td></tr>
-            <tr><td>TT-00018</td><td>15/05/2026</td><td>Nhân công</td><td class="num">30.000.000</td><td><span class="pill dot">PAID</span></td><td><button class="btn" style="padding:4px 10px">Xem</button></td></tr>
-            <tr><td>TT-00016</td><td>02/05/2026</td><td>Hội thảo</td><td class="num">12.000.000</td><td><span class="pill warn">KHCN_REVISION_REQUESTED</span></td><td><button class="btn" style="padding:4px 10px">Bổ sung hồ sơ</button></td></tr>
-          </tbody>
-        </table>
-        <div class="note">Khi bị yêu cầu bổ sung: hiển thị ghi chú xử lý của Phòng KHCN/Tài chính và nút <b>Bổ sung hồ sơ</b>.</div>
-      </div>
-    </section>
-
-    <!-- ===================== FE-04 Tạo đề nghị ===================== -->
-    <section class="screen" id="new">
-      <div class="crumbs">Đề tài của tôi › RMS AI-first › Kinh phí › Tạo đề nghị thanh toán</div>
-      <h1>Tạo đề nghị thanh toán</h1>
-      <p class="sub">Lập hồ sơ đề nghị thanh toán trong kỳ hoặc quyết toán cuối đề tài, kèm chứng từ.</p>
+    <!-- ===================== FE-03 Form khoản chi ===================== -->
+    <section class="screen" id="expform">
+      <div class="crumbs">Đề tài của tôi › RMS AI-first › Kinh phí › Thêm khoản chi</div>
+      <h1>Thêm / sửa khoản chi</h1>
+      <p class="sub">Nhập thông tin khoản chi và đính kèm chứng từ.</p>
 
       <div class="panel">
-        <h3>Thông tin đề nghị</h3>
-        <div class="form-row"><label>Loại hồ sơ</label>
-          <div class="radios">
-            <label><input type="radio" name="loai" checked> Thanh toán trong kỳ</label>
-            <label><input type="radio" name="loai"> Quyết toán cuối đề tài</label>
-          </div>
-        </div>
-        <div class="form-row"><label>Khoản mục</label>
-          <select class="sel"><option>Vật tư — còn lại 37.500.000 đ</option><option>Nhân công — còn lại 60.000.000 đ</option><option>Hội thảo — còn lại 3.000.000 đ</option><option>Khác — còn lại 80.000.000 đ</option></select>
-        </div>
-        <div class="form-row"><label>Số tiền đề nghị</label><input class="inp" value="12.500.000" /></div>
-        <div class="form-row"><label>Ngày phát sinh</label><input class="inp" value="08/06/2026" /></div>
-        <div class="form-row"><label>Nội dung chi</label><input class="inp" value="Mua vật tư thí nghiệm đợt 2" /></div>
-        <div class="form-row" style="align-items:start"><label>Giải trình</label><textarea class="ta">Theo kế hoạch triển khai mẫu thử tháng 06...</textarea></div>
+        <h3>Thông tin khoản chi</h3>
+        <div class="form-row"><label>Số tiền</label><input class="inp" value="12.500.000" /></div>
+        <div class="form-row"><label>Ngày chi</label><input class="inp" value="08/06/2026" /></div>
+        <div class="form-row" style="align-items:start"><label>Nội dung chi</label><textarea class="ta">Mua vật tư thí nghiệm đợt 2 phục vụ mẫu thử tháng 06</textarea></div>
+        <div class="note">Số tiền là số nguyên VND &gt; 0 (BR-02). Nếu khoản chi làm tổng chi vượt kinh phí được cấp, hệ thống cảnh báo và <b>vẫn cho lưu</b> (BR-03).</div>
       </div>
 
       <div class="panel">
         <h3>Chứng từ kèm theo</h3>
-        <table>
-          <thead><tr><th>Loại chứng từ</th><th>Số chứng từ</th><th>Ngày chứng từ</th><th class="num">Số tiền</th><th>File</th></tr></thead>
-          <tbody>
-            <tr><td>Hóa đơn</td><td>HD-2026-001</td><td>07/06/2026</td><td class="num">12.500.000</td><td><span class="pill">hoa-don.pdf</span></td></tr>
-            <tr><td>Biên bản bàn giao</td><td>BB-2026-012</td><td>08/06/2026</td><td class="num">—</td><td><span class="pill">bien-ban.pdf</span></td></tr>
-          </tbody>
-        </table>
-        <div class="btns"><button class="btn ghost">+ Thêm chứng từ</button></div>
-        <div class="note">Metadata tối thiểu: loại, số, ngày, đơn vị phát hành, số tiền (để đối chiếu), file đính kèm (Attachment). Khoản theo chứng từ (ACTUAL_EXPENSE) bắt buộc có chứng từ (AC-16).</div>
+        <div class="uploadzone">Kéo thả tệp chứng từ vào đây<br><span style="font-size:12px">hoặc bấm để chọn (PDF, ảnh, Excel…)</span></div>
+        <div class="filechip"><span>📄 hoa-don-HD2026-001.pdf · 240 KB</span><button class="btn danger" style="padding:3px 10px">Xóa</button></div>
+        <div class="filechip"><span>📄 bien-ban-ban-giao.pdf · 180 KB</span><button class="btn danger" style="padding:3px 10px">Xóa</button></div>
+        <div class="note">Chứng từ lưu qua <code>Attachment</code> (object storage). Bản đơn giản cho đính chứng từ tùy chọn — việc bắt buộc tối thiểu 1 chứng từ chờ PO chốt.</div>
       </div>
 
       <div class="btns">
-        <button class="btn" data-go="list">Lưu nháp</button>
-        <button class="btn primary" data-go="list">Nộp Phòng KHCN</button>
-        <button class="btn ghost" data-go="list">Hủy</button>
+        <button class="btn primary" data-go="exp">Lưu khoản chi</button>
+        <button class="btn ghost" data-go="exp">Hủy</button>
       </div>
     </section>
 
-    <!-- ===================== BO-01 Khoán kinh phí ===================== -->
+    <!-- ===================== BO-01 Xác nhận cấp kinh phí ===================== -->
     <section class="screen" id="bo01">
-      <div class="crumbs">Quản trị kinh phí › Hồ sơ ngân sách › RMS AI-first</div>
-      <h1>BO-01 · Khoán kinh phí đề tài <span class="badge">IN_PROGRESS</span></h1>
-      <p class="sub">Lập/sửa <code>BudgetEstimate</code> theo khoản mục và <code>settlementMode</code>. Quyền: <b>BUDGET.ESTIMATE</b>.</p>
+      <div class="crumbs">Quản trị kinh phí › Xác nhận cấp kinh phí › RMS AI-first</div>
+      <h1>BO-01 · Xác nhận cấp kinh phí <span class="badge">IN_PROGRESS</span></h1>
+      <p class="sub">Xác nhận tổng kinh phí được cấp cho đề tài (một lần). Quyền: <b>BUDGET.ALLOCATE</b>.</p>
 
-      <div class="stats" style="grid-template-columns:repeat(3,1fr)">
-        <div class="stat"><div class="k">Kinh phí được giao (F04)</div><div class="v">300.000.000 đ</div></div>
-        <div class="stat"><div class="k">Tổng dự toán hiện tại</div><div class="v">300.000.000 đ</div></div>
-        <div class="stat"><div class="k">Phiên bản</div><div class="v">v1 · FINANCE_APPROVED</div></div>
+      <div class="stats" style="grid-template-columns:repeat(2,1fr)">
+        <div class="stat"><div class="k">Kinh phí được phê duyệt (F04)</div><div class="v">300.000.000 đ</div></div>
+        <div class="stat"><div class="k">Trạng thái cấp</div><div class="v"><span class="pill warn">Chưa xác nhận</span></div></div>
       </div>
 
       <div class="panel">
-        <h3>Khoản mục dự toán</h3>
-        <table>
-          <thead><tr><th>Khoản mục</th><th class="num">Dự toán (VND)</th><th>Cơ chế quyết toán</th><th>Ghi chú</th><th></th></tr></thead>
-          <tbody>
-            <tr><td>Nhân công</td><td class="num">90.000.000</td><td>LUMP_SUM</td><td>Theo thuyết minh</td><td><button class="btn" style="padding:4px 10px">Sửa</button></td></tr>
-            <tr><td>Vật tư</td><td class="num">80.000.000</td><td>ACTUAL_EXPENSE</td><td>Hóa đơn bắt buộc</td><td><button class="btn" style="padding:4px 10px">Sửa</button></td></tr>
-            <tr><td>Hội thảo</td><td class="num">50.000.000</td><td>MIXED</td><td>Có chương trình</td><td><button class="btn" style="padding:4px 10px">Sửa</button></td></tr>
-            <tr><td>Khác</td><td class="num">80.000.000</td><td>ACTUAL_EXPENSE</td><td>Cần giải trình</td><td><button class="btn" style="padding:4px 10px">Sửa</button></td></tr>
-          </tbody>
-        </table>
-        <div class="note">Chỉ thao tác khi đề tài <code>IN_PROGRESS</code> (BR-01). Tổng khoán ≤ <code>approvedBudget</code> = 300.000.000 đ (BR-12). Số tiền là số nguyên VND > 0 (BR-02). Danh mục khoản mục cấu hình ở B01, không hard-code.</div>
+        <h3>Xác nhận cấp</h3>
+        <div class="form-row"><label>Tổng kinh phí cấp</label><input class="inp" value="300.000.000" /></div>
+        <div class="hint" style="margin-left:184px">≤ mức được phê duyệt 300.000.000 đ; số nguyên VND &gt; 0 (BR-08, BR-02).</div>
+        <div class="note">Mặc định bằng <code>ProjectAssignment.approvedBudget</code>. Sau khi xác nhận: ghi nhận kinh phí được cấp, gửi thông báo cho chủ nhiệm (B04) và ghi <code>AuditLog</code> (BR-09). Nhiều đợt cấp thuộc giai đoạn sau.</div>
         <div class="btns">
-          <button class="btn ghost">+ Thêm khoản mục</button>
-          <button class="btn primary">Lưu khoán kinh phí</button>
+          <button class="btn primary">Xác nhận cấp kinh phí</button>
         </div>
       </div>
     </section>
 
-    <!-- ===================== BO-02 Đợt cấp ===================== -->
+    <!-- ===================== BO-02 Danh sách khoản chi ===================== -->
     <section class="screen" id="bo02">
-      <div class="crumbs">Quản trị kinh phí › Đợt cấp kinh phí › RMS AI-first</div>
-      <h1>BO-02 · Đợt cấp kinh phí</h1>
-      <p class="sub">Lập/theo dõi <code>BudgetAllocation</code> theo kế hoạch và thực tế. Quyền: <b>BUDGET.ALLOCATION</b>.</p>
-      <div class="panel">
-        <h3>Danh sách đợt cấp</h3>
-        <table>
-          <thead><tr><th>Đợt</th><th>Kế hoạch</th><th>Thực cấp</th><th class="num">Số tiền</th><th>Trạng thái</th><th></th></tr></thead>
-          <tbody>
-            <tr><td>Đợt 1</td><td>01/04/2026</td><td>05/04/2026</td><td class="num">120.000.000</td><td><span class="pill dot">DISBURSED</span></td><td><button class="btn" style="padding:4px 10px">Xem</button></td></tr>
-            <tr><td>Đợt 2</td><td>01/08/2026</td><td>—</td><td class="num">100.000.000</td><td><span class="pill">PLANNED</span></td><td><button class="btn" style="padding:4px 10px">Ghi nhận đã cấp</button></td></tr>
-            <tr><td>Đợt 3</td><td>01/12/2026</td><td>—</td><td class="num">80.000.000</td><td><span class="pill">PLANNED</span></td><td><button class="btn" style="padding:4px 10px">Ghi nhận đã cấp</button></td></tr>
-          </tbody>
-        </table>
-        <div class="note">Tổng đã giải ngân không vượt tổng dự toán/khoán (BR-14). Khi <code>DISBURSED</code> nhập <code>actualDate</code> và liên kết/tạo giao dịch <code>DISBURSEMENT</code>. Hủy đợt cấp bắt buộc nhập lý do và ghi <code>AuditLog</code>.</div>
-        <div class="btns"><button class="btn ghost">+ Thêm đợt cấp</button><button class="btn">Hủy đợt cấp</button></div>
-      </div>
-    </section>
+      <div class="crumbs">Quản trị kinh phí › Danh sách khoản chi › RMS AI-first</div>
+      <h1>BO-02 · Danh sách khoản chi</h1>
+      <p class="sub">Xem khoản chi và chứng từ của các đề tài. Quyền: <b>BUDGET.VIEW</b> (chỉ đọc, không sửa khoản chi của chủ nhiệm).</p>
 
-    <!-- ===================== BO-03 Sổ giao dịch ===================== -->
-    <section class="screen" id="bo03">
-      <div class="crumbs">Quản trị kinh phí › Sổ giao dịch › RMS AI-first</div>
-      <h1>BO-03 · Sổ giao dịch kinh phí</h1>
-      <p class="sub">Ghi/sửa <code>BudgetTransaction</code> cấp/chi, lọc theo trạng thái đối soát. Quyền: <b>BUDGET.TRANSACTION</b>.</p>
-      <div class="panel">
-        <h3>Giao dịch</h3>
-        <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
-          <span class="pill">Tất cả</span><span class="pill">UNRECONCILED</span><span class="pill">MATCHED</span><span class="pill warn">MISMATCHED</span>
-        </div>
-        <table>
-          <thead><tr><th>Ngày</th><th>Khoản mục</th><th>Loại</th><th class="num">Số tiền</th><th>Mã GD tài chính</th><th>Đối soát</th><th></th></tr></thead>
-          <tbody>
-            <tr><td>05/04/2026</td><td>—</td><td>DISBURSEMENT</td><td class="num">120.000.000</td><td>FT-90021</td><td><span class="pill dot">MATCHED</span></td><td><button class="btn" style="padding:4px 10px">Sửa</button></td></tr>
-            <tr><td>20/04/2026</td><td>Nhân công</td><td>EXPENSE</td><td class="num">30.000.000</td><td>FT-90044</td><td><span class="pill dot">MATCHED</span></td><td><button class="btn" style="padding:4px 10px">Sửa</button></td></tr>
-            <tr><td>12/05/2026</td><td>Vật tư</td><td>EXPENSE</td><td class="num">42.500.000</td><td>—</td><td><span class="pill dot">UNRECONCILED</span></td><td><button class="btn" style="padding:4px 10px">Sửa</button></td></tr>
-            <tr><td>02/06/2026</td><td>Hội thảo</td><td>EXPENSE</td><td class="num">47.000.000</td><td>FT-90120</td><td><span class="pill warn">MISMATCHED</span></td><td><button class="btn" style="padding:4px 10px">Sửa</button></td></tr>
-          </tbody>
-        </table>
-        <div class="note">Chi vượt dự toán khoản mục → theo <code>BUDGET.OVER_BUDGET_MODE</code>: cảnh báo hoặc chặn (BR-03). Giao dịch mới ở <code>UNRECONCILED</code>.</div>
-        <div class="btns"><button class="btn ghost">+ Thêm giao dịch</button></div>
-      </div>
-    </section>
-
-    <!-- ===================== BO-04 Đối soát ===================== -->
-    <section class="screen" id="bo04">
-      <div class="crumbs">Quản trị kinh phí › Đối soát › RMS AI-first</div>
-      <h1>BO-04 · Đối soát</h1>
-      <p class="sub">Chạy đối soát qua API hoặc nhập file (degrade). Quyền: <b>BUDGET.RECONCILE</b> / <b>BUDGET.RECONCILE_FILE</b>.</p>
-      <div class="twocol">
-        <div class="panel">
-          <h3>Đối soát qua API</h3>
-          <div class="kv">
-            <span class="lbl">Kỳ đối soát</span><span>01/05/2026 – 08/06/2026</span>
-            <span class="lbl">Trạng thái dịch vụ</span><span><span class="pill dot">Sẵn sàng</span></span>
-          </div>
-          <div class="btns"><button class="btn primary">Đối soát qua API</button></div>
-        </div>
-        <div class="panel">
-          <h3>Nhập file (khi API lỗi)</h3>
-          <div class="uploadzone">Kéo thả file CSV/Excel vào đây<br><span style="font-size:12px">hoặc bấm để chọn</span></div>
-          <div class="btns"><button class="btn">Tải file đối soát</button></div>
-        </div>
-      </div>
-      <div class="panel">
-        <h3>Kết quả đối soát gần nhất</h3>
-        <div class="stats" style="grid-template-columns:repeat(3,1fr)">
-          <div class="stat"><div class="k">Khớp (MATCHED)</div><div class="v">2</div></div>
-          <div class="stat"><div class="k">Lệch (MISMATCHED)</div><div class="v">1</div></div>
-          <div class="stat"><div class="k">Chưa đối soát</div><div class="v">1</div></div>
-        </div>
-        <div class="note">Khớp → <code>MATCHED</code>; lệch/không tìm thấy → <code>MISMATCHED</code>; chặn khớp trùng <code>financeTransactionCode</code> (BR-09); phát thông báo chênh lệch qua B04 (BR-06).</div>
-      </div>
-    </section>
-
-    <!-- ===================== BO-05 Xử lý chênh lệch ===================== -->
-    <section class="screen" id="bo05">
-      <div class="crumbs">Quản trị kinh phí › Xử lý chênh lệch › RMS AI-first</div>
-      <h1>BO-05 · Xử lý chênh lệch</h1>
-      <p class="sub">Danh sách giao dịch <code>MISMATCHED</code>: điều chỉnh/khớp lại/đánh dấu giải quyết kèm lý do. Quyền: <b>BUDGET.RESOLVE_MISMATCH</b>.</p>
-      <div class="panel">
-        <h3>Giao dịch lệch</h3>
-        <table>
-          <thead><tr><th>Ngày</th><th>Khoản mục</th><th class="num">Số tiền RMS</th><th class="num">Số tiền tài chính</th><th>Lý do lệch</th><th></th></tr></thead>
-          <tbody>
-            <tr><td>02/06/2026</td><td>Hội thảo</td><td class="num">47.000.000</td><td class="num">45.000.000</td><td>Lệch số tiền 2.000.000</td>
-              <td><button class="btn" style="padding:4px 10px">Điều chỉnh</button> <button class="btn" style="padding:4px 10px">Đã giải quyết</button></td></tr>
-          </tbody>
-        </table>
-        <div class="form-row" style="grid-template-columns:200px 1fr;margin-top:8px"><label>Lý do giải quyết</label><input class="inp" placeholder="Bắt buộc nhập reason khi đánh dấu đã giải quyết" /></div>
-        <div class="note">Điều chỉnh để khớp lại, hoặc đánh dấu <b>đã giải quyết</b> kèm <code>reason</code> → <code>MATCHED</code> (BR-05/AC-05). Mọi thao tác ghi <code>AuditLog</code>.</div>
-      </div>
-    </section>
-
-    <!-- ===================== BO-06 Quyết toán ===================== -->
-    <section class="screen" id="bo06">
-      <div class="crumbs">Quản trị kinh phí › Quyết toán & đóng › RMS AI-first</div>
-      <h1>BO-06 · Quyết toán & đóng đề tài <span class="badge">PASSED</span></h1>
-      <p class="sub">Kiểm tra điều kiện, quyết toán, chuyển <code>PASSED → COMPLETED</code>. Quyền: <b>BUDGET.SETTLE</b>.</p>
       <div class="stats">
-        <div class="stat"><div class="k">Tổng được duyệt</div><div class="v">300.000.000 đ</div></div>
-        <div class="stat"><div class="k">Tổng đã cấp</div><div class="v">300.000.000 đ</div></div>
-        <div class="stat"><div class="k">Tổng đã thanh toán</div><div class="v">284.500.000 đ</div></div>
-        <div class="stat"><div class="k">Chưa sử dụng</div><div class="v">15.500.000 đ</div></div>
+        <div class="stat"><div class="k">Tổng kinh phí được cấp</div><div class="v">300.000.000 đ</div></div>
+        <div class="stat"><div class="k">Tổng đã chi</div><div class="v">84.500.000 đ</div></div>
+        <div class="stat"><div class="k">Còn lại</div><div class="v">215.500.000 đ</div></div>
       </div>
+
       <div class="panel">
-        <h3>Điều kiện đóng tài chính</h3>
-        <div class="checks">
-          <label><input type="checkbox" checked disabled> Không còn giao dịch <code>MISMATCHED</code> (BR-07)</label>
-          <label><input type="checkbox" checked disabled> Không còn khoản thực thanh thiếu chứng từ bắt buộc (BR-13/AC-16)</label>
-          <label><input type="checkbox" checked disabled> Đề tài đã nghiệm thu / đủ điều kiện đóng theo F06</label>
-          <label><input type="checkbox" disabled> Đã xác nhận số dư/chênh lệch cuối kỳ</label>
+        <h3>Khoản chi</h3>
+        <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+          <span class="pill">Tất cả đề tài</span><span class="pill">Có chứng từ</span><span class="pill">Thiếu chứng từ</span><span class="pill">Theo kỳ</span>
         </div>
-        <div class="note">Chỉ bật khi đề tài <code>PASSED</code> và không còn giao dịch <code>MISMATCHED</code>; nếu còn → liệt kê & chặn. Quyết toán chuyển <code>PASSED → COMPLETED</code> qua domain service dùng chung, phối hợp F06 (BR-11).</div>
+        <table>
+          <thead><tr><th>Đề tài</th><th>Ngày</th><th>Nội dung chi</th><th class="num">Số tiền</th><th>Chứng từ</th></tr></thead>
+          <tbody>
+            <tr><td>RMS AI-first</td><td>08/06/2026</td><td>Mua vật tư thí nghiệm</td><td class="num">12.500.000</td><td><button class="btn" style="padding:4px 10px">Xem 2 tệp</button></td></tr>
+            <tr><td>RMS AI-first</td><td>15/05/2026</td><td>Thù lao nhân công đợt 1</td><td class="num">30.000.000</td><td><button class="btn" style="padding:4px 10px">Xem 1 tệp</button></td></tr>
+            <tr><td>RMS AI-first</td><td>02/05/2026</td><td>Chi phí hội thảo khoa học</td><td class="num">42.000.000</td><td><button class="btn" style="padding:4px 10px">Xem 3 tệp</button></td></tr>
+            <tr><td>Hệ đo lường mẫu thử</td><td>20/05/2026</td><td>Chi phí khảo sát hiện trường</td><td class="num">18.000.000</td><td><button class="btn" style="padding:4px 10px">Xem 1 tệp</button></td></tr>
+          </tbody>
+        </table>
+        <div class="note">Chuyên viên chỉ xem khoản chi + chứng từ (BR-04, AC-03); mở chứng từ để kiểm tra. Việc tạo/sửa/xóa khoản chi thuộc chủ nhiệm.</div>
+      </div>
+    </section>
+
+    <!-- ===================== BO-03 Quyết toán & đóng ===================== -->
+    <section class="screen" id="bo03">
+      <div class="crumbs">Quản trị kinh phí › Quyết toán &amp; đóng › RMS AI-first</div>
+      <h1>BO-03 · Quyết toán &amp; đóng đề tài <span class="badge">PASSED</span></h1>
+      <p class="sub">Rà soát kinh phí, quyết toán và chuyển <code>PASSED → COMPLETED</code>. Quyền: <b>BUDGET.SETTLE</b>.</p>
+
+      <div class="stats">
+        <div class="stat"><div class="k">Kinh phí được cấp</div><div class="v">300.000.000 đ</div></div>
+        <div class="stat"><div class="k">Tổng đã chi</div><div class="v">284.500.000 đ</div></div>
+        <div class="stat"><div class="k">Còn lại</div><div class="v">15.500.000 đ</div></div>
+      </div>
+
+      <div class="panel">
+        <h3>Rà soát khoản chi trước khi đóng</h3>
+        <table>
+          <thead><tr><th>Ngày</th><th>Nội dung chi</th><th class="num">Số tiền</th><th>Chứng từ</th></tr></thead>
+          <tbody>
+            <tr><td>08/06/2026</td><td>Mua vật tư thí nghiệm đợt 2</td><td class="num">12.500.000</td><td><button class="btn" style="padding:4px 10px">Xem</button></td></tr>
+            <tr><td>15/05/2026</td><td>Thù lao nhân công đợt 1</td><td class="num">30.000.000</td><td><button class="btn" style="padding:4px 10px">Xem</button></td></tr>
+            <tr><td>02/05/2026</td><td>Chi phí hội thảo khoa học</td><td class="num">42.000.000</td><td><button class="btn" style="padding:4px 10px">Xem</button></td></tr>
+          </tbody>
+        </table>
+        <div class="note">Bản đơn giản <b>không</b> có điều kiện chặn tự động (không đối soát, không bắt buộc chứng từ cứng) — chuyên viên rà soát thủ công rồi đóng (BR-07). Quyết toán chuyển <code>PASSED → COMPLETED</code> qua domain service dùng chung, phối hợp F06; khóa kinh phí và ghi <code>AuditLog</code>.</div>
         <div class="btns">
           <button class="btn">Xuất bảng tổng hợp</button>
-          <button class="btn ghost">Yêu cầu bổ sung</button>
-          <button class="btn primary">Khóa tài chính & đóng đề tài</button>
+          <button class="btn primary">Quyết toán &amp; đóng đề tài</button>
         </div>
       </div>
     </section>
