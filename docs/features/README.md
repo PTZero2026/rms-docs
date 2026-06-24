@@ -67,8 +67,14 @@ Quy ước tiến độ:
 | B04 | E0 | [Thông báo](B04-thong-bao/) | `notification` | FE, BO | Xuyên suốt | Đã có nội dung |
 | P01 | E0 | [Workflow engine](P01-workflow-engine/) | workflow (kernel) | BE/nền tảng | Now | Spec nền (tech) từ ADR-0007 |
 | P02 | E0 | [Audit](P02-audit/) | `audit` | BE/xuyên suốt | Xuyên suốt | Spec nền (tech) từ ADR-0010 + §4.4 |
+| P03 | E4 | [Quy đổi giờ giảng](P03-quy-doi-gio-giang/) | `teaching-hour` | BE/xuyên suốt | Later (mở rộng) | **Mới (ĐH Thủy Lợi)** — spec khởi tạo, chờ chốt công thức |
+| F09 | E4 | [Đề tài cấp trên](F09-de-tai-cap-tren/) | `upper-project` | FE, BO | Later (mở rộng) | **Mới** — quản lý đầu mục, spec khởi tạo |
+| F10 | E4 | [Đề tài sinh viên](F10-de-tai-sinh-vien/) | `student-project` | FE, BO | Later (mở rộng) | **Mới** — phạm vi vòng đời chờ chốt |
+| F11 | E4 | [Dự án phục vụ sản xuất](F11-du-an-phuc-vu-san-xuat/) | `applied-project` | FE, BO | Later (mở rộng) | **Mới** — spec khởi tạo |
+| F12 | E4 | [Hoạt động khoa học & minh chứng](F12-hoat-dong-khoa-hoc/) | `activity` | FE, BO | Later (mở rộng) | **Mới** — gộp hội nghị/cộng đồng/SHTT |
 
-> **Epic:** E0 Nền tảng · E1 Tiếp nhận & Xét duyệt · E2 Thực hiện & Nghiệm thu · E3 Đầu ra, Lý lịch & Báo cáo.
+> **Epic:** E0 Nền tảng · E1 Tiếp nhận & Xét duyệt · E2 Thực hiện & Nghiệm thu · E3 Đầu ra, Lý lịch & Báo cáo ·
+> **E4 Hoạt động khoa học mở rộng & Quy đổi giờ giảng** (mới, từ khảo sát ĐH Thủy Lợi — *Draft*).
 > Định nghĩa Epic (mục tiêu, phụ thuộc, DoD) ở thư mục `docs/epics/`.
 
 ## 3. Danh sách capability cần rà
@@ -220,6 +226,15 @@ Quy ước tiến độ:
 | B04 | E0 | ✅ | – | ✅ | ✅ | 10/10 | 🟡 | [ ] |
 | P01 | E0 | ✅ | – | – | 🔴 | 9/8 | 🟡 | [ ] |
 | P02 | E0 | ✅ | – | – | 🔴 | 7/5 | 🟡 | [ ] |
+| P03 | E4 | 🟡 | – | 🔴 | 🔴 | 6/5 | 🔴 | [ ] |
+| F09 | E4 | 🟡 | – | 🔴 | 🔴 | 3/3 | 🔴 | [ ] |
+| F10 | E4 | 🟡 | – | 🔴 | 🔴 | 3/3 | 🔴 | [ ] |
+| F11 | E4 | 🟡 | – | 🔴 | 🔴 | 3/3 | 🔴 | [ ] |
+| F12 | E4 | 🟡 | – | 🔴 | 🔴 | 4/4 | 🔴 | [ ] |
+
+> **E4 (mới — ĐH Thủy Lợi):** spec đã có **bối cảnh/phạm vi/luồng + BR/AC khởi tạo**, nhưng còn nhiều
+> **điểm chặn cần chốt với Trường** (công thức giờ giảng, phạm vi vòng đời đề tài SV, link đề tài↔bài báo,
+> phạm vi kinh phí) nên Sẵn sàng SDD = 🔴. ui/test-plan mới ở mức khung. Xem [E4](../epics/E4-hoat-dong-mo-rong.md).
 
 > **Cột độ chín** (`spec/design/ui/test-plan`): ✅ đầy đủ · 🟡 một phần · 🔴 khung mẫu · `–` chưa tách.
 > **BR/AC**: số mã `BR-xx`/`AC-xx` duy nhất trong `spec.md`. **Sẵn sàng SDD**: 🟢 sẵn sàng · 🟡 gần sẵn sàng
@@ -253,7 +268,8 @@ Các mục dưới đây phải được rà trong nhiều feature, không tự 
 2. **Đầu vòng đời (E1):** F02 → F01 → F03.
 3. **Thực hiện đề tài (E2):** F04 → F05 → F06.
 4. **Đầu ra & phân tích (E3):** F07 → F08 → B02.
-5. **Rà xuyên suốt:** workflow, audit, RBAC, data model, tích hợp và cổng công khai.
+5. **Mở rộng (E4 — sau khi chốt phạm vi với Trường):** P03 → F12 → F09 → F11 → F10.
+6. **Rà xuyên suốt:** workflow, audit, RBAC, data model, tích hợp và cổng công khai.
 
 ## 7. Khoảng trống đã nhận diện
 
@@ -264,6 +280,19 @@ Các mục dưới đây phải được rà trong nhiều feature, không tự 
 - Cổng công khai chưa có mã feature riêng; cần quyết định tách feature nếu phạm vi tiếp tục mở rộng.
 - F03 có AC (10) ít hơn BR (11) — soát lại BR nào chưa có AC phủ. (B01 BR=13/AC=14 là bình thường, không phải lỗi.)
 
+### Khoảng trống mới từ khảo sát ĐH Thủy Lợi (Epic E4 — chờ chốt với Trường)
+
+- **Quy đổi giờ giảng (P03)** — trục xuyên suốt của Trường, **trước đây không có** trong mọi feature/ADR;
+  spec khởi tạo nhưng **công thức quy đổi cần Trường cung cấp** (chặn).
+- **F09–F12** (đề tài cấp trên, đề tài SV, dự án phục vụ sản xuất, hoạt động khoa học & minh chứng) —
+  spec khởi tạo, chờ chốt phạm vi (đặc biệt vòng đời đề tài SV; phạm vi kinh phí hoạt động).
+- **Công bố/bài báo & SHTT:** build-out [F07](F07-san-pham-khoa-hoc/) cho 2 luồng (độc lập/thuộc đề tài)
+  + phê duyệt & cấp kinh phí + **link tự động đề tài↔bài báo**; build-out [F08](F08-ly-lich-khoa-hoc/)
+  (tự tổng hợp + trích template + ký xác nhận).
+- **Kỹ thuật/kiến trúc cần quyết định:** **SSO Microsoft Entra ID** (cần ADR mới, khác ADR-0008 Keycloak
+  email-OTP); **đồng bộ GV/SV** theo cơ chế xác nhận (bổ sung `integrations.md`); **số hóa dữ liệu cũ 5 năm**
+  (khác việc migrate code repo cũ ở `migration-coverage.md`).
+
 ## Changelog
 
 | Ngày | Trạng thái | Thay đổi |
@@ -272,3 +301,4 @@ Các mục dưới đây phải được rà trong nhiều feature, không tự 
 | 2026-06-11 | Draft | Thêm quy ước tách `spec.md` (nghiệp vụ, PO/BA) ↔ `design.md` (kỹ thuật, DEV); làm mẫu trên F01 và B03; thêm cột `design.md` vào checklist; thêm template `design.md`. |
 | 2026-06-12 | Draft | Thêm lớp **Epic** (E0–E3): cột Epic ở §2, nhãn Epic ở §6, field `epic:` trong frontmatter 12 spec. Nâng §4 thành checklist sẵn-sàng-SDD (độ chín spec/design/ui/test + BR/AC + mức sẵn sàng); số liệu từ [REVIEW.md](REVIEW.md). |
 | 2026-06-12 | Draft | Nâng năng lực nền **Workflow engine** & **Audit** thành spec riêng [P01](P01-workflow-engine/)/[P02](P02-audit/) (Platform, tech-led) bám ADR-0007/0010; thêm vào E0 & bản đồ Epic; đăng ký P-series ở [AGENTS.md §3](../../AGENTS.md). |
+| 2026-06-24 | Draft | Thêm **Epic E4** (khảo sát ĐH Thủy Lợi): 5 feature mới **P03/F09/F10/F11/F12** (skeleton spec+ui+test-plan), đăng ký ở §2/§4/§6/§7; ghi nhận khoảng trống giờ giảng, SSO Microsoft, đồng bộ GV-SV, số hóa 5 năm. |

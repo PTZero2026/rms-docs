@@ -1,7 +1,7 @@
 ---
 title: "Roadmap — RMS"
 status: Approved
-updated: 2026-06-11
+updated: 2026-06-24
 ---
 
 # Roadmap (Now / Next / Later)
@@ -59,6 +59,27 @@ nghiệm thu qua hội đồng* và đóng vòng đời.
 **Hoàn thành khi:** sản phẩm khoa học gắn được về đề tài nguồn, báo cáo tổng hợp chạy trên toàn hệ
 thống, và nội dung đã công bố xem được công khai qua cổng public.
 
+## Later (mở rộng) — Hoạt động khoa học mở rộng & Quy đổi giờ giảng (E4)
+
+**Bối cảnh:** phát sinh từ khảo sát **ĐH Thủy Lợi** ([biên bản](../epics/BienBan_TongHop_NCKH_ThuyLoi.md)).
+Mở rộng phạm vi khỏi vòng đời đề tài *cấp cơ sở* sang **mọi loại hoạt động khoa học**, với trục xuyên
+suốt **quy đổi giờ giảng**. *Trạng thái: Draft — nhiều điểm chặn cần chốt với Trường (xem [E4](../epics/E4-hoat-dong-mo-rong.md)).*
+
+**Mục tiêu:** mọi hoạt động khoa học của giảng viên được ghi nhận, phê duyệt/cấp kinh phí khi cần, và
+**quy đổi ra giờ giảng** — tự động tổng hợp vào lý lịch khoa học (F08).
+
+- **P03 — Quy đổi giờ giảng** *(Platform xuyên suốt)*: engine + cấu hình công thức quy đổi theo loại hoạt động; nguồn nuôi F08.
+- **F09 — Đề tài cấp trên** (Tỉnh/Bộ/Nhà nước): quản lý **đầu mục** (không full lifecycle).
+- **F10 — Đề tài sinh viên**: tính giờ giảng cho GV hướng dẫn *(phạm vi vòng đời chờ chốt)*.
+- **F11 — Dự án phục vụ sản xuất**: dự án viện + đối tác ngoài (tên/thành viên/kinh phí).
+- **F12 — Hoạt động khoa học & minh chứng**: gộp hội nghị/hội thảo + phục vụ cộng đồng + SHTT (quy trình chung).
+
+**Phụ thuộc kỹ thuật mới cần quyết định:** SSO **Microsoft Entra ID** (cần ADR mới, khác [ADR-0008](../architecture/decisions/0008-keycloak-idp-dang-nhap-email-otp.md));
+**đồng bộ GV/SV** theo cơ chế xác nhận; **số hóa dữ liệu cũ 5 năm**.
+
+**Hoàn thành khi:** từng loại hoạt động (F09–F12) phát sinh đúng giờ giảng qua P03, tự tổng hợp vào lý
+lịch khoa học (F08), và đã chốt phương án SSO Microsoft / đồng bộ GV-SV / số hóa 5 năm.
+
 ## Xuyên suốt (cross-cutting)
 
 - **B04 — Thông báo**: chạy kèm các feature (email/SMS) để nhắc hạn báo cáo, báo kết quả xét
@@ -79,10 +100,17 @@ thống, và nội dung đã công bố xem được công khai qua cổng publi
 | F07 | Sản phẩm khoa học | ✓ | ✓ | ✓¹ | Later |
 | F08 | Lý lịch khoa học | ✓ | ✓ | – | Later |
 | B02 | Báo cáo & thống kê | – | ✓ | – | Later |
+| P03 | Quy đổi giờ giảng *(E4)* | ✓² | ✓ | – | Later (mở rộng) |
+| F09 | Đề tài cấp trên *(E4)* | ✓ | ✓ | – | Later (mở rộng) |
+| F10 | Đề tài sinh viên *(E4)* | ✓ | ✓ | – | Later (mở rộng) |
+| F11 | Dự án phục vụ sản xuất *(E4)* | ✓ | ✓ | – | Later (mở rộng) |
+| F12 | Hoạt động khoa học & minh chứng *(E4)* | ✓ | ✓ | – | Later (mở rộng) |
 | B04 | Thông báo | ✓ | ✓ | – | Xuyên suốt |
 
 ¹ Chỉ phần **nội dung công khai** (tóm tắt đề tài, sản phẩm đã công bố) hiển thị qua **Cổng công khai**
 ở *Later* — không phải toàn bộ dữ liệu của feature.
+
+² P03 là năng lực nền (không có màn hình người dùng cuối riêng); giảng viên xem giờ giảng qua **lý lịch khoa học (F08)**.
 
 ## Phụ thuộc chính
 
@@ -106,6 +134,7 @@ thống, và nội dung đã công bố xem được công khai qua cổng publi
 
 | Ngày | Trạng thái | Thay đổi |
 |------|------------|----------|
+| 2026-06-24 | Draft (E4) | Thêm giai đoạn **Later (mở rộng) — E4** từ khảo sát ĐH Thủy Lợi: **P03** quy đổi giờ giảng + **F09–F12** (đề tài cấp trên, đề tài SV, dự án phục vụ sản xuất, hoạt động khoa học & minh chứng); thêm 5 dòng bảng ánh xạ; nêu phụ thuộc SSO Microsoft / đồng bộ GV-SV / số hóa 5 năm. |
 | 2026-06-11 | Approved | *Now*: bổ sung **đăng nhập & kích hoạt lần đầu** (B03, ADR-0008); làm rõ **hội đồng + cuộc họp** (F03 phê duyệt đề cương, F06 nghiệm thu); thêm **phê duyệt đạo đức song song** (hội đồng đạo đức `type=ETHICS_REVIEW`, tái dùng mô hình). |
 | 2026-06-11 | Approved | Viết lại theo cấu trúc *Mục tiêu + Hoàn thành khi* cho mỗi giai đoạn; thêm **Cổng công khai** (persona Khách) vào *Later* và cột "Công khai" trong bảng ánh xạ; chuẩn hóa mã **B04**; bổ sung mục Changelog; duyệt & chuyển Draft → Approved. |
 | 2026-06-01 | Draft | Bản thảo đầu tiên. |
