@@ -1,11 +1,17 @@
 ---
 title: "ADR-0006: Chuyển repo tài liệu thành monorepo AI-first"
-status: Accepted
+status: Superseded
+superseded_by: "ADR-0011"
 date: 2026-06-03
 deciders: "SA, Tech lead, PO"
 ---
 
 # ADR-0006: Chuyển repo tài liệu thành monorepo AI-first
+
+> ⚠️ **Superseded bởi [ADR-0011](0011-tach-code-quay-ve-docs-only.md)** (2026-06-24): phần "đưa code vào
+> repo" đã bị đảo — repo quay về **thuần tài liệu (docs-only)**, code sẽ nằm ở repo riêng. Vẫn giữ giá trị
+> docs-as-code, "AI-first" và ánh xạ feature↔module (dùng làm thiết kế hệ thống đích). Nội dung dưới đây giữ
+> nguyên để truy vết lịch sử.
 
 ## Bối cảnh
 Repo hiện tại là **docs-only** (`product/`, `architecture/`, `features/`, `guides/`, `templates/`) theo

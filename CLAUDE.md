@@ -1,8 +1,8 @@
 # CLAUDE.md
 
 Ngữ cảnh dự án cho Claude Code nằm ở **[AGENTS.md](AGENTS.md)** — đọc file đó trước mọi tác vụ.
-File này cố ý mỏng để tránh trùng lặp; mọi quy ước, bản đồ thư mục, luật bất biến và lệnh build
-đều ở `AGENTS.md`.
+File này cố ý mỏng để tránh trùng lặp; mọi quy ước, bản đồ thư mục và luật bất biến đều ở `AGENTS.md`.
+Lưu ý: đây là repo **thuần tài liệu** (docs-only) — không có code/lệnh build ([ADR-0011](docs/architecture/decisions/0011-tach-code-quay-ve-docs-only.md)).
 
 Bổ sung riêng cho Claude Code:
 - Cấu hình harness (permissions, hooks, env) ở `.claude/settings.json`.

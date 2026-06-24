@@ -2,8 +2,8 @@
 
 ## Nguyên tắc
 
-1. **Một nguồn sự thật mỗi feature.** Luật nghiệp vụ chỉ nằm trong `spec.md`. `frontend.md`,
-   `backoffice.md`, `test-plan.md` trỏ về `spec.md`, không chép lại luật.
+1. **Một nguồn sự thật mỗi feature.** Luật nghiệp vụ chỉ nằm trong `spec.md`. `design.md` (kỹ thuật),
+   `ui.md` (giao diện), `test-plan.md` (kiểm thử) trỏ về `spec.md` qua mã `BR-xx`/`AC-xx`, không chép lại luật.
 2. **Đủ dùng, không thừa.** Mục nào trống thì xóa. Tài liệu một feature đơn giản có thể chỉ là `spec.md`.
 3. **Diagram bằng Mermaid** (text, diff được). Chỉ dùng ảnh khi buộc phải vẽ phức tạp; đặt trong `assets/`.
 
@@ -13,12 +13,12 @@
 
 ## Đặt tên
 
-- Thư mục feature: `F0x-name-khong-dau` (người dùng) hoặc `B0x-name-khong-dau` (quản trị).
+- Thư mục feature: `F0x-name-khong-dau` (người dùng), `B0x-name-khong-dau` (quản trị) hoặc `P0x-name-khong-dau` (năng lực nền).
 - File: chữ thường, gạch nối. ADR: `docs/architecture/decisions/NNNN-name-quyet-dinh.md`, đánh số tăng dần.
 
 ## Quy trình
 
-- Tài liệu sửa **chung PR với code** của feature tương ứng. Reviewer duyệt cả hai.
+- Repo **thuần tài liệu**: PR chỉ chứa thay đổi tài liệu (code ở repo riêng — [ADR-0011](docs/architecture/decisions/0011-tach-code-quay-ve-docs-only.md)).
 - Thay đổi luật trong `spec.md` cần ít nhất 1 reviewer là PO hoặc BA.
 - Quyết định kiến trúc quan trọng → tạo một ADR (dùng `docs/templates/adr.md`).
 
@@ -26,6 +26,6 @@
 
 - [ ] `spec.md` có Business rules và Acceptance criteria rõ ràng.
 - [ ] Mỗi AC có ít nhất 1 test case trong `test-plan.md`.
-- [ ] Màn hình trong `frontend.md` / `backoffice.md` map được về AC.
-- [ ] `backoffice.md` có Permission matrix (nếu có mặt quản trị).
+- [ ] Màn hình trong `ui.md` map được về AC; `design.md` có bảng truy vết `BR/AC → hiện thực`.
+- [ ] `ui.md` có Permission matrix (nếu có mặt quản trị).
 - [ ] `status` và `updated` trong frontmatter đã cập nhật.
