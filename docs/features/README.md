@@ -67,15 +67,15 @@ Quy ước tiến độ:
 | B04 | E0 | [Thông báo](B04-thong-bao/) | `notification` | FE, BO | Xuyên suốt | Đã có nội dung |
 | P01 | E0 | [Workflow engine](P01-workflow-engine/) | workflow (kernel) | BE/nền tảng | Now | Spec nền (tech) từ ADR-0007 |
 | P02 | E0 | [Audit](P02-audit/) | `audit` | BE/xuyên suốt | Xuyên suốt | Spec nền (tech) từ ADR-0010 + §4.4 |
-| P03 | E4 | [Quy đổi giờ giảng](P03-quy-doi-gio-giang/) | `teaching-hour` | BE/xuyên suốt | Later (mở rộng) | **Mới (ĐH Thủy Lợi)** — spec khởi tạo, chờ chốt công thức |
-| F09 | E4 | [Đề tài cấp trên](F09-de-tai-cap-tren/) | `upper-project` | FE, BO | Later (mở rộng) | **Mới** — quản lý đầu mục, spec khởi tạo |
-| F10 | E4 | [Đề tài sinh viên](F10-de-tai-sinh-vien/) | `student-project` | FE, BO | Later (mở rộng) | **Mới** — phạm vi vòng đời chờ chốt |
-| F11 | E4 | [Dự án phục vụ sản xuất](F11-du-an-phuc-vu-san-xuat/) | `applied-project` | FE, BO | Later (mở rộng) | **Mới** — spec khởi tạo |
-| F12 | E4 | [Hoạt động khoa học & minh chứng](F12-hoat-dong-khoa-hoc/) | `activity` | FE, BO | Later (mở rộng) | **Mới** — gộp hội nghị/cộng đồng/SHTT |
+| P03 | E4 | [Quy đổi giờ giảng](P03-quy-doi-gio-giang/) | `teaching-hour` | BE/xuyên suốt | Later (optional) | **Năng lực optional** — spec khởi tạo, chờ chốt công thức |
+| F09 | E4 | [Đề tài cấp trên](F09-de-tai-cap-tren/) | `upper-project` | FE, BO | Later (optional) | Quản lý đầu mục, spec khởi tạo |
+| F10 | E4 | [Đề tài sinh viên](F10-de-tai-sinh-vien/) | `student-project` | FE, BO | Later (optional) | Phạm vi vòng đời chờ chốt |
+| F11 | E4 | [Dự án phục vụ sản xuất](F11-du-an-phuc-vu-san-xuat/) | `applied-project` | FE, BO | Later (optional) | Spec khởi tạo |
+| F12 | E4 | [Hoạt động khoa học & minh chứng](F12-hoat-dong-khoa-hoc/) | `activity` | FE, BO | Later (optional) | Gộp hội nghị/cộng đồng/SHTT |
 
 > **Epic:** E0 Nền tảng · E1 Tiếp nhận & Xét duyệt · E2 Thực hiện & Nghiệm thu · E3 Đầu ra, Lý lịch & Báo cáo ·
-> **E4 Hoạt động khoa học mở rộng & Quy đổi giờ giảng** (mới, từ khảo sát ĐH Thủy Lợi — *Draft*).
-> Định nghĩa Epic (mục tiêu, phụ thuộc, DoD) ở thư mục `docs/epics/`.
+> **E4 Hoạt động khoa học mở rộng & Quy đổi giờ giảng** — *năng lực optional bật/tắt per-tenant* ([ADR-0012](../architecture/decisions/0012-ranh-gioi-loi-vs-cau-hinh-tenant.md));
+> lần đầu kích hoạt cho ĐH Thủy Lợi (*Draft*). Định nghĩa Epic ở thư mục `docs/epics/`.
 
 ## 3. Danh sách capability cần rà
 

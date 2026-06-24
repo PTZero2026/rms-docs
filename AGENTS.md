@@ -15,7 +15,7 @@ docs-as-code. Chỉ chứa tài liệu nghiệp vụ & kiến trúc trong `docs/
 | Thư mục | Nội dung | Agent dùng để |
 |---|---|---|
 | `docs/product/` | vision, glossary, personas, roadmap | WHY & WHAT mức sản phẩm |
-| `docs/architecture/` | overview, data-model, integrations, migration-coverage + `decisions/` (ADR) | Kiến trúc & quyết định hệ thống đích |
+| `docs/architecture/` | overview, data-model, integrations, migration-coverage, **variation-points** (cấu hình per-tenant) + `decisions/` (ADR) | Kiến trúc & quyết định hệ thống đích |
 | `docs/features/<mã>/` | `spec.md` (nghiệp vụ) · `design.md` (kỹ thuật) · `ui.md` · `test-plan.md` | Truy hồi spec, AC, thiết kế từng feature |
 | `docs/epics/` | Lớp Epic E0–E4 gom feature theo vòng đời & nền tảng | Xác định phạm vi & phụ thuộc |
 | `docs/guides/` | Onboarding & vận hành | Hướng dẫn |
@@ -32,7 +32,7 @@ docs-as-code. Chỉ chứa tài liệu nghiệp vụ & kiến trúc trong `docs/
 `F01→proposal · F02→call · F03→review · F04→progress · F05→budget · F06→acceptance · F07→product · F08→profile`
 `B01→catalog · B02→report · B03→iam · B04→notification`.
 `P01→workflow (kernel dùng chung) · P02→audit` — **Platform spec** (năng lực nền do Kiến trúc/DEV sở hữu, không phải feature CRUD; xuyên suốt mọi feature).
-**Mở rộng E4 (ĐH Thủy Lợi — Draft, chờ chốt phạm vi):** `F09→upper-project · F10→student-project · F11→applied-project · F12→activity` ·
+**Năng lực mở rộng E4 (optional, bật/tắt per-tenant — [ADR-0012](docs/architecture/decisions/0012-ranh-gioi-loi-vs-cau-hinh-tenant.md); Draft):** `F09→upper-project · F10→student-project · F11→applied-project · F12→activity` ·
 `P03→teaching-hour` (Platform xuyên suốt — quy đổi giờ giảng, nguồn nuôi F08). Xem [E4](docs/epics/E4-hoat-dong-mo-rong.md).
 Nguồn: [overview.md §3](docs/architecture/overview.md).
 
@@ -64,7 +64,7 @@ Repo dùng **Spec Kit** (chạy trong Claude Code, không cần API) qua các sk
   - `docs/features/<feature>/` — **nguồn sự thật nghiệp vụ đã chốt** (`spec.md`/`design.md`/
     `ui.md`/`test-plan.md`, truy vết `BR-xx`/`AC-xx`). Khi nội dung ở `specs/` đã chín thì
     chắt lọc về đây.
-- **Lớp Epic**: `docs/epics/` gom feature theo vòng đời (E0 nền tảng + E1–E3 + E4 mở rộng ĐH Thủy Lợi). Phân tầng đầy đủ:
+- **Lớp Epic**: `docs/epics/` gom feature theo vòng đời (E0 nền tảng + E1–E3 + E4 năng lực mở rộng optional). Phân tầng đầy đủ:
   **Epic (`docs/epics/`) → Feature (`docs/features/`) → Spec làm việc (`specs/`)**. Bản đồ & phụ thuộc ở
   [docs/epics/README.md](docs/epics/README.md); gắn feature↔epic qua field `epic:` trong frontmatter spec.
 - Dự án đang ở pha **docs-first**: `plan`/`tasks`/`implement` chỉ dùng khi bước sang thực thi code.

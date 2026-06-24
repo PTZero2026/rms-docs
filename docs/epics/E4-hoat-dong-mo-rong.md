@@ -8,10 +8,14 @@ source: "docs/epics/BienBan_TongHop_NCKH_ThuyLoi.md"
 
 # E4 — Hoạt động khoa học mở rộng & Quy đổi giờ giảng
 
-> Epic này gom **phạm vi mở rộng** phát sinh từ khảo sát **ĐH Thủy Lợi**
-> (xem [biên bản](BienBan_TongHop_NCKH_ThuyLoi.md)). Khác với E1–E3 (vòng đời đề tài *cấp cơ sở*),
-> E4 phủ các **loại hoạt động khoa học khác** (đề tài cấp trên, đề tài SV, dự án sản xuất,
-> hội nghị/cộng đồng/SHTT) và **trục xuyên suốt mới: quy đổi giờ giảng** đổ về lý lịch khoa học.
+> Epic gom các **năng lực mở rộng optional** của sản phẩm lõi (bật/tắt per-tenant — [ADR-0012](../architecture/decisions/0012-ranh-gioi-loi-vs-cau-hinh-tenant.md),
+> [VP-FEAT](../architecture/variation-points.md)). Khác với E1–E3 (vòng đời đề tài *cấp cơ sở*, lõi mặc định bật),
+> E4 phủ các **loại hoạt động khoa học khác** (đề tài cấp trên, đề tài SV, dự án sản xuất, hội nghị/cộng đồng/SHTT)
+> và **trục xuyên suốt: quy đổi giờ giảng** đổ về lý lịch khoa học.
+>
+> **Tenant-agnostic:** các năng lực này trung lập, trường nào cũng bật được. Nhu cầu **lần đầu** đến từ khảo sát
+> **ĐH Thủy Lợi** ([biên bản](BienBan_TongHop_NCKH_ThuyLoi.md)) — Thủy Lợi là *tenant đầu tiên kích hoạt*, không
+> phải "chủ sở hữu" của E4. Giá trị cấu hình cụ thể của Thủy Lợi nằm ở `docs/tenants/thuy-loi/`, không ở đây.
 
 ## Mục tiêu (outcome)
 Mọi hoạt động khoa học của giảng viên (đề tài mọi cấp, bài báo, hội nghị, phục vụ cộng đồng, SHTT)

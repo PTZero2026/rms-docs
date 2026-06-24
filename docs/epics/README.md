@@ -22,7 +22,9 @@ updated: 2026-06-12
 | **[E3](E3-dau-ra-bao-cao.md)** | Đầu ra, Lý lịch & Báo cáo | F07, F08, B02, cổng công khai | Later | E0; dữ liệu E1–E2 |
 | **[E4](E4-hoat-dong-mo-rong.md)** | Hoạt động khoa học mở rộng & Quy đổi giờ giảng | P03, F09, F10, F11, F12 | Later | E0; tái dùng F03/F05; cấp dữ liệu E3 (F08) |
 
-> **E4** gom phạm vi mở rộng từ khảo sát **ĐH Thủy Lợi** ([biên bản](BienBan_TongHop_NCKH_ThuyLoi.md)) — *Draft, chờ chốt phạm vi*.
+> **E4** = **năng lực mở rộng optional** (bật/tắt per-tenant — [ADR-0012](../architecture/decisions/0012-ranh-gioi-loi-vs-cau-hinh-tenant.md)),
+> trung lập với mọi trường. Nhu cầu lần đầu từ khảo sát **ĐH Thủy Lợi** ([biên bản](BienBan_TongHop_NCKH_ThuyLoi.md));
+> Thủy Lợi là *tenant đầu tiên kích hoạt* — *Draft, chờ chốt phạm vi*.
 
 ## Cây Epic → Feature
 
@@ -50,7 +52,7 @@ E3 Đầu ra, Lý lịch & Báo cáo
 ├── B02 Báo cáo & thống kê (report)
 └── ◌ Cổng công khai                      (chưa có mã feature — quyết định sau)
 
-E4 Hoạt động khoa học mở rộng & Quy đổi giờ giảng   (ĐH Thủy Lợi — Draft)
+E4 Hoạt động khoa học mở rộng & Quy đổi giờ giảng   (năng lực optional per-tenant — Draft)
 ├── P03 Quy đổi giờ giảng (teaching-hour — Platform xuyên suốt)
 ├── F09 Đề tài cấp trên / Tỉnh-Bộ-Nhà nước (upper-project — quản lý đầu mục)
 ├── F10 Đề tài sinh viên (student-project)

@@ -120,4 +120,5 @@ múi giờ Asia/Ho_Chi_Minh ở tầng hiển thị; lưu UTC ở CSDL.
 ## 5. Liên kết
 - Mô hình dữ liệu & vòng đời: `data-model.md`
 - Tích hợp ngoài: `integrations.md`
+- Cấu hình per-tenant (đa tổ chức): `variation-points.md` ([ADR-0012](decisions/0012-ranh-gioi-loi-vs-cau-hinh-tenant.md))
 - Quyết định kiến trúc: `decisions/`

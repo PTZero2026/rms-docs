@@ -59,11 +59,12 @@ nghiệm thu qua hội đồng* và đóng vòng đời.
 **Hoàn thành khi:** sản phẩm khoa học gắn được về đề tài nguồn, báo cáo tổng hợp chạy trên toàn hệ
 thống, và nội dung đã công bố xem được công khai qua cổng public.
 
-## Later (mở rộng) — Hoạt động khoa học mở rộng & Quy đổi giờ giảng (E4)
+## Later (optional) — Hoạt động khoa học mở rộng & Quy đổi giờ giảng (E4)
 
-**Bối cảnh:** phát sinh từ khảo sát **ĐH Thủy Lợi** ([biên bản](../epics/BienBan_TongHop_NCKH_ThuyLoi.md)).
-Mở rộng phạm vi khỏi vòng đời đề tài *cấp cơ sở* sang **mọi loại hoạt động khoa học**, với trục xuyên
-suốt **quy đổi giờ giảng**. *Trạng thái: Draft — nhiều điểm chặn cần chốt với Trường (xem [E4](../epics/E4-hoat-dong-mo-rong.md)).*
+**Bối cảnh:** **năng lực mở rộng optional** của sản phẩm (bật/tắt per-tenant — [ADR-0012](../architecture/decisions/0012-ranh-gioi-loi-vs-cau-hinh-tenant.md)),
+trung lập với mọi trường. Mở rộng khỏi vòng đời đề tài *cấp cơ sở* sang **mọi loại hoạt động khoa học**, với
+trục xuyên suốt **quy đổi giờ giảng**. Nhu cầu lần đầu từ khảo sát **ĐH Thủy Lợi** ([biên bản](../epics/BienBan_TongHop_NCKH_ThuyLoi.md))
+— Thủy Lợi là *tenant đầu tiên kích hoạt*. *Trạng thái: Draft — điểm chặn cần chốt: xem [E4](../epics/E4-hoat-dong-mo-rong.md).*
 
 **Mục tiêu:** mọi hoạt động khoa học của giảng viên được ghi nhận, phê duyệt/cấp kinh phí khi cần, và
 **quy đổi ra giờ giảng** — tự động tổng hợp vào lý lịch khoa học (F08).
