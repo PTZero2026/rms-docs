@@ -84,11 +84,17 @@ updated: 2026-06-24
 | Mã VP | Điểm biến thiên | Cơ chế | Mức | Mặc định | Ai cấu hình | Feature/ADR |
 |---|---|---|---|---|---|---|
 | VP-FIELD | Trường tùy chọn: bắt buộc / ẩn / nhãn | Field config per-tenant | Chọn | Theo spec feature | Quản trị tenant | *(cần thêm cơ chế)* |
+| VP-PROFILE | Trường hồ sơ người dùng nào *hiển thị / bắt buộc* (giới tính, năm sinh, địa chỉ, chức vụ, học hàm-học vị, quá trình công tác) | Field config per-tenant trên **bộ trường chuẩn** (không tạo trường tùy biến) | Bật/tắt + Giá trị (cờ bắt buộc) | Trường lõi (họ tên) bật; phần mở rộng hiển thị, không bắt buộc | Quản trị tenant | [F08](../features/F08-ly-lich-khoa-hoc/) (BR-04) |
 | VP-ROLE | Ánh xạ vai trò RMS ↔ con người của trường | Cấu hình role per-tenant | Giá trị | Bộ role chuẩn | Quản trị tenant | [ADR-0005](decisions/0005-sso-va-rbac.md), [B03](../features/B03-quan-ly-nguoi-dung/) |
 | VP-SCOPE | Phạm vi dữ liệu (data scoping) theo đơn vị/kỳ | Cấu hình scope | Giá trị | Theo spec RBAC | Quản trị tenant | [ADR-0005](decisions/0005-sso-va-rbac.md) |
 
 > **Ranh giới:** *quyền nguyên tử* `MODULE.ACTION` và việc **kiểm quyền ở backend** là lõi cố định; chỉ *bộ
 > vai trò* và *ánh xạ người→vai trò* biến thiên.
+>
+> **Ranh giới VP-PROFILE:** khung thực thể `User` + bảng con `AcademicQualification`/`WorkHistory`
+> (`data-model.md §4.1, §4.6`), định danh Keycloak, và *cách* F08 tổng hợp lý lịch là **lõi cố định**; chỉ
+> *tập trường hiển thị/bắt buộc* + *danh mục* (`POSITION`, `ACADEMIC_RANK`, `ACADEMIC_DEGREE`, `ADMINISTRATIVE_DIVISION` — qua
+> VP-CAT) biến thiên. **Không** cho tenant tạo trường tùy biến mới ở giai đoạn này.
 
 ## 8. Vận hành & dữ liệu khởi tạo
 

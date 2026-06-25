@@ -163,6 +163,9 @@ Các đối tượng nghiệp vụ B03 quản (mô hình bảng/trường ở [`
 
 - **Người dùng:** họ tên, email, số điện thoại, đơn vị, học hàm/học vị, **nguồn tạo tài khoản** (admin tạo
   hay tự tạo), **trạng thái** (Đang hoạt động / Tạm khóa / Ngừng hoạt động).
+  > B03 sở hữu **khung tài khoản & định danh** (email, vai trò, quyền, trạng thái). **Nội dung hồ sơ cá
+  > nhân** (giới tính, năm sinh, địa chỉ, chức vụ, học hàm/học vị + năm nhận, quá trình công tác) do
+  > **[F08](../F08-ly-lich-khoa-hoc/spec.md)** sở hữu — người dùng **tự cập nhật**; admin chỉ sửa hộ.
 - **Vai trò:** nhóm quyền có tên & mô tả; một số là **vai trò hệ thống** (không xóa được — BR-03).
 - **Quyền:** một thao tác nguyên tử trên một phân hệ (BR-07).
 - **Gán quyền cho vai trò** và **gán vai trò cho người dùng** (đều nhiều–nhiều).

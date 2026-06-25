@@ -163,10 +163,18 @@ Mỗi `WorkflowStep` (dù tổ chức đặt tên/`code` gì) phải gắn đún
 | `fullName` | string | not null | |
 | `email` | string | unique theo tenant, not null | Định danh đăng nhập email-OTP (khớp Keycloak) |
 | `phoneNumber` | string | | Dùng cho thông báo SMS (B04) |
-| `unitId` | uuid | FK → Unit | Đơn vị công tác |
-| `academicTitle` | string | | Phục vụ lý lịch khoa học (F08) |
+| `unitId` | uuid | FK → Unit | Đơn vị công tác (phòng ban trong tenant) |
+| `gender` | enum | `MALE`\|`FEMALE`\|`OTHER`, nullable | Giới tính — hồ sơ F08 |
+| `dateOfBirth` | date | nullable | Ngày sinh đầy đủ — hồ sơ F08 (lưu & hiển thị `dd/MM/yyyy`) |
+| `address` | string | nullable | Địa chỉ liên hệ — hồ sơ F08; tùy chọn gắn danh mục `ADMINISTRATIVE_DIVISION` |
+| `positionId` | uuid | FK → CatalogItem (`POSITION`), nullable | Chức vụ — hồ sơ F08 |
+| `academicTitle` | string | | Học hàm/học vị **cao nhất** (hiển thị nhanh); chi tiết + năm nhận ở `AcademicQualification` (§4.6) — F08 |
 | `accountSource` | enum | `SSO` \| `INTERNAL` | Nguồn tạo tài khoản |
 | `status` | enum | `ACTIVE` \| `LOCKED` \| `INACTIVE` | |
+
+> **Trường/Viện** của một người = **tenant** họ thuộc về (hiển thị ngầm, không có cột riêng — F08 BR-03);
+> trong tenant chỉ chọn **phòng ban** (`unitId`) và **chức vụ** (`positionId`). Tập trường hồ sơ
+> *hiển thị/bắt buộc* cấu hình per-tenant — VP-PROFILE ([variation-points](variation-points.md)).
 
 **Role** (`id`, `code` unique, `name`, `description`, `isSystem` bool) — vai trò chuẩn xem B03 §Vai trò.
 **Permission** (`id`, `code` unique vd `RESEARCH_PROJECT.APPROVE`, `description`) — quyền nguyên tử theo `MODULE.ACTION`.
@@ -219,7 +227,9 @@ ngành nghiên cứu; `ResearchProject.researchFieldId`, `ProposalCall.researchF
 > Danh mục lookup khởi tạo (có thể phát sinh thêm): `ADMINISTRATIVE_DIVISION` (Tỉnh/Huyện/Xã, TREE),
 > `RESEARCH_TOPIC_CATEGORY` (phân loại đề tài NCKH), `NOTIFICATION_CATEGORY` (phân loại thông báo —
 > **khác** `eventType` của B04), `EVALUATION_CATEGORY` (phân loại đánh giá — **khác** `CriteriaSet`),
-> `POSITION` (chức vụ), `USER_ROLE_LABEL` (vị trí/vai trò hiển thị — **khác** RBAC `Role` của B03).
+> `POSITION` (chức vụ), `ACADEMIC_RANK` (học hàm: GS/PGS — hồ sơ F08), `ACADEMIC_DEGREE` (học vị:
+> TS/ThS/CN — hồ sơ F08), `USER_ROLE_LABEL` (vị trí/vai trò
+> hiển thị — **khác** RBAC `Role` của B03).
 > Tham chiếu từ thực thể khác dùng `CatalogItem.id` (FK `ON DELETE RESTRICT`, xem §5).
 
 ### 4.3 Kỳ nhận đề xuất & đề tài (F02, F01)
@@ -280,8 +290,34 @@ ngành nghiên cứu; `ResearchProject.researchFieldId`, `ProposalCall.researchF
 ### 4.6 Sản phẩm & lý lịch (F07, F08)
 
 **ResearchOutput** (`id`, `researchProjectId` nullable, `productTypeId`, `name`, `authors` jsonb, `publicationYear`, `publicationInfo`, `evidenceAttachmentId` FK → Attachment, `approvalStatus` `PENDING_APPROVAL`|`APPROVED`|`REJECTED`).
-> Lý lịch khoa học (F08) là **khung nhìn tổng hợp** trên `User` + `ResearchOutput` + vai trò
-> trong `ResearchProject`, không phải một bảng riêng (xem F08 §Dữ liệu).
+
+**AcademicQualification** (hồ sơ F08 — học hàm **và** học vị tách bạch, nhiều dòng/người):
+
+| Trường | Kiểu | Ràng buộc | Mô tả |
+|---|---|---|---|
+| `id` | uuid | PK | |
+| `userId` | uuid | FK → User, not null | Chủ hồ sơ |
+| `kind` | enum | `RANK`\|`DEGREE`, not null | `RANK` = học hàm, `DEGREE` = học vị (F08 BR-05) |
+| `titleItemId` | uuid | FK → CatalogItem, not null | Trỏ danh mục `ACADEMIC_RANK` nếu `kind=RANK`, `ACADEMIC_DEGREE` nếu `kind=DEGREE` (khớp `kind`) |
+| `yearAwarded` | int | not null | Năm nhận; ≤ năm hiện tại, ≥ năm sinh nếu có (F08 BR-05) |
+| `note` | string | nullable | Ghi chú (nơi cấp…) |
+
+**WorkHistory** (hồ sơ F08 — quá trình công tác, nhiều dòng/người):
+
+| Trường | Kiểu | Ràng buộc | Mô tả |
+|---|---|---|---|
+| `id` | uuid | PK | |
+| `userId` | uuid | FK → User, not null | Chủ hồ sơ |
+| `organization` | string | not null | Tổ chức/đơn vị công tác |
+| `unitId` | uuid | FK → Unit, nullable | Đơn vị nội bộ (nếu trong tenant) |
+| `positionItemId` | uuid | FK → CatalogItem (`POSITION`), nullable | Chức vụ trong giai đoạn |
+| `fromDate` | date | not null | Bắt đầu |
+| `toDate` | date | nullable | Kết thúc; `null` = đang công tác; ràng buộc `fromDate ≤ toDate` (F08 BR-06) |
+| `description` | text | nullable | Mô tả công việc |
+
+> Lý lịch khoa học (F08) là **khung nhìn tổng hợp** trên `User` + `AcademicQualification` + `WorkHistory`
+> + `ResearchOutput` + vai trò trong `ResearchProject`/`ProjectMember` (+ giờ giảng quy đổi P03 nếu bật),
+> **không phải một bảng riêng** (xem [F08 §5](../features/F08-ly-lich-khoa-hoc/spec.md)).
 
 ### 4.7 Hạ tầng dùng chung (B04, audit)
 
