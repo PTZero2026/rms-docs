@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>B06 Trang chủ (Dashboard cá nhân) — Prototype</title>
+<style>
+  :root{
+    --line:#9aa0a6; --line-2:#c7ccd1; --ink:#2b2f33; --muted:#6b7177;
+    --bg:#f4f5f6; --panel:#ffffff; --fill:#e9ebed; --fill-2:#dde0e3;
+    --accent:#3b3f43; --warn:#a3431f;
+  }
+  *{box-sizing:border-box}
+  body{margin:0; background:var(--bg); color:var(--ink);
+    font-family:"Segoe UI",Roboto,system-ui,Arial,sans-serif; font-size:14px; line-height:1.45;}
+  .box{border:1px dashed var(--line-2);border-radius:4px}
+  header.topbar{background:var(--panel); border-bottom:1px solid var(--line);
+    display:flex; align-items:center; gap:16px; padding:10px 20px; position:sticky; top:0; z-index:5;}
+  .logo{width:34px;height:34px;border:1.5px solid var(--line);border-radius:6px;display:grid;place-items:center;font-weight:700;color:var(--muted)}
+  .topbar .app{font-weight:600}
+  .topbar .app small{display:block;font-weight:400;color:var(--muted);font-size:12px}
+  .topbar .spacer{flex:1}
+  .avatar{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--line);background:var(--fill)}
+  .layout{display:flex;min-height:calc(100vh - 55px)}
+  nav.side{width:230px;background:var(--panel);border-right:1px solid var(--line);padding:14px 10px;flex-shrink:0}
+  nav.side .grp{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:14px 8px 6px}
+  nav.side a{display:flex;gap:10px;align-items:center;padding:9px 10px;border-radius:6px;color:var(--ink);text-decoration:none;cursor:pointer;font-size:13.5px}
+  nav.side a .ic{width:16px;height:16px;border:1.5px solid var(--line-2);border-radius:3px}
+  nav.side a:hover{background:var(--fill)}
+  nav.side a.active{background:var(--fill-2);font-weight:600}
+  nav.side a.active .ic{border-color:var(--accent);background:var(--accent)}
+  main{flex:1;padding:22px 28px;max-width:1120px}
+  h1{font-size:20px;margin:0 0 2px}
+  .sub{color:var(--muted);margin:0 0 16px;font-size:13px}
+  .badge{display:inline-block;border:1px solid var(--line);border-radius:20px;padding:1px 10px;font-size:12px;color:var(--muted);vertical-align:middle;margin-left:8px}
+  .wf-banner{background:#fff;border:1px dashed var(--line);border-radius:6px;color:var(--muted);font-size:12px;padding:7px 12px;margin-bottom:16px}
+  .roleSwitch{display:flex;border:1px solid var(--line-2);border-radius:7px;overflow:hidden;flex-wrap:wrap}
+  .roleSwitch button{border:none;background:var(--panel);padding:7px 13px;cursor:pointer;font-size:12.5px;color:var(--muted)}
+  .roleSwitch button + button{border-left:1px solid var(--line-2)}
+  .roleSwitch button.active{background:var(--accent);color:#fff;font-weight:600}
+  /* ---- context header (W-CTX) ---- */
+  .ctx{background:var(--panel);border:1px solid var(--line-2);border-radius:8px;padding:16px 18px;margin-bottom:16px;display:flex;align-items:center;gap:16px}
+  .ctx .hi{font-size:17px;font-weight:700}
+  .ctx .meta{color:var(--muted);font-size:13px;margin-top:2px}
+  .ctx .spacer{flex:1}
+  .nudge{background:#fff;border:1px solid var(--warn);border-left-width:4px;border-radius:6px;padding:8px 12px;color:var(--warn);font-size:12.5px;max-width:300px}
+  .nudge a{color:var(--warn);font-weight:600}
+  /* ---- dashboard grid ---- */
+  .dash{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .col-span{grid-column:1 / -1}
+  .widget{background:var(--panel);border:1px solid var(--line-2);border-radius:8px;padding:14px 16px}
+  .widget h3{margin:0 0 12px;font-size:14px;display:flex;align-items:center;gap:8px}
+  .widget h3 .cnt{margin-left:auto;color:var(--muted);font-weight:400;font-size:12.5px}
+  .wcode{font-size:10.5px;letter-spacing:.04em;color:var(--muted);border:1px solid var(--line-2);border-radius:4px;padding:1px 6px;font-weight:500}
+  /* todo list */
+  .todo{list-style:none;margin:0;padding:0}
+  .todo li{display:flex;align-items:flex-start;gap:10px;padding:9px 6px;border-bottom:1px solid var(--fill);cursor:pointer}
+  .todo li:last-child{border-bottom:none}
+  .todo li:hover{background:var(--fill)}
+  .todo .t{flex:1}
+  .todo .t b{font-weight:600}
+  .todo .t small{display:block;color:var(--muted);font-size:12px;margin-top:1px}
+  .todo .go{color:var(--muted);font-size:15px;line-height:1.2}
+  .pill{display:inline-block;padding:0 9px;border-radius:20px;font-size:11px;border:1px solid var(--line-2);color:var(--muted);white-space:nowrap}
+  .pill.late{border-color:var(--warn);color:var(--warn);font-weight:600}
+  .pill.soon{border-color:var(--accent);color:var(--accent)}
+  /* kpi */
+  .kpis{display:grid;gap:12px}
+  .kpis.k2{grid-template-columns:repeat(2,1fr)}
+  .kpis.k3{grid-template-columns:repeat(3,1fr)}
+  .kpi{border:1px solid var(--line-2);border-radius:8px;padding:12px 14px;background:var(--panel)}
+  .kpi .k{font-size:12px;color:var(--muted);margin-bottom:6px}
+  .kpi .v{font-size:24px;font-weight:700;font-variant-numeric:tabular-nums}
+  .kpi .lnk{font-size:11.5px;color:var(--muted);margin-top:4px}
+  .kpi .lnk::after{content:" →"}
+  .kpi .stamp{font-size:10.5px;color:var(--muted);margin-top:4px}
+  /* notifications */
+  .notif{list-style:none;margin:0;padding:0}
+  .notif li{display:flex;gap:10px;padding:8px 6px;border-bottom:1px solid var(--fill);cursor:pointer;font-size:13px}
+  .notif li:last-child{border-bottom:none}
+  .notif li:hover{background:var(--fill)}
+  .notif .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);margin-top:5px;flex-shrink:0}
+  .notif .dot.read{background:var(--line-2)}
+  .notif small{display:block;color:var(--muted);font-size:11.5px}
+  .seeall{display:inline-block;margin-top:10px;font-size:12.5px;color:var(--muted);cursor:pointer}
+  .seeall::after{content:" →"}
+  /* shortcuts */
+  .shortcuts{display:flex;flex-wrap:wrap;gap:10px}
+  .sbtn{border:1px solid var(--line);background:var(--panel);border-radius:6px;padding:9px 14px;cursor:pointer;font-size:13px;color:var(--ink)}
+  .sbtn:hover{background:var(--fill)}
+  .sbtn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .empty{text-align:center;color:var(--muted);padding:22px;border:1px dashed var(--line-2);border-radius:8px;font-size:13px}
+  .role{display:none}
+  .role.active{display:block}
+  .legend{color:var(--muted);font-size:11.5px;margin-top:18px;border-top:1px dashed var(--line-2);padding-top:10px}
+  @media(max-width:780px){.dash{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="logo">RMS</div>
+  <div class="app">Hệ thống Quản lý Nghiên cứu Khoa học<small id="appSub">Cổng nhà khoa học · sau đăng nhập</small></div>
+  <div class="spacer"></div>
+  <div class="roleSwitch" id="roleSwitch">
+    <button class="active" data-role="cn">Chủ nhiệm</button>
+    <button data-role="tv">Thành viên</button>
+    <button data-role="cv">Chuyên viên QLKHCN</button>
+    <button data-role="hd">Hội đồng</button>
+    <button data-role="sy">Quản trị HT</button>
+  </div>
+  <div class="box" style="width:34px;height:34px;display:grid;place-items:center;color:var(--muted)">🔔</div>
+  <div class="avatar"></div>
+</header>
+
+<div class="layout">
+  <nav class="side">
+    <div class="grp">Cá nhân</div>
+    <a class="active"><span class="ic"></span>Trang chủ</a>
+    <a><span class="ic"></span>Đề tài của tôi</a>
+    <a><span class="ic"></span>Lý lịch khoa học</a>
+    <a><span class="ic"></span>Thông báo</a>
+    <div class="grp" id="sideAdminGrp" style="display:none">Quản trị</div>
+    <a id="sideAdmin1" style="display:none"><span class="ic"></span>Danh mục (B01)</a>
+    <a id="sideAdmin2" style="display:none"><span class="ic"></span>Người dùng (B03)</a>
+    <a id="sideReport" style="display:none"><span class="ic"></span>Báo cáo (B02)</a>
+  </nav>
+
+  <main>
+    <div class="wf-banner">⚠ Wireframe lo-fi · dữ liệu minh hoạ · B06 Trang chủ (Dashboard cá nhân) — <b>read-only</b>: mọi mục là <b>điều hướng</b> sang feature nguồn. Tenant minh hoạ: <b>ĐH Thủy Lợi</b> (E4 bật). Đổi <b>vai trò</b> ở góc phải để xem bố cục từng vai trò.</div>
+
+    <!-- ============================ CHỦ NHIỆM ============================ -->
+    <section class="role active" id="role-cn">
+      <div class="ctx">
+        <div>
+          <div class="hi">Chào buổi sáng, Nguyễn Văn A 👋</div>
+          <div class="meta">Vai trò: <b>Chủ nhiệm đề tài</b> · ĐH Thủy Lợi · Khoa CNTT</div>
+        </div>
+        <div class="spacer"></div>
+        <div class="nudge">Hồ sơ còn thiếu <b>học vị</b> và <b>năm sinh</b>. <a>Hoàn thiện hồ sơ →</a></div>
+      </div>
+
+      <div class="dash">
+        <div class="widget col-span">
+          <h3><span class="wcode">W-TODO-PROPOSAL</span> Đề xuất cần xử lý <span class="cnt">1 mục</span></h3>
+          <ul class="todo">
+            <li><span class="t"><b>“Mô hình tưới thông minh tiết kiệm nước”</b> bị trả lại bổ sung<small>Đề xuất ĐX-2026-031 · Chuyên viên yêu cầu bổ sung dự toán</small></span><span class="pill late">Hạn 30/06/2026</span><span class="go">›</span></li>
+          </ul>
+        </div>
+
+        <div class="widget">
+          <h3><span class="wcode">W-TODO-PROGRESS</span> Báo cáo tiến độ của tôi <span class="cnt">2 mục</span></h3>
+          <ul class="todo">
+            <li><span class="t"><b>Báo cáo tiến độ Quý II</b><small>ĐT-2025-007 · Đề tài tưới tiêu chính xác</small></span><span class="pill late">Quá hạn 3 ngày</span><span class="go">›</span></li>
+            <li><span class="t"><b>Báo cáo giữa kỳ</b><small>ĐT-2026-014 · Mô hình RMS AI-first</small></span><span class="pill soon">Còn 5 ngày</span><span class="go">›</span></li>
+          </ul>
+        </div>
+
+        <div class="widget">
+          <h3><span class="wcode">W-TODO-ACCEPTANCE</span> Chuẩn bị nghiệm thu <span class="cnt">1 mục</span></h3>
+          <ul class="todo">
+            <li><span class="t"><b>Đăng ký nghiệm thu</b><small>ĐT-2024-002 · Hệ đo lường thông minh</small></span><span class="pill soon">Đến hạn</span><span class="go">›</span></li>
+          </ul>
+        </div>
+
+        <div class="widget col-span">
+          <h3>Số liệu nhanh</h3>
+          <div class="kpis k3">
+            <div class="kpi"><div class="k">Đề tài của tôi đang thực hiện <span class="wcode">W-KPI-MYPROJECTS</span></div><div class="v">3</div><div class="stamp">Cập nhật 08:12 hôm nay</div></div>
+            <div class="kpi"><div class="k">Báo cáo quá hạn <span class="wcode">W-KPI-OVERDUE</span></div><div class="v">1</div><div class="stamp">Cập nhật 08:12 hôm nay</div></div>
+            <div class="kpi"><div class="k">Giờ giảng quy đổi kỳ này <span class="wcode">W-E4-TEACHING</span></div><div class="v">128</div><div class="lnk">Xem lý lịch (F08)</div></div>
+          </div>
+        </div>
+
+        <div class="widget">
+          <h3><span class="wcode">W-NOTIF</span> Thông báo gần đây <span class="cnt">5 mới nhất</span></h3>
+          <ul class="notif">
+            <li><span class="dot"></span><span>Đề xuất ĐX-2026-031 bị trả lại bổ sung<small>F01 · 1 giờ trước</small></span></li>
+            <li><span class="dot"></span><span>Kết quả xét duyệt: ĐT-2026-014 được phê duyệt<small>F03 · hôm qua</small></span></li>
+            <li><span class="dot read"></span><span>Báo cáo tiến độ Quý II sắp đến hạn<small>F04 · 2 ngày trước</small></span></li>
+            <li><span class="dot read"></span><span>Kinh phí đợt 1 đã được ghi nhận cấp<small>F05 · 3 ngày trước</small></span></li>
+            <li><span class="dot read"></span><span>Sản phẩm “Bài báo Q1” đã được duyệt<small>F07 · 4 ngày trước</small></span></li>
+          </ul>
+          <span class="seeall">Xem tất cả (Trung tâm thông báo B04)</span>
+        </div>
+
+        <div class="widget">
+          <h3><span class="wcode">W-SHORTCUTS</span> Lối tắt</h3>
+          <div class="shortcuts">
+            <button class="sbtn primary">+ Nộp đề xuất (F01)</button>
+            <button class="sbtn">Kỳ đang mở (F02)</button>
+            <button class="sbtn">Kê khai sản phẩm (F07)</button>
+            <button class="sbtn">Hồ sơ của tôi (F08)</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================ THÀNH VIÊN ============================ -->
+    <section class="role" id="role-tv">
+      <div class="ctx">
+        <div>
+          <div class="hi">Xin chào, Trần Thị B 👋</div>
+          <div class="meta">Vai trò: <b>Thành viên đề tài</b> · ĐH Thủy Lợi · Khoa Môi trường</div>
+        </div>
+      </div>
+      <div class="dash">
+        <div class="widget col-span">
+          <h3>Số liệu nhanh</h3>
+          <div class="kpis k2">
+            <div class="kpi"><div class="k">Đề tài tôi tham gia <span class="wcode">W-KPI-MYPROJECTS</span></div><div class="v">2</div><div class="stamp">Cập nhật 08:05 hôm nay</div></div>
+            <div class="kpi"><div class="k">Sản phẩm tôi là đồng tác giả <span class="wcode">W-KPI-OUTPUTS</span></div><div class="v">4</div></div>
+          </div>
+        </div>
+        <div class="widget">
+          <h3><span class="wcode">W-NOTIF</span> Thông báo gần đây <span class="cnt">5 mới nhất</span></h3>
+          <ul class="notif">
+            <li><span class="dot"></span><span>Bạn được thêm vào ĐT-2026-022<small>F01 · 2 giờ trước</small></span></li>
+            <li><span class="dot read"></span><span>Thuyết minh ĐT-2026-014 đã cập nhật<small>F01 · hôm qua</small></span></li>
+            <li><span class="dot read"></span><span>Sản phẩm “Poster hội nghị” đã được duyệt<small>F07 · 3 ngày trước</small></span></li>
+            <li><span class="dot read"></span><span>Lịch họp nghiệm thu ĐT-2024-002<small>F06 · 4 ngày trước</small></span></li>
+            <li><span class="dot read"></span><span>Báo cáo tiến độ nhóm đã nộp<small>F04 · 5 ngày trước</small></span></li>
+          </ul>
+          <span class="seeall">Xem tất cả (B04)</span>
+        </div>
+        <div class="widget">
+          <h3><span class="wcode">W-SHORTCUTS</span> Lối tắt</h3>
+          <div class="shortcuts">
+            <button class="sbtn">Đề tài của tôi (F04)</button>
+            <button class="sbtn">Hồ sơ của tôi (F08)</button>
+          </div>
+          <div class="empty" style="margin-top:14px">Thành viên không có “việc cần làm” bắt buộc — chủ yếu theo dõi đề tài tham gia. <br>(Minh hoạ <b>trạng thái ít việc</b>.)</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================ CHUYÊN VIÊN ============================ -->
+    <section class="role" id="role-cv">
+      <div class="ctx">
+        <div>
+          <div class="hi">Chào buổi sáng, Lê Văn C 👋</div>
+          <div class="meta">Vai trò: <b>Chuyên viên QL KHCN</b> · ĐH Thủy Lợi · Phạm vi: <b>Khoa CNTT + Khoa Môi trường</b></div>
+        </div>
+      </div>
+      <div class="dash">
+        <div class="widget">
+          <h3><span class="wcode">W-TODO-INTAKE</span> Đề xuất chờ tiếp nhận <span class="cnt">3 mục</span></h3>
+          <ul class="todo">
+            <li><span class="t"><b>ĐX-2026-031 · Mô hình tưới thông minh</b><small>Nguyễn Văn A · nộp 24/06</small></span><span class="pill">Chờ kiểm tra</span><span class="go">›</span></li>
+            <li><span class="t"><b>ĐX-2026-032 · Cảm biến chất lượng nước</b><small>Phạm D · nộp 25/06</small></span><span class="pill">Chờ kiểm tra</span><span class="go">›</span></li>
+            <li><span class="t"><b>ĐX-2026-033 · Dự báo lũ bằng AI</b><small>Hoàng E · nộp 26/06</small></span><span class="pill">Chờ kiểm tra</span><span class="go">›</span></li>
+          </ul>
+        </div>
+        <div class="widget">
+          <h3><span class="wcode">W-TODO-PROGRESS-REVIEW</span> Báo cáo tiến độ chờ duyệt <span class="cnt">4 mục</span></h3>
+          <ul class="todo">
+            <li><span class="t"><b>ĐT-2025-007 · Quý II</b><small>Nộp 23/06 · trễ hạn</small></span><span class="pill late">Ưu tiên</span><span class="go">›</span></li>
+            <li><span class="t"><b>ĐT-2026-014 · Giữa kỳ</b><small>Nộp 24/06</small></span><span class="pill">Chờ duyệt</span><span class="go">›</span></li>
+            <li><span class="t"><b>ĐT-2025-011 · Quý II</b><small>Nộp 24/06</small></span><span class="pill">Chờ duyệt</span><span class="go">›</span></li>
+            <li><span class="t"><b>ĐT-2026-003 · Giữa kỳ</b><small>Nộp 25/06</small></span><span class="pill">Chờ duyệt</span><span class="go">›</span></li>
+          </ul>
+        </div>
+        <div class="widget">
+          <h3><span class="wcode">W-TODO-OUTPUT-REVIEW</span> Sản phẩm chờ duyệt <span class="cnt">2 mục</span></h3>
+          <ul class="todo">
+            <li><span class="t"><b>Bài báo SCIE “Tối ưu tưới tiêu”</b><small>ĐT-2025-007 · kê khai 24/06</small></span><span class="pill">Chờ duyệt</span><span class="go">›</span></li>
+            <li><span class="t"><b>Giải pháp hữu ích “Van điều áp”</b><small>ĐT-2024-002 · kê khai 25/06</small></span><span class="pill">Chờ duyệt</span><span class="go">›</span></li>
+          </ul>
+        </div>
+        <div class="widget">
+          <h3><span class="wcode">W-TODO-BUDGET</span> Đối soát kinh phí <span class="cnt">1 mục</span></h3>
+          <ul class="todo">
+            <li><span class="t"><b>Chênh lệch đối soát ĐT-2025-011</b><small>Lệch 4.200.000 đ so với chứng từ</small></span><span class="pill late">Cần xử lý</span><span class="go">›</span></li>
+          </ul>
+        </div>
+        <div class="widget col-span">
+          <h3>Số liệu nhanh <span class="cnt">trong phạm vi của bạn</span></h3>
+          <div class="kpis k3">
+            <div class="kpi"><div class="k">Hồ sơ chờ xử lý <span class="wcode">W-KPI-QUEUE</span></div><div class="v">9</div><div class="stamp">Cập nhật 08:00 hôm nay</div></div>
+            <div class="kpi"><div class="k">Báo cáo quá hạn (phạm vi) <span class="wcode">W-KPI-OVERDUE</span></div><div class="v">5</div><div class="stamp">Cập nhật 08:00 hôm nay</div></div>
+            <div class="kpi"><div class="k">Đề tài theo trạng thái <span class="wcode">W-KPI-PORTFOLIO</span></div><div class="v">24</div><div class="lnk">Mở báo cáo (B02)</div></div>
+          </div>
+        </div>
+        <div class="widget">
+          <h3><span class="wcode">W-NOTIF</span> Thông báo gần đây <span class="cnt">5 mới nhất</span></h3>
+          <ul class="notif">
+            <li><span class="dot"></span><span>ĐX-2026-033 vừa được nộp<small>F01 · 30 phút trước</small></span></li>
+            <li><span class="dot"></span><span>Đối soát ĐT-2025-011 phát sinh chênh lệch<small>F05 · 1 giờ trước</small></span></li>
+            <li><span class="dot read"></span><span>Báo cáo ĐT-2025-007 quá hạn<small>F04 · hôm qua</small></span></li>
+            <li><span class="dot read"></span><span>Lịch nghiệm thu ĐT-2024-002 đã lập<small>F06 · 2 ngày trước</small></span></li>
+            <li><span class="dot read"></span><span>Kỳ nhận đề xuất đợt 2 sắp đóng<small>F02 · 3 ngày trước</small></span></li>
+          </ul>
+          <span class="seeall">Xem tất cả (B04)</span>
+        </div>
+        <div class="widget">
+          <h3><span class="wcode">W-SHORTCUTS</span> Lối tắt</h3>
+          <div class="shortcuts">
+            <button class="sbtn primary">+ Mở kỳ nhận đề xuất (F02)</button>
+            <button class="sbtn">Báo cáo &amp; thống kê (B02)</button>
+            <button class="sbtn">Danh sách đề tài (F04)</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================ HỘI ĐỒNG ============================ -->
+    <section class="role" id="role-hd">
+      <div class="ctx">
+        <div>
+          <div class="hi">Kính chào, PGS.TS Phạm Văn D 👋</div>
+          <div class="meta">Vai trò: <b>Thành viên hội đồng</b> · ĐH Thủy Lợi</div>
+        </div>
+      </div>
+      <div class="dash">
+        <div class="widget col-span">
+          <h3><span class="wcode">W-TODO-REVIEW</span> Phiếu chấm chờ điền <span class="cnt">3 mục</span></h3>
+          <ul class="todo">
+            <li><span class="t"><b>Xét duyệt: ĐX-2026-028 “Quản lý nguồn nước lưu vực”</b><small>Hội đồng KH Khoa CNTT · đợt đánh giá #A-12</small></span><span class="pill late">Hạn 28/06</span><span class="go">›</span></li>
+            <li><span class="t"><b>Xét duyệt: ĐX-2026-030 “Mạng cảm biến IoT”</b><small>Hội đồng KH Khoa CNTT · đợt đánh giá #A-12</small></span><span class="pill soon">Hạn 02/07</span><span class="go">›</span></li>
+            <li><span class="t"><b>Nghiệm thu: ĐT-2024-002 “Hệ đo lường thông minh”</b><small>Hội đồng nghiệm thu · phiên 05/07</small></span><span class="pill soon">Sắp họp</span><span class="go">›</span></li>
+          </ul>
+        </div>
+        <div class="widget">
+          <h3>Số liệu nhanh</h3>
+          <div class="kpis k2">
+            <div class="kpi"><div class="k">Đợt đánh giá được phân công <span class="wcode">W-KPI-ASSIGNMENTS</span></div><div class="v">3</div><div class="stamp">Cập nhật 07:50 hôm nay</div></div>
+            <div class="kpi"><div class="k">Phiếu đã gửi / tổng <span class="wcode">W-KPI-ASSIGNMENTS</span></div><div class="v">2/5</div></div>
+          </div>
+        </div>
+        <div class="widget">
+          <h3><span class="wcode">W-NOTIF</span> Thông báo gần đây <span class="cnt">5 mới nhất</span></h3>
+          <ul class="notif">
+            <li><span class="dot"></span><span>Bạn được phân công chấm ĐX-2026-030<small>F03 · 2 giờ trước</small></span></li>
+            <li><span class="dot"></span><span>Lịch họp nghiệm thu ĐT-2024-002<small>F06 · hôm qua</small></span></li>
+            <li><span class="dot read"></span><span>Hồ sơ ĐX-2026-028 đã sẵn sàng để chấm<small>F03 · 2 ngày trước</small></span></li>
+            <li><span class="dot read"></span><span>Nhắc: phiếu ĐX-2026-028 sắp đến hạn<small>F03 · 2 ngày trước</small></span></li>
+            <li><span class="dot read"></span><span>Biên bản phiên họp #A-11 đã ban hành<small>F03 · 5 ngày trước</small></span></li>
+          </ul>
+          <span class="seeall">Xem tất cả (B04)</span>
+        </div>
+        <div class="widget col-span">
+          <h3><span class="wcode">W-SHORTCUTS</span> Lối tắt</h3>
+          <div class="shortcuts">
+            <button class="sbtn primary">Đợt đánh giá của tôi (F03)</button>
+            <button class="sbtn">Phiên nghiệm thu (F06)</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================ QUẢN TRỊ HT ============================ -->
+    <section class="role" id="role-sy">
+      <div class="ctx">
+        <div>
+          <div class="hi">Xin chào, Admin 👋</div>
+          <div class="meta">Vai trò: <b>Quản trị hệ thống</b> · ĐH Thủy Lợi</div>
+        </div>
+      </div>
+      <div class="dash">
+        <div class="widget col-span">
+          <h3><span class="wcode">W-ADMIN</span> Lối tắt quản trị</h3>
+          <div class="shortcuts">
+            <button class="sbtn primary">Danh mục &amp; cấu hình (B01)</button>
+            <button class="sbtn">Người dùng &amp; quyền (B03)</button>
+            <button class="sbtn">Cấu hình trang chủ theo vai trò (HOME-11)</button>
+            <button class="sbtn">Tham số hệ thống (B01)</button>
+          </div>
+          <div class="empty" style="margin-top:14px">Quản trị hệ thống làm việc chính ở BackOffice cấu hình — trang chủ chỉ là điểm vào nhanh + thông báo. (Bố cục tối giản.)</div>
+        </div>
+        <div class="widget">
+          <h3><span class="wcode">W-NOTIF</span> Thông báo gần đây <span class="cnt">5 mới nhất</span></h3>
+          <ul class="notif">
+            <li><span class="dot"></span><span>Có người dùng mới auto-provision lần đầu<small>B03 · 1 giờ trước</small></span></li>
+            <li><span class="dot read"></span><span>Danh mục “Lĩnh vực” được cập nhật<small>B01 · hôm qua</small></span></li>
+            <li><span class="dot read"></span><span>Thay đổi phân quyền vai trò Chuyên viên<small>B03 · 2 ngày trước</small></span></li>
+            <li><span class="dot read"></span><span>Mẫu thông báo PROGRESS_OVERDUE đã sửa<small>B04 · 3 ngày trước</small></span></li>
+            <li><span class="dot read"></span><span>Bật năng lực E4 cho tenant<small>cấu hình · 6 ngày trước</small></span></li>
+          </ul>
+          <span class="seeall">Xem tất cả (B04)</span>
+        </div>
+        <div class="widget">
+          <h3><span class="wcode">W-SHORTCUTS</span> Lối tắt</h3>
+          <div class="shortcuts">
+            <button class="sbtn">Danh mục (B01)</button>
+            <button class="sbtn">Người dùng &amp; quyền (B03)</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="legend">
+      Mỗi thẻ gắn mã widget <span class="wcode">W-xx</span> để map về đề xuất VP-HOME. Widget <span class="wcode">W-E4-*</span> chỉ hiện khi tenant bật E4 (ở đây: ĐH Thủy Lợi). Tenant tắt E4 → ẩn (BR-04). Mọi mục là điều hướng (read-only), số liệu nhanh có mốc cập nhật (BR-10) và link sang B02 khi cần phân tích (BR-06).
+    </div>
+  </main>
+</div>
+
+<script>
+  var sw = document.getElementById('roleSwitch');
+  var sub = document.getElementById('appSub');
+  var adminGrp = document.getElementById('sideAdminGrp');
+  var adminMap = {
+    cn:{sub:'Cổng nhà khoa học · sau đăng nhập', admin:false, report:false},
+    tv:{sub:'Cổng nhà khoa học · sau đăng nhập', admin:false, report:false},
+    cv:{sub:'BackOffice · sau đăng nhập', admin:false, report:true},
+    hd:{sub:'BackOffice · sau đăng nhập', admin:false, report:false},
+    sy:{sub:'BackOffice · sau đăng nhập', admin:true, report:false}
+  };
+  sw.addEventListener('click', function(e){
+    var b = e.target.closest('button'); if(!b) return;
+    var role = b.dataset.role;
+    sw.querySelectorAll('button').forEach(function(x){x.classList.toggle('active', x===b);});
+    document.querySelectorAll('.role').forEach(function(s){s.classList.toggle('active', s.id==='role-'+role);});
+    var cfg = adminMap[role];
+    sub.textContent = cfg.sub;
+    adminGrp.style.display = cfg.admin ? 'block':'none';
+    document.getElementById('sideAdmin1').style.display = cfg.admin ? 'flex':'none';
+    document.getElementById('sideAdmin2').style.display = cfg.admin ? 'flex':'none';
+    document.getElementById('sideReport').style.display = cfg.report ? 'flex':'none';
+    window.scrollTo(0,0);
+  });
+</script>
+</body>
+</html>
+</content>

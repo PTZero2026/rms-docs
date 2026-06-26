@@ -30,6 +30,7 @@ updated: 2026-06-24
 |---|---|---|---|---|---|---|
 | VP-FEAT | Feature nào bật cho tenant | Cờ feature per-tenant | Bật/tắt | Bộ lõi F01–F08, B01–B04 bật; E4 (P03, F09–F12) tắt | Quản trị hệ thống | [ADR-0012](decisions/0012-ranh-gioi-loi-vs-cau-hinh-tenant.md) |
 | VP-MODE | Mức quản lý của một loại đối tượng | Cờ trong feature | Chọn | Theo spec feature | Quản trị tenant | vd F09 "đầu mục" vs full lifecycle |
+| VP-HOME | Tập widget & bố cục **trang chủ** mặc định theo vai trò | Field/layout config per-tenant trên **bộ widget chuẩn** (không tạo widget tuỳ biến) | Bật/tắt + Giá trị (thứ tự) | Bố cục mặc định theo vai trò (bộ widget chuẩn B06) | Quản trị tenant | [B06](../features/B06-trang-chu/) (BR-05) |
 
 ## 2. Định danh & đăng nhập
 

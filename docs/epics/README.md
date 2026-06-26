@@ -16,7 +16,7 @@ updated: 2026-06-12
 
 | Epic | Tên | Feature | Pha | Phụ thuộc |
 |---|---|---|---|---|
-| **[E0](E0-nen-tang.md)** | Nền tảng | B03, B01, B04, P01 (workflow), P02 (audit) | Now + xuyên suốt | — |
+| **[E0](E0-nen-tang.md)** | Nền tảng | B03, B01, B04, B06 (trang chủ), P01 (workflow), P02 (audit) | Now + xuyên suốt | — |
 | **[E1](E1-tiep-nhan-xet-duyet.md)** | Tiếp nhận & Xét duyệt | F02, F01, F03 | Now | E0 |
 | **[E2](E2-thuc-hien-nghiem-thu.md)** | Thực hiện & Nghiệm thu | F04, F05, F06 | Next | E0, E1 |
 | **[E3](E3-dau-ra-bao-cao.md)** | Đầu ra, Lý lịch & Báo cáo | F07, F08, B02, cổng công khai | Later | E0; dữ liệu E1–E2 |
@@ -33,6 +33,7 @@ E0 Nền tảng
 ├── B03 Quản lý người dùng (iam)
 ├── B01 Danh mục & cấu hình (catalog)
 ├── B04 Thông báo (notification)
+├── B06 Trang chủ / Dashboard cá nhân (home — aggregation read-only sau đăng nhập)
 ├── P01 Workflow engine (kernel dùng chung — ADR-0007)
 └── P02 Audit (module audit, xuyên suốt — ADR-0010)
 
@@ -87,6 +88,9 @@ chốt được chắt lọc về `docs/features/<mã>/`. Epic giúp xác địn
 các đợt specify/plan. Xem [AGENTS.md §7](../../AGENTS.md).
 
 ## Ghi chú
-- **Cổng công khai** chưa có mã feature riêng — đang để ở E3 dạng mục chưa-mã; quyết định tách `B05` hay
-  giữ mục epic-level sẽ chốt sau (xem [E3](E3-dau-ra-bao-cao.md)).
+- **Cổng công khai** chưa có mã feature riêng — đang để ở E3 dạng mục chưa-mã; mã `B05` đang **để dành** cho
+  mục này, quyết định tách `B05` hay giữ mục epic-level sẽ chốt sau (xem [E3](E3-dau-ra-bao-cao.md)).
+- **B06 — Trang chủ (Dashboard cá nhân)** thuộc E0: màn hình đích **sau đăng nhập**, khung nhìn tổng hợp
+  read-only (việc cần làm + số liệu nhanh + thông báo theo vai trò). Khác **B02** (báo cáo phân tích) và
+  **Cổng công khai** (cho Khách chưa đăng nhập). Dùng mã `B06` để chừa `B05` cho Cổng công khai.
 - Trạng thái độ chín từng feature: [features/README.md §4](../features/README.md) + [features/REVIEW.md](../features/REVIEW.md).

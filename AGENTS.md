@@ -30,7 +30,7 @@ docs-as-code. Chỉ chứa tài liệu nghiệp vụ & kiến trúc trong `docs/
 > quán để spec/design truy vết đúng.
 
 `F01→proposal · F02→call · F03→review · F04→progress · F05→budget · F06→acceptance · F07→product · F08→profile`
-`B01→catalog · B02→report · B03→iam · B04→notification`.
+`B01→catalog · B02→report · B03→iam · B04→notification · B06→home` (B06 = trang chủ/dashboard cá nhân — khung nhìn tổng hợp read-only sau đăng nhập; `B05` để dành Cổng công khai).
 `P01→workflow (kernel dùng chung) · P02→audit` — **Platform spec** (năng lực nền do Kiến trúc/DEV sở hữu, không phải feature CRUD; xuyên suốt mọi feature).
 **Năng lực mở rộng E4 (optional, bật/tắt per-tenant — [ADR-0012](docs/architecture/decisions/0012-ranh-gioi-loi-vs-cau-hinh-tenant.md); Draft):** `F09→upper-project · F10→student-project · F11→applied-project · F12→activity` ·
 `P03→teaching-hour` (Platform xuyên suốt — quy đổi giờ giảng, nguồn nuôi F08). Xem [E4](docs/epics/E4-hoat-dong-mo-rong.md).

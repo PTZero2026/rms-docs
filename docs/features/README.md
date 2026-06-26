@@ -65,6 +65,7 @@ Quy ước tiến độ:
 | B02 | E3 | [Báo cáo & thống kê](B02-bao-cao-thong-ke/) | `report` | BO | Later | Còn khung mẫu |
 | B03 | E0 | [Quản lý người dùng](B03-quan-ly-nguoi-dung/) | `iam` | BO | Now | Đã có nội dung; **đã tách spec↔design (mẫu)** |
 | B04 | E0 | [Thông báo](B04-thong-bao/) | `notification` | FE, BO | Xuyên suốt | Đã có nội dung |
+| B06 | E0 | [Trang chủ (Dashboard cá nhân)](B06-trang-chu/) | `home` | FE, BO | Now + xuyên suốt | Spec/UI/test-plan khởi tạo — khung nhìn tổng hợp read-only sau đăng nhập |
 | P01 | E0 | [Workflow engine](P01-workflow-engine/) | workflow (kernel) | BE/nền tảng | Now | Spec nền (tech) từ ADR-0007 |
 | P02 | E0 | [Audit](P02-audit/) | `audit` | BE/xuyên suốt | Xuyên suốt | Spec nền (tech) từ ADR-0010 + §4.4 |
 | P03 | E4 | [Quy đổi giờ giảng](P03-quy-doi-gio-giang/) | `teaching-hour` | BE/xuyên suốt | Later (optional) | **Năng lực optional** — spec khởi tạo, chờ chốt công thức |
@@ -190,6 +191,15 @@ Quy ước tiến độ:
 - Quản lý tùy chọn nhận thông báo của người dùng.
 - Quản lý mẫu, ma trận sự kiện-kênh và nhật ký gửi.
 
+### B06 — Trang chủ (Dashboard cá nhân)
+
+- Màn hình đích sau đăng nhập, cá nhân hoá theo vai trò & phạm vi dữ liệu.
+- Khối "Việc cần làm của tôi" gom theo trạng thái chuẩn hoá (`statusSemantic`).
+- Số liệu nhanh (counters) theo phạm vi người dùng; điều hướng sang B02 khi cần phân tích.
+- Tóm tắt N thông báo gần nhất + lối tắt theo quyền.
+- Khung nhìn tổng hợp **read-only**: chỉ đọc & điều hướng, không sửa nghiệp vụ.
+- Tập widget & bố cục theo vai trò cấu hình per-tenant (VP-HOME).
+
 ### P01 — Workflow engine *(Platform)*
 
 > Spec nền do Kiến trúc/DEV sở hữu; nguồn [ADR-0007](../architecture/decisions/0007-workflow-engine-dong-per-tenant.md).
@@ -224,6 +234,7 @@ Quy ước tiến độ:
 | B02 | E3 | 🔴 | – | 🔴 | 🔴 | 1/2 | 🔴 | [ ] |
 | B03 | E0 | ✅ | ✅ | ✅ | ✅ | 11/12 | 🟢 | [ ] |
 | B04 | E0 | ✅ | – | ✅ | ✅ | 10/10 | 🟡 | [ ] |
+| B06 | E0 | 🟡 | – | 🟡 | 🟡 | 10/12 | 🔴 | [ ] |
 | P01 | E0 | ✅ | – | – | 🔴 | 9/8 | 🟡 | [ ] |
 | P02 | E0 | ✅ | – | – | 🔴 | 7/5 | 🟡 | [ ] |
 | P03 | E4 | 🟡 | – | 🔴 | 🔴 | 6/5 | 🔴 | [ ] |
@@ -264,7 +275,7 @@ Các mục dưới đây phải được rà trong nhiều feature, không tự 
 
 ## 6. Thứ tự rà soát đề xuất
 
-1. **Nền tảng (E0):** B03 → B01 → P01 → P02 → B04.
+1. **Nền tảng (E0):** B03 → B01 → P01 → P02 → B04 → B06 (trang chủ — rà sau khi các feature nguồn đã chốt).
 2. **Đầu vòng đời (E1):** F02 → F01 → F03.
 3. **Thực hiện đề tài (E2):** F04 → F05 → F06.
 4. **Đầu ra & phân tích (E3):** F07 → F08 → B02.

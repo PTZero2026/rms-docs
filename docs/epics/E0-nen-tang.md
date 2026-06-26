@@ -23,6 +23,7 @@ Now (B01, B03 + nền tảng P01, P02) · xuyên suốt (B04, P02).
 | [B03](../features/B03-quan-ly-nguoi-dung/) | Quản lý người dùng & RBAC | `iam` | Tài khoản, vai trò, quyền `MODULE.ACTION`, data scoping |
 | [B01](../features/B01-danh-muc-cau-hinh/) | Danh mục & cấu hình | `catalog` | Cây đơn vị/lĩnh vực, loại SP, tham số, bộ tiêu chí, mẫu biểu |
 | [B04](../features/B04-thong-bao/) | Thông báo | `notification` | Gửi in-app/email/SMS theo `eventType`; hàng đợi, retry |
+| [B06](../features/B06-trang-chu/) | Trang chủ (Dashboard cá nhân) | `home` | Landing sau đăng nhập; khung nhìn tổng hợp read-only: việc cần làm + số liệu nhanh + thông báo theo vai trò & phạm vi |
 | [P01](../features/P01-workflow-engine/) | Workflow engine | workflow (kernel dùng chung) | Vòng đời `ResearchProject` động per-tenant + `statusSemantic` |
 | [P02](../features/P02-audit/) | Audit | `audit` | Nhật ký append-only, actor mở rộng (HUMAN/SYSTEM/AI) |
 

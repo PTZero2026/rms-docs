@@ -81,7 +81,7 @@ qua interface rõ ràng. Thực thể dùng chung định nghĩa ở `data-model
 
 | Nhóm | Module |
 |---|---|
-| Nền tảng | `iam` (B03 người dùng/quyền), `catalog` (B01 danh mục), `notification` (B04), `audit` |
+| Nền tảng | `iam` (B03 người dùng/quyền), `catalog` (B01 danh mục), `notification` (B04), `audit`, `home` (B06 trang chủ — aggregation/BFF read-only) |
 | Đầu vòng đời | `call` (F02 kỳ nhận đề xuất), `proposal` (F01 đề xuất), `review` (F03 xét duyệt) |
 | Thực hiện | `progress` (F04), `budget` (F05), `acceptance` (F06 nghiệm thu) |
 | Đầu ra | `product` (F07 sản phẩm), `profile` (F08 lý lịch), `report` (B02 thống kê) |
