@@ -97,7 +97,9 @@ thêm danh mục lookup mới = thêm một dòng `Catalog`, không cần migrat
 |---|---|---|---|---|
 | Địa chỉ (Tỉnh/Huyện/Xã) | `ADMINISTRATIVE_DIVISION` | generic | TREE (3 cấp) | `extra.level` = `PROVINCE`/`DISTRICT`/`WARD`; seed dữ liệu hành chính, ít sửa tay |
 | Đơn vị công tác | `Unit` | entity riêng | TREE | Bị `User.unitId`, `ResearchProject.hostUnitId` trỏ tới |
-| Phân loại đề tài NCKH | `RESEARCH_TOPIC_CATEGORY` | generic | FLAT | Nhãn phân loại đề tài (vd cấp nhà nước/bộ/cơ sở) |
+| Phân loại đề tài NCKH | `RESEARCH_TOPIC_CATEGORY` | generic | FLAT | Nhãn/cấp đề tài (vd cấp nhà nước/bộ/cơ sở). `extra.tier` (`UPPER`/`BASE`) lọc cấp trên (F09); `extra.requiredEvidence` cấu hình minh chứng bắt buộc theo giai đoạn (VP-EVID-REQ) |
+| Loại minh chứng | `EVIDENCE_TYPE` | generic | FLAT | Loại tài liệu minh chứng (vd `DECISION`/`CONTRACT`/`ACCEPTANCE`/`OUTPUT`); dùng cho quy tắc minh chứng bắt buộc F09–F12 |
+| Cơ quan chủ trì cấp trên | `MANAGING_BODY` | generic | FLAT | Cơ quan quản lý đề tài cấp trên (Bộ/Tỉnh/Quỹ…); `UpperProject.managingBodyItemId` (F09) trỏ tới |
 | Chuyên ngành đề tài NCKH | `ResearchField` | entity riêng | TREE | Lĩnh vực/chuyên ngành; bị `ResearchProject.researchFieldId` trỏ tới (xem §7 điểm mở) |
 | Phân loại thông báo | `NOTIFICATION_CATEGORY` | generic | FLAT | Nhãn để lọc/nhóm tin — **khác** `eventType`/mẫu của B04 |
 | Phân loại đánh giá đề tài | `EVALUATION_CATEGORY` | generic | FLAT | Nhãn phân loại đợt/kết quả đánh giá — **khác** `CriteriaSet` |

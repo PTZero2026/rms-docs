@@ -225,7 +225,10 @@ ngành nghiên cứu; `ResearchProject.researchFieldId`, `ProposalCall.researchF
 | `recordStatus` | enum | `ACTIVE`\|`INACTIVE`\|`DELETED` | Xóa mềm theo §1 |
 
 > Danh mục lookup khởi tạo (có thể phát sinh thêm): `ADMINISTRATIVE_DIVISION` (Tỉnh/Huyện/Xã, TREE),
-> `RESEARCH_TOPIC_CATEGORY` (phân loại đề tài NCKH), `NOTIFICATION_CATEGORY` (phân loại thông báo —
+> `RESEARCH_TOPIC_CATEGORY` (phân loại/cấp đề tài NCKH; `extra.tier`=`UPPER`/`BASE`, `extra.requiredEvidence`
+> theo giai đoạn — F09/VP-EVID-REQ), `EVIDENCE_TYPE` (loại minh chứng bắt buộc F09–F12),
+> `MANAGING_BODY` (cơ quan chủ trì cấp trên — F09),
+> `NOTIFICATION_CATEGORY` (phân loại thông báo —
 > **khác** `eventType` của B04), `EVALUATION_CATEGORY` (phân loại đánh giá — **khác** `CriteriaSet`),
 > `POSITION` (chức vụ), `ACADEMIC_RANK` (học hàm: GS/PGS — hồ sơ F08), `ACADEMIC_DEGREE` (học vị:
 > TS/ThS/CN — hồ sơ F08), `USER_ROLE_LABEL` (vị trí/vai trò
@@ -267,7 +270,7 @@ ngành nghiên cứu; `ResearchProject.researchFieldId`, `ProposalCall.researchF
 | `submittedAt` | timestamptz | | Thời điểm chuyển bước có `statusSemantic = SUBMITTED` |
 
 **ProjectMember** (`id`, `researchProjectId`, `userId`, `projectRole` enum `PRINCIPAL_INVESTIGATOR`|`MEMBER`|`SECRETARY`, `responsibility`).
-**Attachment** (`id`, `targetType`, `targetId`, `fileName`, `storageKey` object-storage key, `fileSize`, `mimeType`) — dùng chung cho mọi feature.
+**Attachment** (`id`, `targetType`, `targetId`, `fileName`, `storageKey` object-storage key, `fileSize`, `mimeType`, `evidenceTypeItemId` uuid FK → CatalogItem (`EVIDENCE_TYPE`), nullable) — dùng chung cho mọi feature; `evidenceTypeItemId` phân loại minh chứng phục vụ quy tắc minh chứng bắt buộc (F09–F12).
 
 ### 4.4 Hội đồng & đánh giá (F03, F06)
 
