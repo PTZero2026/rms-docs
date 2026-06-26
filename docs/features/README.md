@@ -71,7 +71,7 @@ Quy ước tiến độ:
 | P03 | E4 | [Quy đổi giờ giảng](P03-quy-doi-gio-giang/) | `teaching-hour` | BE/xuyên suốt | Later (optional) | **Năng lực optional** — spec khởi tạo, chờ chốt công thức |
 | F09 | E4 | [Đề tài cấp trên](F09-de-tai-cap-tren/) | `upper-project` | FE, BO | Later (optional) | Quản lý đầu mục, spec khởi tạo |
 | F10 | E4 | [Đề tài sinh viên](F10-de-tai-sinh-vien/) | `student-project` | FE, BO | Later (optional) | Phạm vi vòng đời chờ chốt |
-| F11 | E4 | [Dự án phục vụ sản xuất](F11-du-an-phuc-vu-san-xuat/) | `applied-project` | FE, BO | Later (optional) | Spec khởi tạo |
+| F11 | E4 | [Dự án phục vụ sản xuất](F11-du-an-phuc-vu-san-xuat/) | `applied-project` | FE, BO | Later (optional) | Đã chi tiết hóa đầu mục, duyệt, minh chứng, giờ giảng |
 | F12 | E4 | [Hoạt động khoa học & minh chứng](F12-hoat-dong-khoa-hoc/) | `activity` | FE, BO | Later (optional) | Gộp hội nghị/cộng đồng/SHTT |
 
 > **Epic:** E0 Nền tảng · E1 Tiếp nhận & Xét duyệt · E2 Thực hiện & Nghiệm thu · E3 Đầu ra, Lý lịch & Báo cáo ·
@@ -240,7 +240,7 @@ Quy ước tiến độ:
 | P03 | E4 | 🟡 | – | 🔴 | 🔴 | 6/5 | 🔴 | [ ] |
 | F09 | E4 | 🟡 | – | 🔴 | 🔴 | 3/3 | 🔴 | [ ] |
 | F10 | E4 | 🟡 | – | 🔴 | 🔴 | 3/3 | 🔴 | [ ] |
-| F11 | E4 | 🟡 | – | 🔴 | 🔴 | 3/3 | 🔴 | [ ] |
+| F11 | E4 | 🟡 | ✅ | 🟡 | 🟡 | 7/7 | 🔴 | [ ] |
 | F12 | E4 | 🟡 | – | 🔴 | 🔴 | 4/4 | 🔴 | [ ] |
 
 > **E4 (mới — ĐH Thủy Lợi):** spec đã có **bối cảnh/phạm vi/luồng + BR/AC khởi tạo**, nhưng còn nhiều
