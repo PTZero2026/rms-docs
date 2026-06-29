@@ -4,8 +4,8 @@ id: "P03"
 epic: "E4"
 owner: "<PO/BA phụ trách>"
 status: Draft        # Draft | Review | Approved
-version: 0.1
-updated: 2026-06-24
+version: 0.2
+updated: 2026-06-29
 ---
 
 # Quy đổi giờ giảng *(Platform / xuyên suốt)*
@@ -21,27 +21,42 @@ updated: 2026-06-24
 - Trường quy đổi mọi hoạt động khoa học (đề tài, bài báo, hội nghị, phục vụ cộng đồng, SHTT) ra **giờ
   giảng** để tính khối lượng/định mức cho giảng viên.
 - Cần một **cơ chế cấu hình công thức** quy đổi theo từng loại hoạt động (và vai trò người tham gia),
-  thay vì hardcode — vì công thức do Trường quy định và **có thể thay đổi theo năm/quy chế**.
+  thay vì hardcode — vì công thức do Trường quy định và **có thể thay đổi theo năm học/năm tài khóa/quy chế**.
 - Kết quả: mỗi sự kiện khoa học sinh ra **bản ghi giờ giảng** gắn với giảng viên, tổng hợp tự động vào
   lý lịch (F08) và phục vụ báo cáo (B02).
+
+### 1.1 Quyết định nghiệp vụ về kỳ quy đổi
+
+- **P03 là nguồn sự thật của công thức/định mức quy đổi giờ giảng.** B01 chỉ cung cấp danh mục và tham
+  số dùng chung (loại hoạt động, năm học, năm tài khóa, danh mục cấp/loại...), không lưu luật tính giờ.
+- Hệ thống hỗ trợ 2 loại kỳ quy đổi:
+  - `ACADEMIC_YEAR` — năm học, vd `2026-2027`.
+  - `FISCAL_YEAR` — năm tài khóa/năm ngân sách, vd `2026`.
+- **Mặc định dùng `ACADEMIC_YEAR`** cho quy đổi giờ giảng, vì giờ giảng phục vụ khối lượng/định mức giảng
+  viên và hiển thị trong F08. Tenant có thể cấu hình `FISCAL_YEAR` nếu quy chế của Trường yêu cầu.
+- Mỗi bản ghi giờ giảng lưu rõ `recognitionPeriodType` và `recognitionPeriodCode`; báo cáo có thể lọc theo
+  năm học hoặc năm tài khóa nếu tenant bật cả hai trục lịch.
 
 ## 2. Phạm vi
 
 - **Trong phạm vi:**
-  - Danh mục **loại hoạt động** quy đổi và **công thức/định mức** quy đổi (cấu hình theo tenant, có hiệu lực theo kỳ/năm).
+  - Cấu hình **công thức/định mức** quy đổi theo loại hoạt động, vai trò và loại kỳ (`ACADEMIC_YEAR` /
+    `FISCAL_YEAR`), có hiệu lực theo phiên bản.
   - Tính giờ giảng cho một sự kiện hoạt động (đầu vào từ F09–F12, F07) theo công thức đang hiệu lực.
   - Phân bổ giờ giảng theo **vai trò** (chủ nhiệm/thành viên/hướng dẫn/tác giả chính…) và tỉ lệ đóng góp.
-  - Ghi nhận, điều chỉnh (có lý do, có audit) và tổng hợp giờ giảng theo giảng viên/kỳ.
+  - Ghi nhận, điều chỉnh (có lý do, có audit) và tổng hợp giờ giảng theo giảng viên/kỳ quy đổi.
 - **Ngoài phạm vi:**
+  - Quản trị danh mục nền như năm học, năm tài khóa, loại hoạt động lookup — thuộc B01.
   - Định mức lao động/khối lượng giảng dạy tổng thể của Trường (thuộc hệ thống đào tạo/HR).
   - Quyết toán thù lao theo giờ giảng (tài chính/nhân sự).
 
 ## 3. Luồng nghiệp vụ chính
 
-1. Quản trị (BO) cấu hình **bộ công thức quy đổi** theo loại hoạt động, hiệu lực theo kỳ.
+1. Quản trị (BO) cấu hình **bộ công thức quy đổi** theo loại hoạt động, loại kỳ và khoảng hiệu lực.
 2. Một feature nguồn (F07/F09/F10/F11/F12) ghi nhận sự kiện đủ điều kiện (vd: bài báo được duyệt, đề tài
-   nghiệm thu đạt, hội nghị được phê duyệt) → phát **yêu cầu quy đổi**.
-3. P03 chọn công thức **đang hiệu lực**, tính số giờ, phân bổ theo vai trò → tạo **bản ghi giờ giảng**.
+   nghiệm thu đạt, hội nghị được phê duyệt) → phát **yêu cầu quy đổi** kèm ngày nghiệp vụ của sự kiện.
+3. P03 xác định kỳ ghi nhận (năm học/năm tài khóa), chọn công thức **đang hiệu lực theo ngày nghiệp vụ**,
+   tính số giờ, phân bổ theo vai trò → tạo **bản ghi giờ giảng**.
 4. Bản ghi giờ giảng tự động hiển thị trong **lý lịch khoa học (F08)** của từng giảng viên.
 5. Khi cần điều chỉnh (sai sót/đặc cách), chuyên viên sửa có lý do; thay đổi ghi `AuditLog`.
 
@@ -51,34 +66,58 @@ updated: 2026-06-24
 
 | ID    | Quy tắc | Mô tả | Ghi chú |
 |-------|---------|-------|---------|
-| BR-01 | Công thức theo loại hoạt động | Mỗi loại hoạt động có công thức/định mức quy đổi riêng | Cấu hình ở B01/P03, không hardcode |
-| BR-02 | Hiệu lực theo kỳ | Công thức có thời gian hiệu lực; sự kiện áp công thức **đang hiệu lực tại thời điểm ghi nhận** | Cần PO chốt mốc áp dụng |
-| BR-03 | Phân bổ theo vai trò | Giờ giảng phân bổ theo vai trò & tỉ lệ đóng góp giữa các thành viên | Công thức phân bổ cần PO chốt |
-| BR-04 | Điều kiện phát sinh | Chỉ sự kiện ở trạng thái hợp lệ (vd duyệt/nghiệm thu đạt) mới sinh giờ giảng | Mỗi feature nguồn định nghĩa "trạng thái hợp lệ" |
-| BR-05 | Điều chỉnh có vết | Mọi điều chỉnh giờ giảng thủ công phải có lý do và ghi audit | Theo luật bất biến §4 (AGENTS.md) |
-| BR-06 | Idempotent | Một sự kiện không bị tính giờ trùng lặp khi xử lý lại | Khóa theo nguồn sự kiện |
+| BR-01 | P03 sở hữu công thức | Công thức/định mức quy đổi giờ giảng được cấu hình và version trong P03; feature nguồn và B01 không hardcode luật tính giờ | B01 chỉ cung cấp danh mục/tham số nền |
+| BR-02 | Loại kỳ quy đổi | Mỗi bộ công thức khai báo `periodType = ACADEMIC_YEAR` hoặc `FISCAL_YEAR`; mặc định tenant mới là `ACADEMIC_YEAR` | Điểm biến thiên `VP-TH-PERIOD` |
+| BR-03 | Hiệu lực công thức | Công thức có `validFrom`/`validTo`; sự kiện áp công thức đang hiệu lực tại **ngày nghiệp vụ nguồn** (`sourceOccurredAt`), không phụ thuộc ngày hệ thống xử lý lại | Ngày nguồn do F07/F09/F10/F11/F12 phát sang P03 |
+| BR-04 | Kỳ ghi nhận | Bản ghi giờ giảng lưu `recognitionPeriodType` và `recognitionPeriodCode`, suy ra từ `sourceOccurredAt` theo lịch năm học/năm tài khóa của tenant | Default F08 tổng hợp theo năm học |
+| BR-05 | Phân bổ theo vai trò | Giờ giảng phân bổ theo vai trò & tỉ lệ đóng góp giữa các thành viên | Công thức phân bổ cần PO chốt |
+| BR-06 | Điều kiện phát sinh | Chỉ sự kiện ở trạng thái hợp lệ (vd duyệt/nghiệm thu đạt) mới sinh giờ giảng | Mỗi feature nguồn định nghĩa "trạng thái hợp lệ" |
+| BR-07 | Điều chỉnh có vết | Mọi điều chỉnh giờ giảng thủ công phải có lý do và ghi audit | Theo luật bất biến §4 (AGENTS.md) |
+| BR-08 | Idempotent | Một sự kiện không bị tính giờ trùng lặp khi xử lý lại | Khóa theo nguồn sự kiện |
+| BR-09 | Không chồng lấn công thức | Trong cùng tenant, không cho 2 công thức cùng `activityType` + vai trò/phạm vi + `periodType` có khoảng hiệu lực chồng lấn | Tránh chọn công thức mơ hồ |
+| BR-10 | Hồi tố có kiểm soát | Khi đổi công thức, bản ghi đã quy đổi không tự đổi; muốn áp dụng hồi tố phải chạy lệnh tính lại/điều chỉnh có lý do và audit | Giữ ổn định số liệu đã chốt |
 
 > *Các giá trị/công thức cụ thể (số giờ theo loại bài báo, cấp đề tài…) — **cần PO chốt với Trường** (biên bản §D).*
 
 ## 5. Dữ liệu (mức khái niệm)
 
-- **Loại hoạt động quy đổi**: tên, nhóm, đơn vị tính.
-- **Công thức/định mức quy đổi**: tham số, kỳ hiệu lực, quy tắc phân bổ theo vai trò.
-- **Bản ghi giờ giảng**: giảng viên, nguồn sự kiện (loại + tham chiếu), vai trò, số giờ, kỳ, trạng thái, lý do điều chỉnh.
+- **Công thức/định mức quy đổi**: `activityType`, điều kiện áp dụng, `periodType`, `validFrom`, `validTo`,
+  tham số tính giờ, quy tắc phân bổ theo vai trò, trạng thái phiên bản.
+- **Yêu cầu quy đổi từ nguồn**: `sourceType`, `sourceId`, `eventKey`, `sourceOccurredAt`, loại hoạt động,
+  danh sách người tham gia/vai trò/tỉ lệ.
+- **Bản ghi giờ giảng**: giảng viên, nguồn sự kiện (loại + tham chiếu), vai trò, số giờ, `recognitionPeriodType`,
+  `recognitionPeriodCode`, trạng thái, lý do điều chỉnh.
+
+### 5.1 Gợi ý khóa kỳ
+
+| `periodType` | Ví dụ `recognitionPeriodCode` | Nguồn lịch | Ghi chú |
+|---|---|---|---|
+| `ACADEMIC_YEAR` | `2026-2027` | B01/tenant calendar | Mặc định cho P03/F08 |
+| `FISCAL_YEAR` | `2026` | B01/tenant calendar | Dùng khi trường quy định giờ giảng theo năm tài khóa |
 
 ## 6. Acceptance criteria
 
-- **AC-01** *(BR-01,02)* — Given có công thức đang hiệu lực cho loại hoạt động X, When một sự kiện loại X
-  được ghi nhận hợp lệ, Then hệ thống tính đúng số giờ theo công thức hiệu lực.
-- **AC-02** *(BR-03)* — Given sự kiện có nhiều thành viên với vai trò khác nhau, When quy đổi, Then giờ
+- **AC-01** *(BR-01,03)* — Given có công thức đang hiệu lực cho loại hoạt động X, When một sự kiện loại X
+  được ghi nhận hợp lệ, Then hệ thống tính đúng số giờ theo công thức hiệu lực tại `sourceOccurredAt`.
+- **AC-02** *(BR-02,04)* — Given tenant dùng mặc định năm học, When sự kiện có `sourceOccurredAt` thuộc năm học
+  `2026-2027`, Then bản ghi giờ giảng có `recognitionPeriodType = ACADEMIC_YEAR` và `recognitionPeriodCode = 2026-2027`.
+- **AC-03** *(BR-02,04)* — Given tenant cấu hình quy đổi theo năm tài khóa, When sự kiện có `sourceOccurredAt`
+  thuộc năm tài khóa `2026`, Then bản ghi giờ giảng có `recognitionPeriodType = FISCAL_YEAR` và
+  `recognitionPeriodCode = 2026`.
+- **AC-04** *(BR-05)* — Given sự kiện có nhiều thành viên với vai trò khác nhau, When quy đổi, Then giờ
   giảng được phân bổ theo đúng quy tắc vai trò.
-- **AC-03** *(BR-04,06)* — Given một sự kiện đã được quy đổi, When xử lý lại cùng sự kiện, Then không phát sinh giờ trùng.
-- **AC-04** *(BR-05)* — Given chuyên viên điều chỉnh giờ giảng, When lưu, Then thay đổi được ghi `AuditLog` kèm lý do.
-- **AC-05** — Given giảng viên có các bản ghi giờ giảng, When mở lý lịch (F08), Then giờ giảng hiển thị & tổng hợp đúng theo kỳ.
+- **AC-05** *(BR-06,08)* — Given một sự kiện đã được quy đổi, When xử lý lại cùng sự kiện, Then không phát sinh giờ trùng.
+- **AC-06** *(BR-07)* — Given chuyên viên điều chỉnh giờ giảng, When lưu, Then thay đổi được ghi `AuditLog` kèm lý do.
+- **AC-07** *(BR-09)* — Given đã có công thức hiệu lực cho cùng loại hoạt động/vai trò/kỳ, When Quản trị tạo
+  công thức mới có khoảng hiệu lực chồng lấn, Then hệ thống từ chối và báo khoảng hiệu lực bị trùng.
+- **AC-08** *(BR-10)* — Given công thức mới được cấu hình sau khi đã có bản ghi giờ giảng, When lưu công thức,
+  Then các bản ghi cũ không tự thay đổi; chỉ thay đổi khi chạy điều chỉnh/tính lại có lý do và audit.
+- **AC-09** *(BR-04)* — Given giảng viên có các bản ghi giờ giảng, When mở lý lịch (F08), Then giờ giảng hiển
+  thị & tổng hợp đúng theo kỳ ghi nhận.
 
 ## 7. Phụ thuộc & rủi ro
 
 - **Phụ thuộc:** B01 (danh mục loại hoạt động), F08 (đích tổng hợp), B02 (báo cáo), P02 (audit); nguồn sự
   kiện F07/F09/F10/F11/F12.
-- **Điểm nghiệp vụ cần PO chốt:** công thức/định mức quy đổi & quy tắc phân bổ vai trò (biên bản §D);
-  mốc áp dụng khi công thức đổi giữa kỳ; xử lý hồi tố khi số hóa dữ liệu cũ 5 năm.
+- **Điểm nghiệp vụ cần PO chốt:** giá trị công thức/định mức quy đổi & quy tắc phân bổ vai trò (biên bản §D);
+  lịch năm học/năm tài khóa của tenant; chính sách hồi tố khi số hóa dữ liệu cũ 5 năm.

@@ -3,8 +3,8 @@ title: "Danh mục & cấu hình — Test plan"
 spec: "./spec.md"
 owner: "PO/BA"
 status: Draft
-version: 0.1
-updated: 2026-06-01
+version: 0.2
+updated: 2026-06-29
 ---
 
 # Danh mục & cấu hình — Kế hoạch kiểm thử
@@ -22,7 +22,8 @@ updated: 2026-06-01
   - `Unit`: cây A → B → C để test chống vòng.
   - `SystemSetting`: `PROPOSAL_REVIEW.PASSING_SCORE` (DECIMAL), `PROGRESS.REMINDER_DAYS_BEFORE_DUE` (INT).
   - `CriteriaSet` loại `PROPOSAL_REVIEW` với các tiêu chí tổng trọng số 90% và 100%.
-- **Phủ AC:** AC-01 … AC-09 đều có ≥1 test case (xem cột "Liên kết AC").
+  - `Catalog`: `POSITION`, `USER_ROLE_LABEL`, `ADMINISTRATIVE_DIVISION`, `ACADEMIC_YEAR`, `FISCAL_YEAR`.
+- **Phủ AC:** AC-01 … AC-14 đều có ≥1 test case (xem cột "Liên kết AC").
 
 ## 2. Test cases
 
@@ -43,6 +44,11 @@ updated: 2026-06-01
 | TC-13 | AC-08 | Đăng nhập vai trò Chuyên viên QL KHCN | Tạo/sửa một CriteriaSet qua BO-05 | Được phép; lưu thành công theo phân quyền nghiệp vụ | Happy |
 | TC-14 | AC-09 | Vai trò có quyền CriteriaSet | Thêm EvaluationCriterion với maxScore=0, lưu | Bị từ chối, báo "maxScore phải lớn hơn 0" | Biên/Lỗi |
 | TC-15 | AC-09 | Như TC-14 | Thêm EvaluationCriterion với weight=120, lưu | Bị từ chối, báo weight phải trong [0,100] | Biên/Lỗi |
+| TC-16 | AC-10 | `POSITION` đã có `CatalogItem.code = "TP"` | Tạo thêm item `code = "TP"` trong `POSITION`; sau đó tạo `code = "TP"` trong `USER_ROLE_LABEL` | Trong cùng danh mục bị từ chối; khác danh mục được phép | Biên |
+| TC-17 | AC-11 | `ADMINISTRATIVE_DIVISION` có cây Tỉnh → Huyện | Sửa Tỉnh chọn Huyện hoặc chính nó làm `parentItemId` | Bị từ chối vì tạo vòng cây | Biên/Lỗi |
+| TC-18 | AC-12 | Vai trò Quản trị hệ thống | Tạo `Catalog` mới `ACADEMIC_RANK`, nhập các `CatalogItem` | Danh mục mới xuất hiện ở nav trái, dùng được ngay, không cần deploy; audit được ghi | Happy |
+| TC-19 | AC-13 | `ADMINISTRATIVE_DIVISION.extraSchema` yêu cầu `extra.level` hợp lệ | Lưu item thiếu `level` hoặc `level = "CITY"` | Bị từ chối vì sai schema | Negative |
+| TC-20 | AC-14 | `POSITION` item đang được hồ sơ người dùng tham chiếu | Yêu cầu xóa item đó | Không xóa cứng; gợi ý vô hiệu hóa; item `INACTIVE` không hiện ở danh sách chọn mới | Biên/Lỗi |
 
 ## 3. Trường hợp biên & negative
 
@@ -67,6 +73,8 @@ Khi B01 thay đổi, kiểm tra lại các feature tiêu thụ danh mục:
 - [ ] F03/F06: bộ tiêu chí (`maxScore`, `weight`) tải đúng; điểm tổng hợp tính đúng theo trọng số.
 - [ ] F07: danh mục `ProductType` và `category` hiển thị đúng khi kê khai sản phẩm.
 - [ ] F04/B04: tham số `PROGRESS.REMINDER_DAYS_BEFORE_DUE` thay đổi được job nhắc hạn áp dụng đúng.
+- [ ] P03/F08/B02: danh mục `ACADEMIC_YEAR`/`FISCAL_YEAR` có `extra.startDate`/`extra.endDate` hợp lệ để quy đổi
+      và tổng hợp giờ giảng đúng kỳ.
 - [ ] Mọi feature: cây `Unit` hiển thị/chọn đúng sau khi đổi cấu trúc cây.
 - [ ] Audit: mọi thay đổi danh mục/cấu hình đều sinh bản ghi `AuditLog` (không sót, không trùng).
 - [ ] RBAC (B03): thay đổi vai trò/quyền không phá vỡ phân quyền B01 trong Permission matrix.

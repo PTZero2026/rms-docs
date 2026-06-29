@@ -1,8 +1,8 @@
 ---
 title: "Sổ điểm biến thiên (variation points) — RMS đa tổ chức"
 status: Draft
-version: 0.1
-updated: 2026-06-24
+version: 0.2
+updated: 2026-06-29
 ---
 
 # Sổ điểm biến thiên — cấu hình per-tenant
@@ -68,11 +68,13 @@ updated: 2026-06-24
 
 | Mã VP | Điểm biến thiên | Cơ chế | Mức | Mặc định | Ai cấu hình | Feature/ADR |
 |---|---|---|---|---|---|---|
-| VP-TH-FORMULA | Công thức/định mức quy đổi theo loại hoạt động | Bảng tham số per-tenant, hiệu lực theo kỳ | Giá trị | *(chưa có — mỗi trường tự cấp)* | Quản trị tenant | [P03](../features/P03-quy-doi-gio-giang/) |
+| VP-TH-PERIOD | Loại kỳ ghi nhận giờ giảng | Tham số P03 per-tenant, chọn `ACADEMIC_YEAR` hoặc `FISCAL_YEAR` | Chọn | `ACADEMIC_YEAR` | Quản trị tenant | [P03](../features/P03-quy-doi-gio-giang/) |
+| VP-TH-FORMULA | Công thức/định mức quy đổi theo loại hoạt động | Bảng công thức P03 per-tenant, có `periodType`, `validFrom`, `validTo` | Giá trị | *(chưa có — mỗi trường tự cấp)* | Quản trị tenant | [P03](../features/P03-quy-doi-gio-giang/) |
 | VP-TH-ALLOC | Quy tắc phân bổ giờ theo vai trò | Bảng tham số | Giá trị | *(chưa có)* | Quản trị tenant | [P03](../features/P03-quy-doi-gio-giang/) |
 
 > **Ranh giới:** *cách tính* (engine quy đổi, idempotent, ghi audit) là lõi cố định; chỉ **tham số công thức**
-> biến thiên. Lớp chuẩn hóa "giờ giảng" (đơn vị) giống nhau mọi tenant để tổng hợp vào lý lịch (F08).
+> và **loại kỳ ghi nhận** biến thiên. Lớp chuẩn hóa "giờ giảng" (đơn vị) giống nhau mọi tenant để tổng hợp
+> vào lý lịch (F08). P03 là nguồn sự thật của công thức; B01 chỉ cung cấp danh mục/kỳ lịch nền.
 
 ## 6. Biểu mẫu & template
 

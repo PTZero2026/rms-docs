@@ -4,8 +4,8 @@ id: "B01"
 epic: "E0"
 owner: "PO/BA"
 status: Draft        # Draft | Review | Approved
-version: 0.2
-updated: 2026-06-10
+version: 0.3
+updated: 2026-06-29
 ---
 
 # Danh mục & cấu hình
@@ -39,6 +39,7 @@ Kết quả mong đợi:
   - Quản lý các **danh mục lookup chung** qua cặp bảng generic `Catalog`/`CatalogItem` — xem **§3.1 Sổ
     danh mục (registry)**. Thêm một loại danh mục mới chỉ cần thêm một dòng `Catalog` (không cần migration/deploy).
   - Quản lý **SystemSetting** (tham số khóa–giá trị) như ngưỡng điểm xét duyệt, số ngày nhắc hạn báo cáo…
+  - Quản lý danh mục/kỳ lịch nền như **năm học** và **năm tài khóa** để các feature khác tham chiếu.
   - Quản lý **CriteriaSet** và **EvaluationCriterion** (bộ tiêu chí `PROPOSAL_REVIEW` / `ACCEPTANCE`, mỗi tiêu chí có
     `maxScore` và `weight`) dùng chung cho F03 (xét duyệt) và F06 (nghiệm thu).
   - Quản lý **mẫu biểu thuyết minh** (biểu mẫu được kỳ nhận đề xuất F02 áp dụng) — cấu trúc biểu mẫu, không
@@ -55,6 +56,7 @@ Kết quả mong đợi:
   - Vòng đời **kỳ nhận đề xuất** (mở/đóng kỳ, gán mẫu biểu vào kỳ) — thuộc F02; B01 chỉ cung cấp mẫu biểu
     để F02 lựa chọn.
   - Quá trình **chấm điểm** theo bộ tiêu chí — thuộc F03/F06; B01 chỉ định nghĩa bộ tiêu chí.
+  - Công thức/định mức quy đổi giờ giảng — thuộc P03; B01 chỉ cung cấp danh mục/kỳ lịch để P03 tham chiếu.
   - Mặt người dùng (FE): không có. Nhà khoa học chỉ **đọc gián tiếp** danh mục qua các feature khác.
 
 ## 3. Luồng nghiệp vụ chính
@@ -96,6 +98,8 @@ thêm danh mục lookup mới = thêm một dòng `Catalog`, không cần migrat
 | Danh mục (nav trái) | `Catalog.code` / entity | Cơ chế lưu | Cấu trúc | Ghi chú nghiệp vụ |
 |---|---|---|---|---|
 | Địa chỉ (Tỉnh/Huyện/Xã) | `ADMINISTRATIVE_DIVISION` | generic | TREE (3 cấp) | `extra.level` = `PROVINCE`/`DISTRICT`/`WARD`; seed dữ liệu hành chính, ít sửa tay |
+| Năm học | `ACADEMIC_YEAR` | generic | FLAT | Mã kỳ năm học, vd `2026-2027`; `extra.startDate`/`extra.endDate`; dùng cho P03/F08/B02 |
+| Năm tài khóa | `FISCAL_YEAR` | generic | FLAT | Mã năm tài khóa/ngân sách, vd `2026`; `extra.startDate`/`extra.endDate`; dùng khi tenant quy đổi giờ theo năm tài khóa |
 | Đơn vị công tác | `Unit` | entity riêng | TREE | Bị `User.unitId`, `ResearchProject.hostUnitId` trỏ tới |
 | Phân loại đề tài NCKH | `RESEARCH_TOPIC_CATEGORY` | generic | FLAT | Nhãn/cấp đề tài (vd cấp nhà nước/bộ/cơ sở). `extra.tier` (`UPPER`/`BASE`) lọc cấp trên (F09); `extra.requiredEvidence` cấu hình minh chứng bắt buộc theo giai đoạn (VP-EVID-REQ) |
 | Loại minh chứng | `EVIDENCE_TYPE` | generic | FLAT | Loại tài liệu minh chứng (vd `DECISION`/`CONTRACT`/`ACCEPTANCE`/`OUTPUT`); dùng cho quy tắc minh chứng bắt buộc F09–F12 |
@@ -145,6 +149,9 @@ mà dùng đúng các trường đã có:
   thông báo/đánh giá, vị trí–vai trò hiển thị…).
 - **CriteriaSet** (`id`, `name`, `type` `PROPOSAL_REVIEW`|`ACCEPTANCE`) & **EvaluationCriterion**
   (`id`, `criteriaSetId`, `name`, `maxScore`, `weight`) — dùng chung cho F03/F06.
+
+> Với P03, B01 chỉ lưu danh mục/kỳ lịch (`ACADEMIC_YEAR`, `FISCAL_YEAR`) và tham số nền nếu cần.
+> Công thức/định mức, version hiệu lực và quy tắc phân bổ là dữ liệu nghiệp vụ do P03 sở hữu.
 
 Trường audit dùng chung (`createdAt/By`, `updatedAt/By`) và quy ước xóa mềm `recordStatus`
 (`ACTIVE`|`INACTIVE`|`DELETED`) theo data-model §1. Toàn vẹn tham chiếu `ON DELETE RESTRICT` theo

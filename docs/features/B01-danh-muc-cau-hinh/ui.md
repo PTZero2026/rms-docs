@@ -3,8 +3,8 @@ title: "Danh mục & cấu hình — Giao diện (một web app, phân quyền)"
 spec: "./spec.md"
 owner: "PO/BA"
 status: Draft
-version: 0.2
-updated: 2026-06-10
+version: 0.3
+updated: 2026-06-29
 ---
 
 # Danh mục & cấu hình — Giao diện
@@ -57,6 +57,8 @@ phải hiển thị bảng/cây tương ứng. Bố cục khớp ảnh thiết k
 │ Loại danh mục            │  [Tên danh mục đang chọn]      [+ Thêm mục]   │
 │ ─────────────────────    │  ┌─────────────────────────────────────────┐ │
 │ ▸ Địa chỉ (Tỉnh/Huyện/Xã)│  │ Mã   │ Tên           │ Trạng thái │ ⋯    │ │
+│   Năm học                │  ├─────────────────────────────────────────┤ │
+│   Năm tài khóa           │  │ ...  │ ...           │ ACTIVE     │ Sửa  │ │
 │   Đơn vị công tác        │  ├─────────────────────────────────────────┤ │
 │   Phân loại đề tài NCKH  │  │ ...  │ ...           │ ACTIVE     │ Sửa  │ │
 │   Chuyên ngành đề tài    │  └─────────────────────────────────────────┘ │
@@ -117,7 +119,8 @@ phải hiển thị bảng/cây tương ứng. Bố cục khớp ảnh thiết k
 ### BO-08 Danh mục lookup generic (Catalog/CatalogItem)
 - **Render theo cấu trúc:** một màn hình chung phục vụ mọi danh mục lookup ở spec §3.1. Khi `Catalog.structure
   = FLAT` → bảng phẳng (`code`, `name`, `sortOrder`, `recordStatus`); khi `= TREE` (vd Địa chỉ) → cây phân cấp
-  theo `parentItemId`, kèm cột `extra` đặc thù (vd `level` Tỉnh/Huyện/Xã).
+  theo `parentItemId`, kèm cột `extra` đặc thù (vd `level` Tỉnh/Huyện/Xã). Với `ACADEMIC_YEAR`/`FISCAL_YEAR`,
+  `extra.startDate` và `extra.endDate` xác định ranh giới kỳ cho P03/F08/B02.
 - **Thao tác:** thêm/sửa mục; với danh mục TREE thêm mục con dưới mục cha, di chuyển mục (chống vòng — BR-03/BR-11);
   vô hiệu hóa (INACTIVE); xóa mềm (DELETED) chỉ khi không còn tham chiếu (BR-02/BR-04). Trùng mã trong cùng
   danh mục bị chặn (BR-01); `extra` validate theo `extraSchema` nếu có (BR-13).

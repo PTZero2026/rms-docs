@@ -117,7 +117,8 @@ thái duyệt, lý do trả lại, tham chiếu bản ghi giờ giảng P03).
   }
   ```
 
-- **Đề xuất công thức/định mức giờ giảng pilot cho P03:**
+- **Ví dụ seed đề xuất cho công thức/định mức giờ giảng P03** *(không phải nguồn sự thật; khi được PO duyệt
+  phải cấu hình thành bộ công thức trong [P03](../P03-quy-doi-gio-giang/))*:
 
   | Giá trị hợp đồng/tổng kinh phí | Tổng giờ quy đổi gợi ý |
   |---:|---:|

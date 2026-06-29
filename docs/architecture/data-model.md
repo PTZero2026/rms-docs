@@ -1,7 +1,7 @@
 ---
 title: "Mô hình dữ liệu — RMS"
 status: Draft
-updated: 2026-06-05
+updated: 2026-06-29
 ---
 
 # Mô hình dữ liệu
@@ -225,6 +225,8 @@ ngành nghiên cứu; `ResearchProject.researchFieldId`, `ProposalCall.researchF
 | `recordStatus` | enum | `ACTIVE`\|`INACTIVE`\|`DELETED` | Xóa mềm theo §1 |
 
 > Danh mục lookup khởi tạo (có thể phát sinh thêm): `ADMINISTRATIVE_DIVISION` (Tỉnh/Huyện/Xã, TREE),
+> `ACADEMIC_YEAR` (năm học; `extra.startDate`/`extra.endDate`), `FISCAL_YEAR` (năm tài khóa/năm ngân sách;
+> `extra.startDate`/`extra.endDate`),
 > `RESEARCH_TOPIC_CATEGORY` (phân loại/cấp đề tài NCKH; `extra.tier`=`UPPER`/`BASE`, `extra.requiredEvidence`
 > theo giai đoạn — F09/VP-EVID-REQ), `EVIDENCE_TYPE` (loại minh chứng bắt buộc F09–F12),
 > `MANAGING_BODY` (cơ quan chủ trì cấp trên — F09),
