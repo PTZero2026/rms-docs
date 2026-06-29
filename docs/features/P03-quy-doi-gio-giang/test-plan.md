@@ -23,6 +23,8 @@ updated: 2026-06-29
 | TC-08 | AC-08 | Đã có bản ghi giờ giảng tính theo công thức cũ | Lưu công thức mới hiệu lực tương lai | Bản ghi cũ không tự thay đổi | Regression |
 | TC-09 | AC-08 | Đã có bản ghi giờ giảng và công thức mới cần hồi tố | Chạy tính lại/điều chỉnh có lý do | Tạo bản ghi điều chỉnh chênh lệch và audit, không sửa đè bản ghi cũ | Audit |
 | TC-10 | AC-09 | Giảng viên có bản ghi ở nhiều kỳ | Mở F08 hoặc MH-02, lọc theo kỳ | Tổng giờ hiển thị đúng theo `recognitionPeriodType/code` | Integration |
+| TC-11 | AC-01 | Seed TLU có `tlu.baseHoursScieQ1 = 100`; nguồn là bằng sáng chế hợp lệ | Gửi yêu cầu quy đổi `activityType = PATENT` | Tính 200 giờ trước phân bổ tác giả, theo hệ số 2.0 từ seed TLU | Happy |
+| TC-12 | AC-01 | Seed TLU có công thức Q2 ở trạng thái `NEEDS_PO_VALIDATION` | Cố bật công thức Q2 thành `ACTIVE` khi chưa có phê duyệt PO | Hệ thống/chốt cấu hình chặn hoặc yêu cầu xác nhận PO | Governance |
 
 ## 3. Trường hợp biên & negative
 - Công thức hết hiệu lực hoặc không có công thức cho `periodType` tenant đang dùng.
@@ -30,3 +32,4 @@ updated: 2026-06-29
 - Ngày nguồn nằm sát ranh giới năm học/năm tài khóa.
 - Phân bổ vai trò tổng tỉ lệ khác 100%.
 - Công thức mới chồng lấn hiệu lực với công thức cũ cùng loại hoạt động/vai trò/kỳ.
+- Seed TLU thiếu `tlu.baseHoursScieQ1` thì không cho bật công thức quy đổi giờ.

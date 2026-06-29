@@ -121,3 +121,42 @@ updated: 2026-06-29
   kiện F07/F09/F10/F11/F12.
 - **Điểm nghiệp vụ cần PO chốt:** giá trị công thức/định mức quy đổi & quy tắc phân bổ vai trò (biên bản §D);
   lịch năm học/năm tài khóa của tenant; chính sách hồi tố khi số hóa dữ liệu cũ 5 năm.
+
+## 8. Seed công thức ĐH Thủy Lợi (cần PO xác nhận)
+
+### 8.1 Nguồn công khai đã rà
+
+Các nguồn công khai của cổng KHCN ĐH Thủy Lợi hiện tìm được **không công bố trực tiếp** hệ số
+"1 bài báo/1 sáng chế = bao nhiêu giờ giảng". Tuy nhiên có thể dùng làm nền cấu hình loại hoạt động và
+điều kiện quy đổi:
+
+| Nguồn | Nội dung dùng được cho P03 | Mức tin cậy |
+|---|---|---|
+| Quyết định 288/QĐ-ĐHTL ngày 14/04/2020 — Quy chế nhóm nghiên cứu mạnh ([trang tin](https://khcn.tlu.edu.vn/Home/News?page=3), [PDF](https://khcn.tlu.edu.vn/Home/DownloadFileNews/7?FileName=Quy%20che%20NCM.pdf)) | Bảng 3 có công thức quy đổi sản phẩm tương đương: bằng độc quyền giải pháp hữu ích tương đương 01 bài SCIE-Q1; bằng độc quyền sáng chế tương đương 02 bài SCIE-Q1. | Cao cho quy đổi sản phẩm tương đương; thấp nếu suy ra giờ giảng |
+| Quyết định 255/QĐ-ĐHTL ngày 30/03/2021 — hỗ trợ hội nghị, công bố quốc tế, SHTT ([trang tin](https://khcn.tlu.edu.vn/Home/News?page=3), [PDF](https://khcn.tlu.edu.vn/Home/DownloadFileNews/7?FileName=255-QD-DHTL.pdf)) | Bảng phân loại bài báo theo SCIE/SSCI, Scopus Q1-Q4, Loại I/II/III tác giả và mức hỗ trợ VND; bằng sáng chế/giải pháp hữu ích có mức hỗ trợ riêng. | Cao cho danh mục/điều kiện; không phải công thức giờ |
+| Quyết định 231/QĐ-ĐHTL ngày 18/03/2021 — đề tài NCKH trọng điểm ([trang tin](https://khcn.tlu.edu.vn/Home/News?page=2), [PDF](https://khcn.tlu.edu.vn/Home/DownloadFileNews/10?FileName=Q%C4%90231.pdf)) | Phụ lục kinh phí gắn đề tài trọng điểm với sản phẩm bài báo SCIE/SSCI Q1/Q2/Q3. | Cao cho điều kiện đầu ra; không phải công thức giờ |
+
+### 8.2 Seed công thức cấu hình đề xuất
+
+Seed này **không khẳng định là công thức chính thức của ĐH Thủy Lợi**. Nó là cấu hình khởi tạo để P03
+có thể biểu diễn các quy định công khai, chờ PO/Trường điền `baseHoursScieQ1`.
+
+| Mã công thức | Điều kiện nguồn | Công thức giờ đề xuất | Ghi chú |
+|---|---|---|---|
+| `TLU_PUBLICATION_SCIE_Q1` | Bài báo SCIE/SSCI Q1 hợp lệ | `hours = 1.0 * baseHoursScieQ1 * authorAllocation` | `baseHoursScieQ1` do tenant cấu hình |
+| `TLU_PUBLICATION_SCIE_Q2` | Bài báo SCIE/SSCI Q2 hợp lệ | `hours = 0.5 * baseHoursScieQ1 * authorAllocation` | Hệ số 0.5 là **suy luận** từ yêu cầu NCM "2 SCIE-Q1 hoặc 1 SCIE-Q1 + 2 SCIE-Q2"; cần PO xác nhận |
+| `TLU_UTILITY_SOLUTION` | Bằng độc quyền giải pháp hữu ích hợp lệ | `hours = 1.0 * baseHoursScieQ1 * authorAllocation` | Dựa trên QĐ 288: 01 giải pháp hữu ích tương đương 01 SCIE-Q1 |
+| `TLU_PATENT` | Bằng độc quyền sáng chế hợp lệ | `hours = 2.0 * baseHoursScieQ1 * authorAllocation` | Dựa trên QĐ 288: 01 sáng chế tương đương 02 SCIE-Q1 |
+| `TLU_PUBLICATION_SUPPORT_REF` | Bài báo/công bố quốc tế có hỗ trợ kinh phí theo QĐ 255 | `supportAmountVnd = lookup(journalRank, authorClass)` | Lưu làm **tham chiếu nguồn/metadata**, không tự đổi sang giờ nếu chưa có `hourValueVnd` được PO duyệt |
+
+Tham số tối thiểu cần seed trong P03:
+
+| Tham số | Kiểu | Mặc định | Ghi chú |
+|---|---|---:|---|
+| `tlu.baseHoursScieQ1` | DECIMAL | *(blank)* | Bắt buộc PO/Trường nhập trước khi bật công thức TLU |
+| `tlu.defaultAuthorAllocation` | JSON | `{ "CORRESPONDING_OR_FIRST": 1.0 }` | Có thể thay bằng phân bổ nhiều tác giả nếu Trường yêu cầu |
+| `tlu.allowSupportAmountToHours` | BOOLEAN | `false` | Chỉ bật nếu PO duyệt quy tắc đổi VND sang giờ |
+| `tlu.hourValueVnd` | DECIMAL | *(blank)* | Chỉ dùng khi `allowSupportAmountToHours = true` |
+
+Ví dụ nếu PO duyệt `tlu.baseHoursScieQ1 = 100`, P03 sẽ tính: SCIE-Q1 = 100 giờ, SCIE-Q2 = 50 giờ
+*(nếu chấp nhận hệ số suy luận)*, giải pháp hữu ích = 100 giờ, sáng chế = 200 giờ trước khi phân bổ tác giả.

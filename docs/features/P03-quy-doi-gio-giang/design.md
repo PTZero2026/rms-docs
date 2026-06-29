@@ -55,7 +55,18 @@ updated: 2026-06-29
 | BR-09 / AC-07 | Constraint/validation chống chồng lấn khoảng hiệu lực cùng phạm vi |
 | BR-10 / AC-08 | Công thức mới không mutate bản ghi cũ; hồi tố đi qua job/tác vụ điều chỉnh có lý do |
 
-## 5. Điểm mở
+## 5. Seed TLU trong cấu hình
 
-- Giá trị công thức cụ thể theo từng loại hoạt động vẫn chờ PO/Trường cung cấp.
+Seed TLU ở `spec.md §8` nên được lưu như dữ liệu cấu hình, không hardcode:
+
+| Nhóm cấu hình | Cách hiện thực |
+|---|---|
+| Tương đương sản phẩm | `formulaParams.equivalentScieQ1` cho từng `activityType` (`SCIE_Q1=1`, `UTILITY_SOLUTION=1`, `PATENT=2`) |
+| Hệ số cần xác nhận | Gắn `formulaParams.confidence = NEEDS_PO_VALIDATION` cho các hệ số suy luận như `SCIE_Q2=0.5` |
+| Giờ cơ sở | `SystemSetting`/P03 param `tlu.baseHoursScieQ1`, bắt buộc có trước khi bật formula status `ACTIVE` |
+| Tham chiếu hỗ trợ VND | Lưu vào `formulaParams.supportAmountRef` hoặc metadata nguồn, không tự đổi sang giờ khi `allowSupportAmountToHours=false` |
+
+## 6. Điểm mở
+
+- Giá trị giờ cơ sở `tlu.baseHoursScieQ1` vẫn chờ PO/Trường cung cấp.
 - Cần chốt lịch năm học/năm tài khóa mặc định theo tenant trước khi bật P03 production.
