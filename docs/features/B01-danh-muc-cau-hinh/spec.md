@@ -1,231 +1,247 @@
 ---
-title: "Danh mục & cấu hình"
+title: "Danh mục & cấu hình (sys-config-service)"
 id: "B01"
 epic: "E0"
 owner: "PO/BA"
-status: Draft        # Draft | Review | Approved
+status: Draft
 version: 0.3
-updated: 2026-06-29
+updated: 2026-07-02
 ---
 
-# Danh mục & cấu hình
+# Danh mục & cấu hình (sys-config-service)
 
-> Nguồn sự thật về **nghiệp vụ** của feature. Mọi luật, dữ liệu, tiêu chí nghiệm thu
-> nằm ở đây. `ui.md` mô tả giao diện và trỏ ngược về file này.
+> **Nguồn sự thật về nghiệp vụ** của feature — do **PO/BA sở hữu và duyệt**. Mọi luật, dữ liệu,
+> tiêu chí nghiệm thu nằm ở đây, viết bằng **ngôn ngữ nghiệp vụ**.
+>
+> **Cách hiện thực kỹ thuật** (mô hình dữ liệu, endpoint, cache Redis, Keycloak) ở `design.md` —
+> DEV sở hữu. Giao diện ở `ui.md`; kiểm thử ở `test-plan.md`. Cả ba đều trỏ ngược về file này.
 
 ## 1. Bối cảnh & mục tiêu
 
-B01 là **feature nền tảng dùng chung** của RMS: nó sở hữu các danh mục và tham số cấu hình mà hầu hết
-các feature nghiệp vụ khác tham chiếu tới (đơn vị, lĩnh vực, loại sản phẩm, bộ tiêu chí đánh giá, mẫu
-biểu thuyết minh, tham số hệ thống). Nếu các danh mục này không nhất quán hoặc bị sửa tùy tiện, dữ liệu
-toàn hệ thống sẽ lệch: đề tài gắn sai lĩnh vực, hội đồng chấm sai thang điểm, kỳ nhận đề xuất dùng mẫu cũ.
+B01 là **microservice riêng** (`sys-config-service`) chuyên lưu **cấu hình dạng khóa–giá trị**
+(key → nội dung nhị phân + siêu dữ liệu) phục vụ toàn hệ thống RMS. Đây là nơi các feature khác
+đọc **dropdown lookup** (danh sách vai trò hiển thị, học hàm/học vị, chuyên ngành…) và **tham số
+vận hành** (JSON config cho FE, thông số hệ thống, mẫu văn bản base64…).
 
-Hiện trạng (chưa có hệ thống): danh mục nằm rải rác trong file Excel/quy chế giấy, mỗi phòng ban giữ một
-bản, không có lịch sử thay đổi. B01 tập trung hóa việc quản trị các danh mục này vào một nơi duy nhất,
-thuần mặt **BackOffice (BO)**, do **Quản trị hệ thống** vận hành.
+Điểm khác biệt so với "danh mục nghiệp vụ có ràng buộc FK" (Unit / ResearchField / ProductType…) —
+những danh mục đó **không thuộc B01** mà thuộc backend nghiệp vụ `nckh-backend` vì bị các bảng
+nghiệp vụ trỏ FK trực tiếp. `sys-config-service` chỉ lo **blob config** không có FK ràng buộc,
+đổi lại có 3 đặc tính riêng:
 
-Kết quả mong đợi:
+- **Đa tenant với fallback dùng chung:** một key có thể có **bản dùng chung cho mọi tenant** (row
+  `tenantId = NULL`) và các **bản ghi đè theo từng tenant**. Khi tenant đọc key, ưu tiên bản riêng;
+  nếu chưa có thì tự động dùng bản chung.
+- **Nội dung đa định dạng:** JSON, XML, text, hình ảnh, PDF, base64… lưu ở dạng bytes; hệ thống tự
+  đoán MIME type + charset nếu người tạo không khai báo.
+- **Cache Redis 5 phút:** đọc key nóng không đụng DB; ghi/xóa key nào thì invalidate ngay key đó.
 
-- Một nguồn dữ liệu danh mục/cấu hình thống nhất, có mã duy nhất, có lịch sử thay đổi (audit).
-- Bảo vệ toàn vẹn tham chiếu: danh mục đang được feature khác dùng không bị xóa cứng làm hỏng dữ liệu.
-- Cho phép thay đổi tham số vận hành (ngưỡng điểm xét duyệt, số ngày nhắc hạn báo cáo…) mà không cần
-  sửa code/deploy lại.
+**Người dùng feature này:**
+- **Quản trị hệ thống (super_admin)** — ghi/sửa các bản **dùng chung** cho mọi tenant.
+- **Quản trị đơn vị (tenant_admin / admin)** — ghi/sửa các bản **của tenant mình**.
+- **Người dùng đã xác thực bất kỳ** — chỉ **đọc** cấu hình (qua các feature khác gọi ngầm).
+
+**Kết quả mong đợi:**
+- Một nơi tập trung để cấu hình dropdown/tham số hệ thống mà **không cần deploy lại** khi đổi.
+- Tenant chưa cấu hình riêng vẫn dùng được ngay bằng bản chung; muốn cá biệt hóa thì ghi đè.
+- Đọc key nóng nhanh (cache), ghi có validate, không lộ config của tenant khác.
 
 ## 2. Phạm vi
 
 - **Trong phạm vi:**
-  - Quản lý các **danh mục có entity riêng** (vì bị FK nghiệp vụ trỏ tới): **Unit** (cây), **ResearchField**
-    (cây), **ProductType**.
-  - Quản lý các **danh mục lookup chung** qua cặp bảng generic `Catalog`/`CatalogItem` — xem **§3.1 Sổ
-    danh mục (registry)**. Thêm một loại danh mục mới chỉ cần thêm một dòng `Catalog` (không cần migration/deploy).
-  - Quản lý **SystemSetting** (tham số khóa–giá trị) như ngưỡng điểm xét duyệt, số ngày nhắc hạn báo cáo…
-  - Quản lý danh mục/kỳ lịch nền như **năm học** và **năm tài khóa** để các feature khác tham chiếu.
-  - Quản lý **CriteriaSet** và **EvaluationCriterion** (bộ tiêu chí `PROPOSAL_REVIEW` / `ACCEPTANCE`, mỗi tiêu chí có
-    `maxScore` và `weight`) dùng chung cho F03 (xét duyệt) và F06 (nghiệm thu).
-  - Quản lý **mẫu biểu thuyết minh** (biểu mẫu được kỳ nhận đề xuất F02 áp dụng) — cấu trúc biểu mẫu, không
-    phải nội dung thuyết minh của từng đề tài.
-  - Xóa mềm theo `recordStatus` (`ACTIVE` | `INACTIVE` | `DELETED`); chặn xóa cứng khi đang được tham chiếu.
-  - Ghi nhật ký (audit) cho mọi thay đổi danh mục/cấu hình.
+  - Lưu trữ cấu hình dạng **khóa–giá trị**: `key` (mã) → `content` (bytes) kèm siêu dữ liệu
+    (mô tả, MIME, encoding, mã tham chiếu, nhóm, cờ public/active).
+  - **CRUD** cấu hình: tạo, đọc, cập nhật, xóa (xóa cứng, không có xóa mềm ở service này).
+  - **Fallback dùng chung theo tenant:** super_admin ghi bản shared (tenant = NULL); tenant_admin
+    ghi bản của tenant mình; khi đọc, tenant thiếu bản riêng thì tự lấy bản shared.
+  - **Nhận nội dung nhiều dạng:** multipart file upload, JSON body với base64, hoặc urlencoded text.
+  - **Tự đoán** MIME type + charset khi người tạo không khai báo (dựa vào magic bytes / chardet).
+  - **Cache** Redis 5 phút để trả về nhanh; invalidate khi ghi/xóa.
+  - **Tìm kiếm + phân trang** danh sách cấu hình theo từ khóa, mã tham chiếu, nhóm, cờ public/active,
+    khoảng thời gian tạo/sửa.
+  - **Chế độ dry-run** (`?detect=true`) để xem trước metadata mà không lưu DB.
+  - Xác thực **JWT Keycloak** (chung realm với các service khác), phân quyền theo `realm_access.roles`.
 
 - **Ngoài phạm vi:**
-  - Quản lý **người dùng, vai trò, quyền** (RBAC: `Role`/`Permission`) — thuộc B03. Lưu ý phân biệt với
-    danh mục lookup `USER_ROLE_LABEL` ("vị trí, vai trò người dùng" để **hiển thị/phân loại**), do B01
-    sở hữu, **không** điều khiển phân quyền.
-  - Hạ tầng gửi thông báo, `eventType`, mẫu/kênh thông báo — thuộc B04. Phân biệt với danh mục lookup
-    `NOTIFICATION_CATEGORY` ("phân loại thông báo" để gắn nhãn/lọc), do B01 sở hữu.
-  - Vòng đời **kỳ nhận đề xuất** (mở/đóng kỳ, gán mẫu biểu vào kỳ) — thuộc F02; B01 chỉ cung cấp mẫu biểu
-    để F02 lựa chọn.
-  - Quá trình **chấm điểm** theo bộ tiêu chí — thuộc F03/F06; B01 chỉ định nghĩa bộ tiêu chí.
-  - Công thức/định mức quy đổi giờ giảng — thuộc P03; B01 chỉ cung cấp danh mục/kỳ lịch để P03 tham chiếu.
-  - Mặt người dùng (FE): không có. Nhà khoa học chỉ **đọc gián tiếp** danh mục qua các feature khác.
+  - **Danh mục nghiệp vụ có FK ràng buộc** (Unit, ResearchField, ProductType, MANAGING_BODY,
+    NOTIFICATION_CATEGORY, POSITION, ADMINISTRATIVE_DIVISION…) — thuộc backend nghiệp vụ `nckh-backend`,
+    khác service. Ở đó có `Catalog`/`CatalogItem` generic, cây `Unit`/`ResearchField`, khóa ngoại,
+    xóa mềm `recordStatus`, ADR-0005/0011.
+  - **Bộ tiêu chí đánh giá** (`CriteriaSet`, `EvaluationCriterion`) — thuộc F03/F06 (nckh-backend).
+  - **Mẫu biểu thuyết minh, mẫu văn bản có schema** — thuộc feature nghiệp vụ liên quan.
+  - **Workflow / trạng thái phê duyệt** cấu hình — không có; ghi là hiệu lực ngay.
+  - **Audit log chi tiết** kiểu `AuditLog` với `oldValue/newValue` — không có ở service này (chỉ có
+    trường `created`/`modified` timestamp trên row).
+  - **Xóa mềm** (`recordStatus`) — không có; chỉ có `active` (cờ ẩn/hiện) và xóa cứng.
+  - **Phân quyền theo từng key** (ACL từng key) — không có; phân quyền chỉ ở cấp service (đọc/ghi).
+  - **Giới hạn dung lượng nội dung theo tenant** — không có; giới hạn chung `MAX_CONTENT_BYTES`
+    (20 MB, cấu hình cứng trong code).
 
 ## 3. Luồng nghiệp vụ chính
 
-Luồng quản trị một mục danh mục (áp dụng chung cho mọi loại danh mục/cấu hình): tạo mới → sửa →
-vô hiệu hóa hoặc xóa. Việc xóa luôn kiểm tra ràng buộc tham chiếu trước khi cho phép.
+Luồng cấu hình xoay quanh 4 tình huống: **quản trị ghi**, **feature khác đọc**, **cá biệt hóa theo
+tenant**, **cập nhật/xóa**. Trình tự chuẩn của một key:
 
 ```mermaid
 flowchart TD
-    A["Quản trị mở màn hình danh mục (BO)"] --> B{Chọn hành động}
-    B -->|Tạo mới| C["Nhập dữ liệu + mã"]
-    C --> D{Mã hợp lệ & duy nhất<br/>trong cùng loại?}
-    D -->|Không| C
-    D -->|Có| E{"Cây: cha hợp lệ,<br/>không tạo vòng?"}
-    E -->|Không| C
-    E -->|Có| F["Lưu bản ghi (ACTIVE)<br/>+ ghi AuditLog"]
-    B -->|Sửa| G["Cập nhật trường cho phép"]
-    G --> D
-    B -->|Vô hiệu hóa| H["Đặt recordStatus = INACTIVE<br/>+ ghi audit"]
-    B -->|Xóa| I{"Đang được<br/>thực thể khác tham chiếu?"}
-    I -->|Có| J["Từ chối xóa cứng<br/>(gợi ý vô hiệu hóa)"]
-    I -->|Không| K["Đặt recordStatus = DELETED<br/>(xóa mềm) + ghi audit"]
-    F --> Z["Hiển thị kết quả"]
-    H --> Z
-    J --> Z
-    K --> Z
+    A["Quản trị hệ thống<br/>hoặc quản trị đơn vị"] --> B{"Ai đăng nhập?"}
+    B -->|super_admin| C1["Bản shared<br/>(tenant = NULL)"]
+    B -->|tenant_admin| C2["Bản của tenant X<br/>(tenant = X)"]
+    C1 --> D["POST /sys-configurations<br/>(multipart/JSON/urlencoded)"]
+    C2 --> D
+    D --> E{"key hợp lệ?<br/>(regex, chưa trùng)"}
+    E -->|Không| E1["Từ chối lưu"]
+    E -->|Có| F["Lưu bytes + tự đoán mime/encoding"]
+    F --> G["Trả về siêu dữ liệu + nội dung đã decode"]
+
+    H["Feature khác (FE hoặc BE)"] --> I["GET /sys-configurations/:key"]
+    I --> J{"Cache HIT?"}
+    J -->|Có| K["Trả nội dung + X-Cache: HIT"]
+    J -->|Không| L{"Có bản riêng<br/>của tenant?"}
+    L -->|Có| M["Đọc bản tenant → cache → trả"]
+    L -->|Không| N{"Có bản shared?"}
+    N -->|Có| O["Đọc bản shared → cache → trả"]
+    N -->|Không| P["404 Not Found"]
 ```
 
-Luồng riêng của **CriteriaSet**: khi lưu/sửa bộ tiêu chí, hệ thống tính tổng `weight` các tiêu chí con
-và **cảnh báo** nếu khác 100% (không chặn lưu — xem BR-07).
-
-### 3.1 Sổ danh mục (catalog registry)
-
-Màn hình cấu hình danh mục có một **nav trái** liệt kê các danh mục cần cấu hình. Mỗi mục dưới đây là
-một danh mục; cột **Cơ chế lưu** cho biết nó dùng entity riêng hay cặp bảng generic `Catalog`/`CatalogItem`
-(xem [data-model §4.2](../../architecture/data-model.md)). Danh sách **mở** — "Có thể phát sinh thêm":
-thêm danh mục lookup mới = thêm một dòng `Catalog`, không cần migration/deploy (BR-12).
-
-| Danh mục (nav trái) | `Catalog.code` / entity | Cơ chế lưu | Cấu trúc | Ghi chú nghiệp vụ |
-|---|---|---|---|---|
-| Địa chỉ (Tỉnh/Huyện/Xã) | `ADMINISTRATIVE_DIVISION` | generic | TREE (3 cấp) | `extra.level` = `PROVINCE`/`DISTRICT`/`WARD`; seed dữ liệu hành chính, ít sửa tay |
-| Năm học | `ACADEMIC_YEAR` | generic | FLAT | Mã kỳ năm học, vd `2026-2027`; `extra.startDate`/`extra.endDate`; dùng cho P03/F08/B02 |
-| Năm tài khóa | `FISCAL_YEAR` | generic | FLAT | Mã năm tài khóa/ngân sách, vd `2026`; `extra.startDate`/`extra.endDate`; dùng khi tenant quy đổi giờ theo năm tài khóa |
-| Đơn vị công tác | `Unit` | entity riêng | TREE | Bị `User.unitId`, `ResearchProject.hostUnitId` trỏ tới |
-| Phân loại đề tài NCKH | `RESEARCH_TOPIC_CATEGORY` | generic | FLAT | Nhãn/cấp đề tài (vd cấp nhà nước/bộ/cơ sở). `extra.tier` (`UPPER`/`BASE`) lọc cấp trên (F09); `extra.requiredEvidence` cấu hình minh chứng bắt buộc theo giai đoạn (VP-EVID-REQ) |
-| Loại minh chứng | `EVIDENCE_TYPE` | generic | FLAT | Loại tài liệu minh chứng (vd `DECISION`/`CONTRACT`/`ACCEPTANCE`/`OUTPUT`); dùng cho quy tắc minh chứng bắt buộc F09–F12 |
-| Cơ quan chủ trì cấp trên | `MANAGING_BODY` | generic | FLAT | Cơ quan quản lý đề tài cấp trên (Bộ/Tỉnh/Quỹ…); `UpperProject.managingBodyItemId` (F09) trỏ tới |
-| Chuyên ngành đề tài NCKH | `ResearchField` | entity riêng | TREE | Lĩnh vực/chuyên ngành; bị `ResearchProject.researchFieldId` trỏ tới (xem §7 điểm mở) |
-| Phân loại thông báo | `NOTIFICATION_CATEGORY` | generic | FLAT | Nhãn để lọc/nhóm tin — **khác** `eventType`/mẫu của B04 |
-| Phân loại đánh giá đề tài | `EVALUATION_CATEGORY` | generic | FLAT | Nhãn phân loại đợt/kết quả đánh giá — **khác** `CriteriaSet` |
-| Chức vụ | `POSITION` | generic | FLAT | Chức vụ cán bộ (hiển thị, lý lịch F08) |
-| Vị trí, vai trò người dùng | `USER_ROLE_LABEL` | generic | FLAT | Nhãn vị trí/vai trò hiển thị — **khác** RBAC `Role` của B03 |
-| *(loại sản phẩm)* | `ProductType` | entity riêng | FLAT | Đã có; quản lý chung cùng hub |
-
-> Quy tắc CRUD ở §3 và §4 áp dụng **đồng nhất** cho cả danh mục generic lẫn entity riêng: mã duy nhất
-> trong cùng danh mục (BR-01), chống vòng với danh mục TREE (BR-03), chặn xóa cứng khi còn tham chiếu
-> (BR-02), xóa mềm + audit (BR-04/BR-05).
+- **3.1 Ghi shared:** super_admin đăng nhập → POST/PUT một key → hệ thống lưu với `tenantId = NULL`.
+  Từ đó mọi tenant chưa ghi đè đều nhìn thấy bản này.
+- **3.2 Ghi override tenant:** tenant_admin đăng nhập → POST/PUT cùng key đó → hệ thống lưu với
+  `tenantId = <tenant của mình>`. Không đè lên bản shared.
+- **3.3 Đọc:** GET `/sys-configurations/:key` — thứ tự **bản riêng → bản shared → 404**. Kết quả
+  được cache 5 phút. Header `X-Cache: HIT|MISS` cho người gọi biết.
+- **3.4 Cập nhật/xóa:** PUT/DELETE trên key → invalidate cache key đó ngay.
+- **3.5 Tra cứu:** GET `/sys-configurations` (list) — trả **siêu dữ liệu** (không kèm bytes) với
+  bộ lọc keyword / refer / group / public / active / khoảng thời gian; phân trang skip+limit.
+  Danh sách bao gồm cả bản của tenant hiện tại **và** bản shared.
+- **3.6 Dry-run:** POST kèm `?detect=true` → trả về metadata đã parse (mime, encoding, size) **không
+  lưu DB** — dùng để kiểm thử format trước khi lưu thật.
 
 ## 4. Business rules
 
 | ID    | Quy tắc | Mô tả | Ghi chú |
 |-------|---------|-------|---------|
-| BR-01 | Mã danh mục duy nhất | Trường `code` của mỗi danh mục (`Unit`, `ResearchField`, `ProductType`, `CriteriaSet`…) là duy nhất, không trùng trong cùng loại danh mục. Với `CatalogItem`, `code` duy nhất theo (`tenantId`, `catalogId`) — trùng mã giữa hai danh mục khác nhau là hợp lệ. Với `SystemSetting`, `key` là duy nhất toàn cục. | Unique constraint ở CSDL; báo lỗi rõ ràng khi trùng. |
-| BR-02 | Không xóa cứng danh mục đang dùng | Danh mục đang được thực thể khác tham chiếu (FK) không được xóa cứng (`ON DELETE RESTRICT`). Hệ thống chỉ cho **xóa mềm** (`recordStatus = DELETED`) hoặc **vô hiệu hóa** (`INACTIVE`). | Bảo toàn dữ liệu lịch sử (đề tài cũ vẫn trỏ tới lĩnh vực đã ngừng dùng). |
-| BR-03 | Cây không tạo vòng | Với danh mục cây (`Unit.parentUnitId`, `ResearchField.parentFieldId`, và `CatalogItem.parentItemId` của `Catalog` có `structure = TREE`), một nút **không thể** chọn chính nó hoặc một nút con/cháu của nó làm cha. | Kiểm tra chu trình trước khi lưu. |
-| BR-04 | Vô hiệu hóa thay vì xóa khi còn tham chiếu | Mục `INACTIVE` không xuất hiện trong danh sách chọn mới ở các feature khác, nhưng vẫn hiển thị trên các bản ghi cũ đã gắn nó. | Mục `DELETED` ẩn hoàn toàn khỏi UI chọn mới. |
-| BR-05 | Mọi thay đổi danh mục/cấu hình ghi audit | Tạo/sửa/vô hiệu/xóa mềm bất kỳ danh mục hay tham số cấu hình nào đều ghi `AuditLog` với `oldValue`/`newValue`. | Append-only; phục vụ truy vết ai-đổi-gì-khi-nào. |
-| BR-06 | Tham số cấu hình đúng kiểu | `SystemSetting.value` phải hợp lệ theo `dataType` (vd `INT`, `DECIMAL`, `BOOLEAN`, `STRING`). Lưu giá trị sai kiểu bị từ chối. | Ràng buộc tham số nghiệp vụ, vd ngưỡng điểm phải là số trong khoảng cho phép. |
-| BR-07 | Tổng trọng số bộ tiêu chí nên bằng 100% | Tổng `weight` các `EvaluationCriterion` trong một `CriteriaSet` **nên** bằng 100%. Nếu khác, hệ thống **cảnh báo** nhưng vẫn cho lưu. | Không chặn cứng để hỗ trợ bộ tiêu chí đang soạn dở. |
-| BR-08 | Mỗi tiêu chí có điểm tối đa & trọng số hợp lệ | `EvaluationCriterion.maxScore > 0` và `0 ≤ weight ≤ 100`. | Đảm bảo F03/F06 tính điểm tổng hợp được. |
-| BR-09 | `ProductType.category` thuộc tập cố định | `category` chỉ nhận một trong `ARTICLE` \| `PATENT` \| `SOLUTION` \| `TRAINING` \| `OTHER`. | Enum chốt cứng ở data-model, không sửa qua UI. |
-| BR-10 | Phân quyền theo vai trò | Chỉ **Quản trị hệ thống** được CRUD toàn bộ danh mục. **Chuyên viên QL KHCN** chỉ được xem; riêng **CriteriaSet/EvaluationCriterion** được quản lý (tạo/sửa) theo phân quyền nghiệp vụ. | Chi tiết ở `ui.md` §2 Permission matrix. |
-| BR-11 | `CatalogItem` thuộc đúng cấu trúc danh mục | `parentItemId` chỉ được đặt khi `Catalog.structure = TREE`; với danh mục `FLAT`, `parentItemId` phải null. Nút cha phải cùng `catalogId` với nút con. | Tránh trộn mục giữa hai danh mục khác nhau. |
-| BR-12 | Phát sinh danh mục mới không cần deploy | Thêm một loại danh mục lookup mới = thêm một dòng `Catalog` (`code`, `name`, `structure`) rồi nhập `CatalogItem`. Không sửa schema, không deploy. Danh mục `isSystem = true` (loại lõi hệ thống) **không** được đổi `code` hay xóa qua UI. | Hỗ trợ "có thể phát sinh thêm"; bảo vệ các loại lõi mà feature khác phụ thuộc. |
-| BR-13 | Giá trị `extra` đúng schema khai báo | Nếu `Catalog.extraSchema` được khai báo, `CatalogItem.extra` phải hợp lệ theo schema đó (vd địa chỉ bắt buộc `extra.level ∈ {PROVINCE, DISTRICT, WARD}`). | Validate khi lưu; cho phép trường mở rộng đặc thù mà không cần cột riêng. |
+| BR-01 | Key duy nhất trong phạm vi tenant | Cặp `(tenantId, key)` là **duy nhất** với ngữ nghĩa `NULLS NOT DISTINCT`: một bản shared duy nhất cho mỗi key + N bản override theo từng tenant. | Unique constraint DB; trùng → 409 Conflict. |
+| BR-02 | Ai được ghi cái gì | **super_admin** ghi bản shared (`tenantId = NULL`). **admin / tenant_admin** ghi bản của tenant mình (`tenantId = <tenant JWT>`). Người dùng không thuộc 3 vai trò trên **không** được POST/PUT/DELETE. | Guard `Roles(['admin','tenant_admin'])`; super_admin luôn pass. |
+| BR-03 | Đọc theo thứ tự fallback | GET key: thử `(tenantId = <tenant JWT>, key)` trước; nếu không có, thử `(tenantId = NULL, key)`; nếu vẫn không có → **404**. | Super_admin đọc chỉ nhìn bản shared, không fallback. |
+| BR-04 | Cache 5 phút, invalidate khi ghi | Đọc key được cache Redis TTL 5 phút, namespace theo `<tenantId hoặc __shared__>:<key>`. PUT/DELETE key nào thì xóa **đúng** cache key đó (không xóa toàn cache). | Cache lỗi thì fallback đọc DB, không chặn request. |
+| BR-05 | Key hợp lệ | Chỉ chấp nhận ký tự `[a-zA-Z0-9._-]+`, độ dài ≤ 128. Không được chứa dấu cách, `/`, `:`, `?`, `#`, `[`, `]`, `@`, `!`, `$`, `&`, `'`, `(`, `)`, `*`, `+`, `,`, `;`, `=`. | Kiểm tra ở BE trước khi lưu; sai → 400. |
+| BR-06 | Nội dung bắt buộc khi tạo | POST **phải** có content (qua multipart file, JSON `content`, hoặc urlencoded). Content rỗng → 400. PUT có thể để trống content → giữ nguyên nội dung cũ. | |
+| BR-07 | Giới hạn kích thước nội dung | Content ≤ **20 MB** (`MAX_CONTENT_BYTES = 20 * 1024 * 1024`). Vượt → 413/400 tùy multer. | Cấu hình cứng trong code, không theo tenant. |
+| BR-08 | Tự đoán MIME + encoding | Nếu người tạo không khai `mime_type`: đoán theo magic bytes (`file-type` v16); không nhận diện được thì thử "text-like" → `text/plain`; fallback cuối `application/octet-stream`. Nếu không khai `encoding`: dùng `chardet` đoán; fallback `utf-8`. | Ưu tiên giá trị người gọi khai; chỉ đoán khi thiếu. |
+| BR-09 | Content-Type khi trả về | GET `:key` set header `Content-Type = <mime lưu>`; với MIME dạng text (`text/*`, `application/json`, `application/xml`, `application/yaml`…) đính kèm `charset = <encoding lưu>`. | Người gọi nhận đúng format gốc đã lưu. |
+| BR-10 | Xóa cứng, không xóa mềm | DELETE thực sự xóa row khỏi DB. Không có `recordStatus`/`deletedAt`. Cờ `active = false` là **ẩn khỏi UI chọn** chứ không xóa. | Người tạo tự chịu trách nhiệm; không có nút "khôi phục". |
+| BR-11 | Tenant không thấy tenant khác | Query list/get chỉ trả kết quả có `tenantId = <tenant JWT>` **hoặc** `tenantId = NULL`. Không có cách hợp lệ nào để tenant A đọc bản riêng của tenant B. | Ràng buộc trong service layer; JWT sai → 401. |
+| BR-12 | Xác thực Keycloak RS256 | Mọi endpoint yêu cầu Bearer token Keycloak, verify chữ ký RS256 qua JWKS của issuer (`iss` trong token). `tenantId` lấy từ claim `tenant_id`/`tenantId`; nếu thiếu cả hai thì lấy realm name từ `iss`. | Token hết hạn / sai issuer → 401. |
 
 ## 5. Dữ liệu
 
-Thực thể do B01 sở hữu, định nghĩa tại [`../../architecture/data-model.md`](../../architecture/data-model.md)
-§4.2 (Danh mục dùng chung) và §4.4 (CriteriaSet/EvaluationCriterion). B01 **không** định nghĩa lại trường mới
-mà dùng đúng các trường đã có:
+Service sở hữu **duy nhất một bảng** `sys_configuration`. Không có bảng phụ, không có audit log
+tách riêng, không có bảng danh mục cha–con.
 
-- **Unit** (`id`, `code`, `name`, `parentUnitId` self-FK, `recordStatus`) — cây đơn vị.
-- **ResearchField** (`id`, `code`, `name`, `parentFieldId` self-FK, `recordStatus`) — cây lĩnh vực/chuyên ngành nghiên cứu.
-- **ProductType** (`id`, `code`, `name`, `category` enum `ARTICLE`|`PATENT`|`SOLUTION`|`TRAINING`|`OTHER`).
-- **SystemSetting** (`key` PK, `value`, `dataType`, `description`) — tham số khóa–giá trị.
-- **Catalog** (`id`, `code`, `name`, `structure` `FLAT`|`TREE`, `isSystem`, `extraSchema` jsonb, `recordStatus`)
-  & **CatalogItem** (`id`, `catalogId`, `code`, `name`, `parentItemId` self-FK, `sortOrder`, `extra` jsonb,
-  `recordStatus`) — cặp bảng generic cho các danh mục lookup ở §3.1 (địa chỉ, chức vụ, phân loại đề tài/
-  thông báo/đánh giá, vị trí–vai trò hiển thị…).
-- **CriteriaSet** (`id`, `name`, `type` `PROPOSAL_REVIEW`|`ACCEPTANCE`) & **EvaluationCriterion**
-  (`id`, `criteriaSetId`, `name`, `maxScore`, `weight`) — dùng chung cho F03/F06.
+**SysConfiguration** (một cấu hình):
+- `id` — UUID sinh tự động.
+- `tenantId` — chuỗi ≤ 128 ký tự, **có thể NULL**. NULL = bản shared cho mọi tenant.
+- `key` — chuỗi ≤ 128 ký tự, mã cấu hình (xem BR-05 quy tắc ký tự).
+- `description` — chuỗi ≤ 1024, mô tả người đọc hiểu.
+- `content` — bytes, nội dung (JSON/XML/text/binary), tối đa 20 MB.
+- `mimeType` — chuỗi ≤ 64, có thể NULL nếu chưa biết; khi trả về mặc định `application/octet-stream`.
+- `encoding` — chuỗi ≤ 16, mặc định `utf-8`.
+- `refer` — chuỗi ≤ 64, **mã tham chiếu nghiệp vụ** để nhóm các key liên quan (ví dụ `GEOHUB`,
+  `FRONTEND`, `ROLES`). Mặc định `GEOHUB`.
+- `group` — chuỗi ≤ 64, có thể NULL, nhóm logic tùy chọn (khác `refer`).
+- `public` — boolean có thể NULL, cờ "có phơi bày cho user chưa xác thực không" (hiện chưa dùng để
+  bypass auth — chỉ là siêu dữ liệu để filter).
+- `active` — boolean, mặc định `true`, cờ ẩn/hiện ở UI chọn.
+- `created`, `modified` — timestamptz, sinh tự động.
 
-> Với P03, B01 chỉ lưu danh mục/kỳ lịch (`ACADEMIC_YEAR`, `FISCAL_YEAR`) và tham số nền nếu cần.
-> Công thức/định mức, version hiệu lực và quy tắc phân bổ là dữ liệu nghiệp vụ do P03 sở hữu.
+**Ràng buộc & chỉ mục:**
+- Unique `(tenantId, key)` — NULLS NOT DISTINCT (bản shared duy nhất mỗi key).
+- Index `(tenantId, group)` và `(tenantId, refer)` để lọc list nhanh.
 
-Trường audit dùng chung (`createdAt/By`, `updatedAt/By`) và quy ước xóa mềm `recordStatus`
-(`ACTIVE`|`INACTIVE`|`DELETED`) theo data-model §1. Toàn vẹn tham chiếu `ON DELETE RESTRICT` theo
-data-model §5.
-
-**Đề xuất bổ sung** (cần thêm vào data-model nếu được duyệt, ngoài phạm vi trường hiện có):
-
-- Mẫu biểu thuyết minh hiện được tham chiếu qua `ProposalCall.proposalTemplateId` nhưng **chưa có thực thể
-  riêng** trong data-model. *Đề xuất bổ sung* thực thể `BieuMauThuyetMinh`
-  (`id`, `code`, `name`, `cauTruc` jsonb — danh sách trường/section, `recordStatus`) để B01 quản lý
-  vòng đời mẫu biểu. Trước khi được duyệt, các AC liên quan mẫu biểu coi là phụ thuộc mở (xem §7).
-- `EvaluationCriterion` hiện chưa có cờ ẩn/khôi phục riêng; dùng chung quy ước xóa mềm của bộ cha. Nếu cần
-  vô hiệu từng tiêu chí, *đề xuất bổ sung* `recordStatus` cho `EvaluationCriterion`.
+**Không có ở data-model service này** (khác với B01 v0.2 đề xuất trước đây): Unit tree,
+ResearchField tree, ProductType, CriteriaSet/EvaluationCriterion, Catalog/CatalogItem generic,
+mẫu biểu thuyết minh, AuditLog. Toàn bộ những thứ đó thuộc `nckh-backend` (khác service).
 
 ## 6. Acceptance criteria
 
-- **AC-01** — Given Quản trị hệ thống đang ở màn hình quản lý `ResearchField`, When tạo mới một lĩnh vực với
-  `code` chưa tồn tại và đầy đủ trường bắt buộc, Then bản ghi được lưu với `recordStatus = ACTIVE` và
-  một bản ghi `AuditLog` được tạo. *(happy)*
-- **AC-02** — Given đã tồn tại một `ResearchField` có `code = "LV-01"`, When Quản trị tạo/sửa một lĩnh vực khác
-  với `code = "LV-01"`, Then hệ thống từ chối lưu và báo lỗi "mã đã tồn tại". *(biên – trùng mã, BR-01)*
-- **AC-03** — Given một `Unit` A là cha của `Unit` B, When Quản trị sửa A để chọn B (hoặc chính A) làm
-  `parentUnitId`, Then hệ thống từ chối và báo "không thể tạo vòng trong cây đơn vị". *(lỗi – chu trình, BR-03)*
-- **AC-04** — Given một `ResearchField` đang được ít nhất một `ResearchProject` tham chiếu, When Quản trị yêu cầu xóa
-  lĩnh vực đó, Then hệ thống **không** xóa cứng, mà thông báo lĩnh vực đang được sử dụng và đề nghị
-  vô hiệu hóa thay thế. *(lỗi – RESTRICT, BR-02)*
-- **AC-05** — Given một `ResearchField` không còn bản ghi nào tham chiếu, When Quản trị xóa, Then bản ghi được
-  đặt `recordStatus = DELETED` (xóa mềm), không còn xuất hiện ở danh sách chọn mới, và audit được ghi.
-  *(happy/biên – xóa mềm, BR-04/BR-05)*
-- **AC-06** — Given Quản trị đang sửa tham số `SystemSetting` có `key = "PROPOSAL_REVIEW.PASSING_SCORE"` với
-  `dataType = DECIMAL`, When nhập giá trị không phải số (vd "abc"), Then hệ thống từ chối và báo lỗi
-  sai kiểu dữ liệu. *(lỗi – kiểu dữ liệu, BR-06)*
-- **AC-07** — Given Quản trị đang soạn một `CriteriaSet` loại `PROPOSAL_REVIEW` với các `EvaluationCriterion` có tổng
-  `weight` = 90%, When lưu bộ tiêu chí, Then hệ thống hiển thị **cảnh báo** "tổng trọng số chưa đạt 100%"
-  nhưng vẫn lưu thành công. *(biên – cảnh báo, BR-07)*
-- **AC-08** — Given một người dùng có vai trò **Chuyên viên QL KHCN** (không phải Quản trị hệ thống),
-  When họ cố tạo/sửa danh mục `Unit`, Then hệ thống từ chối với lỗi thiếu quyền; nhưng When họ tạo/sửa
-  `CriteriaSet`, Then được phép theo phân quyền nghiệp vụ. *(quyền, BR-10)*
-- **AC-09** — Given Quản trị tạo `EvaluationCriterion` với `maxScore = 0`, When lưu, Then hệ thống từ chối và
-  báo `maxScore` phải lớn hơn 0. *(lỗi – ràng buộc tiêu chí, BR-08)*
-- **AC-10** — Given Quản trị mở danh mục `POSITION` (Chức vụ) và đã có `CatalogItem` `code = "TP"`, When tạo
-  mục khác cùng danh mục với `code = "TP"`, Then hệ thống từ chối ("mã đã tồn tại trong danh mục");
-  nhưng When tạo `code = "TP"` trong danh mục `USER_ROLE_LABEL`, Then được phép. *(biên – trùng mã theo phạm vi danh mục, BR-01)*
-- **AC-11** — Given danh mục `ADMINISTRATIVE_DIVISION` có `structure = TREE` và một mục "Tỉnh" đang là cha của
-  một mục "Huyện", When Quản trị sửa mục "Tỉnh" để chọn "Huyện" (hoặc chính nó) làm `parentItemId`,
-  Then hệ thống từ chối với lỗi tạo vòng. *(lỗi – chu trình, BR-03/BR-11)*
-- **AC-12** — Given Quản trị tạo một loại danh mục mới bằng cách thêm một `Catalog` (`code = "ACADEMIC_RANK"`,
-  `structure = FLAT`), When lưu và nhập các `CatalogItem`, Then danh mục mới xuất hiện ở nav trái và dùng được
-  ngay, **không** cần migration/deploy; và một `AuditLog` được ghi. *(happy – mở rộng, BR-12)*
-- **AC-13** — Given danh mục `ADMINISTRATIVE_DIVISION` khai báo `extraSchema` yêu cầu `extra.level ∈ {PROVINCE, DISTRICT, WARD}`,
-  When Quản trị lưu một `CatalogItem` thiếu `level` hoặc sai giá trị, Then hệ thống từ chối và báo lỗi schema. *(lỗi – BR-13)*
-- **AC-14** — Given một `CatalogItem` thuộc `POSITION` đang được ít nhất một hồ sơ người dùng tham chiếu,
-  When Quản trị yêu cầu xóa mục đó, Then hệ thống **không** xóa cứng mà đề nghị vô hiệu hóa (INACTIVE),
-  và mục `INACTIVE` không còn xuất hiện ở danh sách chọn mới. *(lỗi – RESTRICT, BR-02/BR-04)*
+- **AC-01** — Given super_admin đăng nhập, When POST một key mới không kèm `tenantId`, Then bản ghi
+  được lưu với `tenantId = NULL` (shared) và mọi tenant đọc key đó đều nhận được. *(happy, BR-02/BR-03)*
+- **AC-02** — Given tenant_admin của tenant X đăng nhập, When POST cùng key mà super_admin đã tạo
+  shared, Then bản mới được lưu với `tenantId = X` (override, không đè bản shared); tenant X đọc key
+  nhận bản của mình; tenant Y đọc vẫn nhận bản shared. *(happy, BR-01/BR-03)*
+- **AC-03** — Given đã có bản `(tenantId = X, key = "ROLES")`, When tenant_admin của X POST lại
+  đúng key đó, Then hệ thống từ chối với 409 "duplicate" và không tạo bản ghi mới. *(biên, BR-01)*
+- **AC-04** — Given key `"CONFIG.FE"` không tồn tại ở tenant X lẫn shared, When user đọc key này,
+  Then trả về **404 Not Found**. *(lỗi, BR-03)*
+- **AC-05** — Given key `"CONFIG.FE"` chỉ có bản shared, When user tenant X đọc, Then trả về nội
+  dung bản shared với header `X-Cache: MISS` ở lần đầu, `HIT` ở lần thứ hai trong vòng 5 phút.
+  *(happy, BR-04)*
+- **AC-06** — Given cache đang HIT cho key `"CONFIG.FE"` của tenant X, When tenant_admin của X
+  PUT/DELETE key đó, Then cache của **đúng key đó** (`X:config.fe`) bị xóa; lần đọc tiếp theo
+  là MISS. *(biên, BR-04)*
+- **AC-07** — Given user chỉ có vai trò `user` (không admin/tenant_admin), When họ POST/PUT/DELETE
+  một key, Then hệ thống từ chối với 403 Forbidden. *(quyền, BR-02)*
+- **AC-08** — Given người dùng POST key chứa dấu cách hoặc dấu `/`, When gọi API, Then hệ thống
+  từ chối với 400 và thông báo ký tự không hợp lệ. *(biên, BR-05)*
+- **AC-09** — Given người dùng upload file PNG 3 KB qua multipart không khai `mime_type`, When lưu,
+  Then hệ thống tự đoán `mime_type = "image/png"` và `encoding` theo chardet; GET trả header
+  `Content-Type: image/png` (không có charset). *(happy, BR-08/BR-09)*
+- **AC-10** — Given người dùng POST kèm `?detect=true`, When gọi, Then hệ thống trả về metadata đã
+  parse (mime, encoding, content_size) và **không** insert row vào DB. *(happy, dry-run)*
+- **AC-11** — Given content upload > 20 MB, When gọi API, Then hệ thống từ chối (413/400) do vượt
+  `MAX_CONTENT_BYTES`. *(biên, BR-07)*
+- **AC-12** — Given tenant_admin của X DELETE một key có bản riêng, When gọi, Then row của X bị
+  **xóa cứng** khỏi DB; bản shared (nếu có) vẫn nguyên; tenant X sau đó đọc key sẽ nhận bản shared
+  (fallback). *(happy, BR-10/BR-03)*
+- **AC-13** — Given tenant_admin của X đọc list, When gọi GET `/sys-configurations`, Then chỉ nhận
+  các bản `tenantId = X` **và** `tenantId = NULL`; không nhìn thấy bản của tenant khác. *(quyền,
+  BR-11)*
 
 ## 7. Phụ thuộc & rủi ro
 
-- **Phụ thuộc xuôi (feature khác dùng B01):** F01/F02 dùng `ResearchField`, mẫu biểu thuyết minh và bộ tiêu chí
-  xét duyệt; F03/F06 dùng `CriteriaSet`/`EvaluationCriterion`; F07 dùng `ProductType`; F04/B04 dùng
-  `SystemSetting` (số ngày nhắc hạn báo cáo). Mọi feature đều dùng `Unit`. Các danh mục lookup generic
-  (`POSITION`, `ADMINISTRATIVE_DIVISION`, …) được F08 (lý lịch), B03 (hồ sơ người dùng) và các form khác
-  tham chiếu qua `CatalogItem.id`.
-- **Phụ thuộc ngược:** B03 cung cấp vai trò/quyền để kiểm soát truy cập B01 (RBAC). `audit` module ghi
-  `AuditLog`.
-- **Rủi ro – thay đổi cấu hình tác động vận hành:** đổi `PROPOSAL_REVIEW.PASSING_SCORE` hay số ngày nhắc hạn ảnh
-  ảnh hưởng tới F03/F04 đang chạy. Giảm thiểu: ghi audit đầy đủ (BR-05) và cảnh báo phạm vi ảnh hưởng.
-- **Rủi ro – xóa nhầm danh mục:** giảm thiểu bằng `RESTRICT` + xóa mềm (BR-02/BR-04).
-- **Điểm cần làm rõ (mở):**
-  1. Thực thể `BieuMauThuyetMinh` chưa có trong data-model — cần ADR/PR bổ sung trước khi triển khai
-     phần quản lý mẫu biểu (xem §5 "đề xuất bổ sung").
-  2. Ranh giới phân quyền `CriteriaSet` giữa Quản trị hệ thống và Chuyên viên QL KHCN cần PO chốt cuối
-     (hiện đặt theo BR-10 và Permission matrix ở `ui.md`).
-  3. **"Chuyên ngành đề tài NCKH" vs `ResearchField`:** hiện ánh xạ "Chuyên ngành" về entity `ResearchField`
-     đã có (đang bị `ResearchProject` trỏ tới). Nếu PO xác định "Chuyên ngành" là một trục phân loại **khác**
-     với "lĩnh vực", cần tách thành danh mục generic riêng (`RESEARCH_SPECIALIZATION`) — chốt trước khi seed.
-  4. **"Đơn vị công tác" vs `Unit`:** hiện dùng chung cây `Unit`. Nếu cần phân biệt "đơn vị công tác của cán bộ"
-     với "đơn vị chủ trì đề tài", cân nhắc một danh mục generic riêng — hiện coi là một.
+- **Phụ thuộc xuôi (service khác dùng sys-config-service):**
+  - `nckh-backend` đọc các key nghiệp vụ chung như `ROLES` (danh sách nhãn vai trò hiển thị),
+    `ACADEMIC_TITLES` (học hàm), `SPECIALTIES` (chuyên ngành), … để build dropdown / seed default.
+  - FE (isofh-admin, portal) đọc config JSON runtime (theme, feature flag, endpoint map, …).
+  - `mail-service`, `templates-service` có thể lưu template mail/document ở đây dưới dạng base64.
+
+- **Phụ thuộc ngược (sys-config-service dùng gì):**
+  - **Keycloak** — verify JWT RS256, đọc realm_access.roles và tenant_id claim (chung realm với
+    nckh-backend theo ADR-0008).
+  - **PostgreSQL** — một database riêng `sys_config_db` (không dùng chung với nckh-backend).
+  - **Redis** — dùng chung cụm với nckh-backend / isofh-admin cluster; key namespace
+    `sys-config:admin:<tenantId hoặc __shared__>:<key thường>` để tránh va nhau.
+  - **Multer** (NestJS) — nhận file multipart.
+
+- **Rủi ro & điểm cần làm rõ:**
+  1. **Content-format không đồng thuận với FE:** BE lưu bytes, decode theo MIME khi trả về; nếu FE
+     giả định luôn JSON mà BE lưu text/plain thì lỗi parse. Cần **convention** cứng theo `refer`.
+  2. **Cache stale khi scale multi-pod:** invalidate chỉ xóa key trong Redis chung → nhiều pod đều
+     thấy MISS lần kế → OK. Nhưng nếu Redis xuống, mỗi pod cache in-memory riêng thì có thể stale.
+     Hiện thiết kế dùng Redis store, chưa fallback in-memory — chấp nhận.
+  3. **`public = true` không bypass auth:** hiện `public` chỉ là metadata filter, không có endpoint
+     đọc không cần JWT. Nếu tương lai cần thì bổ sung route riêng — cần PO chốt.
+  4. **Không có audit thay đổi:** khác với các danh mục nghiệp vụ ở nckh-backend, service này không
+     ghi `AuditLog`. Nếu cần truy vết ai đổi tham số hệ thống, cần bổ sung riêng (đề xuất mở).
+  5. **Không có versioning nội dung:** một PUT ghi đè hoàn toàn `content` cũ; không có lịch sử để
+     rollback. Nếu cần, đề xuất bảng `sys_configuration_history` — chưa có.
+  6. **`refer` = `GEOHUB` mặc định:** giá trị mặc định là "GEOHUB" (di sản từ project cũ). Cần chuẩn
+     hóa lại theo domain RMS trước khi seed diện rộng.
+
+## 8. Divergent so với v0.2
+
+Bản v0.3 **thu hẹp scope** đáng kể so với v0.2:
+
+- **Bỏ khỏi B01** (chuyển sang backend nghiệp vụ `nckh-backend`, không phải service này):
+  Unit tree, ResearchField tree, ProductType, `Catalog`/`CatalogItem` generic, MANAGING_BODY,
+  ADMINISTRATIVE_DIVISION, POSITION, NOTIFICATION_CATEGORY, EVALUATION_CATEGORY,
+  USER_ROLE_LABEL, EVIDENCE_TYPE, RESEARCH_TOPIC_CATEGORY, ACADEMIC_YEAR (entity riêng),
+  FISCAL_YEAR (entity riêng), CriteriaSet / EvaluationCriterion, SystemSetting kiểu có `dataType`,
+  mẫu biểu thuyết minh (`BieuMauThuyetMinh`), AuditLog.
+- **Bỏ luôn khái niệm** `recordStatus` (ACTIVE / INACTIVE / DELETED), xóa mềm, chống xóa khi còn
+  FK, chống vòng cây, tổng trọng số = 100%, `extraSchema` jsonb, `isSystem = true`.
+- **Thêm mới trong v0.3:** cơ chế **shared fallback** (row `tenantId = NULL` dùng chung), cache
+  Redis 5 phút hai namespace, tự đoán MIME + encoding, chế độ dry-run, giới hạn 20 MB, phân
+  quyền theo `super_admin` / `admin` / `tenant_admin`.
+- **Endpoint** cụ thể: 5 endpoint duy nhất (`GET list`, `GET :key stream`, `POST`, `PUT :key`,
+  `DELETE :key`) — chi tiết path/body/header ở [`design.md`](./design.md).
