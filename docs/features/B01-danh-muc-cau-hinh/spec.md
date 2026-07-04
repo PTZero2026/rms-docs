@@ -73,7 +73,7 @@ nghiệp vụ trỏ FK trực tiếp. `sys-config-service` chỉ lo **blob confi
     trường `created`/`modified` timestamp trên row).
   - **Xóa mềm** (`recordStatus`) — không có; chỉ có `active` (cờ ẩn/hiện) và xóa cứng.
   - **Phân quyền theo từng key** (ACL từng key) — không có; phân quyền chỉ ở cấp service (đọc/ghi).
-  - **Giới hạn dung lượng nội dung theo tenant** — không có; giới hạn chung `MAX_CONTENT_BYTES`
+  - **Giới  hạn dung lượng nội dung theo tenant** — không có; giới hạn chung `MAX_CONTENT_BYTES`
     (20 MB, cấu hình cứng trong code).
 
 ## 3. Luồng nghiệp vụ chính
