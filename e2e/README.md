@@ -29,6 +29,18 @@ Biến môi trường (tuỳ chọn): `RMS_BASE_URL`, `RMS_OTP` (mặc định `
 Đăng nhập: app `/signin` (email) → Keycloak realm `thuyloi-tenant` → **OTP email** (`123456`) → app.
 `tests/auth.setup.ts` đăng nhập 1 lần/role, lưu phiên vào `.auth/` (dùng lại cho mọi spec).
 
+## Ghi video quá trình test
+
+Bật cờ `RMS_VIDEO=1`, video 1280×720 mỗi test lưu ra `videos/<role>-<tên-test>.webm`
+(login flow + guard RBAC hiển thị trực quan cho bàn giao):
+
+```bash
+RMS_VIDEO=1 node ./node_modules/@playwright/test/cli.js test
+```
+
+Không có cờ thì chỉ giữ video khi test fail (`retain-on-failure`). `videos/` đã gitignore
+(nhị phân lớn — chia sẻ riêng, không commit).
+
 ## Ánh xạ spec ↔ khối checklist
 
 | Spec | Khối checklist | Kiểm |

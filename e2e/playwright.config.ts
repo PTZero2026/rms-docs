@@ -18,7 +18,8 @@ export default defineConfig({
     baseURL: process.env.RMS_BASE_URL || 'https://tl-nckh.vnest.vn',
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
-    video: 'retain-on-failure',
+    // RMS_VIDEO=1 -> ghi video mọi test (dùng khi cần bằng chứng bàn giao)
+    video: process.env.RMS_VIDEO ? { mode: 'on', size: { width: 1280, height: 720 } } : 'retain-on-failure',
     actionTimeout: 20_000,
     navigationTimeout: 45_000,
   },
