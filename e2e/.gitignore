@@ -1,0 +1,9 @@
+node_modules/
+.auth/
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+# artifact khám phá
+state-*.json
+shot-*.png
