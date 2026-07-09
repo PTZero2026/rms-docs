@@ -7,6 +7,9 @@ playwright/.cache/
 results.json
 results.xml
 #videos/
+video-tmp/
+# bí mật — KHÔNG commit
+.env
 # artifact khám phá
 state-*.json
 shot-*.png
