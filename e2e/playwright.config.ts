@@ -11,7 +11,7 @@ export default defineConfig({
   testDir: './tests',
   fullyParallel: false,
   workers: 1,
-  retries: process.env.CI ? 1 : 0,
+  retries: process.env.CI ? 2 : 1, // site live — hấp thụ blip mạng
   reporter: [['list'], ['html', { open: 'never' }], ['./reporters/telegram-reporter.ts']],
   timeout: 90_000,
   expect: { timeout: 15_000 },
