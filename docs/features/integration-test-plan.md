@@ -186,6 +186,100 @@ updated: 2026-07-10
 > tài khoản giảng viên có bị backend chặn không. Ghi nhận ở `e2e/tests/06-integration.spec.ts`
 > (`INT-12c`, hiện `fixme` chờ xác minh hành vi backend).
 
+## Kịch bản thao tác thủ công — các TC đang skip
+
+> Neo vào giao diện thật môi trường dùng thử (khảo sát 2026-07-10). Màn hình đã xác nhận: đăng nhập,
+> Đăng ký đề tài (`/projects/create`, 4 loại), Danh sách đề tài (`/projects`), Đợt đăng ký
+> (`/projects/rounds`, nút *Tạo mới*), Quản lý Hội đồng (`/councils`, *Tạo hội đồng*), Cuộc họp
+> (`/meetings`, *Tạo cuộc họp*), chi tiết đề tài (tab *Thuyết minh / Thành viên / Lịch sử*), Quy đổi
+> giờ giảng (`/teaching-hours`). Các màn hình **F04 tiến độ · F05 kinh phí · F06 nghiệm thu · F07 sản
+> phẩm · F08 lý lịch** ⇒ đánh dấu *(khi module dựng xong)*.
+>
+> Tài khoản: **admin** `tuanphamhong@gmail.com` · **giảng viên** `tuanph@vnpay.vn` · OTP `123456`.
+
+### INT-12c — Giảng viên deep-link `/meetings/create` phải bị chặn
+1. Đăng nhập **giảng viên**.
+2. Dán thẳng URL `…/meetings/create` vào trình duyệt (menu "Tạo cuộc họp" không hiện với giảng viên).
+- **Kỳ vọng:** trang trả **"Không đủ quyền truy cập"** (như `/users`, `/councils`).
+- **Hiện tại (gap):** form "Tạo cuộc họp mới" vẫn render → xem mục *Phát hiện* bên dưới; cần chặn route + xác minh nút *Lưu/Tạo* bị backend từ chối.
+
+### INT-01 — Cổng vào nghiệm thu (F04→F07→F06→F05)
+- **Chuẩn bị:** một đề tài đang ở trạng thái *Đang thực hiện*, có danh mục sản phẩm cam kết.
+1. **Giảng viên (chủ nhiệm):** mở chi tiết đề tài → khu *Tiến độ (F04, khi có)* → nộp **báo cáo kỳ cuối**.
+2. **Admin/chuyên viên:** duyệt kỳ cuối → *Đạt*.
+3. **Chủ nhiệm:** vào khu *Sản phẩm (F07, khi có)* nhưng **chưa** khai/duyệt đủ sản phẩm cam kết.
+4. **Chuyên viên:** bấm **"Chuyển nghiệm thu"** → **kỳ vọng: bị chặn**, báo *thiếu sản phẩm cam kết*.
+5. Khai + **duyệt** đủ sản phẩm cam kết (đúng loại & số lượng) → bấm lại "Chuyển nghiệm thu" → **cho phép** (đề tài sang *Chờ nghiệm thu*).
+6. Lập hội đồng nghiệm thu, chấm → kết luận *Đạt*.
+7. Bấm **"Hoàn thành đề tài"** khi khu *Kinh phí (F05)* còn dòng đối soát **MISMATCHED** → **kỳ vọng: bị chặn**.
+8. Quyết toán hết MISMATCHED → bấm lại "Hoàn thành" → đề tài sang **Hoàn thành**.
+
+### INT-02 — Trần khoán kinh phí + phí quản lý (F04→F05)
+1. **Chuyên viên:** giao đề tài với **Kinh phí duyệt** = X (màn *Giao đề tài / F04*).
+2. Màn *Kinh phí (F05)* → **"Xác nhận kinh phí cấp"**: nhập tổng ≤ X → lưu. Thử nhập > X → **bị chặn**.
+3. Xem **Phí quản lý** tự tính = `min(floor(cấp×tỉ lệ), trần)`; kinh phí thực hiện = cấp − phí.
+4. **Chủ nhiệm:** thêm **khoản chi** vượt kinh phí thực hiện → **kỳ vọng: chỉ cảnh báo, vẫn lưu**.
+5. **Admin:** đổi tỉ lệ phí quản lý trong cấu hình → mở lại đề tài cũ → **số phí không đổi** (không hồi tố).
+
+### INT-03 — Xung đột lợi ích trong hội đồng (F03)
+- **Chuẩn bị:** đề tài đã nộp; một người vừa là **thành viên đề tài** vừa dự kiến vào hội đồng.
+1. **Chuyên viên:** `/councils` → **"Tạo hội đồng"**, thêm thành viên (gồm người có xung đột).
+2. Mở màn chấm điểm của hội đồng → **kỳ vọng:** người xung đột **không xuất hiện** trong danh sách chấm / bị chặn tạo phiếu.
+3. Nếu sau khi loại, số người còn lại < ngưỡng phiếu tối thiểu → **kỳ vọng:** nút **"Kết luận"** bị vô hiệu.
+4. Đủ phiếu → điểm tổng hợp = trung bình các phiếu *đã nộp*; so ngưỡng → *Đạt/Không đạt*.
+
+### INT-04 — Hội đồng F03 và F06 không lẫn dữ liệu
+1. Trên cùng đề tài, tạo hội đồng **xét duyệt** (F03), chấm xong.
+2. Sau nghiệm thu, tạo hội đồng **nghiệm thu** (F06) trên cùng đề tài đó.
+- **Kỳ vọng:** phiếu/tiêu chí/điểm của 2 hội đồng **tách biệt**; mở lại hội đồng xét duyệt không thấy phiếu nghiệm thu và ngược lại.
+
+### INT-05 — Hội đồng đạo đức chạy song song (điều kiện AND)
+1. Đề tài ở trạng thái *Đã nộp*.
+2. **Chuyên viên:** lập **hội đồng khoa học** (xét duyệt) và **hội đồng đạo đức** cho cùng đề tài.
+3. Cho **một** hội đồng kết luận *Đạt*, hội đồng kia **chưa** kết luận.
+- **Kỳ vọng:** đề tài **chưa** chuyển *Đã duyệt*.
+4. Hội đồng còn lại kết luận *Đạt* → đề tài mới chuyển **Đã duyệt**.
+
+### INT-06 — Thư ký cập nhật thay chủ nhiệm (on-behalf)
+- **Chuẩn bị:** đề tài có **thư ký** được ủy quyền.
+1. Đăng nhập **thư ký** → mở đề tài → nộp **báo cáo tiến độ (F04)** thay chủ nhiệm.
+2. Mở tab **Lịch sử** → **kỳ vọng:** dòng ghi *người thực hiện = thư ký, thay mặt = chủ nhiệm*.
+3. Thư ký thử **"Xác nhận kinh phí cấp"** (quyền chuyên viên) → **kỳ vọng: bị chặn**.
+
+### INT-07 — Đóng băng cấu hình đợt đăng ký (F02↔F01)
+1. **Chuyên viên:** `/projects/rounds` → **"Tạo mới"** đợt, chọn biểu mẫu + bộ tiêu chí, mở đợt (*Đang mở*).
+2. **Giảng viên:** *Đăng ký đề tài* vào đợt đó → nộp (đề tài *Đã nộp*).
+3. **Chuyên viên:** mở lại đợt → thử **đổi biểu mẫu/bộ tiêu chí** → **kỳ vọng: bị chặn**; chỉ cho **gia hạn ngày kết thúc** về tương lai.
+4. Thử **hủy** đợt đã có đề tài nộp → **kỳ vọng: bị chặn** (chỉ cho *Đóng*, không *Hủy*).
+5. Sau khi đợt *Đóng*/quá hạn → giảng viên thử nộp đề tài mới vào đợt → **kỳ vọng: bị chặn**.
+
+### INT-08 — Mã đề tài bất biến qua trả-bổ-sung / nộp lại (F01)
+1. **Giảng viên:** *Đăng ký đề tài* → điền → **Nộp**. Ghi lại **mã đề tài** hiển thị.
+2. **Chuyên viên:** mở đề tài → **"Trả lại bổ sung"** kèm lý do (đề tài về *Nháp*).
+3. **Giảng viên:** sửa nội dung → **Nộp lại**.
+- **Kỳ vọng:** **mã đề tài không đổi**; khi ở *Nháp* sửa được, sau *Nộp* khóa; nếu đợt đã quá hạn thì không mở lại được.
+
+### INT-09 — Giờ giảng idempotent + thu hồi (F09/F11→P03→F08)
+1. **Giảng viên:** *Đăng ký đề tài* → chọn **"Đề tài cấp trên"** (F09) hoặc **"Dự án phục vụ sản xuất"** (F11) → khai đầu mục + minh chứng → gửi.
+2. **Chuyên viên:** **Duyệt** đầu mục.
+3. Mở `/teaching-hours` (hoặc lý lịch F08 *khi có*) → **kỳ vọng:** xuất hiện **1** bản ghi giờ quy đổi.
+4. **Duyệt lại / tính lại** → **kỳ vọng:** vẫn **1** bản ghi (không nhân đôi).
+5. **Chuyên viên:** **Thu hồi** đầu mục đã duyệt → **kỳ vọng:** bản ghi giờ bị **gỡ/điều chỉnh**; tab *Lịch sử* có vết.
+
+### INT-10 — Phân bổ giờ đa vai trò tổng = 100%
+1. Tạo đầu mục (F10/F11) với **nhiều người** + nhập **tỉ lệ đóng góp**.
+2. Đặt tổng tỉ lệ ≠ 100% → **kỳ vọng: cảnh báo/chặn**.
+3. Đặt tổng = 100% → duyệt → `/teaching-hours`: mỗi người nhận giờ theo đúng tỉ lệ.
+
+### INT-13 — Làm lại nghiệm thu có giới hạn (F06)
+1. Đưa đề tài đến hội đồng nghiệm thu → kết luận **Không đạt**.
+2. **Chuyên viên:** **"Cho làm lại"** → đề tài về *Đang thực hiện*. Lặp tới khi chạm `MAX_REDO_COUNT`.
+3. Vượt số lần cho phép → nút **"Cho làm lại"** **bị vô hiệu/chặn**.
+
+### INT-11 — Nguyên tử workflow + audit (MANUAL, tầng DB/service)
+Không thao tác qua giao diện. Kiểm ở tầng service/DB: buộc một *effect/guard* lỗi giữa chừng khi chuyển
+trạng thái → xác nhận **rollback** hoàn toàn, **không** còn dòng `AuditLog`/`WorkflowHistory` mồ côi.
+
 ## Truy vết
 - Luật bất biến & ánh xạ feature↔module: [AGENTS.md](../../AGENTS.md)
 - Mô hình hội đồng dùng chung: [ADR-0003](../architecture/decisions/0003-mo-hinh-hoi-dong-dung-chung.md)
