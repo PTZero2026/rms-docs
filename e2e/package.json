@@ -9,10 +9,14 @@
     "test:headed": "playwright test --headed",
     "report": "playwright show-report",
     "codegen": "playwright codegen https://tl-nckh.vnest.vn/",
-    "auth": "playwright test --project=setup"
+    "auth": "playwright test --project=setup",
+    "telegram:test": "node telegram-selftest.mjs"
   },
   "devDependencies": {
     "@playwright/test": "^1.48.0",
     "@types/node": "^26.1.0"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2"
   }
 }

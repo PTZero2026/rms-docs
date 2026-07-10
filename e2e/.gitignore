@@ -1,12 +1,15 @@
 node_modules/
 .auth/
 test-results/
-#playwright-report/
+playwright-report/
 blob-report/
 playwright/.cache/
 results.json
 results.xml
-#videos/
+videos/
+video-tmp/
+# bí mật — KHÔNG commit
+.env
 # artifact khám phá
 state-*.json
 shot-*.png

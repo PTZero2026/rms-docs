@@ -41,6 +41,24 @@ RMS_VIDEO=1 node ./node_modules/@playwright/test/cli.js test
 Không có cờ thì chỉ giữ video khi test fail (`retain-on-failure`). `videos/` đã gitignore
 (nhị phân lớn — chia sẻ riêng, không commit).
 
+## Báo lỗi lên Telegram (khi có test FAIL)
+
+Reporter `reporters/telegram-reporter.ts` tự gửi **tóm tắt lỗi + video** từng test fail
+lên nhóm chat Telegram. Chỉ kích hoạt khi **có test fail** VÀ có đủ 2 biến env
+(toàn bộ pass → im lặng, không gửi).
+
+```bash
+cp .env.example .env      # rồi điền TELEGRAM_BOT_TOKEN + TELEGRAM_CHAT_ID
+npm test                  # fail -> gửi; pass -> không gửi
+```
+
+- Env: `TELEGRAM_BOT_TOKEN` (từ @BotFather), `TELEGRAM_CHAT_ID` (số âm cho group).
+  Nạp qua `dotenv` từ `.env` (đã gitignore) hoặc env sẵn của shell/CI.
+- Gửi: 1 tin tóm tắt (số test lỗi + thông điệp lỗi) rồi mỗi lỗi 1 video.
+  Video `.webm` thử `sendVideo`, Telegram từ chối codec thì fallback `sendDocument`.
+- Video khi fail luôn được ghi (kể cả không đặt `RMS_VIDEO`), attach vào test để reporter đính kèm.
+- Thiếu env / lỗi mạng: reporter chỉ cảnh báo, **không** làm hỏng lần chạy test.
+
 ## Ánh xạ spec ↔ khối checklist
 
 | Spec | Khối checklist | Kiểm |
