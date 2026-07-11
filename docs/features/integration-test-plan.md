@@ -24,19 +24,24 @@ updated: 2026-07-10
 
 > **Phạm vi hiện thực (chỉ đạo 2026-07-10):** không chờ **F04** (tiến độ) và **F08** (lý lịch);
 > triển khai các luồng đa vai trò khả thi ngay. Đã hiện thực AUTO nhóm read-only đa vai trò
-> (scope, IDOR, guard, loại E4, audit trail). Nhóm cần **ghi dữ liệu** (tạo kỳ/đề tài/hội đồng/chấm
+> (scope, IDOR, guard, loại E4, audit trail, **F04**). Nhóm cần **ghi dữ liệu** (tạo kỳ/đề tài/hội đồng/chấm
 > điểm) vẫn FIXME — không ghi vào pilot dùng chung với Trường; chạy khi có **tenant test riêng đã seed**.
-> Blocker theo feature giờ chỉ còn: F04 (INT-01/02/06), F08-hiển-thị (INT-09 phần F08).
+>
+> **✅ F04 đã BẬT (xác minh UI 2026-07-10):** chi tiết đề tài có tab **Giao/Khoán** (khu *Hồ sơ Giao/Khoán*,
+> nút *Thêm mới*) và **Tiến độ** (khu *Báo cáo tiến độ*, nút *Tạo các kỳ*). Đề tài *Đang triển khai* mở
+> **"Chuyển trạng thái"** cho transition **"Gửi nghiệm thu"** (bề mặt workflow P01 → cổng F06). Do đó
+> INT-01/02/06 **không còn bị chặn bởi feature**, chỉ còn cần ghi dữ liệu. Còn lại: F08-hiển-thị (INT-09 phần F08).
 
 ## Ma trận ưu tiên
 | TC | Luồng | Rủi ro | Trạng thái | Ghi chú blocker |
 |---|---|---|---|---|
-| INT-01 | F04→F07→F06→F05 cổng nghiệm thu | 🔴 | 🟡 FIXME | cần **F04** + ghi dữ liệu |
-| INT-02 | F04→F05 trần khoán + phí quản lý | 🟠 | 🟡 FIXME | cần **F04** + ghi dữ liệu |
+| INT-01 | Cổng nghiệm thu — gate vòng đời (P01) | 🔴 | 🟢 AUTO¹ | tạo→gate→tự xoá (`RMS_MUTATE=1`) |
+| INT-01+ | F04→F07→F06→F05 gate sản phẩm/MISMATCHED đầy đủ | 🔴 | 🟡 FIXME | cần lifecycle duyệt (tenant test) |
+| INT-02 | F04→F05 trần khoán + phí quản lý | 🟠 | 🟡 FIXME | ghi dữ liệu (F04 đã bật) |
 | INT-03 | F03 xung đột lợi ích ⇒ dưới ngưỡng phiếu | 🔴 | 🟡 FIXME | ghi dữ liệu (tenant test) |
 | INT-04 | F03/F06 hai `type` không lẫn | 🟠 | 🟡 FIXME | ghi dữ liệu (tenant test) |
 | INT-05 | F03 hội đồng đạo đức song song (AND) | 🔴 | 🟡 FIXME | ghi dữ liệu (tenant test) |
-| INT-06 | On-behalf thư ký ủy quyền + audit | 🟠 | 🟡 FIXME | cần **F04** + UI audit |
+| INT-06 | On-behalf thư ký ủy quyền + audit | 🟠 | 🟡 FIXME | ghi dữ liệu (F04 đã bật) |
 | INT-07 | F02↔F01 đóng băng cấu hình kỳ | 🟠 | 🟡 FIXME | ghi dữ liệu (tenant test) |
 | INT-08 | F01 mã đề tài bất biến qua nộp lại | 🟠 | 🟡 FIXME | ghi dữ liệu (tenant test) |
 | INT-09 | F09/F11→P03→F08 giờ giảng idempotent/thu hồi | 🔴 | 🟡 FIXME | ghi dữ liệu + **F08** (phần hiển thị) |
@@ -46,6 +51,7 @@ updated: 2026-07-10
 | INT-13 | F06 làm lại có giới hạn `MAX_REDO_COUNT` | 🟠 | 🟡 FIXME | ghi dữ liệu (tenant test) |
 | INT-14 | Loại đề tài E4 khả dụng ở luồng tạo (VP-FEAT) | 🟠 | 🟢 AUTO | read-only |
 | INT-15 | Dấu vết audit (tab Lịch sử) trên đề tài | 🟠 | 🟢 AUTO | read-only |
+| INT-16 | F04 tiến độ/giao-khoán bật + bề mặt workflow P01 | 🔴 | 🟢 AUTO | read-only, không commit |
 
 ### Đã hiện thực & PASS trên môi trường dùng thử (`e2e/tests/06-integration.spec.ts`)
 - **INT-12a** — giảng viên `/projects` thấy ít đề tài hơn admin (phạm vi dữ liệu).
@@ -53,6 +59,10 @@ updated: 2026-07-10
 - **INT-12d** — giảng viên deep-link **UUID đề tài không thuộc mình** → "Bị từ chối" (chặn tầng dữ liệu / IDOR, không chỉ route).
 - **INT-14** — luồng tạo đề tài cung cấp đủ 4 loại: cấp cơ sở, **cấp trên (F09)**, **sinh viên (F10)**, **phục vụ sản xuất (F11)** ⇒ E4 bật.
 - **INT-15** — chi tiết đề tài có tab **Lịch sử** mở được (chứng cứ audit P02).
+- **INT-16a** — đề tài *Đang triển khai* có tab **Giao/Khoán** (*Hồ sơ Giao/Khoán*) + **Tiến độ** (*Báo cáo tiến độ*, nút *Tạo các kỳ*) ⇒ F04 bật.
+- **INT-16b** — mở **"Chuyển trạng thái"** thấy transition **"Gửi nghiệm thu"** (bề mặt workflow P01, cổng F04→F06); đóng dialog, không commit.
+- **INT-01**¹ (`e2e/tests/07-int01-gate.spec.ts`, chạy khi `RMS_MUTATE=1`) — tạo đề tài cấp cơ sở (nhãn `E2E-TEST-`), mở "Chuyển trạng thái": chỉ có **"Gửi duyệt"**, KHÔNG "Gửi nghiệm thu"/"Hoàn thành" ⇒ workflow P01 chặn nhảy bước (nền tảng cổng nghiệm thu); **tự xoá** đề tài ở `finally`.
+  - ¹ Chỉ phủ *gate thứ tự vòng đời*. Các sub-gate "thiếu sản phẩm cam kết" / "còn MISMATCHED" (INT-01+) cần đề tài đã duyệt & đang thực hiện → tenant test seed.
 
 ---
 
@@ -279,6 +289,11 @@ updated: 2026-07-10
 ### INT-11 — Nguyên tử workflow + audit (MANUAL, tầng DB/service)
 Không thao tác qua giao diện. Kiểm ở tầng service/DB: buộc một *effect/guard* lỗi giữa chừng khi chuyển
 trạng thái → xác nhận **rollback** hoàn toàn, **không** còn dòng `AuditLog`/`WorkflowHistory` mồ côi.
+
+> ⚠️ **"Hủy" trong panel "Chuyển trạng thái" là transition HỦY ĐỀ TÀI (→ CANCELLED), không phải nút đóng
+> dialog.** Đóng panel không-commit phải dùng **Escape**. Test tự động lỡ bấm "Hủy" sẽ chuyển đề tài sang
+> *Đã hủy* — mà đề tài đã hủy **mất nút Xoá** (không xoá được qua UI, kể cả admin) ⇒ không tự dọn được.
+> Đề nghị: xem lại nhãn nút "Hủy" (dễ nhầm "đóng" vs "hủy đề tài") + cân nhắc cho phép xoá/ẩn đề tài đã hủy.
 
 ## Truy vết
 - Luật bất biến & ánh xạ feature↔module: [AGENTS.md](../../AGENTS.md)

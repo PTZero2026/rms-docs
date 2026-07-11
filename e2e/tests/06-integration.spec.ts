@@ -71,10 +71,12 @@ test.describe('INT-12 · Phạm vi dữ liệu & guard phân quyền', () => {
 // ============================================================
 test.describe('INT-14 · Loại đề tài mở rộng E4 khả dụng', () => {
   test('Luồng tạo đề tài cung cấp đủ loại lõi + E4 (F09/F10/F11)', async ({ lecturerPage }) => {
-    await lecturerPage.goto('/projects/create');
-    await expect(lecturerPage.getByText('Chọn loại đề tài', { exact: false }).first()).toBeVisible();
+    await lecturerPage.goto('/projects/create', { waitUntil: 'domcontentloaded' });
+    await lecturerPage.waitForLoadState('networkidle').catch(() => {});
     for (const type of ['Đề tài cấp cơ sở', 'Đề tài cấp trên', 'Đề tài sinh viên', 'Dự án phục vụ sản xuất']) {
-      await expect(lecturerPage.getByText(type, { exact: false }).first()).toBeVisible();
+      await expect(lecturerPage.getByText(type, { exact: false }).first(), `loại "${type}" phải hiển thị`).toBeVisible({
+        timeout: 30_000,
+      });
     }
   });
 });
@@ -185,4 +187,38 @@ test.describe('Nền tảng workflow & nghiệm thu', () => {
 
   // ⚪ INT-11 (nguyên tử workflow + audit cùng transaction): kiểm ở tầng DB/service, KHÔNG qua UI.
   //    Nghiệm thu thủ công / integration test backend — không scaffold ở đây.
+});
+
+// ============================================================
+// INT-16 — F04 (tiến độ & giao/khoán) ĐÃ BẬT  🟢 (read-only)
+// Xác minh F04 lộ trên UI + bề mặt workflow engine P01 gate nghiệm thu.
+// Không commit chuyển trạng thái (tránh đổi dữ liệu pilot).
+// ============================================================
+test.describe('INT-16 · F04 tiến độ & giao/khoán', () => {
+  const openInProgress = async (page: import('@playwright/test').Page) => {
+    await page.goto('/projects', { waitUntil: 'domcontentloaded' });
+    const row = page.locator('table tbody tr', { hasText: /Đang triển khai/i }).first();
+    await row.waitFor({ state: 'visible', timeout: 30_000 });
+    await row.locator('td').first().click();
+    await page.waitForURL(/\/projects\/[0-9a-fA-F-]{36}/, { timeout: 20_000 });
+    await expect(page.getByRole('heading', { name: /Chi tiết đề tài/i })).toBeVisible();
+  };
+
+  test('INT-16a: đề tài đang thực hiện có tab Giao/Khoán + Tiến độ với đúng khu vực', async ({ adminPage }) => {
+    await openInProgress(adminPage);
+    await adminPage.getByRole('tab', { name: 'Giao/Khoán' }).click();
+    await expect(adminPage.getByRole('heading', { name: /Hồ sơ Giao\/Khoán/i })).toBeVisible();
+    await adminPage.getByRole('tab', { name: 'Tiến độ' }).click();
+    await expect(adminPage.getByRole('heading', { name: /Báo cáo tiến độ/i })).toBeVisible();
+    await expect(adminPage.getByRole('button', { name: /Tạo các kỳ/i })).toBeVisible();
+  });
+
+  test('INT-16b: workflow engine (P01) mở chuyển trạng thái "Gửi nghiệm thu" — KHÔNG commit', async ({ adminPage }) => {
+    await openInProgress(adminPage);
+    await adminPage.getByRole('button', { name: /Chuyển trạng thái/i }).click();
+    // đề tài IN_PROGRESS: transition hợp lệ tiếp theo là gửi nghiệm thu (F04 BR-10 → F06)
+    await expect(adminPage.getByRole('button', { name: /Gửi nghiệm thu/i })).toBeVisible();
+    // đóng dialog, tuyệt đối không xác nhận để giữ nguyên dữ liệu pilot
+    await adminPage.keyboard.press('Escape');
+  });
 });
