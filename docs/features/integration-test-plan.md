@@ -56,7 +56,7 @@ updated: 2026-07-10
 ### Đã hiện thực & PASS trên môi trường dùng thử (`e2e/tests/06-integration.spec.ts`)
 - **INT-12a** — giảng viên `/projects` thấy ít đề tài hơn admin (phạm vi dữ liệu).
 - **INT-12b** — giảng viên deep-link `/users`, `/councils`, `/users/author-requests` → "Không đủ quyền truy cập".
-- **INT-12d** — giảng viên deep-link **UUID đề tài không thuộc mình** → "Bị từ chối" (chặn tầng dữ liệu / IDOR, không chỉ route).
+- **INT-12d** — giảng viên deep-link **UUID đề tài không thuộc mình** → "Không có quyền xem đề tài này" (chặn tầng dữ liệu / IDOR, không chỉ route).
 - **INT-14** — luồng tạo đề tài cung cấp đủ 4 loại: cấp cơ sở, **cấp trên (F09)**, **sinh viên (F10)**, **phục vụ sản xuất (F11)** ⇒ E4 bật.
 - **INT-15** — chi tiết đề tài có tab **Lịch sử** mở được (chứng cứ audit P02).
 - **INT-16a** — đề tài *Đang triển khai* có tab **Giao/Khoán** (*Hồ sơ Giao/Khoán*) + **Tiến độ** (*Báo cáo tiến độ*, nút *Tạo các kỳ*) ⇒ F04 bật.

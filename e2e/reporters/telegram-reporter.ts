@@ -47,14 +47,23 @@ export default class TelegramReporter implements Reporter {
     }
     try {
       const passed = this.total - fails.length;
-      const header =
+      const head =
         `🔴 <b>RMS E2E — Pilot ĐH Thủy Lợi: ${fails.length} test LỖI</b>\n` +
         `Kết quả: <b>${passed}/${this.total}</b> pass · trạng thái <code>${result.status}</code>\n` +
-        `Môi trường: <code>${esc(process.env.RMS_BASE_URL || 'tl-nckh.vnest.vn')}</code>\n\n` +
-        fails
-          .map((f, i) => `${i + 1}. <b>${esc(trunc(f.title, 160))}</b>\n<pre>${esc(trunc(f.error, 500))}</pre>`)
-          .join('\n');
-      await this.sendMessage(trunc(header, 4000));
+        `Môi trường: <code>${esc(process.env.RMS_BASE_URL || 'tl-nckh.vnest.vn')}</code>\n\n`;
+      // Ghép từng block NGUYÊN VẸN theo ngân sách — không cắt giữa thẻ <pre> (Telegram HTML 4096 ký tự).
+      const LIMIT = 3800;
+      let body = '';
+      let shown = 0;
+      for (let i = 0; i < fails.length; i++) {
+        const f = fails[i];
+        const block = `${i + 1}. <b>${esc(trunc(f.title, 160))}</b>\n<pre>${esc(trunc(f.error, 400))}</pre>\n`;
+        if (head.length + body.length + block.length > LIMIT) break;
+        body += block;
+        shown++;
+      }
+      if (shown < fails.length) body += `… và ${fails.length - shown} lỗi khác (xem báo cáo HTML).`;
+      await this.sendMessage(head + body);
 
       for (const f of fails) {
         if (!f.videoPath) continue;

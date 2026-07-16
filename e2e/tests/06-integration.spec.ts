@@ -46,21 +46,26 @@ test.describe('INT-12 · Phạm vi dữ liệu & guard phân quyền', () => {
     await expect(lecturerPage.getByText(DENIED_TEXT, { exact: false })).toBeVisible();
   });
 
-  test('INT-12d: IDOR — giảng viên mở chi tiết đề tài không thuộc mình → "Bị từ chối"', async ({
+  test('INT-12d: IDOR — giảng viên mở chi tiết đề tài không thuộc mình → bị chặn', async ({
     adminPage,
     lecturerPage,
   }) => {
     // Lấy UUID đề tài thật từ danh sách của admin (không hardcode)
-    await adminPage.goto('/projects');
-    await adminPage.locator('table tbody tr').first().waitFor({ state: 'visible' });
+    await adminPage.goto('/projects', { waitUntil: 'domcontentloaded' });
+    await adminPage.locator('table tbody tr').first().waitFor({ state: 'visible', timeout: 30_000 });
     await adminPage.locator('table tbody tr').first().locator('td').first().click();
     await adminPage.waitForURL(/\/projects\/[0-9a-fA-F-]{36}/, { timeout: 20_000 });
     const detailPath = new URL(adminPage.url()).pathname;
     expect(detailPath).toMatch(/\/projects\/[0-9a-fA-F-]{36}/);
 
-    // Giảng viên deep-link đúng đề tài đó → phải bị chặn ở tầng DỮ LIỆU (không chỉ route)
-    await lecturerPage.goto(detailPath);
-    await expect(lecturerPage.getByText(/Bị từ chối/i).first()).toBeVisible();
+    // Giảng viên deep-link đúng đề tài đó → phải bị chặn ở tầng DỮ LIỆU (không chỉ route).
+    // Giảng viên không sở hữu đề tài của admin ⇒ backend chặn: "Không có quyền xem đề tài này"
+    // + trang "không tìm thấy" (không render nội dung đề tài).
+    await lecturerPage.goto(detailPath, { waitUntil: 'networkidle' });
+    await lecturerPage.waitForTimeout(1000);
+    await expect(
+      lecturerPage.getByText(/Không có quyền xem đề tài|không tìm thấy trang/i).first(),
+    ).toBeVisible({ timeout: 20_000 });
   });
 
   // ⚪ MANUAL: cách ly 2 tenant (RLS app.current_tenant) — cần tài khoản tenant thứ hai.

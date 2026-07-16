@@ -14,6 +14,7 @@ test.describe('E4 / P03. Quy đổi giờ giảng bật cho tenant', () => {
     await expect(adminPage.getByRole('heading', { name: /Quy đổi giờ giảng/i })).toBeVisible();
 
     // Admin kiểm tra cấu trúc bảng quy đổi (header thật của trang Lịch sử tính giờ)
+    await adminPage.locator('table th').first().waitFor({ state: 'visible', timeout: 20_000 });
     const headers = adminPage.locator('table th');
     const headerTexts = await headers.allTextContents();
     const expectedHeaders = [/giảng viên/i, /loại hoạt động/i, /giờ quy đổi/i, /trạng thái/i, /thời gian/i];
@@ -23,11 +24,12 @@ test.describe('E4 / P03. Quy đổi giờ giảng bật cho tenant', () => {
   });
 
   test('Giảng viên thấy trang giờ giảng của mình (nguồn nuôi lý lịch F08) và không có quyền cấu hình', async ({ lecturerPage }) => {
-    await lecturerPage.goto('/teaching-hours');
+    await lecturerPage.goto('/teaching-hours', { waitUntil: 'networkidle' });
     await expect(lecturerPage.getByRole('heading', { name: /Quy đổi giờ giảng/i })).toBeVisible();
 
     // Giảng viên thấy bảng dữ liệu giờ giảng cá nhân
     await expect(lecturerPage.locator('table')).toBeVisible();
+    await lecturerPage.locator('table th').first().waitFor({ state: 'visible', timeout: 20_000 });
     const headers = lecturerPage.locator('table th');
     const headerTexts = await headers.allTextContents();
     expect(headerTexts.length).toBeGreaterThan(0);
