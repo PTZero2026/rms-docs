@@ -13,12 +13,12 @@ test.describe('E4 / P03. Quy đổi giờ giảng bật cho tenant', () => {
     await expect(adminPage).toHaveTitle(/tính giờ|quy đổi/i);
     await expect(adminPage.getByRole('heading', { name: /Quy đổi giờ giảng/i })).toBeVisible();
 
-    // Admin kiểm tra cấu trúc bảng quy đổi
+    // Admin kiểm tra cấu trúc bảng quy đổi (header thật của trang Lịch sử tính giờ)
     const headers = adminPage.locator('table th');
     const headerTexts = await headers.allTextContents();
-    const expectedHeaders = [/số giờ/i, /vai trò/i, /nguồn/i, /ngày/i];
+    const expectedHeaders = [/giảng viên/i, /loại hoạt động/i, /giờ quy đổi/i, /trạng thái/i, /thời gian/i];
     for (const exp of expectedHeaders) {
-      expect(headerTexts.some(h => exp.test(h))).toBeTruthy();
+      expect(headerTexts.some((h) => exp.test(h)), `thiếu cột khớp ${exp}`).toBeTruthy();
     }
   });
 

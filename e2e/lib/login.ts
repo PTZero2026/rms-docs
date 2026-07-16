@@ -26,18 +26,20 @@ export async function login(page: Page, account: Account): Promise<void> {
     await clickKcSubmit(page);
   }
 
-  // Bước 3: nhập OTP (bắt buộc phải xuất hiện)
+  // Bước 3: OTP email — TÙY realm. thuyloi-tenant yêu cầu OTP; bka-uni đăng nhập thẳng.
   const otp = page.locator('#emailCode');
-  await expect(otp, 'phải có bước nhập OTP email').toBeVisible({ timeout: 20_000 });
-  await otp.fill(OTP_CODE);
-  await clickKcSubmit(page);
+  const needsOtp = await otp.isVisible({ timeout: 6_000 }).catch(() => false);
+  if (needsOtp) {
+    await otp.fill(OTP_CODE);
+    await clickKcSubmit(page);
+  }
 
-  // Bước 4: quay lại app, không còn ở /signin
-  await page.waitForURL((url) => url.host.includes('tl-nckh.vnest.vn') && !url.pathname.startsWith('/signin'), {
+  // Bước 4: quay lại app (bất kỳ tenant), không còn ở /signin hay Keycloak
+  await page.waitForURL((url) => !/keycloak/i.test(url.host) && !url.pathname.startsWith('/signin'), {
     timeout: 30_000,
   });
   await page.waitForLoadState('networkidle').catch(() => {});
-  await expect(page.getByRole('heading', { name: /Xin chào/i })).toBeVisible({ timeout: 20_000 });
+  await expect(page).toHaveTitle(/Tổng quan|Hệ thống quản lý nghiên cứu khoa học/i, { timeout: 20_000 });
 }
 
 async function clickKcSubmit(page: Page): Promise<void> {
