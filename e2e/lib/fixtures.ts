@@ -1,6 +1,6 @@
 import { test as base, type Page, type BrowserContext } from '@playwright/test';
 import path from 'node:path';
-import { ACCOUNTS } from './accounts';
+import { ACCOUNTS, ACCOUNTS_BKA, BRANDS } from './accounts';
 
 const REC_ALL = !!process.env.RMS_VIDEO;
 const VIDEO_DIR = 'videos';
@@ -40,12 +40,25 @@ async function makeRolePage(
   await video.delete().catch(() => {}); // dọn raw trong video-tmp
 }
 
-export const test = base.extend<{ adminPage: Page; lecturerPage: Page }>({
+export const test = base.extend<{
+  adminPage: Page;
+  lecturerPage: Page;
+  bkaAuthorPage: Page;
+  bkaAdminPage: Page;
+}>({
+  // --- Thủy Lợi (baseURL từ config, mặc định) ---
   adminPage: async ({ browser, baseURL }, use, testInfo) => {
     await makeRolePage(browser, baseURL, ACCOUNTS.admin.storageState, 'admin', testInfo, use);
   },
   lecturerPage: async ({ browser, baseURL }, use, testInfo) => {
     await makeRolePage(browser, baseURL, ACCOUNTS.giangvien.storageState, 'giangvien', testInfo, use);
+  },
+  // --- BKA (tenant test, GHI DỮ LIỆU an toàn — không đụng pilot Thủy Lợi) ---
+  bkaAuthorPage: async ({ browser }, use, testInfo) => {
+    await makeRolePage(browser, BRANDS.bka.baseUrl, ACCOUNTS_BKA.author.storageState, 'bka-author', testInfo, use);
+  },
+  bkaAdminPage: async ({ browser }, use, testInfo) => {
+    await makeRolePage(browser, BRANDS.bka.baseUrl, ACCOUNTS_BKA.admin.storageState, 'bka-admin', testInfo, use);
   },
 });
 

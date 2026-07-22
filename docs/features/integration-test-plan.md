@@ -19,8 +19,14 @@ updated: 2026-07-10
 | 🟡 FIXME | Đã scaffold `test.fixme()` — chờ feature dựng xong / cần tạo dữ liệu có kiểm soát |
 | ⚪ MANUAL | Chỉ nghiệm thu thủ công (transaction/atomicity, RLS đa tenant, số liệu công thức PO chốt) |
 
-> Nguyên tắc: **không mutate dữ liệu pilot** dùng chung với Trường trong test tự động. Các TC cần
-> tạo/sửa/duyệt để dữ liệu → giữ ở FIXME với bước mô tả đầy đủ, chạy trên môi trường test riêng.
+> Nguyên tắc: **không mutate dữ liệu pilot Thủy Lợi** (dùng chung với Trường). Các TC cần ghi dữ liệu
+> chạy trên **tenant test BKA** (`bka-uni`, `nckh.vnest.vn`) — không đụng pilot.
+>
+> **Tenant ghi dữ liệu = BKA.** Fixtures `bkaAuthorPage` / `bkaAdminPage` (baseURL BKA + tài khoản
+> `bka.author` / `bka.admin`). Đã kiểm: BKA hỗ trợ đủ luồng tạo đề tài → chuyển trạng thái → **tự xoá**
+> (nút trang "Xoá" → modal "Xóa"), self-clean sạch. INT-01 gate đã chạy thật trên BKA (mặc định, không
+> cần cờ). Các TC nhóm B còn lại mở khoá theo cách này: viết theo bước đã ghi, dùng `bkaAuthorPage` +
+> helper `createBasicProject`/`deleteProject` (`lib/project-helpers.ts`).
 
 > **Phạm vi hiện thực (chỉ đạo 2026-07-10):** không chờ **F04** (tiến độ) và **F08** (lý lịch);
 > triển khai các luồng đa vai trò khả thi ngay. Đã hiện thực AUTO nhóm read-only đa vai trò
@@ -35,8 +41,8 @@ updated: 2026-07-10
 ## Ma trận ưu tiên
 | TC | Luồng | Rủi ro | Trạng thái | Ghi chú blocker |
 |---|---|---|---|---|
-| INT-01 | Cổng nghiệm thu — gate vòng đời (P01) | 🔴 | 🟢 AUTO¹ | tạo→gate→tự xoá (`RMS_MUTATE=1`) |
-| INT-01+ | F04→F07→F06→F05 gate sản phẩm/MISMATCHED đầy đủ | 🔴 | 🟡 FIXME | cần lifecycle duyệt (tenant test) |
+| INT-01 | Cổng nghiệm thu — gate vòng đời (P01) | 🔴 | 🟢 AUTO¹ | chạy trên **BKA**, tạo→gate→tự xoá |
+| INT-01+ | F04→F07→F06→F05 gate sản phẩm/MISMATCHED đầy đủ | 🔴 | 🟡 FIXME | cần lifecycle duyệt (chạy trên **BKA**) |
 | INT-02 | F04→F05 trần khoán + phí quản lý | 🟠 | 🟡 FIXME | ghi dữ liệu (F04 đã bật) |
 | INT-03 | F03 xung đột lợi ích ⇒ dưới ngưỡng phiếu | 🔴 | 🟡 FIXME | ghi dữ liệu (tenant test) |
 | INT-04 | F03/F06 hai `type` không lẫn | 🟠 | 🟡 FIXME | ghi dữ liệu (tenant test) |
@@ -61,6 +67,15 @@ updated: 2026-07-10
 - **INT-15** — chi tiết đề tài có tab **Lịch sử** mở được (chứng cứ audit P02).
 - **INT-16a** — đề tài *Đang triển khai* có tab **Giao/Khoán** (*Hồ sơ Giao/Khoán*) + **Tiến độ** (*Báo cáo tiến độ*, nút *Tạo các kỳ*) ⇒ F04 bật.
 - **INT-16b** — mở **"Chuyển trạng thái"** thấy transition **"Gửi nghiệm thu"** (bề mặt workflow P01, cổng F04→F06); đóng dialog, không commit.
+- **INT-05s** (BKA, read-only) — form "Tạo hội đồng" có cả **Hội đồng khoa học** + **Hội đồng đạo đức** ⇒ hệ thống hỗ trợ hội đồng song song (nền của điều kiện AND — ADR-0003).
+- **INT-07s** (BKA, read-only) — form "Tạo đợt đăng ký" đủ trường cấu hình (Mã đợt, Loại đề tài, ngày Mở/Đóng, Thành viên min/max) — cấu hình sẽ bị đóng băng sau khi có đề tài nộp.
+
+> **Nhóm B (INT-02..INT-13):** hạ tầng ghi dữ liệu đã sẵn trên **BKA** (`bkaAuthorPage`/`bkaAdminPage` +
+> `lib/project-helpers.ts`). Đã phủ: INT-01 (gate, chạy thật) + INT-05s/07s (bề mặt cấu hình, read-only).
+> Phần **hành vi stateful đầy đủ** (freeze sau submit, xung đột-dưới-ngưỡng, kết luận AND, idempotent
+> giờ giảng, redo-limit) giữ `test.fixme` trong `10-groupB-surface-bka.spec.ts` — mở khoá bằng cách seed
+> dữ liệu (đề tài SUBMITTED/APPROVED, hội đồng, chấm điểm) trên BKA; lưu ý các state này KHÔNG xoá được
+> qua UI nên cần tenant/DB resettable.
 - **INT-01**¹ (`e2e/tests/07-int01-gate.spec.ts`, chạy khi `RMS_MUTATE=1`) — tạo đề tài cấp cơ sở (nhãn `E2E-TEST-`), mở "Chuyển trạng thái": chỉ có **"Gửi duyệt"**, KHÔNG "Gửi nghiệm thu"/"Hoàn thành" ⇒ workflow P01 chặn nhảy bước (nền tảng cổng nghiệm thu); **tự xoá** đề tài ở `finally`.
   - ¹ Chỉ phủ *gate thứ tự vòng đời*. Các sub-gate "thiếu sản phẩm cam kết" / "còn MISMATCHED" (INT-01+) cần đề tài đã duyệt & đang thực hiện → tenant test seed.
 
