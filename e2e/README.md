@@ -54,8 +54,10 @@ npm test                  # fail -> gửi; pass -> không gửi
 
 - Env: `TELEGRAM_BOT_TOKEN` (từ @BotFather), `TELEGRAM_CHAT_ID` (số âm cho group).
   Nạp qua `dotenv` từ `.env` (đã gitignore) hoặc env sẵn của shell/CI.
-- Gửi: 1 tin tóm tắt (số test lỗi + thông điệp lỗi) rồi mỗi lỗi 1 video.
+- Gửi: 1 tin tổng kết (số test lỗi) → với MỖI test lỗi gửi **message mô tả các bước đã chạy**
+  (đánh dấu ✅/❌ từng bước, kèm thông điệp lỗi) rồi **video** của test đó.
   Video `.webm` thử `sendVideo`, Telegram từ chối codec thì fallback `sendDocument`.
+- Xem trước message KHÔNG gửi thật: `TELEGRAM_DRY_RUN=1` (in ra console thay vì gọi API).
 - Video khi fail luôn được ghi (kể cả không đặt `RMS_VIDEO`), attach vào test để reporter đính kèm.
 - Thiếu env / lỗi mạng: reporter chỉ cảnh báo, **không** làm hỏng lần chạy test.
 
