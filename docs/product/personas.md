@@ -1,7 +1,7 @@
 ---
 title: "Personas — RMS"
-status: Approved
-updated: 2026-06-11
+status: Review
+updated: 2026-11-18
 ---
 
 # Personas
@@ -9,6 +9,16 @@ updated: 2026-06-11
 7 nhóm người dùng, chia theo hai mặt hệ thống: **FE** (Portal nhà khoa học — gồm cả khu vực
 nội dung công khai dành cho **Khách**) và **BO** (BackOffice quản trị). Bảng tổng quan trước,
 mô tả chi tiết bên dưới.
+
+## Người mua và người duyệt trong pilot
+
+| Đơn vị | Người chịu nghiệp vụ | Use case và người cần tham gia |
+|---|---|---|
+| Đại học | Trưởng phòng KHCN | Chuyên viên chốt số đề tài một kỳ, chủ nhiệm đối chiếu lần nộp lại, trưởng phòng ký số liệu. CNTT duyệt phạm vi tài khoản. |
+| Bệnh viện | Phòng nghiên cứu và thư ký hội đồng đạo đức | Theo dấu phiên bản đề cương và kết quả thẩm định. Chủ dữ liệu xác nhận tài liệu hành chính dùng thử và ai được đọc. |
+| Sở KH&CN | Đầu mối quản lý nhiệm vụ | Tổng hợp nhiệm vụ theo đơn vị chủ trì. Lãnh đạo xác nhận phạm vi thống kê, chuyên viên đối chiếu mẫu báo cáo. |
+
+Trên điện thoại, chủ nhiệm mở việc từ B06 rồi sang màn hình hồ sơ. Khi dùng gợi ý AI, nhà nghiên cứu đối chiếu trích đoạn và quyết định dùng hay bỏ. Vai trò mua hàng hoặc tham gia review chỉ mô tả trách nhiệm dự án. Quyền dữ liệu vẫn theo ma trận của từng feature.
 
 ## Tổng quan
 
@@ -95,5 +105,6 @@ mô tả chi tiết bên dưới.
 
 | Ngày | Trạng thái | Thay đổi |
 |------|------------|----------|
+| 2026-11-18 | Review | Thêm người mua, người duyệt, tác vụ trên điện thoại và trách nhiệm khi dùng gợi ý AI. |
 | 2026-06-11 | Approved | Thêm persona *Thư ký đề tài* và *Khách*; cập nhật câu mở đầu (5 → 7 nhóm) và bảng tổng quan; duyệt & chuyển Draft → Approved. |
 | 2026-06-01 | Draft | Bản thảo đầu tiên. |

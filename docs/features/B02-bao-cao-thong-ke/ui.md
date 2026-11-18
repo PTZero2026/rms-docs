@@ -1,44 +1,17 @@
 ---
-title: "Báo cáo & thống kê — Giao diện (một web app, phân quyền)"
+title: "Báo cáo kỳ — giao diện"
 spec: "./spec.md"
-owner: "<BA>"
-status: Draft
-updated: 2026-06-09
+owner: "BA/UX"
+status: Review
+updated: 2026-11-18
 ---
 
-# Báo cáo & thống kê — Giao diện
+# Xem và đối chiếu số liệu một kỳ
 
-> Một web app duy nhất; màn hình & hành động hiển thị **theo phân quyền (RBAC)** — xem
-> [ADR-0009](../../architecture/decisions/0009-hop-nhat-mot-web-phan-quyen.md). Chỉ mô tả phần
-> **đặc thù giao diện**. Luật nghiệp vụ → xem `./spec.md`.
+| Màn hình | Người thao tác | Hành vi và tiêu chí |
+|---|---|---|
+| B02-01 · Chọn kỳ, đơn vị | Trưởng phòng, chuyên viên có quyền báo cáo | Gợi ý đơn vị trong quyền. Kỳ rỗng hiện 0 cùng thời điểm trích xuất. AC-01, AC-02 |
+| B02-02 · Tổng và danh sách | Người có quyền xem | Bấm một trạng thái để xem các mã đã đếm tại cùng thời điểm, giữ bộ lọc khi quay về. AC-01, AC-03 |
+| B02-03 · Xuất đối chứng | Người có quyền xuất trong phạm vi kỳ | Ghi thời điểm và phạm vi trên tệp. Khi mất quyền, dừng và yêu cầu tạo lại. AC-02, AC-03 |
 
-## 1. Vai trò sử dụng
-
-Vai trò nào (theo quyền trong cùng web app) dùng feature này.
-
-## 2. Phân quyền (Permission matrix)
-
-| Hành động | Vai trò A | Vai trò B | Vai trò C |
-|-----------|:---------:|:---------:|:---------:|
-| Xem       | ✓ | ✓ | ✓ |
-| Tạo/sửa   | ✓ | ✓ | – |
-| Duyệt     | ✓ | – | – |
-| Xóa       | ✓ | – | – |
-
-## 3. Danh sách màn hình
-
-| Mã MH | Tên màn hình | Mục đích |
-|-------|--------------|----------|
-| BO-01 | ...          | ...      |
-
-## 4. Mô tả màn hình & thao tác
-
-Bộ lọc, bảng dữ liệu, hành động hàng loạt, quy trình duyệt nhiều cấp (nếu có).
-
-## 5. Audit & nhật ký
-
-Hành động nào cần ghi log, ai xem được.
-
-## 6. Liên kết AC
-
-Map màn hình ↔ AC trong `spec.md`.
+Phòng KHCN chọn tên cột và định dạng sau khi thử với mẫu thực. Nhấn một dòng điều hướng tới feature sở hữu để đọc hồ sơ theo quyền tại thời điểm mở. [Nguồn nghiệp vụ](spec.md)

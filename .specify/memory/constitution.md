@@ -1,3 +1,4 @@
+<!-- Sync Impact Report · 1.1.0 → 1.2.0. Bổ sung VI–VII, quy trình bốn bước và review khuyến nghị. Giữ I–V; bổ sung B06 vào bảng chiếu. Không có mục giữ chỗ. -->
 # Hiến pháp RMS — Hệ thống Quản lý Nghiên cứu Khoa học
 
 <!--
@@ -17,7 +18,7 @@ việc sinh/sửa code phải bám acceptance criteria; không hiện thực th�
 không đổi luật nghiệp vụ trong code mà chưa cập nhật spec. Repo ưu tiên **docs trước, code sau**.
 
 > **Repo thuần tài liệu (docs-only)** — code chạy được nằm ở repo riêng ([ADR-0011](../../docs/architecture/decisions/0011-tach-code-quay-ve-docs-only.md),
-> thay thế ADR-0006). Nguyên tắc II–V dưới đây là **luật thiết kế hệ thống đích** mà spec/design phải tôn trọng.
+> thay thế ADR-0006). Nguyên tắc II–VII dưới đây là **luật thiết kế hệ thống đích** mà spec/design phải tôn trọng.
 
 ### II. Một web app, phân quyền ở backend (NON-NEGOTIABLE)
 Mọi API phải có kiểm tra authorization ở backend (controller/service) kèm data scoping theo
@@ -36,6 +37,12 @@ không tự gõ type ở FE/BE khiến hai phía lệch nhau.
 Mọi hành động đổi trạng thái nghiệp vụ phải ghi `AuditLog`. Log là append-only —
 không xóa, không sửa. Quyền tải/xem tệp đính kèm bám theo quyền của thực thể nguồn.
 
+### VI. Web responsive và kênh dùng chung
+Web dùng một ứng dụng theo vai trò. B06 chỉ đọc và mở hồ sơ ở module nguồn. Đánh dấu lát cắt bằng web/mobile/shared. Đề xuất push, offline hoặc native cần hai đơn vị xác nhận cùng nhu cầu và chủ quản dữ liệu trên thiết bị.
+
+### VII. AI có căn cứ và người quyết định
+Kiểm tra tenant, quyền và quyền sử dụng tài liệu trước khi truy xuất. Ghi nguồn, phiên bản mô hình/mẫu lệnh và quyết định dùng/bỏ. Người có thẩm quyền chịu trách nhiệm mọi thay đổi nghiệp vụ, kể cả khi có gợi ý của AI. Duy trì luồng thủ công khi thiếu căn cứ hoặc dịch vụ lỗi. Chỉ bật E4 và AI cho tenant đã chọn.
+
 ## Ràng buộc dữ liệu & định dạng
 
 - Tiền tệ: **VND**.
@@ -44,7 +51,7 @@ không xóa, không sửa. Quyền tải/xem tệp đính kèm bám theo quyền
 - Ánh xạ feature ↔ module **hệ thống đích** là BẮT BUỘC giữ nhất quán (xem AGENTS.md §3):
   `F01→proposal · F02→call · F03→review · F04→progress · F05→budget · F06→acceptance ·
   F07→product · F08→profile · B01→catalog · B02→report · B03→iam · B04→notification ·
-  P01→workflow · P02→audit`. Mở rộng E4 (ĐH Thủy Lợi, Draft): `F09→upper-project ·
+  B06→home · P01→workflow · P02→audit`. Mở rộng E4 (ĐH Thủy Lợi, Draft): `F09→upper-project ·
   F10→student-project · F11→applied-project · F12→activity · P03→teaching-hour`.
 
 ## Quy trình Spec-Driven (Spec Kit)
@@ -52,10 +59,9 @@ không xóa, không sửa. Quyền tải/xem tệp đính kèm bám theo quyền
 Vòng làm việc cho một feature mới hoặc thay đổi lớn:
 
 1. `/speckit-constitution` — soát/đồng bộ hiến pháp này với AGENTS.md.
-2. `/speckit-specify` — sinh đặc tả ở `specs/NNN-slug/spec.md` (xưởng làm việc của Spec Kit).
-3. `/speckit-clarify` *(tùy chọn)* — hỏi để khử mơ hồ trước khi lập kế hoạch.
-4. `/speckit-plan` → `/speckit-tasks` → `/speckit-analyze` *(tùy chọn)* — chỉ dùng khi
-   bước sang giai đoạn thực thi code (hiện dự án ở pha docs-first, dùng khi cần).
+2. `/speckit-specify` — sinh một đặc tả mỗi US ở `specs/NNN-<web|mobile|shared>-slug/spec.md` (xưởng làm việc của Spec Kit).
+3. `/speckit-clarify` — làm rõ từng lát. Khi được giao đề xuất, ghi khuyến nghị, use case, reviewer và trạng thái chờ duyệt.
+4. `/speckit-plan` → `/speckit-tasks` → `/speckit-analyze` *(tùy chọn)* — lập kế hoạch và phân rã task ngay trong repo tài liệu. Chạy implement ở repo code.
 5. Khi nội dung đã chín, **chắt lọc** spec từ `specs/NNN-*/` về `docs/features/<feature>/`
    (bản nghiệp vụ đã chốt, theo quy ước `spec.md`/`design.md`/`ui.md`/`test-plan.md`).
 
@@ -75,6 +81,7 @@ theo vòng đời. Ba lớp **Epic → Feature → Spec** không thay thế nhau
 Hiến pháp này thể hiện các luật bất biến của repo; khi xung đột, **luật bất biến thắng**.
 Nguồn canonical là [AGENTS.md](../../AGENTS.md) — mọi thay đổi nguyên tắc phải sửa ở đó trước,
 kèm cập nhật ADR tương ứng trong `docs/architecture/decisions/`, rồi đồng bộ file này.
+Tài liệu thay toàn bộ chuyển vào `ref/`, có chỉ dẫn sang bản mới. PO/BA duyệt BR/AC trước khi chắt lọc. Tăng MAJOR khi bỏ hoặc đổi nghĩa luật bất biến, MINOR khi thêm nguyên tắc, PATCH khi làm rõ câu chữ.
 Mọi PR/review phải kiểm chứng tuân thủ; độ phức tạp phát sinh phải được giải trình.
 
-**Version**: 1.1.0 | **Ratified**: 2026-06-12 | **Last Amended**: 2026-06-24
+**Version**: 1.2.0 | **Ratified**: 2026-06-12 | **Last Amended**: 2026-11-18

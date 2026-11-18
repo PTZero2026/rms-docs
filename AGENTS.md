@@ -34,6 +34,7 @@ docs-as-code. Chỉ chứa tài liệu nghiệp vụ & kiến trúc trong `docs/
 `P01→workflow (kernel dùng chung) · P02→audit` — **Platform spec** (năng lực nền do Kiến trúc/DEV sở hữu, không phải feature CRUD; xuyên suốt mọi feature).
 **Năng lực mở rộng E4 (optional, bật/tắt per-tenant — [ADR-0012](docs/architecture/decisions/0012-ranh-gioi-loi-vs-cau-hinh-tenant.md); Draft):** `F09→upper-project · F10→student-project · F11→applied-project · F12→activity` ·
 `P03→teaching-hour` (Platform xuyên suốt — quy đổi giờ giảng, nguồn nuôi F08). Xem [E4](docs/epics/E4-hoat-dong-mo-rong.md).
+Quy ước kênh và ranh giới AI có căn cứ trong [ADR-0014](docs/architecture/decisions/0014-kenh-san-pham-va-ke-hoach-invest.md).
 Nguồn: [overview.md §3](docs/architecture/overview.md).
 
 ## 4. Luật bất biến (thiết kế hệ thống đích — mọi spec/design phải tôn trọng)
@@ -43,6 +44,9 @@ Nguồn: [overview.md §3](docs/architecture/overview.md).
 4. **Audit**: mọi hành động đổi trạng thái nghiệp vụ ghi `AuditLog` (append-only).
 5. Tiền VND, ngày `dd/MM/yyyy`, giờ hiển thị Asia/Ho_Chi_Minh, lưu UTC.
 
+6. **Kênh sản phẩm.** Web responsive dùng một ứng dụng. Tiền tố `web-` cho tác vụ trên web, `mobile-` cho trải nghiệm đặc thù màn hình nhỏ, `shared-` cho luật/dịch vụ dùng lại. B06 chỉ đọc, mọi thao tác đi tới feature sở hữu. PO chỉ đưa push/offline/native vào kế hoạch sau khi hai đơn vị xác nhận cùng nhu cầu và phương án quản lý dữ liệu thiết bị.
+7. **Trợ lý AI.** Chỉ xử lý nguồn được phép trong phạm vi người dùng/tenant, lưu căn cứ và phiên bản, để người dùng quyết định dùng/bỏ. Mọi thay đổi nghiệp vụ vẫn qua thẩm quyền của con người và dịch vụ miền. Khi thiếu nguồn hoặc dịch vụ gián đoạn, tác vụ thủ công vẫn thực hiện được. E4 và AI phải được bật theo tenant.
+
 ## 5. Repo này không build/chạy
 Đây là repo **thuần tài liệu** — không có lệnh `install`/`dev`/`build`/`test`. "Kiểm thử" tài liệu là rà
 tính nhất quán (xem §6). Lệnh build/test của hệ thống thật thuộc **repo code** (chốt ở ADR khi bước sang thực thi).
@@ -50,24 +54,25 @@ tính nhất quán (xem §6). Lệnh build/test của hệ thống thật thuộ
 ## 6. Định nghĩa hoàn thành (DoD) cho tài liệu
 - `spec.md` có Business rules (`BR-xx`) và Acceptance criteria (`AC-xx`) rõ ràng; mỗi AC có ≥1 test case trong `test-plan.md`.
 - Màn hình trong `ui.md` map được về AC; `design.md` có bảng truy vết `BR/AC → cách hiện thực`.
-- Không phá ánh xạ feature↔module (§3) và 5 luật bất biến (§4); thuật ngữ/trạng thái khớp tài liệu dùng chung.
+- Không phá ánh xạ feature↔module (§3) và các luật bất biến (§4); thuật ngữ/trạng thái khớp tài liệu dùng chung.
 - `status` và `updated` ở frontmatter đã cập nhật; thay đổi luật trong `spec.md` cần reviewer là PO/BA.
 
 ## 7. Quy trình Spec-Driven (GitHub Spec Kit)
 Repo dùng **Spec Kit** (chạy trong Claude Code, Antigravity, Cursor, Codex, không cần API) qua các skill `/speckit-*`:
-`constitution → specify → clarify(tùy chọn) → plan → tasks → analyze(tùy chọn) → converge(tùy chọn) → implement`.
+`constitution → specify → clarify → plan → tasks → analyze(tùy chọn) → converge(tùy chọn) → implement`.
 - **Hiến pháp**: `.specify/memory/constitution.md` là bản *chiếu* của file này (§4 + §6); khi đổi
   luật, sửa AGENTS.md trước rồi đồng bộ (chạy `/speckit-constitution`). AGENTS.md là canonical.
 - **Hai nơi chứa spec, không thay thế nhau**:
   - `specs/NNN-slug/` — *xưởng* SDD: nơi `/speckit-*` sinh `spec.md`, `plan.md`, `tasks.md`,
-    `research.md`… (đánh số tuần tự, kèm nhánh git). Artifact trung gian của quy trình.
+    `research.md`… (đánh số tuần tự, gắn tiền tố kênh; chọn lát bằng SPECIFY_FEATURE_DIRECTORY). Artifact trung gian của quy trình.
   - `docs/features/<feature>/` — **nguồn sự thật nghiệp vụ đã chốt** (`spec.md`/`design.md`/
     `ui.md`/`test-plan.md`, truy vết `BR-xx`/`AC-xx`). Khi nội dung ở `specs/` đã chín thì
     chắt lọc về đây.
 - **Lớp Epic**: `docs/epics/` gom feature theo vòng đời (E0 nền tảng + E1–E3 + E4 năng lực mở rộng optional). Phân tầng đầy đủ:
   **Epic (`docs/epics/`) → Feature (`docs/features/`) → Spec làm việc (`specs/`)**. Bản đồ & phụ thuộc ở
   [docs/epics/README.md](docs/epics/README.md); gắn feature↔epic qua field `epic:` trong frontmatter spec.
-- Dự án đang ở pha **docs-first**: `plan`/`tasks`/`implement` chỉ dùng khi bước sang thực thi code.
+- Trong đợt lập kế hoạch, mỗi thẻ INVEST có một thư mục `specs/NNN-<web|mobile|shared>-slug/`. Chạy đủ specify → clarify → plan → tasks. Có thể lập kế hoạch và task trong repo tài liệu. Thực hiện task ở repo code.
+- Quyết định tư vấn phải ghi mã, use case, khuyến nghị, vai trò duyệt và trạng thái. Chỉ cập nhật BR/AC đã chốt sau review của PO/BA. Tài liệu bị thay toàn bộ được lưu dưới `ref/` và có đường dẫn tới bản hiện hành.
 
 ## 8. Phương pháp luận Superpowers & Hệ sinh thái Skills dùng chung mọi AI
 Dự án tích hợp bộ kỹ năng theo chuẩn Agent Skills (`agentskills.io`), được cài đặt đồng bộ tại 3 vị trí để **tất cả các AI agent cùng sử dụng**:

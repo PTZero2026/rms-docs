@@ -1,30 +1,19 @@
 ---
-title: "Báo cáo & thống kê — Test plan"
+title: "Báo cáo kỳ — kiểm thử"
 spec: "./spec.md"
-owner: "<TEST>"
-status: Draft
-updated: 2026-06-01
+owner: "QA nghiệp vụ"
+status: Review
+updated: 2026-11-18
 ---
 
-# Báo cáo & thống kê — Kế hoạch kiểm thử
+# Nghiệm thu báo cáo kỳ
 
-> Mỗi test case bám vào một AC trong `spec.md`. Không có AC tương ứng = thiếu yêu cầu, báo lại BA/PO.
+Dựng kỳ K với A1, A2 ở khoa A và B1 ở khoa B. A1 từng nộp lại, A3 là nháp chưa cấp mã. Trưởng phòng thấy cả hai khoa, chuyên viên chỉ thấy A.
 
-## 1. Phạm vi kiểm thử
+| Ca | AC | Thao tác | Đối chứng |
+|---|---|---|---|
+| TC-01 | AC-01 | Trưởng phòng chọn K, mở từng nhóm và cộng số dòng. | Tổng 3, A1 đúng một lần, vắng A3. A1 bị trả về nháp vẫn thuộc nhóm trạng thái tương ứng. |
+| TC-02 | AC-02 | Chuyên viên lọc cả B, thử truy cập trực tiếp bản xuất. | Chỉ A1, A2, tổng 2. Nếu thu quyền A ngay trước tải, tệp cũ không được cấp. |
+| TC-03 | AC-03 | Tạo bản báo cáo, chuyển bước A2, mở lại chi tiết và xuất, sau đó tạo bản mới. | Chi tiết và tệp đầu giữ nhóm cũ. Chỉ bản mới hiển thị A2 ở nhóm mới. |
 
-Mặt nào được test (FE / BO / API), môi trường, dữ liệu mẫu.
-
-## 2. Test cases
-
-| ID    | Liên kết AC | Tiền điều kiện | Bước thực hiện | Kết quả mong đợi | Loại     |
-|-------|-------------|----------------|----------------|------------------|----------|
-| TC-01 | AC-01       | ...            | ...            | ...              | Happy    |
-| TC-02 | AC-01       | ...            | ...            | ...              | Biên/Lỗi |
-
-## 3. Trường hợp biên & negative
-
-Liệt kê các tình huống dễ sót: dữ liệu rỗng, quá hạn, trùng, sai quyền.
-
-## 4. Checklist hồi quy
-
-Những luồng cũ cần test lại khi feature này thay đổi.
+Trưởng phòng ký danh sách đối chứng, QA lưu thời điểm và phạm vi ở mỗi ca. [Quy tắc đề xuất](spec.md)

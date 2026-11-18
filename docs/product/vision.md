@@ -1,7 +1,7 @@
 ---
 title: "Tầm nhìn sản phẩm — RMS"
-status: Approved
-updated: 2026-06-11
+status: Review
+updated: 2026-11-18
 ---
 
 # Tầm nhìn sản phẩm
@@ -11,6 +11,12 @@ updated: 2026-06-11
 > **RMS** (Research Management System) là nền tảng số hóa **toàn bộ vòng đời đề tài
 > nghiên cứu khoa học** — từ nhận đề xuất, đề xuất, xét duyệt, thực hiện, đến nghiệm thu và
 > công bố — trên một nguồn dữ liệu duy nhất, dùng chung cho nhà khoa học và bộ phận quản trị.
+
+## Thị trường khởi đầu và kết quả cần đo
+
+Ưu tiên phòng khoa học tại trường đại học có kỳ đề tài cấp cơ sở định kỳ. Giá trị đầu tiên là theo được cùng một mã từ lần nộp đầu qua bổ sung và xét duyệt, rồi đối chiếu được số liệu của kỳ với danh sách hồ sơ. So thời gian tổng hợp, tỷ lệ hồ sơ bị trả và sai lệch số đếm với kỳ gần nhất. Bệnh viện và Sở KH&CN là hai phân khúc cần kiểm lại quy chế, điều kiện dữ liệu và đầu mối phê duyệt. [Báo cáo thị trường](../sales/thi-truong-viet-nam-2026/README.md)
+
+Web responsive phục vụ chuyên viên ở máy tính và người nghiên cứu theo dõi việc trên điện thoại. Trợ lý AI thí điểm giúp tìm đoạn chứng minh hoặc lập thẻ đọc. Người dùng phải xem được nguồn và có thể bác kết quả trước khi sử dụng.
 
 ## Vấn đề
 
@@ -47,8 +53,8 @@ Chi tiết từng nhóm: xem `personas.md`.
 - **Trong phạm vi:** quản lý kỳ nhận đề xuất, đề xuất & thuyết minh, xét duyệt hội đồng,
   theo dõi tiến độ, quản lý kinh phí, nghiệm thu, kê khai sản phẩm khoa học và lý lịch
   khoa học; danh mục/cấu hình dùng chung, quản lý người dùng & phân quyền, thông báo,
-  báo cáo & thống kê. (12 feature — xem `roadmap.md` và `README.md`.)
-- **Ngoài phạm vi (giai đoạn đầu):** hệ thống kế toán/tài chính lõi (chỉ **đối soát** qua API),
+  báo cáo & thống kê. Xem [lộ trình theo lát cắt](roadmap.md).
+- **Ngoài phạm vi (giai đoạn đầu):** hệ thống kế toán/tài chính lõi (kết nối đối soát là định hướng sau pilot),
   hệ thống định danh tập trung (dùng lại **SSO** qua OIDC/SAML), cổng email/SMS (tích hợp,
   không tự xây). Xem `../architecture/integrations.md`.
 
@@ -88,7 +94,7 @@ giai đoạn đầu chỉ cần giữ kiến trúc **không khoá đường** m�
 
 **Toàn vẹn & kết nối dữ liệu**
 - **100%** sản phẩm khoa học gắn được với đề tài nguồn.
-- **100%** khoản chi kinh phí đối soát được với hệ thống tài chính qua API.
+- Khi kích hoạt tích hợp tài chính, mục tiêu dài hạn là đối soát 100% giao dịch thuộc phạm vi trao đổi. Pilot F05 đo thời gian chuyên viên rà và khóa sổ.
 
 **Mức độ sử dụng**
 - Tỷ lệ người dùng (nhà khoa học, chuyên viên) **hoạt động hằng tháng** trên tổng số tài khoản được cấp **≥ 60% → ≥ 80%**.
@@ -97,7 +103,7 @@ giai đoạn đầu chỉ cần giữ kiến trúc **không khoá đường** m�
 
 1. **Một nguồn sự thật.** Mỗi đề tài, mỗi sản phẩm chỉ tồn tại một bản ghi, gắn kết theo vòng đời.
 2. **Vòng đời có trạng thái.** Mọi chuyển trạng thái đều rõ ai làm, khi nào, để truy vết.
-3. **Hai mặt, một lõi.** FE và BO chia sẻ cùng backend/CSDL, tránh lệch dữ liệu.
+3. **Một ứng dụng web.** Khu vực nhà khoa học và quản trị dùng chung dịch vụ và dữ liệu, điều hướng theo vai trò.
 4. **Phân quyền theo vai trò.** Quyền truy cập bám sát persona và quy trình.
 5. **Minh bạch & audit.** Các hành động quan trọng (duyệt, nghiệm thu, chi kinh phí) được ghi log.
 
@@ -115,5 +121,6 @@ Chi tiết: `../architecture/integrations.md`.
 
 | Ngày | Trạng thái | Thay đổi |
 |------|------------|----------|
+| 2026-11-18 | Review | Bổ sung phân khúc khởi đầu, giá trị kiểm chứng theo kỳ và phạm vi mobile/AI. |
 | 2026-06-11 | Approved | Viết lại mục *Success metrics* — cơ cấu lại theo 4 nhóm, thêm mục tiêu đề xuất theo hai mốc (giai đoạn đầu → ổn định); duyệt & chuyển Draft → Approved. |
 | 2026-06-01 | Draft | Bản thảo đầu tiên. |

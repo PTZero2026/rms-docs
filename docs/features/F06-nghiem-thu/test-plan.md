@@ -1,30 +1,28 @@
 ---
-title: "Nghiệm thu — Test plan"
+title: "Nghiệm thu — kế hoạch kiểm thử"
 spec: "./spec.md"
-owner: "<TEST>"
-status: Draft
-updated: 2026-06-01
+owner: "QA nghiệp vụ"
+status: Review
+updated: 2026-11-18
 ---
 
-# Nghiệm thu — Kế hoạch kiểm thử
+# Nghiệm thu cuối kỳ
 
-> Mỗi test case bám vào một AC trong `spec.md`. Không có AC tương ứng = thiếu yêu cầu, báo lại BA/PO.
+Dựng một đề tài đang thực hiện, kỳ cuối, sản phẩm đã duyệt, một hội đồng nghiệm thu có người xung đột, và một chuyên viên. Chạy từng ca với bộ dữ liệu riêng để kết luận trước không khóa phiếu của ca sau.
 
-## 1. Phạm vi kiểm thử
+| Ca | AC | Given | When | Then |
+|---|---|---|---|---|
+| TC-01 | AC-01 | đề tài `IN_PROGRESS` có kỳ báo cáo cuối `PASSED` và đủ sản phẩm cam kết `APPROVED` | chủ nhiệm đăng ký nghiệm thu và nộp hồ sơ cuối | `ResearchProject` chuyển `PENDING_ACCEPTANCE`, chuyên viên nhận thông báo, ghi audit. |
+| TC-02 | AC-02 | đề tài `PENDING_ACCEPTANCE` và đã có hội đồng `ACCEPTANCE` ≥ 1 thành viên | chuyên viên tạo `EvaluationRound` type `ACCEPTANCE` | đợt `COLLECTING_SCORES`, `ResearchProject` chuyển `UNDER_ACCEPTANCE`, chủ nhiệm nhận thông báo lịch. |
+| TC-03 | AC-03 | thành viên không xung đột lợi ích, đợt `COLLECTING_SCORES` | nhập đủ điểm mọi tiêu chí (trong `[0, maxScore]`) và gửi | `ScoreSheet` `DRAFT → SUBMITTED`, tính `totalScore`, khóa phiếu. |
+| TC-04 | AC-04 | đủ phiếu, `aggregateScore ≥ PASSING_SCORE` | chuyên viên ra kết luận, rồi F05 xác nhận quyết toán xong | `conclusion=PASSED`, `ResearchProject` `PASSED`, sau quyết toán chuyển `COMPLETED`, thông báo chủ nhiệm. |
+| TC-05 | AC-05 | đủ phiếu, `aggregateScore < PASSING_SCORE` | chuyên viên ra kết luận `FAILED` rồi cho làm lại kèm lý do & thời hạn | `ResearchProject` `FAILED → IN_PROGRESS`, tăng số lần làm lại, ghi audit (BR-10). |
+| TC-06 | AC-06 | số phiếu `SUBMITTED` < `MIN_SUBMITTED_SCORE_SHEETS` | chuyên viên cố ra kết luận | chặn, báo số phiếu thiếu, không đổi trạng thái (BR-07). |
+| TC-07 | AC-07 | đề tài `IN_PROGRESS` chưa có kỳ cuối `PASSED` hoặc thiếu sản phẩm cam kết | chủ nhiệm đăng ký nghiệm thu | chặn, nêu điều kiện thiếu, giữ `IN_PROGRESS` (BR-01). |
+| TC-08 | AC-08 | thành viên hội đồng là chủ nhiệm/thành viên đề tài | mở hàng chờ chấm | đề tài đó bị ẩn và chặn tạo `ScoreSheet` (BR-03). |
+| TC-09 | AC-09 | thành viên nhập `score > maxScore` | gửi phiếu | lỗi validate, phiếu giữ `DRAFT` (BR-05). |
+| TC-10 | AC-10 | đề tài `PASSED` nhưng F05 còn giao dịch `MISMATCHED` | chuyên viên cố đóng đề tài | chặn, yêu cầu xử lý quyết toán trước (BR-09, F05 BR-07). |
+| TC-11 | AC-11 | người dùng là Thành viên hội đồng (không phải chuyên viên) | gọi hành động ra kết luận/lập hội đồng/cho làm lại | 403, không thực hiện (BR-11). |
+| TC-12 | AC-12 | `EvaluationRound=CONCLUDED` | thành viên cố gửi/sửa phiếu | bị từ chối (BR-12). |
 
-Mặt nào được test (FE / BO / API), môi trường, dữ liệu mẫu.
-
-## 2. Test cases
-
-| ID    | Liên kết AC | Tiền điều kiện | Bước thực hiện | Kết quả mong đợi | Loại     |
-|-------|-------------|----------------|----------------|------------------|----------|
-| TC-01 | AC-01       | ...            | ...            | ...              | Happy    |
-| TC-02 | AC-01       | ...            | ...            | ...              | Biên/Lỗi |
-
-## 3. Trường hợp biên & negative
-
-Liệt kê các tình huống dễ sót: dữ liệu rỗng, quá hạn, trùng, sai quyền.
-
-## 4. Checklist hồi quy
-
-Những luồng cũ cần test lại khi feature này thay đổi.
+TC-10 kiểm trường hợp đã có dữ liệu đối soát. Với pilot rà thủ công, chạy thêm TC-03 và nhánh cơ bản của [US-24](../../../specs/024-shared-close-project/quickstart.md). PO và kế toán trưởng cần xác nhận điều kiện áp dụng trước khi nghiệm thu phần đóng sổ. QA lưu số phiếu, trạng thái trước/sau và sự kiện audit cho từng ca. [Nguồn AC](spec.md)

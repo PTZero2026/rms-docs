@@ -6,6 +6,8 @@ kiến trúc** của hệ thống RMS. Code chạy được nằm ở repo riên
 
 > **AI agent** (Claude Code) đọc [AGENTS.md](AGENTS.md) trước mọi tác vụ — đó là nguồn ngữ cảnh chính.
 
+Bộ hồ sơ kế hoạch tháng 11/2026 gồm [32 lát Spec Kit](specs/README.md), [các quyết định cần review](specs/review-decisions.md) và [lộ trình sản phẩm](docs/product/roadmap.md).
+
 ## Đọc từ đâu
 
 | Bạn là | Bắt đầu ở |

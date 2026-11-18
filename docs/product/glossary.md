@@ -1,13 +1,23 @@
 ---
 title: "Thuật ngữ — RMS"
-status: Approved
-updated: 2026-06-11
+status: Review
+updated: 2026-11-18
 ---
 
 # Thuật ngữ dùng chung
 
 Nguồn quy chiếu tên gọi & khái niệm cho toàn bộ tài liệu. Khi một thuật ngữ trùng với
 thực thể dữ liệu, cột "Thực thể" trỏ tới `../architecture/data-model.md`.
+
+## Thuật ngữ của đợt thử nghiệm
+
+| Thuật ngữ | Nghĩa trong RMS |
+|---|---|
+| Lát cắt INVEST | Một kết quả nghiệp vụ kiểm tra độc lập, có mã US liên kết về feature và AC nguồn. |
+| Web / Mobile / Shared | Tiền tố chỉ nơi nghiệm thu chính. Mobile ở đợt này là web trên điện thoại. Shared là hành vi hoặc dữ liệu dùng chung cho nhiều màn hình, vai trò hay tác vụ nền. |
+| Bản chụp báo cáo kỳ | Tập mã hồ sơ trong quyền tại thời điểm trích xuất. Dòng chi tiết và số tổng dùng cùng tập này. |
+| Gợi ý có căn cứ | Kết quả AI kèm phiên bản tài liệu và vị trí trích dẫn. Người dùng có quyền mở nguồn, kiểm và quyết định sử dụng. |
+| Khuyến nghị chờ duyệt | Giá trị mặc định để lập kế hoạch. Mã RV liên kết use case, người có quyền chốt và bằng chứng cần xem. |
 
 ## Vòng đời & nghiệp vụ cốt lõi
 
@@ -21,7 +31,7 @@ thực thể dữ liệu, cột "Thực thể" trỏ tới `../architecture/data
 | Xét duyệt | Quy trình hội đồng đánh giá đề xuất để chấp nhận/từ chối. | `EvaluationCommittee`, `ScoreSheet` |
 | Hội đồng | Nhóm chuyên gia đánh giá đề tài. **Hội đồng khoa học**: xét duyệt (`type=PROPOSAL_REVIEW`) hoặc nghiệm thu (`type=ACCEPTANCE`); **hội đồng đạo đức**: thẩm định đạo đức nghiên cứu (`type=ETHICS_REVIEW`), chạy song song xét duyệt. | `EvaluationCommittee` |
 | Phiếu chấm | Phiếu cho điểm/nhận xét của một thành viên hội đồng. | `ScoreSheet` |
-| Phê duyệt đạo đức | Thẩm định khía cạnh đạo đức nghiên cứu của đề tài (hội đồng đạo đức), chạy **song song** xét duyệt khoa học; đề tài phải đạt cả hai. | `EvaluationCommittee` |
+| Phê duyệt đạo đức | Thẩm định khía cạnh đạo đức nghiên cứu của đề tài (hội đồng đạo đức), chạy **song song** xét duyệt khoa học; khi thuộc diện thẩm định đạo đức, đề tài phải đạt cả hai (điểm kiểm chờ PO xác nhận tại [RV-11](../../specs/review-decisions.md#rv-11)). | `EvaluationCommittee` |
 | Cuộc họp (hội đồng) | Phiên họp hội đồng để **phê duyệt đề cương** hoặc **nghiệm thu**; có lịch, thành phần, biên bản & quyết nghị. Mô hình dùng chung F03/F06. | — |
 | Biên bản họp | Văn bản ghi diễn biến & kết luận/quyết nghị của một cuộc họp hội đồng. | — |
 | Tiến độ | Quá trình thực hiện đề tài, theo dõi qua các báo cáo định kỳ. | `ProgressReport` |
@@ -78,6 +88,7 @@ Chi tiết: `personas.md`.
 
 | Ngày | Trạng thái | Thay đổi |
 |------|------------|----------|
+| 2026-11-18 | Review | Bổ sung thuật ngữ INVEST, kênh, bản chụp kỳ và nguồn AI; liên kết điểm chặn thẩm định đạo đức. |
 | 2026-06-11 | Approved | Bổ sung thuật ngữ **hội đồng đạo đức / phê duyệt đạo đức**, **cuộc họp & biên bản họp**; ghi chú **đề cương = thuyết minh**; làm rõ loại hội đồng (`PROPOSAL_REVIEW`/`ACCEPTANCE`/`ETHICS_REVIEW`). |
 | 2026-06-11 | Approved | Thêm vai trò *Thư ký đề tài*, *Khách*; thêm thuật ngữ *Khu vực công khai* và *Nội dung công khai*; duyệt & chuyển Draft → Approved. |
 | 2026-06-01 | Draft | Bản thảo đầu tiên. |
