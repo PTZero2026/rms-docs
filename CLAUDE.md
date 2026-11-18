@@ -7,6 +7,8 @@ Lưu ý: đây là repo **thuần tài liệu** (docs-only) — không có code/
 Bổ sung riêng cho Claude Code:
 - Cấu hình harness (permissions, hooks, env) ở `.claude/settings.json`.
 - Slash command nội bộ ở `.claude/commands/`, sub-agent ở `.claude/agents/`, skill ở `.claude/skills/`.
+- Tuân thủ phương pháp luận Superpowers (`using-superpowers`, `brainstorming`, `systematic-debugging`, `verification-before-completion`).
+- Quy trình Spec Kit (`speckit-*`) cho SDD.
 
 <!-- SPECKIT START -->
 For additional context about technologies to be used, project structure,

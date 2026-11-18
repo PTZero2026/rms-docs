@@ -54,8 +54,8 @@ tính nhất quán (xem §6). Lệnh build/test của hệ thống thật thuộ
 - `status` và `updated` ở frontmatter đã cập nhật; thay đổi luật trong `spec.md` cần reviewer là PO/BA.
 
 ## 7. Quy trình Spec-Driven (GitHub Spec Kit)
-Repo dùng **Spec Kit** (chạy trong Claude Code, không cần API) qua các skill `/speckit-*`:
-`constitution → specify → clarify(tùy chọn) → plan → tasks → analyze(tùy chọn) → implement`.
+Repo dùng **Spec Kit** (chạy trong Claude Code, Antigravity, Cursor, Codex, không cần API) qua các skill `/speckit-*`:
+`constitution → specify → clarify(tùy chọn) → plan → tasks → analyze(tùy chọn) → converge(tùy chọn) → implement`.
 - **Hiến pháp**: `.specify/memory/constitution.md` là bản *chiếu* của file này (§4 + §6); khi đổi
   luật, sửa AGENTS.md trước rồi đồng bộ (chạy `/speckit-constitution`). AGENTS.md là canonical.
 - **Hai nơi chứa spec, không thay thế nhau**:
@@ -68,3 +68,26 @@ Repo dùng **Spec Kit** (chạy trong Claude Code, không cần API) qua các sk
   **Epic (`docs/epics/`) → Feature (`docs/features/`) → Spec làm việc (`specs/`)**. Bản đồ & phụ thuộc ở
   [docs/epics/README.md](docs/epics/README.md); gắn feature↔epic qua field `epic:` trong frontmatter spec.
 - Dự án đang ở pha **docs-first**: `plan`/`tasks`/`implement` chỉ dùng khi bước sang thực thi code.
+
+## 8. Phương pháp luận Superpowers & Hệ sinh thái Skills dùng chung mọi AI
+Dự án tích hợp bộ kỹ năng theo chuẩn Agent Skills (`agentskills.io`), được cài đặt đồng bộ tại 3 vị trí để **tất cả các AI agent cùng sử dụng**:
+- `.agents/skills/`: Chuẩn mở Agent Skills (dành cho Google Antigravity, OpenAI Codex CLI, v.v.).
+- `.claude/skills/`: Dành cho Anthropic Claude Code.
+- `.cursor/skills/`: Dành cho Cursor Agent / Cursor IDE.
+
+### Nguyên tắc Superpowers (`using-superpowers`)
+Mọi agent phải tuân thủ kỷ luật kỹ thuật trước khi hành động:
+1. **Brainstorming trước khi lập kế hoạch (`brainstorming`)**: Khi tiếp cận tính năng hay yêu cầu mới, khơi gợi ý định, thảo luận ngắn gọn trước khi chốt spec/plan.
+2. **Kỷ luật TDD & Debug có hệ thống (`systematic-debugging`, `test-driven-development`)**: 4 bước tìm nguyên nhân gốc rễ, viết kiểm thử trước khi sửa, không suy đoán.
+3. **Xác minh trước khi tuyên bố hoàn thành (`verification-before-completion`)**: Luôn chạy kiểm chứng thực tế và đối soát bằng chứng trước khi kết luận đạt yêu cầu.
+4. **Phân rã sub-agent & Review 2 chặng (`subagent-driven-development`, `requesting-code-review`)**: Tách nhỏ nhiệm vụ, kiểm tra tuân thủ spec trước, sau đó duyệt chất lượng kỹ thuật.
+
+### Danh mục Skills cài đặt trong dự án
+| Nhóm | Kỹ năng | Nguồn | Mục đích sử dụng trong RMS |
+|---|---|---|---|
+| **Kỹ thuật & Quy trình (Superpowers)** | `using-superpowers`, `brainstorming`, `writing-plans`, `executing-plans`, `subagent-driven-development`, `systematic-debugging`, `test-driven-development`, `verification-before-completion`, `requesting-code-review`, `receiving-code-review`, `using-git-worktrees`, `finishing-a-development-branch`, `dispatching-parallel-agents`, `diagnosing-superpowers`, `writing-skills` | [obra/superpowers](https://github.com/obra/superpowers) | Phương pháp luận kỹ thuật phần mềm, TDD, quy trình làm việc chuẩn xác và điều tra lỗi có bằng chứng. |
+| **Quy trình Spec Kit (SDD)** | `speckit-constitution`, `speckit-specify`, `speckit-clarify`, `speckit-plan`, `speckit-tasks`, `speckit-checklist`, `speckit-converge`, `speckit-analyze`, `speckit-implement`, `speckit-agent-context-update` | [github/spec-kit](https://github.com/github/spec-kit) (v1.4.2) | Bộ công cụ Spec-Driven Development: sinh spec, kế hoạch, phân rã tasks, đối soát chéo và cập nhật ngữ cảnh agent. |
+| **Soạn thảo & Tài liệu (Docs)** | `doc-coauthoring`, `docx`, `pptx`, `xlsx`, `pdf` | [anthropics/skills](https://github.com/anthropics/skills) | Soạn thảo tài liệu kiến trúc/spec, xử lý hồ sơ Word/PDF đề tài NCKH, slide thuyết trình giải pháp (`docs/sales/`), bảng tính kinh phí (`F05`). |
+| **Kiểm thử & Giao diện** | `webapp-testing`, `frontend-design`, `web-artifacts-builder` | [anthropics/skills](https://github.com/anthropics/skills) | Tự động hóa kiểm thử Playwright (`e2e/`), thiết kế UI/UX chất lượng cao, dựng mẫu giao diện tương tác (`wireframe-prototype/`). |
+| **Mở rộng & Tích hợp** | `skill-creator`, `mcp-builder` | [anthropics/skills](https://github.com/anthropics/skills) | Tạo và đo lường kỹ năng mới, xây dựng máy chủ MCP tích hợp hệ thống backend RMS. |
+

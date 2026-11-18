@@ -7,16 +7,21 @@
 | `agents/` | Sub-agent chuyên biệt (reviewer, test-writer…). |
 | `skills/` | Skill tái dùng (scaffold module, gen migration…). |
 
-## Skill đã cài
+## Skill đã cài (35 skills)
 
-| Skill | Nguồn | Dùng để |
-|---|---|---|
-| `frontend-design` | [anthropics/skills](https://github.com/anthropics/skills/tree/main/skills/frontend-design) | Dựng giao diện FE/BO chất lượng cao (`apps/fe-portal`, `apps/bo-admin`, `packages/ui`); tránh thẩm mỹ "AI slop". Tự kích hoạt khi tác vụ liên quan UI. |
-| `speckit-*` | [github/spec-kit](https://github.com/github/spec-kit) (`specify init`) | Quy trình Spec-Driven Development: `/speckit-constitution`, `/speckit-specify`, `/speckit-clarify`, `/speckit-plan`, `/speckit-tasks`, `/speckit-analyze`, `/speckit-checklist`, `/speckit-implement`. Chạy trong Claude Code (không cần API). |
+Hệ sinh thái skills được đồng bộ giữa `.claude/skills/`, `.agents/skills/` và `.cursor/skills/` để mọi AI (Claude Code, Antigravity, Cursor, Codex) dùng chung:
+
+| Nhóm | Kỹ năng | Nguồn | Mục đích sử dụng |
+|---|---|---|---|
+| **Superpowers** (15 skills) | `using-superpowers`, `brainstorming`, `writing-plans`, `executing-plans`, `subagent-driven-development`, `systematic-debugging`, `test-driven-development`, `verification-before-completion`, `requesting-code-review`, `receiving-code-review`, `using-git-worktrees`, `finishing-a-development-branch`, `dispatching-parallel-agents`, `diagnosing-superpowers`, `writing-skills` | [obra/superpowers](https://github.com/obra/superpowers) | Phương pháp luận kỹ thuật: TDD, debug 4 bước, lập kế hoạch, review chéo, kiểm chứng trước khi hoàn thành. |
+| **Spec Kit (SDD)** (10 skills) | `speckit-constitution`, `speckit-specify`, `speckit-clarify`, `speckit-plan`, `speckit-tasks`, `speckit-checklist`, `speckit-converge`, `speckit-analyze`, `speckit-implement`, `speckit-agent-context-update` | [github/spec-kit](https://github.com/github/spec-kit) (v1.4.2) | Bộ công cụ Spec-Driven Development: quy trình từ hiến pháp, đặc tả, kế hoạch đến phân rã task và đối soát. |
+| **Tài liệu & Office** (5 skills) | `doc-coauthoring`, `docx`, `pptx`, `xlsx`, `pdf` | [anthropics/skills](https://github.com/anthropics/skills) | Soạn thảo tài liệu kiến trúc/spec, xử lý mẫu Word/PDF hồ sơ NCKH, slide giới thiệu giải pháp (`docs/sales/`), bảng tính kinh phí (`F05`). |
+| **Kiểm thử & UI** (3 skills) | `webapp-testing`, `frontend-design`, `web-artifacts-builder` | [anthropics/skills](https://github.com/anthropics/skills) | Tự động hóa kiểm thử Playwright (`e2e/`), thiết kế UI/UX hiện đại, xây dựng mẫu giao diện tương tác (`wireframe-prototype/`). |
+| **Mở rộng** (2 skills) | `skill-creator`, `mcp-builder` | [anthropics/skills](https://github.com/anthropics/skills) | Tạo và đo lường kỹ năng mới, xây dựng máy chủ MCP tích hợp. |
 
 ## Spec Kit (Spec-Driven Development)
 
-Cài bằng CLI chính chủ `specify init --here --integration claude`. Thành phần:
+Cài bằng CLI chính chủ `specify init --here --integration claude` (phiên bản CLI v1.4.2). Đã cài đặt đa tích hợp an toàn (`claude`, `codex`, `cursor-agent`). Thành phần:
 
 | Đường dẫn | Vai trò |
 |---|---|

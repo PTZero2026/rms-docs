@@ -2,23 +2,22 @@
   "schema_version": "1.0",
   "extensions": {
     "agent-context": {
-      "version": "1.0.0",
-      "source": "local",
-      "manifest_hash": "sha256:9a1dc02d2d0139bb03860392ecacef79183be2c442feda2f9ccaa4e5907b1e47",
+      "version": "1.0.3",
+      "source": {
+        "kind": "catalog",
+        "catalog": "default"
+      },
+      "manifest_hash": "sha256:790fe14ee139490b46d25ebdc37964b9e620e88c65d92ba21e6bdf5274ea7a81",
       "enabled": true,
       "priority": 10,
       "registered_commands": {
-        "agy": [
-          "speckit.agent-context.update"
-        ],
         "claude": [
-          "speckit.agent-context.update"
-        ],
-        "codex": [
           "speckit.agent-context.update"
         ]
       },
-      "registered_skills": [],
+      "registered_skills": [
+        "speckit-agent-context-update"
+      ],
       "installed_at": "2026-06-12T06:48:25.817805+00:00"
     }
   }
