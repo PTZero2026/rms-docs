@@ -3,7 +3,7 @@ title: "Kỳ nhận đề xuất — Test plan"
 spec: "./spec.md"
 owner: "PO/BA"
 status: Draft
-updated: 2026-06-01
+updated: 2026-11-21
 ---
 
 # Kỳ nhận đề xuất — Kế hoạch kiểm thử
@@ -28,7 +28,7 @@ updated: 2026-06-01
 | TC-01 | AC-01 | Đăng nhập chuyên viên | BO-02: nhập `code=KG-2026-10`, `name`, `startDate≤endDate` hợp lệ → Lưu | Kỳ lưu ở `DRAFT`, hiện trong BO-01 | Happy |
 | TC-02 | AC-02 | Kỳ `KG-2026-09` (`DRAFT`) cấu hình đủ, danh mục `ACTIVE` | BO-03: bấm "Mở kỳ" | Kỳ chuyển `OPEN`, ghi nhật ký; xuất hiện trên FE-01 | Happy |
 | TC-03 | AC-02 / BR-03 | Kỳ `DRAFT` thiếu `reviewCriteriaSetId` | BO-03: bấm "Mở kỳ" | Bị chặn, thông báo thiếu cấu hình bắt buộc, kỳ vẫn `DRAFT` | Biên/Lỗi |
-| TC-04 | AC-02 / BR-04 | Kỳ `DRAFT` trỏ tới `ResearchField` đã bị đặt `INACTIVE` ở B01 | BO-03: bấm "Mở kỳ" | Bị chặn, thông báo danh mục không còn hiệu lực | Biên/Lỗi |
+| TC-04 | AC-02 / BR-04 | Kỳ nháp đủ cấu hình. Lần lượt thử từng tham chiếu bị đặt INACTIVE sau khi lưu nháp (lĩnh vực, biểu mẫu, bộ tiêu chí) | Bấm Mở kỳ, ghi nhận trạng thái, thay mục bằng bản còn hiệu lực và thử mở lại | Lần đầu vẫn DRAFT, báo đúng mục cần thay. Lần sau cùng kỳ chuyển OPEN và hiển thị cho nhà khoa học | Biên/Lỗi |
 | TC-05 | AC-03 | Nhà khoa học đăng nhập; kỳ `KG-2026-01` `OPEN` trong hạn | FE-01 → FE-02 → bấm "Nộp đề xuất" | Điều hướng sang F01 với `proposalCallId` đúng và biểu mẫu nạp sẵn | Happy |
 | TC-06 | AC-04 | Kỳ `KG-2026-03` `OPEN`, `endDate` = hôm qua | Chạy job đóng kỳ (hoặc đóng thủ công) | Kỳ chuyển `CLOSED`, biến mất khỏi FE-01, ghi nhật ký | Biên |
 | TC-07 | AC-04 / BR-05 | Kỳ vừa `CLOSED` ở TC-06 | Gọi API nộp đề xuất (F01) vào kỳ này | Bị từ chối, không tạo đề tài mới | Biên/Lỗi |

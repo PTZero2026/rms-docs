@@ -3,7 +3,7 @@ title: "Dự án phục vụ sản xuất — Test plan"
 spec: "./spec.md"
 owner: "<TEST>"
 status: Draft
-updated: 2026-06-26
+updated: 2026-11-21
 ---
 
 # Dự án phục vụ sản xuất — Kế hoạch kiểm thử
@@ -14,7 +14,7 @@ updated: 2026-06-26
 | ID | Liên kết AC | Bước thực hiện | Kết quả mong đợi | Loại |
 |---|---|---|---|---|
 | TC-01 | AC-01 | Lưu/gửi duyệt dự án thiếu đơn vị/viện chủ trì | Bị chặn, yêu cầu chọn đơn vị/viện | Negative |
-| TC-02 | AC-02 | Gửi duyệt dự án chưa có đối tác ngoài | Bị chặn, nêu rõ cần bổ sung đối tác | Negative |
+| TC-02 | AC-02 | Hồ sơ có đơn vị chủ trì, đủ các điều kiện khác, chưa có đối tác ngoài. Lưu và mở lại bản nháp. Gửi duyệt khi chưa có đối tác. Trên cùng hồ sơ, thêm một đối tác ngoài rồi gửi lại. | Lưu nháp thành công. Lần gửi đầu giữ Nháp và yêu cầu bổ sung đối tác. Lần gửi sau chuyển cùng hồ sơ sang Chờ duyệt. Kiểm cùng mã hồ sơ sau mỗi bước. | Biên |
 | TC-03 | AC-02 | Chọn đối tác ngoài từ danh mục hoặc tạo nhanh theo quyền | Dự án ghi nhận được thông tin đối tác | Happy |
 | TC-04 | AC-03 | Nhập kinh phí tổng bằng VND và lưu nháp | Kinh phí được lưu ở mức đầu mục; không yêu cầu dòng dự toán/giải ngân | Happy |
 | TC-05 | AC-03 | Lưu dự án có kinh phí tổng | Không tạo hồ sơ/tham chiếu F05 | Happy |

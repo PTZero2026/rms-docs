@@ -3,14 +3,14 @@ story: US-04
 feature: P02
 review_id: RV-04
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-21
 ---
 
 # Căn cứ và quyết định · US-04
 
 **Vấn đề.** Nếu chuyên viên đổi khoa sau khi chuyển bước, ai xem được lịch sử?
 
-**Khuyến nghị hiện dùng.** Kiểm quyền trên đề tài ở lúc đọc, giữ nguyên tác nhân và đơn vị của sự kiện gốc.
+**Quyết định ngày 21/11/2026.** Mỗi lần mở lịch sử, hệ thống kiểm quyền hiện tại trên đề tài. Nếu người đọc đã mất quyền, liên kết cũ không trả tên đề tài hay nội dung nhật ký. Người còn quyền thấy đúng người thực hiện và khoa của họ tại thời điểm thao tác.
 
 **Lý do.** Trong trường hợp chuyên viên vừa mất quyền đề tài nhưng còn liên kết cũ, người dùng cần thấy kết quả “không lộ nội dung hoặc tên hồ sơ”. Phương án khác: Cấp quyền theo đơn vị của người đã tạo sự kiện. Dùng TC-03 để phân biệt hai phương án. [RV-04](../review-decisions.md#rv-04)
 
@@ -20,6 +20,6 @@ updated: 2026-11-18
 
 - **AC-02** (BR-02) — Given một bản ghi `AuditLog`, When cố sửa hoặc xoá, Then bị từ chối.
 
-- **AC-05** (BR-06) — Given người dùng không đủ quyền hoặc khác tenant, When xem nhật ký, Then không thấy bản ghi ngoài phạm vi được phép.
+- **AC-05** (BR-04, BR-06) — Người dùng thiếu quyền hoặc khác tenant không thấy bản ghi ngoài phạm vi. Mỗi lần mở lịch sử, hệ thống kiểm quyền hiện tại trên đề tài. Nếu người đọc đã mất quyền, liên kết cũ không trả tên đề tài hay nội dung nhật ký. Người còn quyền thấy đúng người thực hiện và khoa của họ tại thời điểm thao tác.
 
 **Nguồn làm việc.** [Danh mục INVEST](../../docs/sales/thi-truong-viet-nam-2026/feature-list-invest.md).

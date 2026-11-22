@@ -3,7 +3,7 @@ story: US-31
 feature: F01
 review_id: RV-31
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-21
 ---
 
 # Tasks · Đối chiếu mục bắt buộc trong một thuyết minh
@@ -26,7 +26,7 @@ Mục tiêu độc lập: Chủ nhiệm yêu cầu trợ lý đọc một bản 
 - [ ] T004 [P] [US1] Áp ràng buộc [data-model.md](data-model.md) `AiSuggestion.sources` khi đọc/ghi qua `apps/backend/src/modules/proposal/ai-proposal-evidence/data.ts`.
 - [ ] T005 [US1] Thực hiện FR-001/002 trong `apps/backend/src/modules/proposal/ai-proposal-evidence/service.ts`. Lọc tenant, quyền và quyền xử lý trước khi lấy văn bản. Lưu phiên bản nguồn, mô hình, mẫu lệnh và quyết định bác/dùng. Trả thiếu căn cứ khi không dẫn được đoạn phù hợp. Kiểm nhánh AC-02 theo [quickstart](quickstart.md).
 - [ ] T006 [US1] Tích hợp điểm tương tác trong `apps/web/src/features/proposal/ai-proposal-evidence/view.tsx`. Hiển thị trích đoạn có vị trí/phiên bản hoặc thông báo thiếu căn cứ; hiển thị riêng tình huống tài liệu ngoài quyền hoặc thiếu căn cứ và cho người có quyền quay về dữ liệu nguồn.
-- [ ] T007 [US1] Áp dụng kết luận RV-31 cho FR-003 trong `apps/backend/src/modules/proposal/ai-proposal-evidence/service.ts` và kiểm TC-03 ở `e2e/proposal/ai-proposal-evidence/boundary.spec.ts`. Hiện chưa đủ căn cứ hoặc từ chối truy xuất; giữ nguyên thuyết minh, cho rà thủ công. Trước pilot kiểm 50 hồ sơ, tìm ≥90% mục thiếu, ≤10% cảnh báo sai, 0 lộ quyền và 0 dẫn chứng bịa.
+- [ ] T007 [US1] Áp dụng tiêu chí tạm chốt của RV-31 cho FR-003 trong `apps/backend/src/modules/proposal/ai-proposal-evidence/service.ts` và kiểm TC-03 ở `e2e/proposal/ai-proposal-evidence/boundary.spec.ts`. Hiện chưa đủ căn cứ hoặc từ chối truy xuất; giữ nguyên thuyết minh, cho rà thủ công. Trước pilot đo SC-003 theo quickstart trên 50 hồ sơ gán nhãn độc lập, tìm ≥90% mục thiếu, ≤10% cảnh báo sai, 0 lộ quyền và 0 dẫn chứng bịa.
 
 ## Phase 4 · Hồi quy
 

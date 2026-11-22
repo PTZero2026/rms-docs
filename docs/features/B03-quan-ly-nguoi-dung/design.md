@@ -3,7 +3,7 @@ title: "Quản lý người dùng — Thiết kế kỹ thuật"
 spec: "./spec.md"
 owner: "BE DEV"
 status: Draft        # Draft | Review | Approved
-updated: 2026-06-11
+updated: 2026-11-21
 ---
 
 # Quản lý người dùng — Thiết kế kỹ thuật
@@ -61,7 +61,7 @@ updated: 2026-06-11
 | AC-05 | Guard BR-03. | §2 |
 | AC-06/12 | Gán `User_Role`; tập quyền = union (BR-05); `AuditLog(ASSIGN_ROLE)`. | §3 |
 | AC-07 | `DELETE User_Role` đơn lẻ; bản ghi nghiệp vụ giữ nguyên `createdBy`/`principalInvestigatorId`. | §2 |
-| AC-08 | FK `RESTRICT` chặn hard-delete → chỉ `INACTIVE`. | §2 |
+| AC-08 | Trước mỗi yêu cầu nghiệp vụ, kiểm trạng thái RMS hiện tại. Nếu tài khoản bị khóa, trả 403 và ghi log từ chối trước khi đọc hoặc ghi hồ sơ, kể cả khi phiên còn hạn. | RV-01, §3 |
 | AC-09 | Tài khoản verify OTP OK nhưng `status ≠ ACTIVE` → authZ từ chối; `AuditLog(DENY_LOGIN)`. | §3 |
 | AC-10 | Guard permission ở backend trả 403 dù FE ẩn nút. | §3 |
 | AC-11 | Quá `iam.otp_max_attempts` → throttle theo email/IP, không phát JWT. | §4 |
@@ -96,8 +96,7 @@ Tham chiếu [`data-model.md §4.1`](../../architecture/data-model.md) (Người
   `User`, chỉ khi `User.status = ACTIVE`. Cache theo phiên, vô hiệu khi gán/gỡ vai trò.
 - **Guard quyền (BR-08):** mọi endpoint qua middleware kiểm `Permission` + **data scoping** (lọc theo
   đơn vị/phạm vi vai trò). FE ẩn/hiện theo quyền nhưng không thay backend quyết định → AC-10.
-- **authZ chặn đăng nhập tài khoản không ACTIVE (AC-09):** verify OTP thành công vẫn bị từ chối nếu
-  `status ∈ {LOCKED, INACTIVE}`; ghi `AuditLog(DENY_LOGIN)`.
+- **Trạng thái tài khoản (AC-08).** Kiểm trạng thái RMS cả với phiên đã mở và khi xác thực OTP thành công. Nếu tài khoản bị khóa, trả 403 và ghi log từ chối trước khi xử lý yêu cầu nghiệp vụ.
 - **Email bất biến phía RMS (BR-09):** chỉ đồng bộ từ Keycloak; không expose API sửa `email`.
 
 ## 4. API / hợp đồng (nếu có)

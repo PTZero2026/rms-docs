@@ -3,7 +3,7 @@ story: US-13
 feature: B02
 review_id: RV-13
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-21
 ---
 
 # Kế hoạch · Đếm hồ sơ theo trạng thái của một kỳ
@@ -12,7 +12,7 @@ updated: 2026-11-18
 
 ## Summary
 
-Trưởng phòng lấy số đề tài theo trạng thái chuẩn của một kỳ tại thời điểm trích xuất, để đối chiếu danh sách hội đồng. Truy vấn trong phạm vi hiện tại. Đọc hoặc mở liên kết giữ nguyên trạng thái hồ sơ. Đếm theo định danh hồ sơ đã cấp mã trong kỳ, nhóm theo trạng thái chuẩn tại lúc trích xuất. Dòng và tổng dùng cùng bản chụp.
+Trưởng phòng lấy số đề tài theo trạng thái chuẩn của một kỳ tại thời điểm trích xuất, để đối chiếu danh sách hội đồng. Truy vấn trong phạm vi hiện tại. Đọc hoặc mở liên kết giữ nguyên trạng thái hồ sơ. Trong kỳ và phạm vi được xem, mỗi hồ sơ đã cấp mã được tính một lần, kể cả khi nộp lại hoặc đang ở Nháp sau khi bị trả. Loại nháp chưa từng nộp, chưa có mã. Tổng, chi tiết và tệp xuất cùng dùng trạng thái tại thời điểm tạo bản chụp.
 
 ## Technical Context
 
@@ -29,7 +29,7 @@ Một SPA trong `apps/web`, backend chia module, PostgreSQL và hợp đồng si
 | Quyền và phạm vi | Xác định tenant, vai trò và đối tượng nguồn | Kiểm cả truy cập trực tiếp và dữ liệu ngoài quyền trong quickstart |
 | Vòng đời và audit | Mọi chuyển trạng thái đề tài phát sinh thuộc P01. Lát đọc này không phát lệnh chuyển. | Truy vấn trong phạm vi hiện tại. Đọc hoặc mở liên kết giữ nguyên trạng thái hồ sơ. |
 | Hợp đồng và định dạng | Nguồn triển khai tại `packages/api-contracts` | Đặc tả lời gọi trỏ về nguồn duy nhất. VND nguyên, UTC lưu trữ, dd/MM/yyyy và Asia/Ho_Chi_Minh khi hiển thị |
-| Phạm vi và review | RV-13 là giả định có người phụ trách | [RV-13](../review-decisions.md#rv-13). Đối chiếu với đặc tả module trước khi nhận task. |
+| Phạm vi và review | RV-13 đã chấp thuận ngày 21/11/2026 | [RV-13](../review-decisions.md#rv-13). Đối chiếu với đặc tả module trước khi nhận task. |
 
 ## Project Structure
 
@@ -42,4 +42,4 @@ Trong repo code, module `apps/backend/src/modules/report/call-report` chịu tr�
 |---|---|---|
 | FR-001 / AC-01 | Kỳ, phạm vi đơn vị, thời điểm trích xuất → Số hồ sơ theo trạng thái, tổng cộng và danh sách đối chứng | TC-01 |
 | FR-002 / AC-02 | Kiểm nhánh chỉ có quyền một đơn vị trước khi trả kết quả | TC-02 |
-| FR-003 / AC-03 | Đếm theo định danh hồ sơ đã cấp mã trong kỳ, nhóm theo trạng thái chuẩn tại lúc trích xuất. Dòng và tổng dùng cùng bản chụp. | TC-03 |
+| FR-003 / AC-03 | Trong kỳ và phạm vi được xem, mỗi hồ sơ đã cấp mã được tính một lần, kể cả khi nộp lại hoặc đang ở Nháp sau khi bị trả. Loại nháp chưa từng nộp, chưa có mã. Tổng, chi tiết và tệp xuất cùng dùng trạng thái tại thời điểm tạo bản chụp. | TC-03 |

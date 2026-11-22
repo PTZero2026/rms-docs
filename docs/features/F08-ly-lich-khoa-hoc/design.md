@@ -4,7 +4,7 @@ spec: "./spec.md"
 owner: "BE DEV"
 status: Review        # Draft | Review | Approved
 version: 0.1
-updated: 2026-06-25
+updated: 2026-11-21
 ---
 
 # Lý lịch khoa học — Thiết kế kỹ thuật
@@ -52,7 +52,7 @@ updated: 2026-06-25
 | BR-05 | `AcademicQualification(kind, titleItemId, yearAwarded)`; CHECK `titleItemId` thuộc catalog khớp `kind`; CHECK `yearAwarded ≤ extract(year, now())` và `≥ extract(year, dateOfBirth)` nếu có. | §2, §3 |
 | BR-06 | `WorkHistory(fromDate, toDate nullable)`; CHECK `toDate IS NULL OR fromDate ≤ toDate`; `toDate IS NULL` = đang công tác. | §2 |
 | BR-07 | Lý lịch = **read-only aggregation query**, không bảng riêng: join `User` + `AcademicQualification` + `WorkHistory` + `ResearchOutput(approvalStatus=APPROVED)` + `ProjectMember`→`ResearchProject` + tổng giờ P03 (nếu bật). | §3, data-model §4.6 |
-| BR-08 | Trích xuất: render template per-tenant (VP-CV-TPL) từ kết quả aggregation tại thời điểm gọi; ghi `AuditLog(EXPORT_CV)` kèm mã mẫu. | §3, §4 |
+| BR-08 | Trích xuất: backend xác định phiên bản đang hiệu lực của mẫu thuộc tenant tại thời điểm xuất. Dùng cùng phiên bản để tạo tệp từ dữ liệu tổng hợp và ghi mã, phiên bản mẫu vào `AuditLog(EXPORT_CV)`. | §3, §4 |
 | BR-09 | Guard kiểm `PROFILE.*` + **data scoping** (VP-SCOPE) ở backend; FE chỉ ẩn/hiện. Chủ hồ sơ luôn qua `*_OWN`. | §3, ADR-0005 |
 | BR-10 | Mọi cập nhật/ trích xuất ghi `AuditLog(actorId, targetId, oldValue, newValue)`; sửa hộ ⇒ `actorId ≠ targetId`. | §3, §4 |
 | AC-01 | `PATCH /profiles/me` lưu trường cơ bản/liên hệ; `AuditLog(UPDATE_PROFILE, actor=target)`. | §3, §4 |
@@ -67,7 +67,7 @@ updated: 2026-06-25
 | AC-10 | Mục giờ giảng chỉ tính/đưa vào response nếu `feature P03 enabled` cho tenant (VP-FEAT). | §3 |
 | AC-11 | `PATCH /profiles/{userId}` cần `PROFILE.UPDATE` + phạm vi; `AuditLog(UPDATE_PROFILE, actor≠target)`. | §3, §4 |
 | AC-12 | Guard `PROFILE.VIEW` + data scoping; thiếu quyền/ngoài phạm vi → **403** dù FE ẩn nút. | §3 |
-| AC-13 | `POST /profiles/{userId}/cv:export` chọn `templateId` (VP-CV-TPL); render + `AuditLog(EXPORT_CV)`. | §3, §4 |
+| AC-13 | `POST /profiles/{userId}/cv:export` nhận `templateId` (VP-CV-TPL). Mỗi lần xuất tra phiên bản hiệu lực theo BR-08. TC-17 kiểm hai tệp và hai sự kiện `EXPORT_CV` khi trường chuyển từ v1 sang v2. | §3, §4 |
 
 ## 2. Mô hình dữ liệu
 

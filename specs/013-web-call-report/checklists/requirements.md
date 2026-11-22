@@ -3,7 +3,7 @@ story: US-13
 feature: B02
 review_id: RV-13
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-21
 ---
 
 # Kiểm tra chất lượng đặc tả · US-13
@@ -35,4 +35,4 @@ Ngày 18/11/2026 · [Đặc tả](../spec.md). Checklist rà chất lượng vă
 - [x] Có kết quả mong đợi để đánh giá tiêu chí thành công.
 - [x] Đặc tả mô tả nhu cầu nghiệp vụ, thiết kế nằm ở plan.
 
-Bằng chứng: bộ dữ liệu một kỳ gồm 3 mã hợp lệ, 2 đơn vị, một mã đã nộp lại. Hai ca gốc kiểm US-13.1–2. Sau clarify, ca thứ ba kiểm RV-13.
+Bằng chứng: bộ dữ liệu một kỳ gồm 3 mã hợp lệ, 2 đơn vị, một mã đã nộp lại. Hai ca gốc kiểm US-13.1–2. Rà lại ngày 21/11/2026. TC-03 kiểm riêng nháp có mã, nháp chưa cấp mã và trạng thái của cùng hồ sơ trên hai bản chụp.

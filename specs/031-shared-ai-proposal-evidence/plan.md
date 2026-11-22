@@ -3,7 +3,7 @@ story: US-31
 feature: F01
 review_id: RV-31
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-21
 ---
 
 # Kế hoạch · Đối chiếu mục bắt buộc trong một thuyết minh
@@ -29,7 +29,7 @@ Lọc tenant, quyền và quyền xử lý trước khi lấy văn bản. Lưu p
 | Quyền và phạm vi | Xác định tenant, vai trò và đối tượng nguồn | Kiểm cả truy cập trực tiếp và dữ liệu ngoài quyền trong quickstart |
 | Vòng đời và audit | Mọi chuyển trạng thái đề tài phát sinh thuộc P01. Trợ lý chỉ tạo bản nháp hoặc gợi ý. | Kiểm quyền trước khi đọc tài liệu và khi mở trích dẫn. Lưu gợi ý, nguồn, phiên bản mẫu lệnh/mô hình và quyết định của người dùng riêng với hồ sơ gốc. Dịch vụ AI lỗi thì trở về luồng thủ công. |
 | Hợp đồng và định dạng | Nguồn triển khai tại `packages/api-contracts` | Đặc tả lời gọi trỏ về nguồn duy nhất. VND nguyên, UTC lưu trữ, dd/MM/yyyy và Asia/Ho_Chi_Minh khi hiển thị |
-| Phạm vi và review | RV-31 là giả định có người phụ trách | [RV-31](../review-decisions.md#rv-31). Cổng phát hành gồm đối chiếu nguồn, quyền và dùng thử thủ công. |
+| Phạm vi và review | RV-31 tạm chốt để đối chiếu với hồ sơ thực tế | [RV-31](../review-decisions.md#rv-31). Cổng phát hành gồm đối chiếu nguồn, quyền và dùng thử thủ công. |
 
 ## Project Structure
 
@@ -42,4 +42,4 @@ Trong repo code, module `apps/backend/src/modules/proposal/ai-proposal-evidence`
 |---|---|---|
 | FR-001 / AC-01 | Bản nháp, mẫu yêu cầu, tài liệu cho phép và người yêu cầu → Trích đoạn có vị trí/phiên bản hoặc thông báo thiếu căn cứ | TC-01 |
 | FR-002 / AC-02 | Kiểm nhánh tài liệu ngoài quyền hoặc thiếu căn cứ trước khi trả kết quả | TC-02 |
-| FR-003 / AC-03 | Hiện chưa đủ căn cứ hoặc từ chối truy xuất; giữ nguyên thuyết minh, cho rà thủ công. Trước pilot kiểm 50 hồ sơ, tìm ≥90% mục thiếu, ≤10% cảnh báo sai, 0 lộ quyền và 0 dẫn chứng bịa. | TC-03 |
+| FR-003 / AC-03 / SC-003 | Hiện chưa đủ căn cứ hoặc từ chối truy xuất; giữ nguyên thuyết minh, cho rà thủ công. Trước pilot kiểm 50 hồ sơ, tìm ≥90% mục thiếu, ≤10% cảnh báo sai, 0 lộ quyền và 0 dẫn chứng bịa. | TC-03 và phép đo SC-003 trong quickstart |

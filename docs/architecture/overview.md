@@ -1,10 +1,12 @@
 ---
 title: "Kiến trúc tổng quan — RMS"
 status: Draft
-updated: 2026-06-01
+updated: 2026-11-19
 ---
 
 # Kiến trúc tổng quan
+
+Hồ sơ trình SA cho đợt chạy thử mô tả cấu hình Vercel, Neon, Keycloak, cách ly qua connection pool và quản lý theme shadcn theo trường. [Kiến trúc triển khai v0](rms-v0-sa-review.md)
 
 > Mức **HOW** của hệ thống. Quyết định lớn được tách thành ADR trong `decisions/`.
 > Stack nêu dưới đây là **khuyến nghị** (giả định hợp lý cho hệ thống nội bộ bệnh viện/cơ sở y tế),
@@ -89,8 +91,7 @@ qua interface rõ ràng. Thực thể dùng chung định nghĩa ở `data-model
 ## 4. Cross-cutting concerns
 
 ### 4.1 Xác thực & phân quyền
-- **Xác thực:** SSO nội bộ qua OIDC/SAML (xem `integrations.md`); backend cấp access token nội bộ
-  (JWT) sau khi xác thực. Tài khoản nội bộ chỉ dùng cho trường hợp không có trên SSO.
+- **Xác thực.** Keycloak phát access token sau khi xác thực email-OTP theo realm. API RMS kiểm token và quyết định quyền nghiệp vụ theo B03. [ADR-0008](decisions/0008-keycloak-idp-dang-nhap-email-otp.md)
 - **Phân quyền:** RBAC — `Permission` (nguyên tử `MODULE.ACTION`) gom vào `Role`, gán cho `User`.
   Kiểm tra quyền ở backend cho mọi API; web app chỉ ẩn/hiện theo quyền, **không** là lớp bảo vệ.
 - Phạm vi dữ liệu (data scoping): chủ nhiệm chỉ thấy đề tài của mình; chuyên viên thấy theo đơn vị/kỳ.
@@ -101,8 +102,7 @@ Mọi hành động làm đổi trạng thái nghiệp vụ quan trọng (nộp,
 ghi `AuditLog` (append-only). Tách khỏi log kỹ thuật. Bất biến, có thể truy vết ai-làm-gì-khi-nào.
 
 ### 4.3 Trạng thái & máy trạng thái
-Vòng đời `ResearchProject` (xem `data-model.md` §3) là logic tập trung ở `proposal`/domain service dùng chung,
-**không** rải ở từng màn hình. Các feature gọi service để chuyển trạng thái, không tự update enum.
+Vòng đời `ResearchProject` (xem `data-model.md` §3) là logic tập trung ở domain service `workflow` (P01). Các feature gọi service để chuyển trạng thái và ghi audit cùng giao dịch. [P01](../features/P01-workflow-engine/spec.md)
 
 ### 4.4 Đa ngôn ngữ & định dạng
 Giao diện tiếng Việt là chính; chuỗi UI tách resource để mở rộng. Tiền tệ VND, ngày `dd/MM/yyyy`,

@@ -3,7 +3,7 @@ story: US-28
 feature: F11
 review_id: RV-28
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-21
 ---
 
 # Kiểm tra chất lượng đặc tả · US-28
@@ -35,4 +35,4 @@ Ngày 18/11/2026 · [Đặc tả](../spec.md). Checklist rà chất lượng vă
 - [x] Có kết quả mong đợi để đánh giá tiêu chí thành công.
 - [x] Đặc tả mô tả nhu cầu nghiệp vụ, thiết kế nằm ở plan.
 
-Bằng chứng: bộ dữ liệu tenant bật F11, danh mục đơn vị và một đối tác. Hai ca gốc kiểm US-28.1–2. Sau clarify, ca thứ ba kiểm RV-28.
+Bằng chứng: bộ dữ liệu tenant bật F11, danh mục đơn vị và một đối tác. Hai ca gốc kiểm US-28.1–2. Rà lại ngày 21/11/2026. TC-03 kiểm việc lưu và mở lại nháp, gửi khi thiếu đối tác và gửi lại cùng hồ sơ sau khi bổ sung.

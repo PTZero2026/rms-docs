@@ -5,7 +5,7 @@ epic: E0
 channel: shared
 wave: A
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-21
 ---
 
 # Tra căn cứ chuyển bước
@@ -14,9 +14,9 @@ updated: 2026-11-18
 
 ## Clarifications
 
-### Session 2026-11-18
+### Session 2026-11-21
 
-- Q: Nếu chuyên viên đổi khoa sau khi chuyển bước, ai xem được lịch sử? → A: Kiểm quyền trên đề tài ở lúc đọc, giữ nguyên tác nhân và đơn vị của sự kiện gốc. [RV-04](../review-decisions.md#rv-04). Khuyến nghị dùng để lập kế hoạch, chờ Chủ dữ liệu và QA phân quyền xác nhận.
+- Q: Nếu chuyên viên đổi khoa sau khi chuyển bước, ai xem được lịch sử? → A: Mỗi lần mở lịch sử, hệ thống kiểm quyền hiện tại trên đề tài. Nếu người đọc đã mất quyền, liên kết cũ không trả tên đề tài hay nội dung nhật ký. Người còn quyền thấy đúng người thực hiện và khoa của họ tại thời điểm thao tác. [RV-04](../review-decisions.md#rv-04)
 
 ## User Scenarios & Testing
 
@@ -29,7 +29,7 @@ Chuyên viên có quyền mở lịch sử một đề tài để xác định a
 - **AC-01** (US-04.1) — Given đề tài thuộc phạm vi. When mở sự kiện. Then thấy đúng người, thời gian, đối tượng và hành động.
 - **AC-02** (US-04.2) — Given người ngoài phạm vi. When mở trực tiếp lịch sử. Then không nhận nội dung của đề tài.
 
-- **AC-03** (US-04.3, khuyến nghị) — Given Chuyên viên vừa mất quyền đề tài nhưng còn liên kết cũ. When mở nhật ký. Then không lộ nội dung hoặc tên hồ sơ.
+- **AC-03** (US-04.3) — Chuyên viên U chuyển bước khi còn ở khoa A, sau đó sang khoa B và mất quyền xem đề tài. Người V vẫn có quyền. Khi U và V lần lượt mở cùng liên kết lịch sử đã lưu, U không thấy tên đề tài hay nội dung nhật ký. V thấy người thực hiện là U, thuộc khoa A tại thời điểm chuyển bước.
 
 ### Edge Cases
 
@@ -42,7 +42,7 @@ Người ngoài phạm vi → không nhận nội dung của đề tài.
 - **BR-01 / FR-001.** Khi đề tài thuộc phạm vi, người có quyền có thể mở sự kiện. Kết quả phải quan sát được: thấy đúng người, thời gian, đối tượng và hành động (AC-01).
 - **BR-02 / FR-002.** Với tình huống người ngoài phạm vi, thao tác mở trực tiếp lịch sử phải cho kết quả không nhận nội dung của đề tài (AC-02).
 
-- **BR-03 / FR-003 (đề xuất).** Kiểm quyền trên đề tài ở lúc đọc, giữ nguyên tác nhân và đơn vị của sự kiện gốc. Kiểm bằng AC-03.
+- **BR-03 / FR-003.** Mỗi lần mở lịch sử, hệ thống kiểm quyền hiện tại trên đề tài. Nếu người đọc đã mất quyền, liên kết cũ không trả tên đề tài hay nội dung nhật ký. Người còn quyền thấy đúng người thực hiện và khoa của họ tại thời điểm thao tác. Kiểm bằng AC-03.
 
 ### Key Entities
 

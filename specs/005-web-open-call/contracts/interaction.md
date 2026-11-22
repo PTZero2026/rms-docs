@@ -3,7 +3,7 @@ story: US-05
 feature: F02
 review_id: RV-05
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-21
 ---
 
 # Hợp đồng hành vi · US-05
@@ -16,6 +16,6 @@ updated: 2026-11-18
 | Kết quả thành công | Kỳ OPEN hiển thị ở danh sách tiếp nhận |
 | Điều kiện từ chối / kết quả phụ | ngày kết thúc trước ngày bắt đầu → báo lỗi và không tạo kỳ sai |
 | Quyền | Lấy tenant và vai trò từ phiên hoặc ngữ cảnh worker đã xác thực. Kiểm trên đối tượng nguồn, cả khi đi theo liên kết trực tiếp. |
-| Trường hợp cần review | Một lĩnh vực bắt buộc vừa ngừng hiệu lực trong bản nháp → chuyên viên mở kỳ → kỳ vẫn nháp và hiển thị mục cần thay |
+| Điều kiện mở kỳ theo RV-05 | Khi chuyên viên bấm Mở kỳ, hệ thống kiểm lại hiệu lực của danh mục và bộ tiêu chí. Nếu có mục hết hiệu lực, kỳ vẫn ở trạng thái Nháp và hệ thống chỉ rõ mục cần thay. Sau khi thay mục và đáp ứng đủ điều kiện, chuyên viên có thể mở chính kỳ đó. |
 
 Kiểm điều kiện ngay lúc ghi. Lưu thay đổi và sự kiện nghiệp vụ cùng giao dịch, rollback đồng thời nếu ghi lỗi. Hiển thị kỳ OPEN hiển thị ở danh sách tiếp nhận; hiển thị riêng tình huống ngày kết thúc trước ngày bắt đầu và cho người có quyền quay về dữ liệu nguồn. [Spec và nguồn](../spec.md).

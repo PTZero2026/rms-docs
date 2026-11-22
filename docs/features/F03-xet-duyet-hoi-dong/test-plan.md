@@ -4,7 +4,7 @@ spec: "./spec.md"
 owner: "PO/BA"
 status: Draft
 version: 0.1
-updated: 2026-06-05
+updated: 2026-11-21
 ---
 
 # Xét duyệt hội đồng — Kế hoạch kiểm thử
@@ -30,9 +30,9 @@ updated: 2026-06-05
 |----|-------------|----------------|----------------|------------------|------|
 | TC-01 | AC-01 | DT-A `SUBMITTED`, HĐ HD-XD-01 đã có thành viên, kỳ nhận đề xuất đã gán bộ tiêu chí | Chuyên viên tạo `EvaluationRound` cho DT-A | Đợt tạo `COLLECTING_SCORES`; DT-A → `UNDER_REVIEW`; chủ nhiệm nhận thông báo; có audit | Happy |
 | TC-02 | AC-02 | Thành viên U2 (không xung đột), đợt DT-A `COLLECTING_SCORES` | Nhập đủ điểm 3 tiêu chí trong `[0,10]` + nhận xét, gửi phiếu | `ScoreSheet` `DRAFT → SUBMITTED`; `totalScore` = Σ(score×weight); phiếu bị khóa | Happy |
-| TC-03 | AC-03 | DT-A có ≥3 phiếu `SUBMITTED`, `aggregateScore=8.0` (≥7.0) | Chuyên viên ra kết luận | `conclusion=PASSED`; đợt `CONCLUDED`; DT-A → `APPROVED`; chủ nhiệm nhận thông báo duyệt; audit | Happy |
+| TC-03 | AC-03 | DT-A có ≥3 phiếu `SUBMITTED`, `aggregateScore=8.0` (≥7.0), không bắt buộc thẩm định đạo đức | Chuyên viên ra kết luận | `conclusion=PASSED`; đợt `CONCLUDED`; DT-A → `APPROVED`; chủ nhiệm nhận thông báo duyệt; audit | Happy |
 | TC-04 | AC-04 | DT-A có ≥3 phiếu `SUBMITTED`, `aggregateScore=6.0` (<7.0) | Chuyên viên ra kết luận | `conclusion=FAILED`; DT-A → `REJECTED`; chủ nhiệm nhận thông báo từ chối | Biên/Lỗi |
-| TC-05 | AC-04 (BR-08) | DT-A có đủ phiếu, `aggregateScore=7.0` đúng bằng ngưỡng | Chuyên viên ra kết luận | `≥ PASSING_SCORE` → `PASSED` → DT-A `APPROVED` (kiểm tra biên đúng bằng ngưỡng) | Biên/Lỗi |
+| TC-05 | AC-03 (BR-08) | DT-A đã được hội đồng đạo đức thông qua, có đủ phiếu, `aggregateScore=7.0` đúng bằng ngưỡng | Chuyên viên ra kết luận | `≥ PASSING_SCORE` → `PASSED` → DT-A `APPROVED` (kiểm tra biên đúng bằng ngưỡng) | Biên/Lỗi |
 | TC-06 | AC-05 | DT-A chỉ có 2 phiếu `SUBMITTED` (< 3) | Chuyên viên cố ra kết luận | Bị chặn; hiển thị "còn thiếu 1 phiếu"; DT-A vẫn `UNDER_REVIEW` | Biên/Lỗi |
 | TC-07 | AC-06 | DT-B do thành viên U-CT làm chủ nhiệm | U-CT mở hàng chờ chấm (BO-04) | DT-B không xuất hiện; gọi API tạo `ScoreSheet` cho DT-B → bị từ chối | Negative |
 | TC-08 | AC-07 | Thành viên U2, tiêu chí `maxScore=10` | Nhập `score=11` rồi gửi phiếu | Lỗi validate; không gửi được; phiếu giữ `DRAFT` | Negative |
@@ -45,6 +45,9 @@ updated: 2026-06-05
 | TC-15 | AC-03 / FE-02 (BR-11) | DT-A `APPROVED`, `PUBLIC_COMMENTS=false` | Chủ nhiệm mở màn Kết quả (FE-02) | Thấy kết luận APPROVED; **không** thấy nhận xét hội đồng | Happy |
 | TC-16 | BR-11 | Đặt `PUBLIC_COMMENTS=true`, DT-A `APPROVED` | Chủ nhiệm mở FE-02 | Thấy nhận xét hội đồng, danh tính người chấm ẩn | Happy |
 | TC-17 | AC-03 (BR-06) | 3 phiếu `totalScore` = 8.0 / 7.0 / 9.0 | Hệ thống tính `aggregateScore` | `aggregateScore = 8.0` (trung bình), làm tròn 2 chữ số | Happy |
+| TC-18 | AC-03 | Hồ sơ bắt buộc thẩm định đạo đức, đủ phiếu khoa học và đạt ngưỡng | Chốt khoa học khi đang chờ đạo đức, sau đó ghi yêu cầu bổ sung | Đợt khoa học `CONCLUDED/PASSED`. Cả hai lần đề tài vẫn `UNDER_REVIEW`, FE-01 hiện đúng bước chờ hoặc nội dung cần bổ sung, chưa có thông báo phê duyệt | Biên |
+| TC-19 | AC-03 | Hồ sơ ở cuối TC-18 | Ghi kết quả đạo đức thông qua, xử lý lại cùng kết quả | Đề tài chuyển `APPROVED` một lần, có audit và đúng một thông báo phê duyệt cho chủ nhiệm | Happy |
+| TC-20 | AC-04 | Hồ sơ khoa học đã đạt, đạo đức bắt buộc còn chờ | Ghi kết luận từ chối cuối cùng của hội đồng đạo đức | Khoa học vẫn `PASSED`, đề tài chuyển `REJECTED`, ghi audit và chủ nhiệm nhận thông báo từ chối | Biên |
 
 ## 3. Trường hợp biên & negative
 

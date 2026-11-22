@@ -2,7 +2,7 @@
 title: "Checklist bàn giao ĐH Thủy Lợi dùng thử"
 id: "handover-thuy-loi"
 status: Draft
-updated: 2026-07-08
+updated: 2026-11-21
 source: "docs/epics/BienBan_TongHop_NCKH_ThuyLoi.md"
 ---
 
@@ -13,6 +13,8 @@ source: "docs/epics/BienBan_TongHop_NCKH_ThuyLoi.md"
 > ([variation-points.md](../architecture/variation-points.md)); cấm rẽ nhánh theo tenant trong code.
 
 ## A. Chốt nghiệp vụ (PO / Trường — chặn cứng)
+
+- [ ] Với mỗi phân hệ E4 dự kiến bật, ghi mã phân hệ và đính kèm ít nhất một ví dụ đầu vào–kết quả mong đợi đã được Trường ký. Với hoạt động có quy đổi giờ, ví dụ ghi hoạt động đủ điều kiện, định mức và ngày hiệu lực, số giờ từng người và cách xử lý khi thu hồi kết quả. [RV-36](../../specs/review-decisions.md#rv-36)
 - [ ] **Công thức quy đổi giờ giảng P03** từng loại hoạt động — số liệu hiện chỉ *seed đề xuất*, chưa phải nguồn sự thật (P03 §8, F11 §7)
 - [ ] `tlu.baseHoursScieQ1` — bắt buộc nhập trước khi công thức P03 chuyển `ACTIVE`
 - [ ] Xác nhận hệ số suy luận `SCIE_Q2 = 0.5` (đang gắn cờ `NEEDS_PO_VALIDATION`)
@@ -27,7 +29,7 @@ source: "docs/epics/BienBan_TongHop_NCKH_ThuyLoi.md"
 
 ## B. Cấu hình tenant Thủy Lợi (sổ điểm biến thiên — [ADR-0012](../architecture/decisions/0012-ranh-gioi-loi-vs-cau-hinh-tenant.md))
 - [ ] `VP-BRAND`: tên hiển thị, logo, slug, realm Keycloak
-- [ ] `VP-FEAT`: bật E4 (F09–F12, P03); lõi F01–F08 / B01–B04 bật sẵn
+- [ ] `VP-FEAT`: bật riêng từng phân hệ F09–F12, P03 sau khi kiểm tra ví dụ đã ký của chính phân hệ đó ở mục A. Lõi F01–F08 / B01–B04 bật sẵn.
 - [ ] `VP-WF`: graph vòng đời đề tài cấp cơ sở (8 bước theo biên bản) + map từng bước → `statusSemantic`
 - [ ] `VP-GE`: chọn guard / effect từ danh mục cố định
 - [ ] `VP-CAT`: seed danh mục — `RESEARCH_TOPIC_CATEGORY` (tier `UPPER` cho F09), `ProductType`, loại hoạt động F12, đơn vị / viện, học hàm / học vị

@@ -4,7 +4,7 @@ spec: "./spec.md"
 owner: "PO/BA"
 status: Draft
 version: 0.3
-updated: 2026-07-04
+updated: 2026-11-21
 ---
 
 # Danh mục & cấu hình (sys-config-service) — Kế hoạch kiểm thử
@@ -37,7 +37,7 @@ updated: 2026-07-04
 | ID    | Liên kết AC | Tiền điều kiện | Bước thực hiện | Kết quả mong đợi | Loại |
 |-------|-------------|----------------|----------------|------------------|------|
 | TC-01 | AC-01 | Đăng nhập `super_admin`; key `"NEW.SHARED"` chưa tồn tại | POST `/sys-configurations` key `"NEW.SHARED"`, content JSON, **không** kèm tenantId | Lưu thành công với `tenantId = NULL`; tenant X **và** Y đọc `GET :key` đều nhận nội dung này | Happy |
-| TC-02 | AC-02 | Đã có bản shared `"CONFIG.FE"` | Đăng nhập `tenant_admin` X, POST cùng key `"CONFIG.FE"`, content khác | Lưu với `tenantId = X` (không đè bản shared). X đọc → bản của X; Y đọc → vẫn bản shared | Happy |
+| TC-02 | AC-02 | X và Y đã đọc bản shared `"CONFIG.FE"`, cache còn hạn | Quản trị X POST bản riêng có nội dung khác. Ngay khi lưu thành công, đọc cùng key tại X và Y | Bản mới có `tenantId = X`. Lần đọc đầu tiên ở X trả nội dung mới, ở Y trả nội dung shared ban đầu | Happy |
 | TC-03 | AC-03 | Đã có bản `(tenantId = X, key = "ROLES")` | `tenant_admin` X POST lại đúng key `"ROLES"` | Bị từ chối **409 Conflict** ("duplicate"); không tạo row mới | Biên/Lỗi |
 | TC-04 | AC-04 | Key `"NOT.EXIST"` không có ở tenant X lẫn shared | `tenant_admin` X GET `/sys-configurations/NOT.EXIST` | Trả về **404 Not Found** | Lỗi |
 | TC-05 | AC-05 | Key `"CONFIG.FE"` chỉ có bản shared; cache đã bị xóa | User tenant X GET `:key` lần 1, rồi lần 2 trong vòng 5 phút | Lần 1: nội dung bản shared + header `X-Cache: MISS`; lần 2: cùng nội dung + `X-Cache: HIT` | Happy |

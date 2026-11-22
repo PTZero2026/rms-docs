@@ -5,7 +5,7 @@ epic: "E4"
 owner: "<PO/BA phụ trách>"
 status: Draft        # Draft | Review | Approved
 version: 0.3
-updated: 2026-06-26
+updated: 2026-11-21
 ---
 
 # Dự án phục vụ sản xuất
@@ -58,7 +58,7 @@ updated: 2026-06-26
 | ID    | Quy tắc | Mô tả | Ghi chú |
 |-------|---------|-------|---------|
 | BR-01 | Gắn đơn vị/viện | Mỗi dự án phải thuộc đúng một đơn vị/viện chủ trì của Trường | Từ danh mục `Unit` (B01); phục vụ phân quyền & báo cáo |
-| BR-02 | Đối tác ngoài bắt buộc | Dự án phục vụ sản xuất phải ghi nhận ít nhất một công ty/đối tác bên ngoài | Có thể chọn từ danh mục `EXTERNAL_PARTNER` hoặc tạo bản ghi đối tác nháp theo quyền |
+| BR-02 | Đối tác ngoài bắt buộc | Cho lưu và mở lại bản nháp chưa có đối tác ngoài khi đã đủ các trường bắt buộc để lưu, gồm đơn vị chủ trì (BR-01). Kiểm ít nhất một công ty/đối tác ngoài khi gửi duyệt theo [RV-28](../../../specs/review-decisions.md#rv-28). | Có thể chọn từ danh mục `EXTERNAL_PARTNER` hoặc tạo bản ghi đối tác nháp theo quyền |
 | BR-03 | Kinh phí mức đầu mục | F11 chỉ lưu kinh phí hợp đồng/tổng kinh phí ở mức ghi nhận; không quản lý dòng dự toán/giải ngân/quyết toán | Tiền VND; không tham chiếu sang F05 |
 | BR-04 | Minh chứng bắt buộc cấu hình động | Loại minh chứng bắt buộc để duyệt được cấu hình theo **loại dự án × giai đoạn**; khi duyệt thiếu loại bắt buộc thì chặn | Loại minh chứng từ `EVIDENCE_TYPE` (B01); dùng VP-EVID-REQ |
 | BR-05 | Vòng đời xác nhận | Trạng thái tối thiểu: **Nháp → Chờ duyệt → Đã duyệt**, có **Trả lại** kèm lý do về Nháp | Chuyển trạng thái qua domain service + ghi AuditLog, không tự đổi enum ở màn hình |
@@ -75,8 +75,7 @@ thái duyệt, lý do trả lại, tham chiếu bản ghi giờ giảng P03).
 
 - **AC-01** *(BR-01)* — Given kê khai dự án, When lưu mà thiếu đơn vị/viện chủ trì, Then hệ thống chặn và
   yêu cầu chọn đơn vị/viện.
-- **AC-02** *(BR-02)* — Given dự án phục vụ sản xuất, When gửi duyệt mà chưa có đối tác ngoài, Then hệ thống
-  chặn và nêu rõ cần bổ sung đối tác/công ty liên kết.
+- **AC-02** *(BR-02)* — Đối với hồ sơ có đơn vị chủ trì và đủ các điều kiện khác, người kê khai lưu và mở lại bản nháp chưa có đối tác ngoài. Khi gửi duyệt, hồ sơ vẫn ở **Nháp** và hệ thống yêu cầu bổ sung đối tác. Khi thêm ít nhất một đối tác ngoài rồi gửi lại, cùng hồ sơ chuyển sang **Chờ duyệt**.
 - **AC-03** *(BR-03)* — Given nhập kinh phí dự án, When lưu, Then hệ thống lưu kinh phí tổng bằng VND ở mức
   đầu mục, không yêu cầu nhập dòng dự toán/giải ngân và không tạo tham chiếu sang F05.
 - **AC-04** *(BR-04)* — Given cấu hình yêu cầu minh chứng loại `CONTRACT` ở giai đoạn duyệt kê khai, When

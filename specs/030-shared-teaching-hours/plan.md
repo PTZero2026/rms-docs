@@ -3,7 +3,7 @@ story: US-30
 feature: P03
 review_id: RV-30
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-21
 ---
 
 # Kế hoạch · Ghi giờ giảng từ một sự kiện hợp lệ
@@ -12,11 +12,11 @@ updated: 2026-11-18
 
 ## Summary
 
-Chuyên viên đối chiếu giờ của một giảng viên với hoạt động nguồn và công thức có hiệu lực của trường. Dùng khóa sự kiện để nhận lại an toàn, chỉ xác nhận xử lý sau khi lưu kết quả. Dùng ngày sự kiện gốc, khóa nguồn và phân bổ theo công thức của kỳ; sửa sai bằng điều chỉnh có lý do.
+Chuyên viên đối chiếu giờ của một giảng viên với hoạt động nguồn và công thức có hiệu lực của trường. Dùng khóa sự kiện để nhận lại an toàn, chỉ xác nhận xử lý sau khi lưu kết quả. Dùng định mức có hiệu lực vào ngày nghiệp vụ của hoạt động nguồn. Khi nhận lại cùng sự kiện đã ghi, giữ nguyên số giờ, kỳ và phân bổ ban đầu. Người có quyền sửa sai bằng bản ghi điều chỉnh có lý do và ghi nhật ký.
 
 ## Technical Context
 
-Một SPA trong `apps/web`, backend chia module, PostgreSQL và hợp đồng sinh type. Ngôn ngữ và phiên bản theo repo thực thi khi khởi tạo. [Kiến trúc đích](../../docs/architecture/overview.md). Kênh nghiệm thu chính: Dịch vụ dùng chung và điểm gọi của module sở hữu. Dữ liệu trong lát: Sự kiện hợp lệ, ngày nguồn, công thức hiệu lực và phân bổ. Đối chiếu trên bộ thử tenant bật P03, một sự kiện đã duyệt, một công thức do trường xác nhận. Bật module E4 riêng theo tenant và quy chế đã chọn. Điều kiện tích hợp: P03, F08, B01.
+Một SPA trong `apps/web`, backend chia module, PostgreSQL và hợp đồng sinh type. Ngôn ngữ và phiên bản theo repo thực thi khi khởi tạo. [Kiến trúc đích](../../docs/architecture/overview.md). Kênh nghiệm thu chính: Dịch vụ dùng chung và điểm gọi của module sở hữu. Dữ liệu trong lát: Sự kiện hợp lệ, ngày nguồn, công thức hiệu lực và phân bổ. Đối chiếu trên bộ thử tenant thử bật P03, một sự kiện đã duyệt và hai phiên bản công thức mẫu có số giờ khác nhau. Bật module E4 riêng theo tenant và quy chế đã chọn. Điều kiện tích hợp: P03, F08, B01.
 
 ### Xử lý tại module P03
 
@@ -29,7 +29,7 @@ Chọn đúng một công thức có hiệu lực theo sourceOccurredAt. Chốt 
 | Quyền và phạm vi | Xác định tenant, vai trò và đối tượng nguồn | Kiểm cả truy cập trực tiếp và dữ liệu ngoài quyền trong quickstart |
 | Vòng đời và audit | Mọi chuyển trạng thái đề tài phát sinh thuộc P01. Ghi P02 khi hành vi đổi trạng thái nghiệp vụ. | Dùng khóa sự kiện để nhận lại an toàn, chỉ xác nhận xử lý sau khi lưu kết quả. |
 | Hợp đồng và định dạng | Nguồn triển khai tại `packages/api-contracts` | Đặc tả lời gọi trỏ về nguồn duy nhất. VND nguyên, UTC lưu trữ, dd/MM/yyyy và Asia/Ho_Chi_Minh khi hiển thị |
-| Phạm vi và review | RV-30 là giả định có người phụ trách | [RV-30](../review-decisions.md#rv-30). Bật module E4 riêng theo tenant và quy chế đã chọn.  |
+| Phạm vi và review | RV-30 đã chấp thuận ngày 21/11/2026 | [RV-30](../review-decisions.md#rv-30). Bật module E4 riêng theo tenant và quy chế đã chọn.  |
 
 ## Project Structure
 
@@ -42,4 +42,4 @@ Trong repo code, module `apps/backend/src/modules/teaching-hour/teaching-hours` 
 |---|---|---|
 | FR-001 / AC-01 | Sự kiện hợp lệ, ngày nguồn, công thức hiệu lực và phân bổ → Dòng giờ theo giảng viên/kỳ và căn cứ tính | TC-01 |
 | FR-002 / AC-02 | Kiểm nhánh cùng sự kiện trước khi trả kết quả | TC-02 |
-| FR-003 / AC-03 | Dùng ngày sự kiện gốc, khóa nguồn và phân bổ theo công thức của kỳ; sửa sai bằng điều chỉnh có lý do. | TC-03 |
+| FR-003 / AC-03 | Dùng định mức có hiệu lực vào ngày nghiệp vụ của hoạt động nguồn. Khi nhận lại cùng sự kiện đã ghi, giữ nguyên số giờ, kỳ và phân bổ ban đầu. Người có quyền sửa sai bằng bản ghi điều chỉnh có lý do và ghi nhật ký. | TC-03 |

@@ -5,7 +5,7 @@ epic: E1
 channel: shared
 wave: A
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-21
 ---
 
 # Chốt kết quả xét duyệt
@@ -14,9 +14,9 @@ updated: 2026-11-18
 
 ## Clarifications
 
-### Session 2026-11-18
+### Session 2026-11-21
 
-- Q: Khi cơ sở yêu cầu cả đạo đức lẫn khoa học, lúc nào được phê duyệt đề tài? → A: Lưu kết luận khoa học riêng, giữ chuyển APPROVED cho tới khi đủ kết quả đạo đức nếu quy chế yêu cầu. [RV-11](../review-decisions.md#rv-11). Khuyến nghị dùng để lập kế hoạch, chờ PO, thư ký hội đồng khoa học và đạo đức xác nhận.
+- Q: Khi cơ sở yêu cầu cả đạo đức lẫn khoa học, lúc nào được phê duyệt đề tài? → A: Lưu kết luận khoa học riêng. Khi khoa học đạt, đề tài chuyển `APPROVED` nếu quy chế không yêu cầu thẩm định đạo đức hoặc hội đồng đạo đức đã thông qua. Nếu còn chờ hoặc cần bổ sung, giữ `UNDER_REVIEW` và hiển thị việc còn chờ cho chủ nhiệm. Nếu hội đồng đạo đức từ chối cuối cùng, chuyển `REJECTED` và thông báo kết luận. Chỉ gửi thông báo phê duyệt một lần khi chuyển `APPROVED`. [RV-11 đã chấp thuận](../review-decisions.md#rv-11).
 
 ## User Scenarios & Testing
 
@@ -29,7 +29,7 @@ Chuyên viên kết luận theo số phiếu và ngưỡng điểm để công b
 - **AC-01** (US-11.1) — Given đủ phiếu, điểm bằng ngưỡng đạt, quy chế không yêu cầu đạo đức hoặc đã có kết quả đạt. When kết luận. Then đề tài APPROVED và ghi audit.
 - **AC-02** (US-11.2) — Given chưa đủ phiếu. When kết luận. Then hiển thị số phiếu thiếu, đợt giữ nguyên.
 
-- **AC-03** (US-11.3, khuyến nghị) — Given Đủ phiếu khoa học, điểm vừa đạt nhưng hồ sơ bắt buộc thẩm định đạo đức đang chờ. When chuyên viên chốt khoa học. Then lưu kết quả hội đồng, đề tài chưa APPROVED.
+- **AC-03** (US-11.3, RV-11) — Given Đủ phiếu khoa học, điểm vừa đạt nhưng hồ sơ bắt buộc thẩm định đạo đức đang chờ. When chuyên viên chốt khoa học. Then lưu kết luận khoa học `PASSED`, giữ `UNDER_REVIEW` và hiện bước chờ. Khi có yêu cầu bổ sung, chủ nhiệm thấy nội dung cần bổ sung. Khi thông qua, chuyển `APPROVED` và báo duyệt một lần. Nếu từ chối cuối cùng, chuyển `REJECTED` và báo kết luận cho chủ nhiệm.
 
 ### Edge Cases
 
@@ -42,11 +42,11 @@ Chưa đủ phiếu → hiển thị số phiếu thiếu, đợt giữ nguyên.
 - **BR-01 / FR-001.** Khi đủ phiếu, điểm bằng ngưỡng đạt, quy chế không yêu cầu đạo đức hoặc đã có kết quả đạt, người có quyền có thể kết luận. Kết quả phải quan sát được: đề tài APPROVED và ghi audit (AC-01).
 - **BR-02 / FR-002.** Với tình huống chưa đủ phiếu, thao tác kết luận phải cho kết quả hiển thị số phiếu thiếu, đợt giữ nguyên (AC-02).
 
-- **BR-03 / FR-003 (đề xuất).** Lưu kết luận khoa học riêng, giữ chuyển APPROVED cho tới khi đủ kết quả đạo đức nếu quy chế yêu cầu. Kiểm bằng AC-03.
+- **BR-03 / FR-003.** Lưu kết luận khoa học riêng. Khi khoa học đạt, đề tài chuyển `APPROVED` nếu quy chế không yêu cầu thẩm định đạo đức hoặc hội đồng đạo đức đã thông qua. Nếu còn chờ hoặc cần bổ sung, giữ `UNDER_REVIEW` và hiển thị việc còn chờ cho chủ nhiệm. Nếu hội đồng đạo đức từ chối cuối cùng, chuyển `REJECTED` và thông báo kết luận. Chỉ gửi thông báo phê duyệt một lần khi chuyển `APPROVED`. Kiểm bằng AC-03.
 
 ### Key Entities
 
-Đầu vào nghiệp vụ: Đợt đang thu phiếu, ngưỡng, phiếu đã nộp, kết quả đạo đức nếu áp dụng. Đầu ra cần đối chiếu: Kết luận đợt, trạng thái đề tài và số phiếu thiếu nếu bị chặn.
+Đầu vào nghiệp vụ: Đợt khoa học, ngưỡng và phiếu đã nộp hoặc kết luận khoa học đã lưu, yêu cầu và kết quả đạo đức nếu áp dụng. Đầu ra cần đối chiếu: Kết luận đợt, trạng thái đề tài và số phiếu thiếu nếu bị chặn.
 
 ## Success Criteria
 

@@ -3,7 +3,7 @@ story: US-32
 feature: F07
 review_id: RV-32
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-21
 ---
 
 # Kế hoạch · Lập thẻ đọc cho một tài liệu có DOI
@@ -12,7 +12,7 @@ updated: 2026-11-18
 
 ## Summary
 
-Nhà nghiên cứu tạo bản nháp thẻ đọc có trích dẫn để chuẩn bị tổng quan và tự quyết định có dùng hay không. Kiểm quyền trước khi đọc tài liệu và khi mở trích dẫn. Lưu gợi ý, nguồn, phiên bản mẫu lệnh/mô hình và quyết định của người dùng riêng với hồ sơ gốc. Dịch vụ AI lỗi thì trở về luồng thủ công. Chỉ điền thông tin thư mục, đánh dấu phần phương pháp và kết quả thiếu nguồn; người dùng kiểm trước khi dùng.
+Nhà nghiên cứu tạo bản nháp thẻ đọc có trích dẫn để chuẩn bị tổng quan và tự quyết định có dùng hay không. Kiểm quyền trước khi đọc tài liệu và khi mở trích dẫn. Lưu gợi ý, nguồn, phiên bản mẫu lệnh/mô hình và quyết định của người dùng riêng với hồ sơ gốc. Dịch vụ AI lỗi thì trở về luồng thủ công. Khi chỉ có quyền dùng thông tin thư mục, trợ lý chỉ điền tên bài, tác giả, năm và DOI theo dữ liệu được phép. Cả phương pháp và kết quả ghi “chưa đủ căn cứ”. Nhà nghiên cứu kiểm thẻ nháp trước khi quyết định dùng hoặc bỏ.
 
 ## Technical Context
 
@@ -20,7 +20,7 @@ Một SPA trong `apps/web`, backend chia module, PostgreSQL và hợp đồng si
 
 ### Xử lý tại module F07
 
-Chỉ sinh trường nội dung từ toàn văn hợp lệ. Khi chỉ có metadata, điền thư mục và để trống nội dung thiếu căn cứ; không đưa thẻ nháp vào bảng sản phẩm được duyệt.
+Chỉ sinh trường nội dung từ toàn văn hợp lệ. Khi chỉ có thông tin thư mục, điền các trường được phép. Hiển thị “chưa đủ căn cứ” ở phương pháp và kết quả. Thẻ giữ trạng thái nháp.
 
 ## Constitution Check
 
@@ -29,7 +29,7 @@ Chỉ sinh trường nội dung từ toàn văn hợp lệ. Khi chỉ có metada
 | Quyền và phạm vi | Xác định tenant, vai trò và đối tượng nguồn | Kiểm cả truy cập trực tiếp và dữ liệu ngoài quyền trong quickstart |
 | Vòng đời và audit | Mọi chuyển trạng thái đề tài phát sinh thuộc P01. Trợ lý chỉ tạo bản nháp hoặc gợi ý. | Kiểm quyền trước khi đọc tài liệu và khi mở trích dẫn. Lưu gợi ý, nguồn, phiên bản mẫu lệnh/mô hình và quyết định của người dùng riêng với hồ sơ gốc. Dịch vụ AI lỗi thì trở về luồng thủ công. |
 | Hợp đồng và định dạng | Nguồn triển khai tại `packages/api-contracts` | Đặc tả lời gọi trỏ về nguồn duy nhất. VND nguyên, UTC lưu trữ, dd/MM/yyyy và Asia/Ho_Chi_Minh khi hiển thị |
-| Phạm vi và review | RV-32 là giả định có người phụ trách | [RV-32](../review-decisions.md#rv-32). Cổng phát hành gồm đối chiếu nguồn, quyền và dùng thử thủ công. |
+| Phạm vi và review | RV-32 đã chấp thuận ngày 21/11/2026 | [RV-32](../review-decisions.md#rv-32). Cổng phát hành gồm đối chiếu nguồn, quyền và dùng thử thủ công. |
 
 ## Project Structure
 
@@ -42,4 +42,4 @@ Trong repo code, module `apps/backend/src/modules/product/ai-reading-card` chị
 |---|---|---|
 | FR-001 / AC-01 | DOI, metadata xác minh, toàn văn có quyền sử dụng nếu có → Thẻ đọc nháp, nguồn từng trường và các mục thiếu căn cứ | TC-01 |
 | FR-002 / AC-02 | Kiểm nhánh chỉ có metadata trước khi trả kết quả | TC-02 |
-| FR-003 / AC-03 | Chỉ điền thông tin thư mục, đánh dấu phần phương pháp và kết quả thiếu nguồn; người dùng kiểm trước khi dùng. | TC-03 |
+| FR-003 / AC-03 | Khi chỉ có quyền dùng thông tin thư mục, trợ lý chỉ điền tên bài, tác giả, năm và DOI theo dữ liệu được phép. Cả phương pháp và kết quả ghi “chưa đủ căn cứ”. Nhà nghiên cứu kiểm thẻ nháp trước khi quyết định dùng hoặc bỏ. | TC-03 |

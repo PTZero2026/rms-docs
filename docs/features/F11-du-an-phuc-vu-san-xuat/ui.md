@@ -3,7 +3,7 @@ title: "Dự án phục vụ sản xuất — Giao diện (một web app, phân 
 spec: "./spec.md"
 owner: "<BA/Designer>"
 status: Draft
-updated: 2026-06-26
+updated: 2026-11-21
 ---
 
 # Dự án phục vụ sản xuất — Giao diện
@@ -45,15 +45,17 @@ Gom theo nhóm; (✓) = bắt buộc, (○) = tùy chọn.
 |---|---|:--:|---|
 | **Định danh** | Tên dự án | ✓ | text |
 | | Mã/hợp đồng dự án | ○ | text |
-| | Đơn vị/viện chủ trì | ✓ | tree-select `Unit` |
+| | Đơn vị/viện chủ trì | ✓ khi lưu nháp | tree-select `Unit` |
 | | Chủ nhiệm/người phụ trách | ✓ | picker `User` |
-| **Đối tác** | Đối tác/công ty ngoài | ✓ | select/quick-create `EXTERNAL_PARTNER` |
+| **Đối tác** | Đối tác/công ty ngoài | ✓ khi gửi duyệt | select/quick-create `EXTERNAL_PARTNER` |
 | | Mã số thuế/thông tin liên hệ | ○ | theo hồ sơ đối tác |
 | **Nhân sự** | Thành viên | ✓ | bảng động: người tham gia, vai trò, tỉ lệ đóng góp |
 | **Thời gian / kinh phí** | Thời gian bắt đầu – kết thúc | ✓ | date range |
 | | Kinh phí hợp đồng/tổng kinh phí | ○ | VND; mức ghi nhận, không nhập dòng giải ngân |
 | **Minh chứng** | Hợp đồng/phụ lục/biên bản | * | upload `Attachment` + select `EVIDENCE_TYPE` |
 | **Trạng thái** | Trạng thái duyệt / lý do trả lại | – | hệ thống quản |
+
+Nếu trường đối tác còn trống, người kê khai vẫn có thể lưu và mở lại nháp. Khi bấm **Gửi duyệt**, hiển thị yêu cầu bổ sung ngay tại trường đối tác và giữ hồ sơ ở **Nháp**. Sau khi thêm đối tác và đủ các điều kiện khác, gửi lại để chuyển **Chờ duyệt** (AC-02).
 
 (*) Minh chứng bắt buộc theo cấu hình `requiredEvidence`; form cho lưu nháp thiếu minh chứng nhưng chặn ở
 bước gửi duyệt/duyệt khi thiếu loại bắt buộc.

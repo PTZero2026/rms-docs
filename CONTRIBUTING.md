@@ -18,7 +18,7 @@
 
 ## Quy trình
 
-- Repo **thuần tài liệu**: PR chỉ chứa thay đổi tài liệu (code ở repo riêng — [ADR-0011](docs/architecture/decisions/0011-tach-code-quay-ve-docs-only.md)).
+- PR có thể cập nhật tài liệu, web và thư viện UI cùng nhau. Với thay đổi mã nguồn, chạy `pnpm lint` và `pnpm build` từ gốc repo. [ADR-0015](docs/architecture/decisions/0015-monorepo-rms.md)
 - Thay đổi luật trong `spec.md` cần ít nhất 1 reviewer là PO hoặc BA.
 - Quyết định kiến trúc quan trọng → tạo một ADR (dùng `docs/templates/adr.md`).
 

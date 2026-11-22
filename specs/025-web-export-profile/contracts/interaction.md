@@ -3,7 +3,7 @@ story: US-25
 feature: F08
 review_id: RV-25
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-21
 ---
 
 # Hợp đồng hành vi · US-25
@@ -16,6 +16,6 @@ updated: 2026-11-18
 | Kết quả thành công | Bản lý lịch theo mẫu, từng đầu ra chỉ xuất hiện một lần |
 | Điều kiện từ chối / kết quả phụ | người dùng ngoài phạm vi → từ chối |
 | Quyền | Lấy tenant và vai trò từ phiên hoặc ngữ cảnh worker đã xác thực. Kiểm trên đối tượng nguồn, cả khi đi theo liên kết trực tiếp. |
-| Trường hợp cần review | Một sản phẩm gắn qua hai vai trò và một sản phẩm đang chờ duyệt → xuất lý lịch → chỉ có một dòng cho sản phẩm đã duyệt |
+| Quyết định RV-25 | Mỗi lần xuất dùng phiên bản mẫu của trường đang có hiệu lực tại thời điểm xuất. Nhật ký `EXPORT_CV` của lần đó ghi mã mẫu và phiên bản thực tế đã dùng. |
 
 Truy vấn trong phạm vi hiện tại. Đọc hoặc mở liên kết giữ nguyên trạng thái hồ sơ. Hiển thị bản lý lịch theo mẫu, từng đầu ra chỉ xuất hiện một lần; hiển thị riêng tình huống người dùng ngoài phạm vi và cho người có quyền quay về dữ liệu nguồn. [Spec và nguồn](../spec.md).

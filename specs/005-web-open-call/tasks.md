@@ -3,7 +3,7 @@ story: US-05
 feature: F02
 review_id: RV-05
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-21
 ---
 
 # Tasks · Mở một kỳ nhận đề xuất
@@ -34,4 +34,4 @@ Mục tiêu độc lập: Chuyên viên thiết lập mã kỳ, thời gian, b�
 
 ## Phụ thuộc và cách giao
 
-T001 → T002 → (T003 ∥ T004) → T005 → T006 → T007 → T008. T003 và T004 dùng tệp riêng sau khi chốt giao tiếp. Giao lát US1 với dữ liệu mẫu trước, sau đó chạy lại bằng module thật. Dùng [RV-05](../review-decisions.md#rv-05) để chốt nhánh biên trước khi nghiệm thu.
+T001 → T002 → (T003 ∥ T004) → T005 → T006 → T007 → T008. T003 và T004 dùng tệp riêng sau khi chốt giao tiếp. Giao lát US1 với dữ liệu mẫu trước, sau đó chạy lại bằng module thật. Dùng [RV-05](../review-decisions.md#rv-05) để đối chiếu hai lượt mở cùng kỳ trong TC-03.

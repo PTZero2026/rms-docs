@@ -3,7 +3,7 @@ story: US-32
 feature: F07
 review_id: RV-32
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-21
 ---
 
 # Hợp đồng hành vi · US-32
@@ -15,7 +15,7 @@ updated: 2026-11-18
 | Đầu vào | DOI, metadata xác minh, toàn văn có quyền sử dụng nếu có |
 | Kết quả thành công | Thẻ đọc nháp, nguồn từng trường và các mục thiếu căn cứ |
 | Điều kiện từ chối / kết quả phụ | chỉ có metadata → chỉ điền thư mục, đánh dấu thiếu căn cứ cho nội dung bài |
-| Quyền | Lấy tenant và vai trò từ phiên hoặc ngữ cảnh worker đã xác thực. Kiểm trên đối tượng nguồn, cả khi đi theo liên kết trực tiếp. |
-| Trường hợp cần review | Tài liệu có DOI nhưng quyền dùng toàn văn đã hết → lập lại thẻ đọc → chỉ còn dữ liệu thư mục được phép, phần nội dung chờ bổ sung nguồn |
+| Quyền | Lấy tenant và vai trò từ phiên hoặc ngữ cảnh worker đã xác thực. Chỉ truy xuất phần tài liệu mà người dùng hiện có quyền đọc và trường cho phép dùng cho AI. Kiểm tra cả hai quyền trước khi gửi nội dung cho mô hình và khi mở lại yêu cầu hoặc căn cứ cũ. [RV-35](../../review-decisions.md#rv-35). |
+| Khi quyền dùng toàn văn hết hạn | Khi mở lại hoặc lập lại thẻ, kiểm quyền hiện tại. Khi chỉ có quyền dùng thông tin thư mục, trợ lý chỉ điền tên bài, tác giả, năm và DOI theo dữ liệu được phép. Cả phương pháp và kết quả ghi “chưa đủ căn cứ”. Nhà nghiên cứu kiểm thẻ nháp trước khi quyết định dùng hoặc bỏ. |
 
-Kiểm quyền trước khi đọc tài liệu và khi mở trích dẫn. Lưu gợi ý, nguồn, phiên bản mẫu lệnh/mô hình và quyết định của người dùng riêng với hồ sơ gốc. Dịch vụ AI lỗi thì trở về luồng thủ công. Hiển thị thẻ đọc nháp, nguồn từng trường và các mục thiếu căn cứ; hiển thị riêng tình huống chỉ có metadata và cho người có quyền quay về dữ liệu nguồn. [Spec và nguồn](../spec.md).
+Mỗi gợi ý lưu nguồn và phiên bản đã dùng, phiên bản mô hình và mẫu lệnh. Ghi lựa chọn dùng/bỏ khi người dùng quyết định. Khi tắt AI hoặc dịch vụ gặp lỗi, người dùng vẫn tiếp tục thủ công. Hiển thị thẻ đọc nháp, nguồn từng trường và các mục thiếu căn cứ; hiển thị riêng tình huống chỉ có metadata và cho người có quyền quay về dữ liệu nguồn. [Spec và nguồn](../spec.md).

@@ -1,4 +1,4 @@
-<!-- Sync Impact Report · 1.1.0 → 1.2.0. Bổ sung VI–VII, quy trình bốn bước và review khuyến nghị. Giữ I–V; bổ sung B06 vào bảng chiếu. Không có mục giữ chỗ. -->
+<!-- Sync Impact Report · 1.2.0 → 1.3.0. ADR-0015 đưa frontend và UI vào cùng workspace với tài liệu. -->
 # Hiến pháp RMS — Hệ thống Quản lý Nghiên cứu Khoa học
 
 <!--
@@ -17,8 +17,7 @@ Nghiệp vụ được chốt ở `docs/features/<feature>/spec.md` qua mã `BR-
 việc sinh/sửa code phải bám acceptance criteria; không hiện thực thứ không có trong spec,
 không đổi luật nghiệp vụ trong code mà chưa cập nhật spec. Repo ưu tiên **docs trước, code sau**.
 
-> **Repo thuần tài liệu (docs-only)** — code chạy được nằm ở repo riêng ([ADR-0011](../../docs/architecture/decisions/0011-tach-code-quay-ve-docs-only.md),
-> thay thế ADR-0006). Nguyên tắc II–VII dưới đây là **luật thiết kế hệ thống đích** mà spec/design phải tôn trọng.
+> Tài liệu và mã nguồn dùng chung monorepo. Nguyên tắc II–VII áp dụng cho đặc tả và phần hiện thực tương ứng. [ADR-0015](../../docs/architecture/decisions/0015-monorepo-rms.md)
 
 ### II. Một web app, phân quyền ở backend (NON-NEGOTIABLE)
 Mọi API phải có kiểm tra authorization ở backend (controller/service) kèm data scoping theo
@@ -61,7 +60,7 @@ Vòng làm việc cho một feature mới hoặc thay đổi lớn:
 1. `/speckit-constitution` — soát/đồng bộ hiến pháp này với AGENTS.md.
 2. `/speckit-specify` — sinh một đặc tả mỗi US ở `specs/NNN-<web|mobile|shared>-slug/spec.md` (xưởng làm việc của Spec Kit).
 3. `/speckit-clarify` — làm rõ từng lát. Khi được giao đề xuất, ghi khuyến nghị, use case, reviewer và trạng thái chờ duyệt.
-4. `/speckit-plan` → `/speckit-tasks` → `/speckit-analyze` *(tùy chọn)* — lập kế hoạch và phân rã task ngay trong repo tài liệu. Chạy implement ở repo code.
+4. `/speckit-plan` → `/speckit-tasks` → `/speckit-analyze` *(tùy chọn)* — lập kế hoạch và phân rã task. Hiện thực trong workspace phụ trách.
 5. Khi nội dung đã chín, **chắt lọc** spec từ `specs/NNN-*/` về `docs/features/<feature>/`
    (bản nghiệp vụ đã chốt, theo quy ước `spec.md`/`design.md`/`ui.md`/`test-plan.md`).
 
@@ -71,9 +70,9 @@ theo vòng đời. Ba lớp **Epic → Feature → Spec** không thay thế nhau
 
 ## Definition of Done
 
-- **Tài liệu (pha hiện tại — docs-only):** `spec.md` có `BR-xx`/`AC-xx` rõ ràng; mỗi AC có ≥1 test case
+- **Tài liệu:** `spec.md` có `BR-xx`/`AC-xx` rõ ràng; mỗi AC có ≥1 test case
   trong `test-plan.md`; `ui.md` map về AC; `design.md` có bảng truy vết; `status`/`updated` đã cập nhật.
-- **Code (khi bước sang repo thực thi):** bám AC trong spec; có test khớp `test-plan.md`; lint & build sạch.
+- **Code:** bám AC trong spec; có test khớp `test-plan.md`; lint & build sạch.
 - Không phá ánh xạ feature↔module và các luật bất biến ở trên; PR liên kết feature/ADR liên quan.
 
 ## Governance
@@ -84,4 +83,4 @@ kèm cập nhật ADR tương ứng trong `docs/architecture/decisions/`, rồi 
 Tài liệu thay toàn bộ chuyển vào `ref/`, có chỉ dẫn sang bản mới. PO/BA duyệt BR/AC trước khi chắt lọc. Tăng MAJOR khi bỏ hoặc đổi nghĩa luật bất biến, MINOR khi thêm nguyên tắc, PATCH khi làm rõ câu chữ.
 Mọi PR/review phải kiểm chứng tuân thủ; độ phức tạp phát sinh phải được giải trình.
 
-**Version**: 1.2.0 | **Ratified**: 2026-06-12 | **Last Amended**: 2026-11-18
+**Version**: 1.3.0 | **Ratified**: 2026-06-12 | **Last Amended**: 2026-11-20

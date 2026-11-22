@@ -3,7 +3,7 @@ title: "Dự án phục vụ sản xuất — Thiết kế"
 spec: "./spec.md"
 owner: "<DEV/ARCH>"
 status: Draft
-updated: 2026-06-26
+updated: 2026-11-21
 ---
 
 # Dự án phục vụ sản xuất — Thiết kế
@@ -33,7 +33,7 @@ stateDiagram-v2
 ```
 
 - Mọi transition đi qua domain service của `applied-project`.
-- Transition `approve`, `return`, `revoke` ghi `AuditLog` append-only qua P02.
+- Transition `submit`, `approve`, `return`, `revoke` ghi `AuditLog` append-only qua P02.
 - UI không tự cập nhật enum trạng thái trực tiếp.
 
 ## 3. Dữ liệu khái niệm
@@ -60,7 +60,7 @@ stateDiagram-v2
 | BR/AC | Cách hiện thực |
 |---|---|
 | BR-01 / AC-01 | Validate `hostUnitId` bắt buộc; scope dữ liệu theo đơn vị qua RBAC/RLS của hệ thống đích |
-| BR-02 / AC-02 | Validate có ít nhất một `AppliedProjectPartner` khi gửi duyệt; hỗ trợ chọn/tạo nhanh đối tác theo quyền |
+| BR-02 / AC-02 | Lưu `DRAFT` với danh sách đối tác rỗng khi có đơn vị chủ trì và đủ các trường bắt buộc khác. Domain service kiểm ít nhất một `AppliedProjectPartner` của chính hồ sơ khi `submit`, trước khi chuyển `PENDING_APPROVAL`. Hỗ trợ chọn/tạo nhanh đối tác theo quyền. |
 | BR-03 / AC-03 | Chỉ lưu trường tiền tổng; không render bảng dòng ngân sách và không tạo reference sang F05 |
 | BR-04 / AC-04 | Guard `RequiredEvidenceGuard` đọc `requiredEvidence` theo giai đoạn và `EVIDENCE_TYPE` |
 | BR-05 / AC-05 | Domain service kiểm transition `submit/approve/return`; lưu `returnReason` khi trả lại |

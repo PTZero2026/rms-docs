@@ -3,7 +3,7 @@ story: US-28
 feature: F11
 review_id: RV-28
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-21
 ---
 
 # Kế hoạch · Kê khai dự án phục vụ sản xuất
@@ -29,7 +29,7 @@ Cho chọn hoặc nhập đối tác theo danh mục của trường. Lưu tổn
 | Quyền và phạm vi | Xác định tenant, vai trò và đối tượng nguồn | Kiểm cả truy cập trực tiếp và dữ liệu ngoài quyền trong quickstart |
 | Vòng đời và audit | Mọi chuyển trạng thái đề tài phát sinh thuộc P01. Ghi P02 khi hành vi đổi trạng thái nghiệp vụ. | Kiểm điều kiện ngay lúc ghi. Lưu thay đổi và sự kiện nghiệp vụ cùng giao dịch, rollback đồng thời nếu ghi lỗi. |
 | Hợp đồng và định dạng | Nguồn triển khai tại `packages/api-contracts` | Đặc tả lời gọi trỏ về nguồn duy nhất. VND nguyên, UTC lưu trữ, dd/MM/yyyy và Asia/Ho_Chi_Minh khi hiển thị |
-| Phạm vi và review | RV-28 là giả định có người phụ trách | [RV-28](../review-decisions.md#rv-28). Bật module E4 riêng theo tenant và quy chế đã chọn.  |
+| Phạm vi và review | RV-28 đã chấp thuận ngày 21/11/2026 | [RV-28](../review-decisions.md#rv-28). Bật module E4 riêng theo tenant và quy chế đã chọn.  |
 
 ## Project Structure
 
@@ -41,5 +41,5 @@ Trong repo code, module `apps/backend/src/modules/applied-project/register-appli
 | Truy vết | Cách hiện thực | Ca kiểm |
 |---|---|---|
 | FR-001 / AC-01 | Đơn vị chủ trì, đối tác ngoài và tổng kinh phí → Đầu mục dự án ứng dụng với kinh phí tổng | TC-01 |
-| FR-002 / AC-02 | Kiểm nhánh thiếu đối tác ngoài trước khi trả kết quả | TC-02 |
-| FR-003 / AC-03 | Yêu cầu đơn vị chủ trì khi lưu, kiểm ít nhất một đối tác ngoài tại lúc gửi duyệt. | TC-03 |
+| FR-002 / AC-02 | Kiểm đối tác ngoài khi gửi duyệt | TC-02 |
+| FR-003 / AC-03 | Kiểm đơn vị chủ trì khi lưu. Cho phép danh sách đối tác rỗng trong Nháp. Khi gửi, kiểm lại số đối tác của chính hồ sơ trước khi chuyển Chờ duyệt. | TC-03 |

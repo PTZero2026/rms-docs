@@ -1,54 +1,54 @@
 ---
 title: "Sổ quyết định cần review"
 status: Review
-updated: 2026-11-18
+updated: 2026-11-21
 ---
 
 # Sổ quyết định cần review
 
-PO/BA có thể bắt đầu từ RV-11 (hai hội đồng), RV-13 (số liệu kỳ), RV-24 (khóa sổ), RV-30 (giờ giảng), RV-31/32/35 (AI). Mỗi mã dưới đây là một quyết định có thể duyệt riêng. Mã RV-01–32 đi cùng AC-03 và TC-03 của thẻ tương ứng. [Báo cáo và danh mục](README.md)
+RV-31 đã tạm chốt để thử trên hồ sơ thực tế. RV-32 đã chốt phạm vi thông tin được điền trên thẻ đọc. Hai tác vụ AI cùng áp dụng quy tắc nguồn đã chốt ở RV-35. Mỗi mã dưới đây là một quyết định có thể duyệt riêng. Mã RV-01–32 đi cùng AC-03 và TC-03 của thẻ tương ứng. [Báo cáo và danh mục](README.md)
 
 **Cách xử lý.** Người chịu trách nhiệm ghi kết quả `Chấp thuận`, `Sửa` hoặc `Hoãn`, ngày, tên/vai trò, căn cứ và nội dung thay thế. AI có thể rà kết quả với spec → plan → tasks → quickstart, nêu tệp và mã còn lệch. Người duyệt nghiệp vụ ký trước khi cập nhật BR/AC nguồn hoặc đưa cam kết vào pilot. “Chờ review” là trạng thái của quyết định, kể cả khi tài liệu lập kế hoạch đã đầy đủ.
 
 ## RV-01
 
-**Có chờ hết phiên khi nhân sự rời trường?** · Chờ review · Quản trị IAM và phụ trách CNTT.
+**Có chờ hết phiên khi nhân sự rời trường?** · **Chấp thuận** ngày 21/11/2026 theo xác nhận của người dùng trong phiên rà soát. Đầu mối gồm quản trị IAM và phụ trách CNTT.
 
 - **Use case.** Quản trị viên khóa một tài khoản khi người dùng rời đơn vị để ngừng truy cập nghiệp vụ. Với điều kiện người vừa bị khóa còn một phiên mở, khi tải lại hồ sơ, kết quả mong đợi là bị từ chối, dữ liệu lịch sử còn nguyên.
-- **Khuyến nghị.** Kiểm trạng thái tại yêu cầu nghiệp vụ kế tiếp, kể cả phiên đã mở.
-- **Chứng cứ để ký.** Kiểm TC-03 cùng hai ca gốc và ghi giá trị thực tế. [US-01 · đặc tả](001-shared-lock-account/spec.md) · [Ca thử](001-shared-lock-account/quickstart.md) · [Phương án khác](001-shared-lock-account/research.md)
+- **Quyết định.** Ngay khi tài khoản bị khóa, backend từ chối yêu cầu nghiệp vụ kế tiếp, kể cả tải lại hoặc lưu hồ sơ từ phiên đã mở. Người có quyền vẫn tra cứu được lịch sử trước khi khóa.
+- **Chứng cứ cần thu.** Thử riêng tải lại và bấm Lưu ngay sau khi khóa. Dùng tài khoản có quyền để đối chiếu nội dung đã lưu và lịch sử trước khi khóa. [US-01 · đặc tả](001-shared-lock-account/spec.md) · [Ca thử](001-shared-lock-account/quickstart.md) · [Phương án khác](001-shared-lock-account/research.md)
 
 ## RV-02
 
-**Làm sao tránh hiển thị cấu hình cũ sau khi lưu?** · Chờ review · Quản trị tenant và kiến trúc sư.
+**Làm sao tránh hiển thị cấu hình cũ sau khi lưu?** · **Chấp thuận** ngày 21/11/2026 theo xác nhận của người dùng trong phiên rà soát. Đầu mối gồm quản trị tenant và kiến trúc sư.
 
-- **Use case.** Quản trị tenant điều chỉnh một giá trị dùng cho kỳ xét của trường, các trường khác tiếp tục dùng giá trị chung. Với điều kiện a và B đã đọc khóa dùng chung trước khi A ghi đè, khi đọc lại tại hai trường, kết quả mong đợi là A dùng bản riêng, B vẫn dùng bản chung.
-- **Khuyến nghị.** Làm mất hiệu lực mục trong bộ nhớ đệm của trường vừa sửa trước lần đọc kế tiếp.
-- **Chứng cứ để ký.** Kiểm TC-03 cùng hai ca gốc và ghi giá trị thực tế. [US-02 · đặc tả](002-shared-config-override/spec.md) · [Ca thử](002-shared-config-override/quickstart.md) · [Phương án khác](002-shared-config-override/research.md)
+- **Use case.** Quản trị tenant điều chỉnh một giá trị dùng cho kỳ xét của trường, các trường khác tiếp tục dùng giá trị chung. Với điều kiện A và B đã đọc khóa dùng chung trước khi A ghi đè, khi đọc lại tại hai trường, kết quả mong đợi là A dùng bản riêng, B vẫn dùng bản chung.
+- **Quyết định.** Ngay từ lần đọc đầu tiên sau khi trường A lưu thành công giá trị riêng, A nhận giá trị mới dù trước đó đã đọc bản chung. Trường B còn dùng mặc định vẫn nhận giá trị chung.
+- **Chứng cứ cần thu.** Ghi giá trị chung hai trường đã đọc, rồi đối chiếu lần đọc đầu tiên ở mỗi trường ngay sau khi A lưu, trong khi bộ nhớ đệm cũ còn hạn. [US-02 · đặc tả](002-shared-config-override/spec.md) · [Ca thử](002-shared-config-override/quickstart.md) · [Phương án khác](002-shared-config-override/research.md)
 
 ## RV-03
 
-**Áp dụng quy chế mới cho hồ sơ nào?** · Chờ review · Chủ quy trình và kiến trúc sư.
+**Áp dụng quy chế mới cho hồ sơ nào?** · **Chấp thuận** ngày 21/11/2026 theo xác nhận của người dùng trong phiên rà soát. Đầu mối gồm chủ quy trình và kiến trúc sư.
 
 - **Use case.** Người quản lý quy trình phát hành một phiên bản cho hồ sơ mới để quy chế mới có ngày áp dụng rõ ràng. Với điều kiện hồ sơ cũ còn một bước đang chờ khi v2 đã kích hoạt, khi người xử lý hoàn tất bước, kết quả mong đợi là bước kế tiếp lấy từ v1.
-- **Khuyến nghị.** Chọn phiên bản đang hiệu lực khi tạo hồ sơ, giữ phiên bản của hồ sơ đã tồn tại.
-- **Chứng cứ để ký.** Kiểm TC-03 cùng hai ca gốc và ghi giá trị thực tế. [US-03 · đặc tả](003-shared-workflow-version/spec.md) · [Ca thử](003-shared-workflow-version/quickstart.md) · [Phương án khác](003-shared-workflow-version/research.md)
+- **Quyết định.** Mỗi hồ sơ dùng phiên bản quy trình có hiệu lực lúc tạo cho đến khi hoàn tất. Khi v2 có hiệu lực, hồ sơ đang chờ duyệt theo v1 tiếp tục chuyển bước theo v1. Hồ sơ tạo từ thời điểm đó dùng v2.
+- **Chứng cứ cần thu.** Dùng hai phiên bản có bước kế tiếp khác nhau. Đối chiếu bước thực tế và phiên bản của hồ sơ tạo trước và sau khi kích hoạt v2. [US-03 · đặc tả](003-shared-workflow-version/spec.md) · [Ca thử](003-shared-workflow-version/quickstart.md) · [Phương án khác](003-shared-workflow-version/research.md)
 
 ## RV-04
 
-**Nếu chuyên viên đổi khoa sau khi chuyển bước, ai xem được lịch sử?** · Chờ review · Chủ dữ liệu và QA phân quyền.
+**Nếu chuyên viên đổi khoa sau khi chuyển bước, ai xem được lịch sử?** · **Chấp thuận** ngày 21/11/2026 theo xác nhận của người dùng trong phiên rà soát. Đầu mối gồm chủ dữ liệu và QA phân quyền.
 
 - **Use case.** Chuyên viên có quyền mở lịch sử một đề tài để xác định ai chuyển bước và vào thời điểm nào. Với điều kiện chuyên viên vừa mất quyền đề tài nhưng còn liên kết cũ, khi mở nhật ký, kết quả mong đợi là không lộ nội dung hoặc tên hồ sơ.
-- **Khuyến nghị.** Kiểm quyền trên đề tài ở lúc đọc, giữ nguyên tác nhân và đơn vị của sự kiện gốc.
-- **Chứng cứ để ký.** Kiểm TC-03 cùng hai ca gốc và ghi giá trị thực tế. [US-04 · đặc tả](004-shared-audit-trail/spec.md) · [Ca thử](004-shared-audit-trail/quickstart.md) · [Phương án khác](004-shared-audit-trail/research.md)
+- **Quyết định.** Mỗi lần mở lịch sử, hệ thống kiểm quyền hiện tại trên đề tài. Nếu người đọc đã mất quyền, liên kết cũ không trả tên đề tài hay nội dung nhật ký. Người còn quyền thấy đúng người thực hiện và khoa của họ tại thời điểm thao tác.
+- **Chứng cứ cần thu.** Mở cùng liên kết sau khi chuyên viên chuyển khoa bằng hai tài khoản, một đã mất quyền và một còn quyền. Đối chiếu người và khoa với thời điểm chuyển bước. [US-04 · đặc tả](004-shared-audit-trail/spec.md) · [Ca thử](004-shared-audit-trail/quickstart.md) · [Phương án khác](004-shared-audit-trail/research.md)
 
 ## RV-05
 
-**Nếu danh mục hết hiệu lực giữa lúc soạn và mở kỳ thì sao?** · Chờ review · Phòng KHCN và BA.
+**Nếu danh mục hết hiệu lực giữa lúc soạn và mở kỳ thì sao?** · **Chấp thuận** ngày 21/11/2026 theo xác nhận của người dùng trong phiên rà soát. Đầu mối gồm Phòng KHCN và BA.
 
 - **Use case.** Chuyên viên thiết lập mã kỳ, thời gian, bộ tiêu chí và mở đợt để giảng viên biết nơi nộp đúng hạn. Với điều kiện một lĩnh vực bắt buộc vừa ngừng hiệu lực trong bản nháp, khi chuyên viên mở kỳ, kết quả mong đợi là kỳ vẫn nháp và hiển thị mục cần thay.
-- **Khuyến nghị.** Kiểm lại danh mục và bộ tiêu chí tại thời điểm mở, chỉ rõ mục phải thay.
-- **Chứng cứ để ký.** Kiểm TC-03 cùng hai ca gốc và ghi giá trị thực tế. [US-05 · đặc tả](005-web-open-call/spec.md) · [Ca thử](005-web-open-call/quickstart.md) · [Phương án khác](005-web-open-call/research.md)
+- **Quyết định.** Khi chuyên viên bấm Mở kỳ, hệ thống kiểm lại hiệu lực của danh mục và bộ tiêu chí. Nếu có mục hết hiệu lực, kỳ vẫn ở trạng thái Nháp và hệ thống chỉ rõ mục cần thay. Sau khi thay mục và đáp ứng đủ điều kiện, chuyên viên có thể mở chính kỳ đó.
+- **Chứng cứ cần thu.** Thử riêng lĩnh vực và bộ tiêu chí hết hiệu lực sau khi lưu nháp. Kiểm tên mục được báo và trạng thái của cùng kỳ trước và sau khi thay mục. [US-05 · đặc tả](005-web-open-call/spec.md) · [Ca thử](005-web-open-call/quickstart.md) · [Phương án khác](005-web-open-call/research.md)
 
 ## RV-06
 
@@ -92,11 +92,11 @@ PO/BA có thể bắt đầu từ RV-11 (hai hội đồng), RV-13 (số liệu 
 
 ## RV-11
 
-**Khi cơ sở yêu cầu cả đạo đức lẫn khoa học, lúc nào được phê duyệt đề tài?** · Chờ review · PO, thư ký hội đồng khoa học và đạo đức.
+**Khi cơ sở yêu cầu cả đạo đức lẫn khoa học, lúc nào được phê duyệt đề tài?** · **Chấp thuận** ngày 21/11/2026 theo xác nhận của người dùng trong phiên rà soát. Đầu mối nghiệp vụ của mục này gồm PO và thư ký hai hội đồng.
 
 - **Use case.** Chuyên viên kết luận theo số phiếu và ngưỡng điểm để công bố đúng quyết định của đợt. Với điều kiện đủ phiếu khoa học, điểm vừa đạt nhưng hồ sơ bắt buộc thẩm định đạo đức đang chờ, khi chuyên viên chốt khoa học, kết quả mong đợi là lưu kết quả hội đồng, đề tài chưa APPROVED.
-- **Khuyến nghị.** Lưu kết luận khoa học riêng, giữ chuyển APPROVED cho tới khi đủ kết quả đạo đức nếu quy chế yêu cầu.
-- **Chứng cứ để ký.** Kiểm TC-03 cùng hai ca gốc và ghi giá trị thực tế. [US-11 · đặc tả](011-shared-review-decision/spec.md) · [Ca thử](011-shared-review-decision/quickstart.md) · [Phương án khác](011-shared-review-decision/research.md)
+- **Quyết định.** Lưu kết luận khoa học riêng. Khi khoa học đạt, đề tài chuyển `APPROVED` nếu quy chế không yêu cầu thẩm định đạo đức hoặc hội đồng đạo đức đã thông qua. Nếu còn chờ hoặc cần bổ sung, giữ `UNDER_REVIEW` và hiển thị việc còn chờ cho chủ nhiệm. Nếu hội đồng đạo đức từ chối cuối cùng, chuyển `REJECTED` và thông báo kết luận. Chỉ gửi thông báo phê duyệt một lần khi chuyển `APPROVED`.
+- **Căn cứ.** [Quyết định thẩm định song song](../docs/architecture/migration-coverage.md) và xác nhận ngày 21/11/2026. Các ca dưới đây dùng để kiểm chứng khi triển khai. [US-11 · đặc tả](011-shared-review-decision/spec.md) · [Ca thử](011-shared-review-decision/quickstart.md) · [Phương án khác](011-shared-review-decision/research.md)
 
 ## RV-12
 
@@ -108,11 +108,11 @@ PO/BA có thể bắt đầu từ RV-11 (hai hội đồng), RV-13 (số liệu 
 
 ## RV-13
 
-**Một hồ sơ trả về nháp rồi nộp lại được đếm thế nào?** · Chờ review · Trưởng phòng KHCN và PO/BA.
+**Một hồ sơ trả về nháp rồi nộp lại được đếm thế nào?** · **Chấp thuận** ngày 21/11/2026 theo xác nhận của người dùng trong phiên rà soát. Đầu mối nghiệp vụ gồm trưởng phòng KHCN và PO/BA.
 
 - **Use case.** Trưởng phòng lấy số đề tài theo trạng thái chuẩn của một kỳ tại thời điểm trích xuất, để đối chiếu danh sách hội đồng. Với điều kiện có 3 hồ sơ đã cấp mã và một bản nháp chưa từng nộp, khi đếm cả kỳ rồi xuất danh sách, kết quả mong đợi là tổng 3, bản chưa từng nộp không có dòng.
-- **Khuyến nghị.** Đếm theo định danh hồ sơ đã cấp mã trong kỳ, nhóm theo trạng thái chuẩn tại lúc trích xuất. Dòng và tổng dùng cùng bản chụp.
-- **Chứng cứ để ký.** Kiểm TC-03 cùng hai ca gốc và ghi giá trị thực tế. [US-13 · đặc tả](013-web-call-report/spec.md) · [Ca thử](013-web-call-report/quickstart.md) · [Phương án khác](013-web-call-report/research.md)
+- **Quyết định.** Trong kỳ và phạm vi được xem, mỗi hồ sơ đã cấp mã được tính một lần, kể cả khi nộp lại hoặc đang ở Nháp sau khi bị trả. Loại nháp chưa từng nộp, chưa có mã. Tổng, chi tiết và tệp xuất cùng dùng trạng thái tại thời điểm tạo bản chụp.
+- **Căn cứ.** [B02 BR-01/02 và AC-01/03](../docs/features/B02-bao-cao-thong-ke/spec.md). Khi chạy pilot, trưởng phòng KHCN đối chiếu và ký danh sách thực tế. [US-13 · đặc tả](013-web-call-report/spec.md) · [Ca thử](013-web-call-report/quickstart.md) · [Phương án khác](013-web-call-report/research.md)
 
 ## RV-14
 
@@ -196,19 +196,19 @@ PO/BA có thể bắt đầu từ RV-11 (hai hội đồng), RV-13 (số liệu 
 
 ## RV-24
 
-**Khi pilot chưa nối kế toán, căn cứ nào đủ để khóa sổ?** · Chờ review · PO, trưởng phòng KHCN và kế toán trưởng.
+**Khi nào chuyên viên được khóa sổ đề tài đã nghiệm thu đạt?** · **Chấp thuận** ngày 21/11/2026 theo xác nhận của người dùng trong phiên rà soát. Đầu mối nghiệp vụ gồm PO, trưởng phòng KHCN và kế toán trưởng.
 
 - **Use case.** Chuyên viên khóa sổ theo dõi kinh phí của một đề tài nghiệm thu đạt để ghi nhận hoàn thành. Với điều kiện đề tài PASSED đã bật đối soát và còn một dòng MISMATCHED, khi chuyên viên đóng sổ, kết quả mong đợi là giữ PASSED, chỉ rõ dòng cần xử lý trước khi đóng.
-- **Khuyến nghị.** Khuyến nghị rà thủ công theo F05 BR-07 cho pilot. Khi có dữ liệu đối soát và còn MISMATCHED, F06 AC-10 chặn. PO cùng tài chính phải thống nhất hai spec trước khi giao task chuyển trạng thái.
-- **Chứng cứ để ký.** Kiểm TC-03 cùng hai ca gốc và ghi giá trị thực tế. [US-24 · đặc tả](024-shared-close-project/spec.md) · [Ca thử](024-shared-close-project/quickstart.md) · [Phương án khác](024-shared-close-project/research.md)
+- **Quyết định.** Pilot chưa bật đối soát cho phép chuyên viên xác nhận quyết toán sau khi rà thủ công. Khi đã bật, chỉ được đóng khi mọi khoản của đề tài đều `MATCHED`. Còn `UNRECONCILED` hoặc `MISMATCHED` thì giữ `PASSED` và liệt kê từng khoản cần xử lý. Khi chuyên viên xác nhận và đủ điều kiện, chuyển `COMPLETED` và khóa sổ kinh phí.
+- **Căn cứ.** [F05 BR-07](../docs/features/F05-quan-ly-kinh-phi/spec.md) và [F06 BR-09/AC-10](../docs/features/F06-nghiem-thu/spec.md). QA đối chiếu kết quả thực hiện theo từng chế độ. [US-24 · đặc tả](024-shared-close-project/spec.md) · [Ca thử](024-shared-close-project/quickstart.md) · [Phương án khác](024-shared-close-project/research.md)
 
 ## RV-25
 
-**Nếu mẫu của tenant thay sau lần xuất thì dùng mẫu nào?** · Chờ review · Phòng tổ chức và chuyên viên KHCN.
+**Nếu mẫu của tenant thay sau lần xuất thì dùng mẫu nào?** · **Chấp thuận** ngày 21/11/2026 theo xác nhận của người dùng trong phiên rà soát. Đầu mối nghiệp vụ gồm Phòng tổ chức và chuyên viên KHCN.
 
-- **Use case.** Nhà nghiên cứu lấy lý lịch theo mẫu đơn vị, tái dùng đề tài và sản phẩm đã đủ điều kiện tổng hợp. Với điều kiện một sản phẩm gắn qua hai vai trò và một sản phẩm đang chờ duyệt, khi xuất lý lịch, kết quả mong đợi là chỉ có một dòng cho sản phẩm đã duyệt.
-- **Khuyến nghị.** Mỗi lần xuất mới dùng mẫu có hiệu lực và ghi nhận phiên bản đã sử dụng.
-- **Chứng cứ để ký.** Kiểm TC-03 cùng hai ca gốc và ghi giá trị thực tế. [US-25 · đặc tả](025-web-export-profile/spec.md) · [Ca thử](025-web-export-profile/quickstart.md) · [Phương án khác](025-web-export-profile/research.md)
+- **Use case.** Nhà nghiên cứu xuất lý lịch khi trường đang dùng v1. Sau khi trường kích hoạt v2, người đó xuất lại cùng lý lịch để in theo mẫu mới. Phòng tổ chức tra được phiên bản tương ứng với từng lần xuất.
+- **Quyết định.** Mỗi lần xuất dùng phiên bản mẫu của trường đang có hiệu lực tại thời điểm xuất. Nhật ký `EXPORT_CV` của lần đó ghi mã mẫu và phiên bản thực tế đã dùng.
+- **Căn cứ.** [F08 BR-08/AC-13](../docs/features/F08-ly-lich-khoa-hoc/spec.md). TC-03 đối chiếu hai tệp với hai bản ghi xuất. [US-25 · đặc tả](025-web-export-profile/spec.md) · [Ca thử](025-web-export-profile/quickstart.md) · [Phương án khác](025-web-export-profile/research.md)
 
 ## RV-26
 
@@ -228,11 +228,11 @@ PO/BA có thể bắt đầu từ RV-11 (hai hội đồng), RV-13 (số liệu 
 
 ## RV-28
 
-**Cần đối tác ở lần lưu nháp hay ở lúc gửi duyệt?** · Chờ review · Đại diện viện chủ trì và chuyên viên KHCN.
+**Cần đối tác ở lần lưu nháp hay ở lúc gửi duyệt?** · **Chấp thuận** ngày 21/11/2026 theo xác nhận của người dùng trong phiên rà soát. Đầu mối nghiệp vụ gồm đại diện viện chủ trì và chuyên viên KHCN.
 
-- **Use case.** Người kê khai ghi đơn vị chủ trì, đối tác ngoài và tổng kinh phí VND để phòng khoa học xét dự án ứng dụng. Với điều kiện đã có viện chủ trì, đối tác và 50 triệu VND, khi lưu dự án, kết quả mong đợi là đầu mục giữ 50 triệu, sổ chi đề tài F05 giữ nguyên.
-- **Khuyến nghị.** Yêu cầu đơn vị chủ trì khi lưu, kiểm ít nhất một đối tác ngoài tại lúc gửi duyệt.
-- **Chứng cứ để ký.** Kiểm TC-03 cùng hai ca gốc và ghi giá trị thực tế. [US-28 · đặc tả](028-web-register-applied-project/spec.md) · [Ca thử](028-web-register-applied-project/quickstart.md) · [Phương án khác](028-web-register-applied-project/research.md)
+- **Use case.** Viện lưu thông tin dự án khi đang xác định đối tác. Người kê khai mở lại bản nháp, bổ sung công ty liên kết và gửi cùng hồ sơ cho phòng KHCN.
+- **Quyết định.** Phải có đơn vị chủ trì khi lưu nháp. Hồ sơ đủ các trường bắt buộc khác được lưu và mở lại dù chưa có đối tác ngoài. Khi gửi duyệt, nếu thiếu đối tác thì giữ Nháp và yêu cầu bổ sung. Khi đã có ít nhất một đối tác ngoài và đủ các điều kiện khác, chuyển sang Chờ duyệt.
+- **Căn cứ.** [F11 BR-01/02 và AC-01/02](../docs/features/F11-du-an-phuc-vu-san-xuat/spec.md). TC-03 đối chiếu kết quả lưu và hai lần gửi trên cùng mã hồ sơ. [US-28 · đặc tả](028-web-register-applied-project/spec.md) · [Ca thử](028-web-register-applied-project/quickstart.md) · [Phương án khác](028-web-register-applied-project/research.md)
 
 ## RV-29
 
@@ -244,66 +244,67 @@ PO/BA có thể bắt đầu từ RV-11 (hai hội đồng), RV-13 (số liệu 
 
 ## RV-30
 
-**Xử lý sự kiện cũ được gửi lại sau khi đổi định mức thế nào?** · Chờ review · Phòng đào tạo, phòng KHCN và chủ quy chế.
+**Xử lý sự kiện cũ được gửi lại sau khi đổi định mức thế nào?** · **Chấp thuận** ngày 21/11/2026 theo xác nhận của người dùng trong phiên rà soát. Đầu mối nghiệp vụ gồm Phòng Đào tạo, Phòng KHCN và chủ quy chế.
 
 - **Use case.** Chuyên viên đối chiếu giờ của một giảng viên với hoạt động nguồn và công thức có hiệu lực của trường. Với điều kiện sự kiện tháng trước được gửi lại sau ngày công thức mới có hiệu lực, khi đối chiếu sổ giờ, kết quả mong đợi là giữ số giờ theo công thức cũ, không có dòng trùng.
-- **Khuyến nghị.** Dùng ngày sự kiện gốc, khóa nguồn và phân bổ theo công thức của kỳ; sửa sai bằng điều chỉnh có lý do.
-- **Chứng cứ để ký.** Kiểm TC-03 cùng hai ca gốc và ghi giá trị thực tế. [US-30 · đặc tả](030-shared-teaching-hours/spec.md) · [Ca thử](030-shared-teaching-hours/quickstart.md) · [Phương án khác](030-shared-teaching-hours/research.md)
+- **Quyết định.** Dùng định mức có hiệu lực vào ngày nghiệp vụ của hoạt động nguồn. Khi nhận lại cùng sự kiện đã ghi, giữ nguyên số giờ, kỳ và phân bổ ban đầu. Người có quyền sửa sai bằng bản ghi điều chỉnh có lý do và ghi nhật ký.
+- **Căn cứ.** [P03 BR-03/07/08/10](../docs/features/P03-quy-doi-gio-giang/spec.md). QA đối chiếu sổ giờ trước và sau khi nhận lại sự kiện qua ngày đổi định mức, rồi kiểm lịch sử điều chỉnh. [US-30 · đặc tả](030-shared-teaching-hours/spec.md) · [Ca thử](030-shared-teaching-hours/quickstart.md) · [Phương án khác](030-shared-teaching-hours/research.md)
 
 ## RV-31
 
-**Nếu không tìm thấy căn cứ đáng tin hoặc quyền đọc vừa bị thu hồi thì sao?** · Chờ review · PO, chủ dữ liệu trường và QA AI.
+**Nếu không tìm thấy căn cứ đáng tin hoặc quyền đọc vừa bị thu hồi thì sao?** · **Tạm chốt** ngày 21/11/2026 theo xác nhận của người dùng trong phiên rà soát. Đầu mối gồm PO, chủ dữ liệu trường và QA AI.
 
 - **Use case.** Chủ nhiệm yêu cầu trợ lý đọc một bản nháp được phép dùng và chỉ ra đoạn nào chứng minh một yêu cầu của mẫu. Với điều kiện dịch vụ trợ lý gián đoạn lúc rà một thuyết minh, khi chủ nhiệm trở lại biểu mẫu, kết quả mong đợi là vẫn rà thủ công và lưu được bản nháp của mình.
-- **Khuyến nghị.** Hiện chưa đủ căn cứ hoặc từ chối truy xuất; giữ nguyên thuyết minh, cho rà thủ công. Trước pilot kiểm 50 hồ sơ, tìm ≥90% mục thiếu, ≤10% cảnh báo sai, 0 lộ quyền và 0 dẫn chứng bịa.
-- **Chứng cứ để ký.** Kiểm TC-03 cùng hai ca gốc và ghi giá trị thực tế. [US-31 · đặc tả](031-shared-ai-proposal-evidence/spec.md) · [Ca thử](031-shared-ai-proposal-evidence/quickstart.md) · [Phương án khác](031-shared-ai-proposal-evidence/research.md)
+- **Quyết định tạm thời.** Trước pilot, đánh giá trên 50 hồ sơ gán nhãn độc lập. Mục tiêu là phát hiện ≥90% số mục thực sự thiếu, với ≤10% cảnh báo sai trên tổng số cảnh báo, 0 lần lộ dữ liệu ngoài quyền và 0 dẫn chứng bịa. Có thể điều chỉnh bộ mẫu và các ngưỡng định lượng sau khi đối chiếu với hồ sơ thực tế tại Trường Đại học Thủy lợi kỳ 2027. Khi thiếu nguồn, hiện “chưa đủ căn cứ”. Khi quyền bị thu hồi, từ chối truy xuất. Khi dịch vụ gián đoạn, chủ nhiệm vẫn rà thủ công và lưu được bản nháp.
+- **Chứng cứ cần thu.** Ghi số đếm, tỷ lệ và các trường hợp sai trên bộ 50 hồ sơ, kèm kết quả kiểm quyền và lưu nháp khi dịch vụ gián đoạn. [US-31 · đặc tả](031-shared-ai-proposal-evidence/spec.md) · [Ca thử](031-shared-ai-proposal-evidence/quickstart.md) · [Phương án khác](031-shared-ai-proposal-evidence/research.md)
 
 ## RV-32
 
-**DOI hợp lệ nhưng chỉ có metadata thì được điền phần nào?** · Chờ review · Nhà nghiên cứu, thư viện và chủ dữ liệu.
+**DOI hợp lệ nhưng chỉ có metadata thì được điền phần nào?** · **Chấp thuận** ngày 21/11/2026 theo xác nhận của người dùng trong phiên rà soát. Đầu mối gồm nhà nghiên cứu, thư viện và chủ dữ liệu.
 
 - **Use case.** Nhà nghiên cứu tạo bản nháp thẻ đọc có trích dẫn để chuẩn bị tổng quan và tự quyết định có dùng hay không. Với điều kiện tài liệu có DOI nhưng quyền dùng toàn văn đã hết, khi lập lại thẻ đọc, kết quả mong đợi là chỉ còn dữ liệu thư mục được phép, phần nội dung chờ bổ sung nguồn.
-- **Khuyến nghị.** Chỉ điền thông tin thư mục, đánh dấu phần phương pháp và kết quả thiếu nguồn; người dùng kiểm trước khi dùng.
-- **Chứng cứ để ký.** Kiểm TC-03 cùng hai ca gốc và ghi giá trị thực tế. [US-32 · đặc tả](032-web-ai-reading-card/spec.md) · [Ca thử](032-web-ai-reading-card/quickstart.md) · [Phương án khác](032-web-ai-reading-card/research.md)
+- **Quyết định.** Khi chỉ có quyền dùng thông tin thư mục, trợ lý chỉ điền tên bài, tác giả, năm và DOI theo dữ liệu được phép. Cả phương pháp và kết quả ghi “chưa đủ căn cứ”. Nhà nghiên cứu kiểm thẻ nháp trước khi quyết định dùng hoặc bỏ.
+- **Chứng cứ để ký.** Kiểm TC-02 khi tạo thẻ từ thông tin thư mục và TC-03 khi quyền dùng toàn văn hết hạn, cả khi mở lại thẻ cũ lẫn lập lại thẻ. [US-32 · đặc tả](032-web-ai-reading-card/spec.md) · [Ca thử](032-web-ai-reading-card/quickstart.md) · [Phương án khác](032-web-ai-reading-card/research.md)
 
 # Quyết định cấp sản phẩm
 
 ## RV-33
 
-**Chọn phân khúc và kỳ chạy thử** · Chờ review · PO và trưởng phòng KHCN trường thí điểm.
+**Chọn phân khúc và kỳ chạy thử** · **Chấp thuận** ngày 21/11/2026 theo xác nhận của người dùng trong phiên rà soát. Đầu mối nghiệp vụ gồm PO và Trưởng phòng KHCN của Trường.
 
-- **Use case.** Một trường có kỳ cấp cơ sở sắp mở. Khi chọn phạm vi thử, chuyên viên lấy danh sách kỳ trước, thời gian xử lý và mẫu tổng hợp để làm mốc.
-- **Khuyến nghị.** Ưu tiên trường có người chịu trách nhiệm và bộ số liệu so được. Nếu đã có cổng nộp, tập trung chỗ thiếu như báo cáo, luồng bổ sung hoặc tích hợp.
-- **Chứng cứ để ký.** Chốt đơn vị, tên kỳ, nguồn số liệu và người ký đầu ra A.
+- **Phạm vi.** Trường Đại học Thủy lợi, kỳ đề tài cấp cơ sở năm 2027, đợt A.
+- **Nguồn số liệu.** Dùng danh sách hồ sơ đã chốt của kỳ cấp cơ sở liền trước do Phòng KHCN quản lý làm mốc so sánh. Khi kiểm báo cáo B02, đối chiếu số đếm với danh sách hồ sơ của chính kỳ 2027 theo [RV-13](#rv-13).
+- **Người ký kết quả.** Trưởng phòng KHCN của Trường ký kết quả đợt A khi nghiệm thu.
 
 ## RV-34
 
-**Điều kiện đầu tư Mobile** · Chờ review · PO, phụ trách CNTT và UX của đơn vị.
+**Điều kiện đầu tư Mobile** · **Chấp thuận** ngày 21/11/2026 theo xác nhận của người dùng trong phiên rà soát. Đầu mối gồm PO, phụ trách CNTT và UX của đơn vị.
 
 - **Use case.** Chủ nhiệm nhận nhắc và mở hồ sơ ở 360/390 px. Khi hai đơn vị cùng gặp tác vụ web chưa đáp ứng, nhóm đo tỷ lệ hoàn tất và ghi nhận chính sách thiết bị.
-- **Khuyến nghị.** Dùng web responsive trong pilot. Chỉ lập luận chứng push/offline/native sau khi xác nhận nhu cầu lặp lại và cách thu hồi dữ liệu thiết bị.
-- **Chứng cứ để ký.** Hai biên bản nhu cầu và thử tác vụ có kết quả, hoặc quyết định tiếp tục web.
+- **Quyết định.** Pilot tại Thủy lợi kỳ 2027 dùng web trên điện thoại. Chỉ xem xét ứng dụng riêng, thông báo đẩy hoặc làm việc ngoại tuyến khi ít nhất hai đơn vị cùng xác nhận một nhu cầu mà web chưa đáp ứng và đã có phương án quản lý, thu hồi dữ liệu trên thiết bị.
+- **Căn cứ khi xem xét đầu tư.** Đối chiếu biên bản của hai đơn vị về cùng tác vụ, kết quả thử trên web và phương án quản lý, thu hồi dữ liệu trên thiết bị. [Ca thử mở hồ sơ trên điện thoại](012-mobile-open-work-item/quickstart.md)
 
 ## RV-35
 
-**Nguồn AI và quyền sử dụng** · Chờ review · Chủ dữ liệu, thư viện/pháp chế, PO và QA AI.
+**Nguồn AI và quyền sử dụng** · **Chấp thuận** ngày 21/11/2026 theo xác nhận của người dùng trong phiên rà soát. Đầu mối nghiệp vụ gồm chủ dữ liệu, thư viện/pháp chế, PO và QA AI.
 
 - **Use case.** Nhà nghiên cứu yêu cầu trợ lý đọc nguồn. Khi nguồn là toàn văn có quyền hạn chế, hồ sơ hành chính của bệnh viện hoặc tài liệu bị thu quyền, chủ dữ liệu quyết định phần nào được xử lý.
-- **Khuyến nghị.** Dùng nguồn công khai hoặc được phép rõ ràng. Chặn truy xuất ngoài phạm vi trước khi gửi cho mô hình. Giữ dấu phiên bản, nguồn và quyết định người dùng. Tắt trợ lý vẫn làm được việc.
-- **Chứng cứ để ký.** Danh mục nguồn được phép, bảng phân quyền, kiểm tra lộ chéo và dẫn chứng sai, cơ chế dừng pilot.
+- **Quyết định.** Chỉ truy xuất phần tài liệu mà người dùng hiện có quyền đọc và trường cho phép dùng cho AI. Kiểm tra cả hai quyền trước khi gửi nội dung cho mô hình và khi mở lại yêu cầu hoặc căn cứ cũ. Nếu chỉ được dùng thông tin thư mục, trợ lý chỉ điền các trường được phép (ví dụ tên bài, tác giả, DOI). Phần phương pháp và kết quả ghi “chưa đủ căn cứ”.
+- **Truy vết và thao tác thủ công.** Mỗi gợi ý lưu nguồn, phiên bản nguồn, mô hình và mẫu lệnh. Khi người dùng chọn dùng hoặc bỏ, lưu lựa chọn cho gợi ý đó. Khi tắt AI, người dùng vẫn tiếp tục tác vụ thủ công.
+- **Chứng cứ khi thử nghiệm.** Chủ dữ liệu xác nhận danh mục nguồn và phạm vi được dùng cho AI tại trường. QA kiểm cả hai quyền, việc thu hồi, lộ dữ liệu ngoài phạm vi, dẫn chứng sai và khả năng dừng pilot. [Ca rà thuyết minh](031-shared-ai-proposal-evidence/quickstart.md) · [Ca lập thẻ đọc](032-web-ai-reading-card/quickstart.md)
 
 ## RV-36
 
-**Kích hoạt E4 và công thức của trường** · Chờ review · Phòng KHCN, phòng đào tạo, PO tenant.
+**Kích hoạt E4 và công thức của trường** · **Chấp thuận** ngày 21/11/2026 theo xác nhận của người dùng trong phiên rà soát. Đầu mối nghiệp vụ gồm Phòng KHCN, Phòng Đào tạo và PO của trường.
 
-- **Use case.** Trường ghi nhận hoạt động rồi đổi định mức giữa hai kỳ. Khi gửi lại sự kiện cũ, phòng đào tạo kiểm tra phân bổ theo thời điểm gốc.
-- **Khuyến nghị.** Bật riêng từng module. Nhập công thức, thời gian hiệu lực, bảng phân bổ và trường hợp thu hồi do trường xác nhận.
-- **Chứng cứ để ký.** Bộ đầu vào–kết quả đã ký cho ít nhất một hoạt động của từng module muốn mở.
+- **Quyết định.** Tại Trường Đại học Thủy lợi, xét bật riêng từng phân hệ E4 (F09–F12, P03). Trước khi bật một phân hệ, Trường ký ít nhất một ví dụ đối chứng gồm dữ liệu đầu vào và kết quả mong đợi của chính phân hệ đó.
+- **Ví dụ có quy đổi giờ giảng.** Ghi hoạt động đủ điều kiện, định mức và ngày bắt đầu hiệu lực, số giờ phân bổ cho từng người, cùng cách xử lý nếu kết quả hoạt động bị thu hồi. Khi đối chiếu sự kiện gửi lại, áp dụng [RV-30](#rv-30).
+- **Chứng cứ khi bàn giao.** Gắn ví dụ có xác nhận của Trường với mã phân hệ tương ứng trong [checklist bàn giao](../docs/guides/handover-thuy-loi.md).
 
 ## RV-37
 
-**Định giá và nghiệm thu pilot** · Chờ review · Phụ trách kinh doanh, PO và đại diện bên mua.
+**Định giá và nghiệm thu pilot** · **Chấp thuận** ngày 21/11/2026 theo xác nhận của người dùng trong phiên rà soát. Đầu mối gồm phụ trách kinh doanh, PO và đại diện bên mua.
 
 - **Use case.** Trường đề nghị báo giá sau khảo sát. Khi phạm vi bao gồm kết nối hoặc di trú, hai bên chọn số hồ sơ, chi phí một lần và chỉ tiêu nghiệm thu.
-- **Khuyến nghị.** Dùng giả định giá của báo cáo thị trường để lập dự toán nội bộ, xác nhận ngân sách và phạm vi trước khi phát hành báo giá.
+- **Quyết định.** Dùng mức giá tham khảo trong báo cáo thị trường để lập dự toán nội bộ. Trước khi gửi báo giá pilot, hai bên xác nhận ngân sách, số hồ sơ và tiêu chí nghiệm thu. Nếu có kết nối hệ thống hoặc chuyển dữ liệu cũ, báo giá ghi riêng phạm vi và chi phí một lần cho từng hạng mục. [Căn cứ dự toán nội bộ](../docs/sales/thi-truong-viet-nam-2026/README.md)
 - **Chứng cứ để ký.** Phạm vi đã xác nhận, chi phí trực tiếp và đầu mối mua sắm.

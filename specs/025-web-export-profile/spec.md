@@ -5,7 +5,7 @@ epic: E3
 channel: web
 wave: B
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-21
 ---
 
 # Xuất lý lịch nghiên cứu của cá nhân
@@ -14,9 +14,9 @@ updated: 2026-11-18
 
 ## Clarifications
 
-### Session 2026-11-18
+### Session 2026-11-21
 
-- Q: Nếu mẫu của tenant thay sau lần xuất thì dùng mẫu nào? → A: Mỗi lần xuất mới dùng mẫu có hiệu lực và ghi nhận phiên bản đã sử dụng. [RV-25](../review-decisions.md#rv-25). Khuyến nghị dùng để lập kế hoạch, chờ Phòng tổ chức và chuyên viên KHCN xác nhận.
+- Q: Nếu mẫu của tenant thay sau lần xuất thì dùng mẫu nào? → A: Mỗi lần xuất dùng phiên bản mẫu của trường đang có hiệu lực tại thời điểm xuất. Nhật ký `EXPORT_CV` của lần đó ghi mã mẫu và phiên bản thực tế đã dùng. [RV-25 đã chấp thuận](../review-decisions.md#rv-25).
 
 ## User Scenarios & Testing
 
@@ -24,12 +24,12 @@ updated: 2026-11-18
 
 Nhà nghiên cứu lấy lý lịch theo mẫu đơn vị, tái dùng đề tài và sản phẩm đã đủ điều kiện tổng hợp.
 
-**Giá trị và phép thử độc lập.** Chuẩn bị một mẫu đã duyệt, một người có nhiều vai trò trên cùng đầu ra. Thực hiện thao tác bằng đúng vai trò và kiểm đầu ra sau khi mở lại. Lát này thuộc đợt B.
+**Giá trị và phép thử độc lập.** Chuẩn bị hai phiên bản v1 và v2 có tiêu đề khác nhau của cùng một mẫu tenant, một người có hai vai trò trên cùng sản phẩm đã duyệt và một sản phẩm đang chờ duyệt. Thực hiện thao tác bằng đúng vai trò và kiểm đầu ra sau khi mở lại. Lát này thuộc đợt B.
 
-- **AC-01** (US-25.1) — Given có một đầu ra đủ điều kiện qua hai quan hệ. When trích xuất. Then mẫu đúng và chỉ một dòng cho đầu ra.
+- **AC-01** (US-25.1) — Given một sản phẩm đã duyệt gắn qua hai vai trò và một sản phẩm chờ duyệt. When trích xuất. Then tệp dùng đúng mẫu, sản phẩm đã duyệt xuất hiện một lần và sản phẩm chờ duyệt vắng mặt.
 - **AC-02** (US-25.2) — Given người dùng ngoài phạm vi. When yêu cầu lý lịch người khác. Then từ chối.
 
-- **AC-03** (US-25.3, khuyến nghị) — Given Một sản phẩm gắn qua hai vai trò và một sản phẩm đang chờ duyệt. When xuất lý lịch. Then chỉ có một dòng cho sản phẩm đã duyệt.
+- **AC-03** (US-25.3, RV-25) — Given trường có hai phiên bản cùng mã mẫu với tiêu đề riêng. When xuất lý lịch của U khi v1 có hiệu lực, kích hoạt v2 rồi xuất lại cùng lý lịch. Then Tệp đầu dùng tiêu đề v1, tệp sau dùng tiêu đề v2. Hai sự kiện `EXPORT_CV` ghi cùng mã mẫu và lần lượt ghi phiên bản v1, v2.
 
 ### Edge Cases
 
@@ -42,7 +42,7 @@ Người dùng ngoài phạm vi → từ chối.
 - **BR-01 / FR-001.** Khi có một đầu ra đủ điều kiện qua hai quan hệ, người có quyền có thể trích xuất. Kết quả phải quan sát được: mẫu đúng và chỉ một dòng cho đầu ra (AC-01).
 - **BR-02 / FR-002.** Với tình huống người dùng ngoài phạm vi, thao tác yêu cầu lý lịch người khác phải cho kết quả từ chối (AC-02).
 
-- **BR-03 / FR-003 (đề xuất).** Mỗi lần xuất mới dùng mẫu có hiệu lực và ghi nhận phiên bản đã sử dụng. Kiểm bằng AC-03.
+- **BR-03 / FR-003.** Mỗi lần xuất dùng phiên bản mẫu của trường đang có hiệu lực tại thời điểm xuất. Nhật ký `EXPORT_CV` của lần đó ghi mã mẫu và phiên bản thực tế đã dùng. Kiểm bằng AC-03.
 
 ### Key Entities
 

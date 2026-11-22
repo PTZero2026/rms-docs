@@ -4,7 +4,7 @@ spec: "./spec.md"
 owner: "PO/BA"
 status: Review
 version: 0.2
-updated: 2026-06-25
+updated: 2026-11-21
 ---
 
 # Lý lịch khoa học — Giao diện
@@ -78,8 +78,7 @@ Read-only, gom **không trùng** (BR-07):
 - **Sản phẩm khoa học:** danh sách `ResearchOutput` **đã duyệt** (F07) — tên, loại, năm, thông tin công bố.
 - **Tham gia đề tài:** vai trò trong `ResearchProject`/`ProjectMember` (chủ nhiệm/thành viên/thư ký).
 - **Giờ giảng quy đổi:** tổng giờ từ P03 — **chỉ hiển thị nếu tenant bật P03**; tenant tắt thì ẩn cả mục (AC-10).
-- **Nút "Trích xuất lý lịch":** chọn mẫu của tổ chức (VP-CV-TPL) → xuất tài liệu để in/ký; ghi audit
-  `EXPORT_CV` (AC-13).
+- **Nút "Trích xuất lý lịch":** chọn mẫu của tổ chức (VP-CV-TPL). Mỗi lần xuất tạo tài liệu in/ký theo phiên bản đang có hiệu lực và ghi mã, phiên bản mẫu vào `EXPORT_CV` (AC-13).
 
 ### BO-01 — Hồ sơ người dùng (tra cứu & sửa hộ)
 - Mở từ chi tiết người dùng (B03). Hiển thị hồ sơ đầy đủ **chỉ khi** có `PROFILE.VIEW` + trong phạm vi dữ
@@ -99,7 +98,7 @@ Mọi hành động dưới đây ghi `AuditLog` (append-only) với `actorId`, 
 |-----------|-----------|--------------|---------|
 | Tự cập nhật hồ sơ | `UPDATE_PROFILE` | USER | `actorId = targetId` |
 | Sửa hộ hồ sơ | `UPDATE_PROFILE` | USER | `actorId ≠ targetId` (sửa hộ) |
-| Trích xuất lý lịch | `EXPORT_CV` | USER | kèm mã mẫu (VP-CV-TPL) |
+| Trích xuất lý lịch | `EXPORT_CV` | USER | kèm mã mẫu và phiên bản đã dùng (VP-CV-TPL) |
 
 Ai xem nhật ký: Chuyên viên QL KHCN & Quản trị hệ thống (`AUDIT_LOG.VIEW`) — qua [B03 BO-06](../B03-quan-ly-nguoi-dung/ui.md).
 

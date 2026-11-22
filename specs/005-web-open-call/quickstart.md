@@ -3,7 +3,7 @@ story: US-05
 feature: F02
 review_id: RV-05
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-21
 ---
 
 # Kiểm tra đầu cuối · US-05
@@ -14,7 +14,7 @@ Trong môi trường thử của repo code, tạo hai tenant A/B và người c�
 |---|---|---|---|
 | TC-01 / AC-01 | kỳ đủ cấu hình | mở | kỳ nhận đề xuất hiển thị dưới trạng thái OPEN |
 | TC-02 / AC-02 | ngày kết thúc trước ngày bắt đầu | lưu kỳ | báo lỗi và không tạo kỳ sai |
-| TC-03 / AC-03 | Một lĩnh vực bắt buộc vừa ngừng hiệu lực trong bản nháp | chuyên viên mở kỳ | kỳ vẫn nháp và hiển thị mục cần thay |
+| TC-03 / AC-03 | Kỳ nháp đủ cấu hình. Thử độc lập với lĩnh vực bắt buộc và bộ tiêu chí hết hiệu lực sau khi lưu nháp | bấm Mở kỳ, ghi nhận kết quả, thay mục hết hiệu lực rồi bấm Mở kỳ lần nữa | lần đầu vẫn DRAFT và báo đúng mục cần thay. Lần sau cùng mã kỳ chuyển OPEN và xuất hiện cho giảng viên |
 | TC-04 / SC-002 | Người tenant B có cùng vai trò nhưng chỉ có mã/đường dẫn của A | Yêu cầu lại dữ liệu hoặc thao tác của A | Không trả nội dung riêng của A và không thay đổi bản ghi A |
 
 Đối chiếu thêm AC-01, AC-02, AC-05 trong [F02](../../docs/features/F02-dot-keu-goi/spec.md) ở phần áp dụng cho lát này.

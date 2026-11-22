@@ -2,7 +2,7 @@
 title: "Kế hoạch kiểm thử tích hợp — luồng phức tạp & đa vai trò"
 id: "integration-test-plan"
 status: Draft
-updated: 2026-07-10
+updated: 2026-11-21
 ---
 
 # Kế hoạch kiểm thử tích hợp (RMS)
@@ -89,8 +89,8 @@ updated: 2026-07-10
 - **Bước & kỳ vọng:**
   1. Kỳ cuối F04 `PASSED` nhưng sản phẩm cam kết F07 chưa đủ `APPROVED` → chuyển `PENDING_ACCEPTANCE` **BỊ CHẶN**.
   2. Duyệt đủ sản phẩm cam kết (đúng loại + số lượng) → cho vào nghiệm thu.
-  3. Hội đồng `ACCEPTANCE` `PASSED` → thử `COMPLETED` khi F05 còn giao dịch `MISMATCHED` → **CHẶN**.
-  4. Quyết toán hết `MISMATCHED` → `PASSED→COMPLETED`.
+  3. Hội đồng `ACCEPTANCE` `PASSED` → thử `COMPLETED` khi đã bật đối soát và F05 còn giao dịch `MISMATCHED` hoặc `UNRECONCILED` (thử riêng từng trạng thái) → **CHẶN**.
+  4. Mọi khoản `MATCHED`, chuyên viên xác nhận quyết toán → `PASSED→COMPLETED`.
 - **BR/luật:** F04 BR-10 · F06 BR-01, BR-09 · F07 BR-11 · [ADR-0004](../architecture/decisions/0004-doi-soat-kinh-phi-qua-api.md)
 - **Vì sao dễ lỗi:** 3 feature khóa chung một cổng; `ExpectedOutput` (sản phẩm cam kết) chưa chốt cấu trúc; chủ sở hữu `PASSED→COMPLETED` chưa rõ (F05/F06).
 
@@ -236,8 +236,8 @@ updated: 2026-07-10
 4. **Chuyên viên:** bấm **"Chuyển nghiệm thu"** → **kỳ vọng: bị chặn**, báo *thiếu sản phẩm cam kết*.
 5. Khai + **duyệt** đủ sản phẩm cam kết (đúng loại & số lượng) → bấm lại "Chuyển nghiệm thu" → **cho phép** (đề tài sang *Chờ nghiệm thu*).
 6. Lập hội đồng nghiệm thu, chấm → kết luận *Đạt*.
-7. Bấm **"Hoàn thành đề tài"** khi khu *Kinh phí (F05)* còn dòng đối soát **MISMATCHED** → **kỳ vọng: bị chặn**.
-8. Quyết toán hết MISMATCHED → bấm lại "Hoàn thành" → đề tài sang **Hoàn thành**.
+7. Bấm **"Hoàn thành đề tài"** khi khu *Kinh phí (F05)* còn dòng đối soát **UNRECONCILED** hoặc **MISMATCHED** → **kỳ vọng: bị chặn**.
+8. Đối soát mọi khoản thành MATCHED → bấm lại "Hoàn thành" → đề tài sang **Hoàn thành**.
 
 ### INT-02 — Trần khoán kinh phí + phí quản lý (F04→F05)
 1. **Chuyên viên:** giao đề tài với **Kinh phí duyệt** = X (màn *Giao đề tài / F04*).

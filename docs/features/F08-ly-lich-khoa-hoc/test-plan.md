@@ -4,7 +4,7 @@ spec: "./spec.md"
 owner: "TEST"
 status: Review
 version: 0.2
-updated: 2026-06-25
+updated: 2026-11-21
 ---
 
 # Lý lịch khoa học — Kế hoạch kiểm thử
@@ -39,7 +39,7 @@ updated: 2026-06-25
 | TC-14 | AC-11 | C có quyền + U trong phạm vi của C | C mở BO-01 hồ sơ U, sửa SĐT, lưu | Lưu thành công; audit `UPDATE_PROFILE` với `actorId = C ≠ U` (sửa hộ) | Happy |
 | TC-15 | AC-12 | K **không** có `PROFILE.VIEW` | K gọi API/màn hình xem hồ sơ U | Backend trả **403** dù UI ẩn nút; không lộ dữ liệu | Lỗi/Bảo mật |
 | TC-16 | AC-12 | C có quyền nhưng U **ngoài** phạm vi dữ liệu của C | C mở hồ sơ U | Từ chối ở máy chủ (ngoài phạm vi), không render | Lỗi/Bảo mật |
-| TC-17 | AC-13 | Tenant T có mẫu lý lịch riêng | Trích xuất lý lịch của U | Dữ liệu đổ vào **mẫu của T**, xuất tài liệu in/ký; audit `EXPORT_CV` kèm mã mẫu | Happy |
+| TC-17 | AC-13 | Tenant T có hai phiên bản cùng mã mẫu, mỗi phiên bản có tiêu đề riêng | Xuất lý lịch của U khi v1 có hiệu lực, kích hoạt v2 rồi xuất lại cùng lý lịch | Tệp đầu dùng tiêu đề v1, tệp sau dùng tiêu đề v2. Hai sự kiện `EXPORT_CV` ghi cùng mã mẫu và lần lượt ghi phiên bản v1, v2 | Happy |
 
 ## 3. Trường hợp biên & negative
 

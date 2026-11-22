@@ -5,7 +5,7 @@ epic: "E2"
 owner: "PO/BA"
 status: Draft        # Draft | Review | Approved
 version: 0.1
-updated: 2026-06-01
+updated: 2026-11-21
 ---
 
 # Nghiệm thu
@@ -45,7 +45,7 @@ kết luận `PASSED`/`FAILED`; sau khi `PASSED` và quyết toán xong (F05) th
   - Tạo/sửa `CriteriaSet` type `ACCEPTANCE` và ngưỡng → thuộc **B01**.
   - Báo cáo tiến độ & điều kiện vào nghiệm thu phía thực hiện → thuộc **F04**.
   - Kê khai/duyệt sản phẩm khoa học → thuộc **F07**.
-  - Đối soát & quyết toán kinh phí (điều kiện "không còn MISMATCHED") → thuộc **F05**.
+  - Đối soát & quyết toán kinh phí (điều kiện khóa sổ theo chế độ của đơn vị) → thuộc **F05**.
 
 ## 3. Luồng nghiệp vụ chính
 
@@ -92,7 +92,7 @@ stateDiagram-v2
     UNDER_ACCEPTANCE --> PASSED : Đủ phiếu + aggregateScore ≥ ngưỡng [BR-07, BR-08]
     UNDER_ACCEPTANCE --> FAILED : Đủ phiếu + aggregateScore < ngưỡng [BR-07, BR-08]
     FAILED --> IN_PROGRESS : Cho làm lại có thời hạn [BR-10]
-    PASSED --> COMPLETED : Quyết toán xong, không còn MISMATCHED (F05) [BR-09]
+    PASSED --> COMPLETED : F05 xác nhận quyết toán theo chế độ của đơn vị [BR-09]
     COMPLETED --> [*]
 ```
 
@@ -114,7 +114,7 @@ nghiệm thu.
 | BR-06 | Tính điểm theo trọng số | `totalScore = Σ(score × weight)`; `aggregateScore` = trung bình `totalScore` các phiếu `SUBMITTED`, làm tròn 2 chữ số. | Hệ thống tính, không nhập tay |
 | BR-07 | Đủ phiếu mới kết luận | Số phiếu `SUBMITTED` ≥ `ACCEPTANCE.MIN_SUBMITTED_SCORE_SHEETS` (`SystemSetting`) mới được kết luận. | Cấu hình B01 |
 | BR-08 | Kết luận theo ngưỡng | `aggregateScore ≥ ACCEPTANCE.PASSING_SCORE` → `PASSED`; ngược lại `FAILED`. Đặt `EvaluationRound=CONCLUDED`. | Ngưỡng từ `SystemSetting` |
-| BR-09 | Đóng đề tài cần quyết toán | `PASSED → COMPLETED` chỉ khi F05 xác nhận đã quyết toán, **không còn** giao dịch `MISMATCHED` (xem F05 BR-07). Dùng domain service chung, tránh hai feature cùng đổi trạng thái. | Phối hợp F05 |
+| BR-09 | Đóng đề tài cần quyết toán | `PASSED → COMPLETED` chỉ khi F05 xác nhận quyết toán theo BR-07. Pilot chưa bật đối soát cho phép chuyên viên xác nhận quyết toán sau khi rà thủ công. Khi đã bật, chỉ được đóng khi mọi khoản của đề tài đều `MATCHED`. Còn `UNRECONCILED` hoặc `MISMATCHED` thì giữ `PASSED` và liệt kê từng khoản cần xử lý. Dùng domain service chung, tránh hai feature cùng đổi trạng thái. | Phối hợp F05 |
 | BR-10 | Làm lại có giới hạn | `FAILED → IN_PROGRESS` (cho làm lại) kèm `reason` và **thời hạn**; số lần làm lại không vượt `ACCEPTANCE.MAX_REDO_COUNT`. Hết hạn/quá số lần → xử lý theo quy định (không tự đóng). | Cấu hình B01; ghi audit |
 | BR-11 | Tách bạch quyền | Chỉ **Chuyên viên QL KHCN** lập hội đồng, mở đợt, ra kết luận, cho làm lại. **Thành viên hội đồng** chỉ chấm phiếu được phân công. Chủ nhiệm chỉ đăng ký & nộp hồ sơ. | RBAC backend |
 | BR-12 | Khóa sau kết luận | `EvaluationRound=CONCLUDED` → không nhận/sửa phiếu, không đổi kết luận trừ khi chuyên viên mở lại đợt có `reason` (audit). | Ngoại lệ, ghi `AuditLog` |
@@ -167,8 +167,7 @@ F06 thao tác với `type=ACCEPTANCE`.
   mở hàng chờ chấm; Then đề tài đó bị ẩn và chặn tạo `ScoreSheet` (BR-03).
 - **AC-09 (Negative — điểm vượt maxScore)** — Given thành viên nhập `score > maxScore`; When gửi phiếu;
   Then lỗi validate, phiếu giữ `DRAFT` (BR-05).
-- **AC-10 (Negative — đóng đề tài khi còn MISMATCHED)** — Given đề tài `PASSED` nhưng F05 còn giao dịch `MISMATCHED`; When
-  chuyên viên cố đóng đề tài; Then chặn, yêu cầu xử lý quyết toán trước (BR-09, F05 BR-07).
+- **AC-10 (Chặn đóng khi còn khoản chưa đối soát hoặc sai lệch)** — Khi đề tài `PASSED` đã bật đối soát và còn ít nhất một khoản `UNRECONCILED` hoặc `MISMATCHED`, yêu cầu đóng sổ giữ đề tài ở `PASSED` và hiển thị mã cùng trạng thái từng khoản vướng. Sau khi tất cả khoản đều `MATCHED`, chuyên viên xác nhận quyết toán để đóng theo BR-09 và F05 BR-07.
 - **AC-11 (Negative — sai quyền)** — Given người dùng là Thành viên hội đồng (không phải chuyên viên); When
   gọi hành động ra kết luận/lập hội đồng/cho làm lại; Then 403, không thực hiện (BR-11).
 - **AC-12 (Negative — khóa sau kết luận)** — Given `EvaluationRound=CONCLUDED`; When thành viên cố gửi/sửa
@@ -179,7 +178,7 @@ F06 thao tác với `type=ACCEPTANCE`.
 **Phụ thuộc:**
 - **F04** — điều kiện kỳ báo cáo cuối `PASSED`; nhận đề tài sau `PENDING_ACCEPTANCE`; làm lại trả về `IN_PROGRESS`.
 - **F07** — sản phẩm cam kết `APPROVED` là điều kiện vào nghiệm thu.
-- **F05** — quyết toán & điều kiện "không còn MISMATCHED" để đóng đề tài `PASSED → COMPLETED`.
+- **F05** — quyết toán và điều kiện khóa sổ theo F05 BR-07 để đóng đề tài `PASSED → COMPLETED`.
 - **B01** — `CriteriaSet` type `ACCEPTANCE`; tham số `MIN_SUBMITTED_SCORE_SHEETS`, `PASSING_SCORE`, `MAX_REDO_COUNT`.
 - **B03** — vai trò Chuyên viên QL KHCN, Thành viên hội đồng; data scoping.
 - **B04** — thông báo lịch & kết quả nghiệm thu, làm lại, hoàn thành.

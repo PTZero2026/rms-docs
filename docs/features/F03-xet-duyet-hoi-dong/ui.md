@@ -3,7 +3,7 @@ title: "Xét duyệt hội đồng — Giao diện (một web app, phân quyền
 spec: "./spec.md"
 owner: "PO/BA"
 status: Draft
-updated: 2026-06-09
+updated: 2026-11-21
 ---
 
 # Xét duyệt hội đồng — Giao diện
@@ -23,7 +23,7 @@ updated: 2026-06-09
     thông báo (B04) bấm vào liên kết kết quả.
 - **Chuyên viên QL KHCN** — tổ chức xét duyệt: lập `EvaluationCommittee` (type `PROPOSAL_REVIEW`), phân công
   `CommitteeMember`, tạo `EvaluationRound` cho từng đề tài, theo dõi tiến độ chấm, xem bảng tổng hợp
-  điểm và ra kết luận `APPROVED`/`REJECTED` theo ngưỡng.
+  điểm và chốt kết luận khoa học. Quyết định cuối của đề tài tuân theo BR-08.
 - **Thành viên hội đồng** — chuyên gia chấm điểm: xem hồ sơ đề tài được phân công, điền `ScoreSheet`
   theo `EvaluationCriterion`, gửi phiếu. **Không** lập hội đồng, **không** ra kết luận (BR-09).
 
@@ -80,7 +80,7 @@ Wireframe đặt trong `./assets/` (bổ sung khi có), link Figma nếu có.
 - Là một tab/section trong màn chi tiết đề tài (F01). Chỉ hiển thị khi đề tài đã từng vào xét duyệt
   (`UNDER_REVIEW` trở đi).
 - Thành phần: chip trạng thái (`Đang xét duyệt` / `Đã duyệt` / `Từ chối`); timeline mốc:
-  "Vào xét duyệt" (ngày tạo `EvaluationRound`), "Có kết luận" (ngày `CONCLUDED`).
+  "Vào xét duyệt" (ngày tạo `EvaluationRound`), "Có kết luận khoa học" (ngày `CONCLUDED`). Nếu còn chờ thẩm định đạo đức, hiện “Chờ hội đồng đạo đức” hoặc nội dung cần bổ sung. Chỉ hiện mốc phê duyệt hoặc từ chối khi đề tài có quyết định cuối.
 - Trạng thái:
   - **Đang tải:** skeleton timeline.
   - **Rỗng / chưa xét duyệt:** ẩn tab hoặc hiển thị "Đề tài chưa vào vòng xét duyệt".
@@ -127,7 +127,7 @@ Wireframe đặt trong `./assets/` (bổ sung khi có), link Figma nếu có.
 - Hiển thị từng đề tài: danh sách phiếu `SUBMITTED` (ẩn/hiện danh tính theo cấu hình), `totalScore` từng phiếu,
   `aggregateScore` (BR-06), so với `PASSING_SCORE`.
 - Nút "Ra kết luận": chỉ bật khi đủ phiếu (BR-07); kết luận tự gợi ý PASSED/FAILED theo ngưỡng (BR-08),
-  chuyên viên xác nhận. Sau xác nhận: `EvaluationRound=CONCLUDED`, `ResearchProject=APPROVED|REJECTED`, thông báo chủ nhiệm.
+  chuyên viên xác nhận. BO-03 hiển thị riêng kết luận khoa học và trạng thái đề tài theo BR-08. Khi khoa học đạt, hiển thị kết quả thẩm định đạo đức nếu bắt buộc. FE-03 nhận thông báo phê duyệt một lần lúc đề tài chuyển `APPROVED`.
 - Nếu thiếu phiếu: nút bị khóa + thông báo số phiếu còn thiếu (AC-05).
 - "Mở lại đợt": yêu cầu nhập `reason`, ghi audit (BR-10).
 
@@ -175,7 +175,7 @@ xem nhật ký xét duyệt của người khác.
 
 | Màn hình | AC liên quan (xem [spec §6](./spec.md#6-acceptance-criteria)) |
 |----------|----------------------------------------------------------------|
-| FE-01 | AC-01 (vào xét duyệt → hiển thị trạng thái `UNDER_REVIEW`) |
+| FE-01 | AC-01 (vào xét duyệt), AC-03 (hiển thị chờ thẩm định hoặc yêu cầu bổ sung) |
 | FE-02 | AC-03 (kết quả APPROVED), AC-04 (kết quả REJECTED), liên quan BR-11 (công khai nhận xét) |
 | FE-03 | AC-01, AC-03, AC-04 (thông báo các sự kiện trạng thái cho chủ nhiệm) |
 | BO-01 | AC-01 (tiền đề: có hội đồng + thành viên), AC-09 (sai quyền lập HĐ) |

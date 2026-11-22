@@ -5,7 +5,7 @@ epic: "E0"
 owner: "PO/BA"
 status: Draft
 version: 0.3
-updated: 2026-07-02
+updated: 2026-11-21
 ---
 
 # Danh mục & cấu hình (sys-config-service)
@@ -123,7 +123,7 @@ flowchart TD
 | BR-01 | Key duy nhất trong phạm vi tenant | Cặp `(tenantId, key)` là **duy nhất** với ngữ nghĩa `NULLS NOT DISTINCT`: một bản shared duy nhất cho mỗi key + N bản override theo từng tenant. | Unique constraint DB; trùng → 409 Conflict. |
 | BR-02 | Ai được ghi cái gì | **super_admin** ghi bản shared (`tenantId = NULL`). **admin / tenant_admin** ghi bản của tenant mình (`tenantId = <tenant JWT>`). Người dùng không thuộc 3 vai trò trên **không** được POST/PUT/DELETE. | Guard `Roles(['admin','tenant_admin'])`; super_admin luôn pass. |
 | BR-03 | Đọc theo thứ tự fallback | GET key: thử `(tenantId = <tenant JWT>, key)` trước; nếu không có, thử `(tenantId = NULL, key)`; nếu vẫn không có → **404**. | Super_admin đọc chỉ nhìn bản shared, không fallback. |
-| BR-04 | Cache 5 phút, invalidate khi ghi | Đọc key được cache Redis TTL 5 phút, namespace theo `<tenantId hoặc __shared__>:<key>`. PUT/DELETE key nào thì xóa **đúng** cache key đó (không xóa toàn cache). | Cache lỗi thì fallback đọc DB, không chặn request. |
+| BR-04 | Cache 5 phút, invalidate khi ghi | Đọc key được cache Redis TTL 5 phút, namespace theo `<tenantId hoặc __shared__>:<key>`. PUT/DELETE key nào thì xóa **đúng** cache key đó. Khi tạo bản riêng bằng POST, vô hiệu kết quả đọc mặc định đã lưu đệm cho đúng tenant và key. | Cache lỗi thì fallback đọc DB, không chặn request. |
 | BR-05 | Key hợp lệ | Chỉ chấp nhận ký tự `[a-zA-Z0-9._-]+`, độ dài ≤ 128. Không được chứa dấu cách, `/`, `:`, `?`, `#`, `[`, `]`, `@`, `!`, `$`, `&`, `'`, `(`, `)`, `*`, `+`, `,`, `;`, `=`. | Kiểm tra ở BE trước khi lưu; sai → 400. |
 | BR-06 | Nội dung bắt buộc khi tạo | POST **phải** có content (qua multipart file, JSON `content`, hoặc urlencoded). Content rỗng → 400. PUT có thể để trống content → giữ nguyên nội dung cũ. | |
 | BR-07 | Giới hạn kích thước nội dung | Content ≤ **20 MB** (`MAX_CONTENT_BYTES = 20 * 1024 * 1024`). Vượt → 413/400 tùy multer. | Cấu hình cứng trong code, không theo tenant. |
@@ -167,8 +167,7 @@ mẫu biểu thuyết minh, AuditLog. Toàn bộ những thứ đó thuộc `nck
 - **AC-01** — Given super_admin đăng nhập, When POST một key mới không kèm `tenantId`, Then bản ghi
   được lưu với `tenantId = NULL` (shared) và mọi tenant đọc key đó đều nhận được. *(happy, BR-02/BR-03)*
 - **AC-02** — Given tenant_admin của tenant X đăng nhập, When POST cùng key mà super_admin đã tạo
-  shared, Then bản mới được lưu với `tenantId = X` (override, không đè bản shared); tenant X đọc key
-  nhận bản của mình; tenant Y đọc vẫn nhận bản shared. *(happy, BR-01/BR-03)*
+  shared, Then bản riêng được lưu với `tenantId = X`. Dù X và Y đã đọc bản chung, ngay lần đọc đầu tiên sau khi lưu thành công X nhận bản mới, còn Y chưa cấu hình riêng vẫn nhận bản chung. *(BR-01/BR-03/BR-04)* [RV-02](../../../specs/review-decisions.md#rv-02)
 - **AC-03** — Given đã có bản `(tenantId = X, key = "ROLES")`, When tenant_admin của X POST lại
   đúng key đó, Then hệ thống từ chối với 409 "duplicate" và không tạo bản ghi mới. *(biên, BR-01)*
 - **AC-04** — Given key `"CONFIG.FE"` không tồn tại ở tenant X lẫn shared, When user đọc key này,

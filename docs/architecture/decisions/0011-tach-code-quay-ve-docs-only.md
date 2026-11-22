@@ -1,12 +1,15 @@
 ---
 title: "ADR-0011: Tách code khỏi repo — quay về repo thuần tài liệu (docs-only)"
-status: Accepted
+status: Superseded
+superseded_by: ADR-0015
 date: 2026-06-24
 deciders: "SA, Tech lead, PO/BA"
 supersedes: "ADR-0006 (phần đưa code vào repo)"
 ---
 
 # ADR-0011: Tách code khỏi repo — quay về repo thuần tài liệu (docs-only)
+
+Quyết định áp dụng đến 20/11/2026. Xem [ADR-0015](0015-monorepo-rms.md) cho cấu trúc hiện hành.
 
 ## Bối cảnh
 

@@ -3,7 +3,7 @@ title: "Kỳ nhận đề xuất — Giao diện (một web app, phân quyền)"
 spec: "./spec.md"
 owner: "PO/BA"
 status: Draft
-updated: 2026-06-09
+updated: 2026-11-21
 ---
 
 # Kỳ nhận đề xuất — Giao diện
@@ -120,7 +120,7 @@ Wireframe đặt trong `./assets/` (bổ sung khi có), link Figma nếu có.
 - **Khối thông tin:** toàn bộ cấu hình + trạng thái hiện tại + **số đề xuất** (đếm `ResearchProject` theo kỳ,
   tách theo trạng thái: nháp / đã nộp / đang xét duyệt…).
 - **Hành động vận hành (hiện theo trạng thái & quyền):**
-  - "Mở kỳ" (`DRAFT → OPEN`): kiểm BR-03 (đủ trường) + BR-04 (danh mục hiệu lực); xác nhận trước khi mở.
+  - "Mở kỳ" (`DRAFT → OPEN`): kiểm BR-03 (đủ trường) + BR-04 (danh mục hiệu lực); xác nhận trước khi mở. Nếu tham chiếu đã hết hiệu lực, giữ kỳ ở Nháp và hiển thị tên mục để chuyên viên thay rồi bấm Mở kỳ lần nữa.
   - "Đóng kỳ" (`OPEN → CLOSED`): xác nhận; sau khi đóng, F01 ngừng nhận đề xuất mới (BR-05).
   - "Gia hạn" (`OPEN` hoặc mở lại `CLOSED → OPEN`): nhập `endDate` mới về tương lai (BR-06/BR-01).
   - "Hủy kỳ" (`→ CANCELLED`): chỉ bật khi kỳ **chưa có** đề tài `SUBMITTED`; nếu có → chặn với thông báo

@@ -5,7 +5,7 @@ epic: E1
 channel: web
 wave: A
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-21
 ---
 
 # Mở một kỳ nhận đề xuất
@@ -14,9 +14,9 @@ updated: 2026-11-18
 
 ## Clarifications
 
-### Session 2026-11-18
+### Session 2026-11-21
 
-- Q: Nếu danh mục hết hiệu lực giữa lúc soạn và mở kỳ thì sao? → A: Kiểm lại danh mục và bộ tiêu chí tại thời điểm mở, chỉ rõ mục phải thay. [RV-05](../review-decisions.md#rv-05). Khuyến nghị dùng để lập kế hoạch, chờ Phòng KHCN và BA xác nhận.
+- Q: Nếu danh mục hết hiệu lực giữa lúc soạn và mở kỳ thì sao? → A: Khi chuyên viên bấm Mở kỳ, hệ thống kiểm lại hiệu lực của danh mục và bộ tiêu chí. Nếu có mục hết hiệu lực, kỳ vẫn ở trạng thái Nháp và hệ thống chỉ rõ mục cần thay. Sau khi thay mục và đáp ứng đủ điều kiện, chuyên viên có thể mở chính kỳ đó. [RV-05](../review-decisions.md#rv-05)
 
 ## User Scenarios & Testing
 
@@ -29,7 +29,7 @@ Chuyên viên thiết lập mã kỳ, thời gian, bộ tiêu chí và mở đ�
 - **AC-01** (US-05.1) — Given kỳ đủ cấu hình. When mở. Then kỳ nhận đề xuất hiển thị dưới trạng thái OPEN.
 - **AC-02** (US-05.2) — Given ngày kết thúc trước ngày bắt đầu. When lưu kỳ. Then báo lỗi và không tạo kỳ sai.
 
-- **AC-03** (US-05.3, khuyến nghị) — Given Một lĩnh vực bắt buộc vừa ngừng hiệu lực trong bản nháp. When chuyên viên mở kỳ. Then kỳ vẫn nháp và hiển thị mục cần thay.
+- **AC-03** (US-05.3) — Nếu lĩnh vực bắt buộc hoặc bộ tiêu chí hết hiệu lực sau khi lưu nháp, lần mở kỳ giữ trạng thái DRAFT và báo đúng mục. Sau khi thay bằng mục còn hiệu lực và đủ các điều kiện khác, mở lại thành công trên cùng kỳ (OPEN).
 
 ### Edge Cases
 
@@ -42,7 +42,7 @@ Ngày kết thúc trước ngày bắt đầu → báo lỗi và không tạo k�
 - **BR-01 / FR-001.** Khi kỳ đủ cấu hình, người có quyền có thể mở. Kết quả phải quan sát được: kỳ nhận đề xuất hiển thị dưới trạng thái OPEN (AC-01).
 - **BR-02 / FR-002.** Với tình huống ngày kết thúc trước ngày bắt đầu, thao tác lưu kỳ phải cho kết quả báo lỗi và không tạo kỳ sai (AC-02).
 
-- **BR-03 / FR-003 (đề xuất).** Kiểm lại danh mục và bộ tiêu chí tại thời điểm mở, chỉ rõ mục phải thay. Kiểm bằng AC-03.
+- **BR-03 / FR-003.** Khi chuyên viên bấm Mở kỳ, hệ thống kiểm lại hiệu lực của danh mục và bộ tiêu chí. Nếu có mục hết hiệu lực, kỳ vẫn ở trạng thái Nháp và hệ thống chỉ rõ mục cần thay. Sau khi thay mục và đáp ứng đủ điều kiện, chuyên viên có thể mở chính kỳ đó. Kiểm bằng AC-03.
 
 ### Key Entities
 

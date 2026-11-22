@@ -3,7 +3,7 @@ story: US-05
 feature: F02
 review_id: RV-05
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-21
 ---
 
 # Kế hoạch · Mở một kỳ nhận đề xuất
@@ -29,7 +29,7 @@ Kiểm lại mã kỳ không trùng và danh mục hiệu lực khi mở. Chỉ 
 | Quyền và phạm vi | Xác định tenant, vai trò và đối tượng nguồn | Kiểm cả truy cập trực tiếp và dữ liệu ngoài quyền trong quickstart |
 | Vòng đời và audit | Mọi chuyển trạng thái đề tài phát sinh thuộc P01. Ghi P02 khi hành vi đổi trạng thái nghiệp vụ. | Kiểm điều kiện ngay lúc ghi. Lưu thay đổi và sự kiện nghiệp vụ cùng giao dịch, rollback đồng thời nếu ghi lỗi. |
 | Hợp đồng và định dạng | Nguồn triển khai tại `packages/api-contracts` | Đặc tả lời gọi trỏ về nguồn duy nhất. VND nguyên, UTC lưu trữ, dd/MM/yyyy và Asia/Ho_Chi_Minh khi hiển thị |
-| Phạm vi và review | RV-05 là giả định có người phụ trách | [RV-05](../review-decisions.md#rv-05). Đối chiếu với đặc tả module trước khi nhận task. |
+| Phạm vi và review | RV-05 đã chấp thuận ngày 21/11/2026 | [RV-05](../review-decisions.md#rv-05). Đối chiếu với đặc tả module trước khi nhận task. |
 
 ## Project Structure
 

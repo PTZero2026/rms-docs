@@ -5,7 +5,7 @@ epic: "E4"
 owner: "<PO/BA phụ trách>"
 status: Draft        # Draft | Review | Approved
 version: 0.2
-updated: 2026-06-29
+updated: 2026-11-21
 ---
 
 # Quy đổi giờ giảng *(Platform / xuyên suốt)*
@@ -73,7 +73,7 @@ updated: 2026-06-29
 | BR-05 | Phân bổ theo vai trò | Giờ giảng phân bổ theo vai trò & tỉ lệ đóng góp giữa các thành viên | Công thức phân bổ cần PO chốt |
 | BR-06 | Điều kiện phát sinh | Chỉ sự kiện ở trạng thái hợp lệ (vd duyệt/nghiệm thu đạt) mới sinh giờ giảng | Mỗi feature nguồn định nghĩa "trạng thái hợp lệ" |
 | BR-07 | Điều chỉnh có vết | Mọi điều chỉnh giờ giảng thủ công phải có lý do và ghi audit | Theo luật bất biến §4 (AGENTS.md) |
-| BR-08 | Idempotent | Một sự kiện không bị tính giờ trùng lặp khi xử lý lại | Khóa theo nguồn sự kiện |
+| BR-08 | Idempotent | Khi nhận lại cùng sự kiện đã quy đổi, giữ số giờ, kỳ, phiên bản công thức và phân bổ từng người như lần đầu. | Khóa theo nguồn sự kiện, [RV-30](../../../specs/review-decisions.md#rv-30) |
 | BR-09 | Không chồng lấn công thức | Trong cùng tenant, không cho 2 công thức cùng `activityType` + vai trò/phạm vi + `periodType` có khoảng hiệu lực chồng lấn | Tránh chọn công thức mơ hồ |
 | BR-10 | Hồi tố có kiểm soát | Khi đổi công thức, bản ghi đã quy đổi không tự đổi; muốn áp dụng hồi tố phải chạy lệnh tính lại/điều chỉnh có lý do và audit | Giữ ổn định số liệu đã chốt |
 
@@ -106,7 +106,7 @@ updated: 2026-06-29
   `recognitionPeriodCode = 2026`.
 - **AC-04** *(BR-05)* — Given sự kiện có nhiều thành viên với vai trò khác nhau, When quy đổi, Then giờ
   giảng được phân bổ theo đúng quy tắc vai trò.
-- **AC-05** *(BR-06,08)* — Given một sự kiện đã được quy đổi, When xử lý lại cùng sự kiện, Then không phát sinh giờ trùng.
+- **AC-05** *(BR-06,08)* — Given một sự kiện đã được quy đổi, When nhận lại cùng sự kiện sau ngày đổi định mức, Then các dòng giờ giữ số giờ, kỳ, phiên bản công thức và phân bổ ban đầu. Tổng giờ từng người giữ nguyên.
 - **AC-06** *(BR-07)* — Given chuyên viên điều chỉnh giờ giảng, When lưu, Then thay đổi được ghi `AuditLog` kèm lý do.
 - **AC-07** *(BR-09)* — Given đã có công thức hiệu lực cho cùng loại hoạt động/vai trò/kỳ, When Quản trị tạo
   công thức mới có khoảng hiệu lực chồng lấn, Then hệ thống từ chối và báo khoảng hiệu lực bị trùng.

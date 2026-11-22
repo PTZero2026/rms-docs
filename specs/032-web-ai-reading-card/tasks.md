@@ -3,7 +3,7 @@ story: US-32
 feature: F07
 review_id: RV-32
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-21
 ---
 
 # Tasks · Lập thẻ đọc cho một tài liệu có DOI
@@ -24,9 +24,9 @@ Mục tiêu độc lập: Nhà nghiên cứu tạo bản nháp thẻ đọc có 
 
 - [ ] T003 [P] [US1] Viết ca US-32.1 / US-32.2 và TC-04 trong `e2e/product/ai-reading-card/acceptance.spec.ts`; so kết quả với [quickstart](quickstart.md).
 - [ ] T004 [P] [US1] Áp ràng buộc [data-model.md](data-model.md) `AiSuggestion.sources` khi đọc/ghi qua `apps/backend/src/modules/product/ai-reading-card/data.ts`.
-- [ ] T005 [US1] Thực hiện FR-001/002 trong `apps/backend/src/modules/product/ai-reading-card/service.ts`. Chỉ sinh trường nội dung từ toàn văn hợp lệ. Khi chỉ có metadata, điền thư mục và để trống nội dung thiếu căn cứ; không đưa thẻ nháp vào bảng sản phẩm được duyệt. Kiểm nhánh AC-02 theo [quickstart](quickstart.md).
+- [ ] T005 [US1] Thực hiện FR-001/002 trong `apps/backend/src/modules/product/ai-reading-card/service.ts`. Chỉ sinh trường nội dung từ toàn văn hợp lệ. Khi chỉ có thông tin thư mục, điền các trường được phép. Hiển thị “chưa đủ căn cứ” ở phương pháp và kết quả. Thẻ giữ trạng thái nháp. Kiểm nhánh AC-02 theo [quickstart](quickstart.md).
 - [ ] T006 [US1] Tích hợp điểm tương tác trong `apps/web/src/features/product/ai-reading-card/view.tsx`. Hiển thị thẻ đọc nháp, nguồn từng trường và các mục thiếu căn cứ; hiển thị riêng tình huống chỉ có metadata và cho người có quyền quay về dữ liệu nguồn.
-- [ ] T007 [US1] Áp dụng kết luận RV-32 cho FR-003 trong `apps/backend/src/modules/product/ai-reading-card/service.ts` và kiểm TC-03 ở `e2e/product/ai-reading-card/boundary.spec.ts`. Chỉ điền thông tin thư mục, đánh dấu phần phương pháp và kết quả thiếu nguồn; người dùng kiểm trước khi dùng.
+- [ ] T007 [US1] Áp dụng kết luận RV-32 cho FR-003 trong `apps/backend/src/modules/product/ai-reading-card/service.ts` và kiểm TC-03 ở `e2e/product/ai-reading-card/boundary.spec.ts`. Khi chỉ có quyền dùng thông tin thư mục, trợ lý chỉ điền tên bài, tác giả, năm và DOI theo dữ liệu được phép. Cả phương pháp và kết quả ghi “chưa đủ căn cứ”. Nhà nghiên cứu kiểm thẻ nháp trước khi quyết định dùng hoặc bỏ.
 
 ## Phase 4 · Hồi quy
 

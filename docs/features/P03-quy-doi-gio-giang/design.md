@@ -3,7 +3,7 @@ title: "Quy đổi giờ giảng — Thiết kế kỹ thuật"
 spec: "./spec.md"
 owner: "<DEV/Architect>"
 status: Draft
-updated: 2026-06-29
+updated: 2026-11-21
 ---
 
 # Quy đổi giờ giảng — Thiết kế kỹ thuật
@@ -34,7 +34,7 @@ updated: 2026-06-29
 ## 3. Luồng xử lý
 
 1. Nhận yêu cầu quy đổi từ feature nguồn.
-2. Kiểm idempotent theo (`tenantId`, `sourceType`, `sourceId`, `eventKey`).
+2. Kiểm khóa (`tenantId`, `sourceType`, `sourceId`, `eventKey`). Nếu sự kiện đã được ghi nhận thành công, giữ nguyên các dòng phân bổ và điều chỉnh đã lưu. Chỉ xử lý sự kiện mới ở bước 3–5.
 3. Xác định `periodType` theo cấu hình tenant (`VP-TH-PERIOD`) và tìm `recognitionPeriodCode` từ lịch B01.
 4. Chọn `TeachingHourFormula` theo `activityType`/vai trò/phạm vi/`periodType` và `sourceOccurredAt`.
 5. Tính tổng giờ, phân bổ theo vai trò/tỉ lệ, tạo `TeachingHourRecord`.

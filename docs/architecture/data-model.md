@@ -1,7 +1,7 @@
 ---
 title: "Mô hình dữ liệu — RMS"
 status: Draft
-updated: 2026-06-29
+updated: 2026-11-21
 ---
 
 # Mô hình dữ liệu
@@ -91,7 +91,7 @@ stateDiagram-v2
     DRAFT --> SUBMITTED : Nộp trong kỳ nhận đề xuất mở (F01)
     SUBMITTED --> DRAFT : Chuyên viên trả lại bổ sung (F01)
     SUBMITTED --> UNDER_REVIEW : Đưa vào hội đồng (F03)
-    UNDER_REVIEW --> APPROVED : Hội đồng thông qua (F03)
+    UNDER_REVIEW --> APPROVED : Các hội đồng bắt buộc đều thông qua (F03)
     UNDER_REVIEW --> REJECTED : Hội đồng không thông qua (F03)
     APPROVED --> IN_PROGRESS : Giao đề tài chính thức (F04)
     IN_PROGRESS --> SUSPENDED : Tạm dừng có lý do (F04)
@@ -114,7 +114,7 @@ stateDiagram-v2
 | `DRAFT` | `SUBMITTED` | Kỳ nhận đề xuất đang mở, hồ sơ đủ trường bắt buộc | F01 | Chủ nhiệm |
 | `SUBMITTED` | `DRAFT` | Hồ sơ thiếu/sai, còn hạn nộp | F01 | Chuyên viên |
 | `SUBMITTED` | `UNDER_REVIEW` | Hết hạn nộp / chốt danh sách, đã gán hội đồng | F03 | Chuyên viên |
-| `UNDER_REVIEW` | `APPROVED` / `REJECTED` | Đủ phiếu chấm hợp lệ, đạt/không đạt ngưỡng | F03 | Chuyên viên (theo kết luận HĐ) |
+| `UNDER_REVIEW` | `APPROVED` / `REJECTED` | Đủ phiếu khoa học, xét ngưỡng điểm và kết quả đạo đức nếu bắt buộc theo [F03 BR-08](../features/F03-xet-duyet-hoi-dong/spec.md). Khi khoa học đạt và đạo đức còn chờ hoặc cần bổ sung, giữ UNDER_REVIEW | F03 | Chuyên viên (theo kết luận HĐ) |
 | `APPROVED` | `IN_PROGRESS` | Đã giao đề tài chính thức | F04 | Chuyên viên |
 | `IN_PROGRESS` | `PENDING_ACCEPTANCE` | Đã nộp báo cáo cuối + đủ sản phẩm cam kết | F06 | Chủ nhiệm |
 | `UNDER_ACCEPTANCE` | `PASSED` / `FAILED` | Hội đồng nghiệm thu kết luận | F06 | Chuyên viên |

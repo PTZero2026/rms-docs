@@ -1,7 +1,7 @@
 ---
 title: "Danh sách tính năng & checklist rà soát tài liệu"
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-21
 ---
 
 # Danh sách tính năng RMS
@@ -62,7 +62,7 @@ Quy ước tiến độ:
 | F07 | E3 | [Sản phẩm khoa học](F07-san-pham-khoa-hoc/) | `product` | FE, BO, công khai một phần | Later | Có spec, design, UI và test plan |
 | F08 | E3 | [Lý lịch khoa học](F08-ly-lich-khoa-hoc/) | `profile` | FE, BO | Later | Có spec, design, UI và test plan |
 | B01 | E0 | [Danh mục & cấu hình](B01-danh-muc-cau-hinh/) | `catalog` | BO | Now | Đã có nội dung |
-| B02 | E3 | [Báo cáo & thống kê](B02-bao-cao-thong-ke/) | `report` | BO | A (theo kỳ), Later (nâng cao) | 4 tài liệu trình review RV-13 |
+| B02 | E3 | [Báo cáo & thống kê](B02-bao-cao-thong-ke/) | `report` | BO | A (theo kỳ), Later (nâng cao) | RV-13 đã chốt quy tắc đếm và bản chụp |
 | B03 | E0 | [Quản lý người dùng](B03-quan-ly-nguoi-dung/) | `iam` | BO | Now | Đã có nội dung; **đã tách spec↔design (mẫu)** |
 | B04 | E0 | [Thông báo](B04-thong-bao/) | `notification` | FE, BO | Xuyên suốt | Đã có nội dung |
 | B06 | E0 | [Trang chủ (Dashboard cá nhân)](B06-trang-chu/) | `home` | FE, BO | Now + xuyên suốt | Spec/UI/test-plan khởi tạo — khung nhìn tổng hợp read-only sau đăng nhập |
@@ -226,17 +226,17 @@ Quy ước tiến độ:
 | F02 | E1 | ✅ | – | ✅ | ✅ | 8/8 | 🟡 | [ ] |
 | F03 | E1 | ✅ | – | ✅ | ✅ | 11/10 | 🟡 | [ ] |
 | F04 | E2 | ✅ | – | ✅ | ✅ | 15/15 | 🟡 | [ ] |
-| F05 | E2 | ✅ | – | ✅ | ✅ | 14/16 | 🟡 | [ ] |
+| F05 | E2 | ✅ | – | ✅ | ✅ | 10/12 | 🟡 | [ ] |
 | F06 | E2 | ✅ | – | ✅ | ✅ | 12/12 | 🟡 | [ ] |
 | F07 | E3 | ✅ | ✅ | ✅ | ✅ | 14/13 | 🟡 | [ ] |
 | F08 | E3 | ✅ | ✅ | ✅ | ✅ | 10/13 | 🟡 | [ ] |
 | B01 | E0 | ✅ | – | ✅ | ✅ | 13/14 | 🟡 | [ ] |
 | B02 | E3 | 🟡 | 🟡 | 🟡 | 🟡 | 3/3 | 🟡 | [ ] |
-| B03 | E0 | ✅ | ✅ | ✅ | ✅ | 11/12 | 🟢 | [ ] |
+| B03 | E0 | ✅ | 🟡 | 🟡 | ✅ | 11/11 | 🟡 | [ ] |
 | B04 | E0 | ✅ | – | ✅ | ✅ | 10/10 | 🟡 | [ ] |
 | B06 | E0 | 🟡 | – | 🟡 | 🟡 | 10/12 | 🔴 | [ ] |
-| P01 | E0 | ✅ | – | – | 🔴 | 9/8 | 🟡 | [ ] |
-| P02 | E0 | ✅ | – | – | 🔴 | 7/5 | 🟡 | [ ] |
+| P01 | E0 | ✅ | – | – | ✅ | 9/8 | 🟡 | [ ] |
+| P02 | E0 | ✅ | – | – | ✅ | 7/5 | 🟡 | [ ] |
 | P03 | E4 | 🟡 | – | 🔴 | 🔴 | 6/5 | 🔴 | [ ] |
 | F09 | E4 | 🟡 | – | 🔴 | 🔴 | 3/3 | 🔴 | [ ] |
 | F10 | E4 | 🟡 | – | 🔴 | 🔴 | 3/3 | 🔴 | [ ] |
@@ -284,8 +284,8 @@ Các mục dưới đây phải được rà trong nhiều feature, không tự 
 
 ## 7. Khoảng trống đã nhận diện
 
-- B02 có lát báo cáo theo kỳ trình review. Các báo cáo nâng cao cần đặc tả riêng. F07/F08 là nguồn cho US-20/21/25.
-- F06 đã có 12 ca theo AC; RV-24 cần PO và tài chính đồng ý trước khi nghiệm thu khóa sổ.
+- B02 đã chốt quy tắc đếm hồ sơ theo kỳ và dùng chung bản chụp theo RV-13. Các báo cáo nâng cao cần đặc tả riêng. F07/F08 là nguồn cho US-20/21/25.
+- F06 đã có 12 ca theo AC; điều kiện khóa sổ đã chốt tại [RV-24](../../specs/review-decisions.md#rv-24).
 - F03 cần cập nhật đầy đủ phê duyệt đạo đức song song và mô hình cuộc họp/biên bản theo roadmap.
 - F06 cần đồng bộ phần cuộc họp nghiệm thu dùng chung từ F03.
 - Cổng công khai chưa có mã feature riêng; cần quyết định tách feature nếu phạm vi tiếp tục mở rộng.
@@ -308,6 +308,7 @@ Các mục dưới đây phải được rà trong nhiều feature, không tự 
 
 | Ngày | Trạng thái | Thay đổi |
 |---|---|---|
+| 2026-11-19 | Review | P01/P02 có test plan cho từng AC. B03 theo spec v0.4, F05 bổ sung ca phí quản lý. [Ma trận kiểm thử 20 feature](../guides/kiem-thu-rms.md). |
 | 2026-11-18 | Review | Lát báo cáo B02 và bộ ca F06 trình duyệt. Đồng bộ chỉ dẫn tới [hồ sơ Spec Kit](../../specs/README.md). |
 | 2026-06-11 | Draft | Tạo danh sách 12 feature, capability chính, checklist rà soát và khoảng trống tài liệu ban đầu. |
 | 2026-06-11 | Draft | Thêm quy ước tách `spec.md` (nghiệp vụ, PO/BA) ↔ `design.md` (kỹ thuật, DEV); làm mẫu trên F01 và B03; thêm cột `design.md` vào checklist; thêm template `design.md`. |

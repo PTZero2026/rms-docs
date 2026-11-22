@@ -5,7 +5,7 @@ epic: E1
 channel: shared
 wave: C
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-21
 ---
 
 # Đối chiếu mục bắt buộc trong một thuyết minh
@@ -14,9 +14,9 @@ updated: 2026-11-18
 
 ## Clarifications
 
-### Session 2026-11-18
+### Session 2026-11-21
 
-- Q: Nếu không tìm thấy căn cứ đáng tin hoặc quyền đọc vừa bị thu hồi thì sao? → A: Hiện chưa đủ căn cứ hoặc từ chối truy xuất; giữ nguyên thuyết minh, cho rà thủ công. Trước pilot kiểm 50 hồ sơ, tìm ≥90% mục thiếu, ≤10% cảnh báo sai, 0 lộ quyền và 0 dẫn chứng bịa. [RV-31](../review-decisions.md#rv-31). Khuyến nghị dùng để lập kế hoạch, chờ PO, chủ dữ liệu trường và QA AI xác nhận.
+- Q: Nếu không tìm thấy căn cứ đáng tin hoặc quyền đọc vừa bị thu hồi thì sao? → A: Hiện chưa đủ căn cứ hoặc từ chối truy xuất; giữ nguyên thuyết minh, cho rà thủ công. Trước pilot kiểm 50 hồ sơ, tìm ≥90% mục thiếu, ≤10% cảnh báo sai, 0 lộ quyền và 0 dẫn chứng bịa. [RV-31](../review-decisions.md#rv-31). Tạm chốt để đánh giá trước pilot. Bộ mẫu và các ngưỡng định lượng có thể điều chỉnh theo hồ sơ thực tế tại Trường Đại học Thủy lợi kỳ 2027.
 
 ## User Scenarios & Testing
 
@@ -29,7 +29,7 @@ Chủ nhiệm yêu cầu trợ lý đọc một bản nháp được phép dùng
 - **AC-01** (US-31.1) — Given đoạn nguồn hợp lệ. When yêu cầu rà. Then thấy trích đoạn, vị trí và bản mẫu, chủ nhiệm có thể bác gợi ý.
 - **AC-02** (US-31.2) — Given tài liệu ngoài quyền hoặc thiếu căn cứ. When yêu cầu rà. Then từ chối truy xuất hoặc ghi chưa đủ căn cứ, hồ sơ gốc giữ nguyên.
 
-- **AC-03** (US-31.3, khuyến nghị) — Given Dịch vụ trợ lý gián đoạn lúc rà một thuyết minh. When chủ nhiệm trở lại biểu mẫu. Then vẫn rà thủ công và lưu được bản nháp của mình.
+- **AC-03** (US-31.3, tạm chốt) — Given Dịch vụ trợ lý gián đoạn lúc rà một thuyết minh. When chủ nhiệm trở lại biểu mẫu. Then vẫn rà thủ công và lưu được bản nháp của mình.
 
 ### Edge Cases
 
@@ -42,7 +42,7 @@ Tài liệu ngoài quyền hoặc thiếu căn cứ → từ chối truy xuất 
 - **BR-01 / FR-001.** Khi đoạn nguồn hợp lệ, người có quyền có thể yêu cầu rà. Kết quả phải quan sát được: thấy trích đoạn, vị trí và bản mẫu, chủ nhiệm có thể bác gợi ý (AC-01).
 - **BR-02 / FR-002.** Với tình huống tài liệu ngoài quyền hoặc thiếu căn cứ, thao tác yêu cầu rà phải cho kết quả từ chối truy xuất hoặc ghi chưa đủ căn cứ, hồ sơ gốc giữ nguyên (AC-02).
 
-- **BR-03 / FR-003 (đề xuất).** Hiện chưa đủ căn cứ hoặc từ chối truy xuất; giữ nguyên thuyết minh, cho rà thủ công. Trước pilot kiểm 50 hồ sơ, tìm ≥90% mục thiếu, ≤10% cảnh báo sai, 0 lộ quyền và 0 dẫn chứng bịa. Kiểm bằng AC-03.
+- **BR-03 / FR-003 (tạm chốt).** Hiện chưa đủ căn cứ hoặc từ chối truy xuất; giữ nguyên thuyết minh, cho rà thủ công. Trước pilot kiểm 50 hồ sơ, tìm ≥90% mục thiếu, ≤10% cảnh báo sai, 0 lộ quyền và 0 dẫn chứng bịa. Kiểm luồng thủ công bằng AC-03 và chất lượng gợi ý bằng SC-003.
 
 ### Key Entities
 
@@ -53,6 +53,8 @@ Tài liệu ngoài quyền hoặc thiếu căn cứ → từ chối truy xuất 
 - **SC-001.** Hai tình huống gốc của US-31 đúng 2/2 khi chạy riêng bằng bộ dữ liệu trên.
 - **SC-002.** Trong bộ thử hai tổ chức, 0 hồ sơ ngoài phạm vi xuất hiện trong kết quả hoặc được thay đổi bởi người của tổ chức kia.
 
+- **SC-003 (tạm chốt).** Trên 50 hồ sơ gán nhãn độc lập, số mục thiếu tìm đúng / tổng số mục thực sự thiếu ≥90% và số cảnh báo sai / tổng số cảnh báo ≤10%. Bộ thử phải ghi nhận 0 lần lộ dữ liệu ngoài quyền và 0 dẫn chứng bịa.
+
 ## Assumptions
 
-Chỉ bật trợ lý cho tenant và nguồn đã được phép. Phụ thuộc F01, B03, P02. Phạm vi chỉ gồm kết quả của user story này. Có thể thương lượng cách sắp các mục cần rà.
+Chỉ bật trợ lý cho tenant đã được phép. Chỉ truy xuất phần tài liệu mà người dùng hiện có quyền đọc và trường cho phép dùng cho AI. Kiểm tra cả hai quyền trước khi gửi nội dung cho mô hình và khi mở lại yêu cầu hoặc căn cứ cũ. [Quy tắc nguồn RV-35](../review-decisions.md#rv-35). Phụ thuộc F01, B03, P02. Phạm vi chỉ gồm kết quả của user story này. Có thể thương lượng cách sắp các mục cần rà.

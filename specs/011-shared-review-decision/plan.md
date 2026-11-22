@@ -3,7 +3,7 @@ story: US-11
 feature: F03
 review_id: RV-11
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-21
 ---
 
 # Kế hoạch · Chốt kết quả xét duyệt
@@ -16,7 +16,7 @@ Chuyên viên kết luận theo số phiếu và ngưỡng điểm để công b
 
 ## Technical Context
 
-Một SPA trong `apps/web`, backend chia module, PostgreSQL và hợp đồng sinh type. Ngôn ngữ và phiên bản theo repo thực thi khi khởi tạo. [Kiến trúc đích](../../docs/architecture/overview.md). Kênh nghiệm thu chính: Dịch vụ dùng chung và điểm gọi của module sở hữu. Dữ liệu trong lát: Đợt đang thu phiếu, ngưỡng, phiếu đã nộp, kết quả đạo đức nếu áp dụng. Đối chiếu trên bộ thử ba bộ phiếu dựng sẵn ở trên, dưới và bằng ngưỡng. Điều kiện tích hợp: F03, P01, B04.
+Một SPA trong `apps/web`, backend chia module, PostgreSQL và hợp đồng sinh type. Ngôn ngữ và phiên bản theo repo thực thi khi khởi tạo. [Kiến trúc đích](../../docs/architecture/overview.md). Kênh nghiệm thu chính: Dịch vụ dùng chung và điểm gọi của module sở hữu. Dữ liệu trong lát: Đợt khoa học, ngưỡng và phiếu đã nộp hoặc kết luận khoa học đã lưu, yêu cầu và kết quả đạo đức nếu áp dụng. Đối chiếu trên bộ thử ba bộ phiếu dựng sẵn ở trên, dưới và bằng ngưỡng. Điều kiện tích hợp: F03, P01, B04.
 
 ### Xử lý tại module F03
 
@@ -29,7 +29,7 @@ Tính số phiếu hợp lệ trước điểm tổng hợp. Bằng ngưỡng ch
 | Quyền và phạm vi | Xác định tenant, vai trò và đối tượng nguồn | Kiểm cả truy cập trực tiếp và dữ liệu ngoài quyền trong quickstart |
 | Vòng đời và audit | Chuyển trạng thái đề tài qua P01, lưu lịch sử và P02 cùng giao dịch. | Kiểm điều kiện ngay lúc ghi. Lưu thay đổi và sự kiện nghiệp vụ cùng giao dịch, rollback đồng thời nếu ghi lỗi. |
 | Hợp đồng và định dạng | Nguồn triển khai tại `packages/api-contracts` | Đặc tả lời gọi trỏ về nguồn duy nhất. VND nguyên, UTC lưu trữ, dd/MM/yyyy và Asia/Ho_Chi_Minh khi hiển thị |
-| Phạm vi và review | RV-11 là giả định có người phụ trách | [RV-11](../review-decisions.md#rv-11). Đối chiếu với đặc tả module trước khi nhận task. |
+| Phạm vi và review | RV-11 đã chấp thuận ngày 21/11/2026 | [RV-11](../review-decisions.md#rv-11). Đối chiếu với đặc tả module trước khi nhận task. |
 
 ## Project Structure
 
@@ -40,6 +40,6 @@ Trong repo code, module `apps/backend/src/modules/review/review-decision` chịu
 
 | Truy vết | Cách hiện thực | Ca kiểm |
 |---|---|---|
-| FR-001 / AC-01 | Đợt đang thu phiếu, ngưỡng, phiếu đã nộp, kết quả đạo đức nếu áp dụng → Kết luận đợt, trạng thái đề tài và số phiếu thiếu nếu bị chặn | TC-01 |
+| FR-001 / AC-01 | Đợt khoa học, ngưỡng và phiếu đã nộp hoặc kết luận khoa học đã lưu, yêu cầu và kết quả đạo đức nếu áp dụng → Kết luận đợt, trạng thái đề tài và số phiếu thiếu nếu bị chặn | TC-01 |
 | FR-002 / AC-02 | Kiểm nhánh chưa đủ phiếu trước khi trả kết quả | TC-02 |
-| FR-003 / AC-03 | Lưu kết luận khoa học riêng, giữ chuyển APPROVED cho tới khi đủ kết quả đạo đức nếu quy chế yêu cầu. | TC-03 |
+| FR-003 / AC-03 | Lưu kết luận khoa học riêng. Xử lý kết quả đạo đức đến trước hoặc sau khoa học theo F03 BR-08. Gắn thông báo phê duyệt với lần chuyển APPROVED để xử lý lại cùng kết quả vẫn chỉ báo một lần. | TC-03 |

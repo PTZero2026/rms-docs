@@ -3,7 +3,7 @@ story: US-03
 feature: P01
 review_id: RV-03
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-21
 ---
 
 # Tasks · Giữ quy trình của hồ sơ đang chạy
@@ -34,4 +34,4 @@ Mục tiêu độc lập: Người quản lý quy trình phát hành một phiê
 
 ## Phụ thuộc và cách giao
 
-T001 → T002 → (T003 ∥ T004) → T005 → T006 → T007 → T008. T003 và T004 dùng tệp riêng sau khi chốt giao tiếp. Giao lát US1 với dữ liệu mẫu trước, sau đó chạy lại bằng module thật. Dùng [RV-03](../review-decisions.md#rv-03) để chốt nhánh biên trước khi nghiệm thu.
+T001 → T002 → (T003 ∥ T004) → T005 → T006 → T007 → T008. T003 và T004 dùng tệp riêng sau khi chốt giao tiếp. Giao lát US1 với dữ liệu mẫu trước, sau đó chạy lại bằng module thật. Dùng [RV-03](../review-decisions.md#rv-03) để đối chiếu phiên bản và bước thực tế trong TC-03.

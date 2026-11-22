@@ -3,7 +3,7 @@ story: US-02
 feature: B01
 review_id: RV-02
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-21
 ---
 
 # Tasks · Ghi đè một cấu hình của trường
@@ -30,8 +30,8 @@ Mục tiêu độc lập: Quản trị tenant điều chỉnh một giá trị d
 
 ## Phase 4 · Hồi quy
 
-- [ ] T008 Đối chiếu đủ bốn ca và chạy lại luồng tích hợp với B01, B03. Lưu bằng chứng theo mẫu `e2e/catalog/config-override/review.md`. Đối chiếu thêm AC-02, AC-05, AC-07 trong [B01](../../docs/features/B01-danh-muc-cau-hinh/spec.md) ở phần áp dụng cho lát này. Lưu ba giá trị đối chứng: trước khi ghi, sau ghi tại A, sau ghi tại B. Người dùng thường gửi lệnh ghi nhận từ chối.
+- [ ] T008 Đối chiếu đủ bốn ca và chạy lại luồng tích hợp với B01, B03. Lưu bằng chứng theo mẫu `e2e/catalog/config-override/review.md`. Đối chiếu thêm AC-02, AC-05, AC-07 trong [B01](../../docs/features/B01-danh-muc-cau-hinh/spec.md) ở phần áp dụng cho lát này. Ghi giá trị chung ban đầu và kết quả lần đọc đầu tiên ở từng trường sau khi A lưu thành công. Người dùng thường gửi lệnh ghi nhận từ chối.
 
 ## Phụ thuộc và cách giao
 
-T001 → T002 → (T003 ∥ T004) → T005 → T006 → T007 → T008. T003 và T004 dùng tệp riêng sau khi chốt giao tiếp. Giao lát US1 với dữ liệu mẫu trước, sau đó chạy lại bằng module thật. Dùng [RV-02](../review-decisions.md#rv-02) để chốt nhánh biên trước khi nghiệm thu.
+T001 → T002 → (T003 ∥ T004) → T005 → T006 → T007 → T008. T003 và T004 dùng tệp riêng sau khi chốt giao tiếp. Giao lát US1 với dữ liệu mẫu trước, sau đó chạy lại bằng module thật. Dùng [RV-02](../review-decisions.md#rv-02) để đối chiếu lần đọc đầu tiên của từng trường trong TC-03.

@@ -3,7 +3,7 @@ story: US-01
 feature: B03
 review_id: RV-01
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-21
 ---
 
 # Kế hoạch · Khóa tài khoản của người rời đơn vị
@@ -29,7 +29,7 @@ Dùng thao tác khóa của B03. Kiểm cả tài khoản vừa khóa và phiên
 | Quyền và phạm vi | Xác định tenant, vai trò và đối tượng nguồn | Kiểm cả truy cập trực tiếp và dữ liệu ngoài quyền trong quickstart |
 | Vòng đời và audit | Mọi chuyển trạng thái đề tài phát sinh thuộc P01. Ghi P02 khi hành vi đổi trạng thái nghiệp vụ. | Kiểm điều kiện ngay lúc ghi. Lưu thay đổi và sự kiện nghiệp vụ cùng giao dịch, rollback đồng thời nếu ghi lỗi. |
 | Hợp đồng và định dạng | Nguồn triển khai tại `packages/api-contracts` | Đặc tả lời gọi trỏ về nguồn duy nhất. VND nguyên, UTC lưu trữ, dd/MM/yyyy và Asia/Ho_Chi_Minh khi hiển thị |
-| Phạm vi và review | RV-01 là giả định có người phụ trách | [RV-01](../review-decisions.md#rv-01). Đối chiếu với đặc tả module trước khi nhận task. |
+| Phạm vi và review | RV-01 đã chấp thuận ngày 21/11/2026 | [RV-01](../review-decisions.md#rv-01). Đối chiếu với đặc tả module trước khi nhận task. |
 
 ## Project Structure
 
@@ -42,4 +42,4 @@ Trong repo code, module `apps/backend/src/modules/iam/lock-account` chịu trác
 |---|---|---|
 | FR-001 / AC-01 | Tài khoản đích và xác nhận khóa → Trạng thái truy cập và sự kiện ACCOUNT_LOCKED | TC-01 |
 | FR-002 / AC-02 | Kiểm nhánh người chỉ có quyền xem trước khi trả kết quả | TC-02 |
-| FR-003 / AC-03 | Kiểm trạng thái tại yêu cầu nghiệp vụ kế tiếp, kể cả phiên đã mở. | TC-03 |
+| FR-003 / AC-03 | Kiểm trạng thái hiện tại trong lớp phân quyền dùng chung trước khi xử lý yêu cầu đọc hoặc ghi của phiên đã mở. | TC-03 |

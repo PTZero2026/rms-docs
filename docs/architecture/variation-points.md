@@ -1,8 +1,8 @@
 ---
 title: "Sổ điểm biến thiên (variation points) — RMS đa tổ chức"
 status: Draft
-version: 0.2
-updated: 2026-06-29
+version: 0.3
+updated: 2026-11-19
 ---
 
 # Sổ điểm biến thiên — cấu hình per-tenant
@@ -106,6 +106,7 @@ updated: 2026-06-29
 |---|---|---|---|---|---|---|
 | VP-MIGRATE | Phạm vi & nguồn số hóa dữ liệu cũ | Kế hoạch import per-tenant | Giá trị | Không | Quản trị hệ thống | `migration-coverage.md` |
 | VP-BRAND | Tên hiển thị, logo, slug, realm | Thuộc tính `Tenant` | Giá trị | — | Quản trị hệ thống | `data-model.md §4.8` |
+| VP-THEME (đề xuất) | Bộ token màu, font, radius của web RMS | Schema token shadcn, phiên bản active và override theo tenant | Giá trị theo schema | Theme gốc của sản phẩm | Quản trị tenant áp dụng và khôi phục, Design lead quản lý schema | [SA-04 và quy trình quản trị theme](rms-v0-sa-review.md) |
 
 ---
 

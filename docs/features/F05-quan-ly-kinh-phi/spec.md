@@ -5,7 +5,7 @@ epic: "E2"
 owner: "PO/BA"
 status: Draft        # Draft | Review | Approved
 version: 0.4
-updated: 2026-06-17
+updated: 2026-11-21
 ---
 
 # Quản lý kinh phí
@@ -99,8 +99,12 @@ sequenceDiagram
 
     Note over CV,SYS: Khi đề tài PASSED (F06) → quyết toán
     CV->>SYS: Yêu cầu quyết toán và đóng đề tài [BR-07]
-    SYS->>SYS: ResearchProject PASSED → COMPLETED (phối hợp F06), khóa kinh phí
-    SYS-->>CN: Thông báo đề tài đã quyết toán và hoàn thành
+    alt Đủ điều kiện theo chế độ của đơn vị (BR-07)
+        SYS->>SYS: ResearchProject PASSED → COMPLETED qua domain service, khóa kinh phí
+        SYS-->>CN: Thông báo đề tài đã quyết toán và hoàn thành
+    else Đã bật đối soát và còn khoản chưa đối soát hoặc sai lệch
+        SYS-->>CV: Giữ PASSED và liệt kê từng khoản vướng
+    end
 ```
 
 ### 3.2 Chuyển trạng thái đề tài trong phạm vi F05
@@ -126,7 +130,7 @@ stateDiagram-v2
 | BR-04 | Phân quyền theo vai trò | **Chủ nhiệm đề tài**: xem kinh phí và **tạo/sửa/xóa khoản chi + đính chứng từ** cho **đề tài của mình**; **không** xác nhận cấp kinh phí, **không** quyết toán. **Chuyên viên QL KHCN**: **xác nhận cấp kinh phí**, **xem** khoản chi + chứng từ của các đề tài, **quyết toán**; không tạo khoản chi thay chủ nhiệm. | RBAC + data scoping (overview §4.1) |
 | BR-05 | Chứng từ khoản chi | Mỗi khoản chi có thể đính kèm **một hoặc nhiều** chứng từ (`Attachment`, lưu object storage). Việc bắt buộc chứng từ theo loại khoản chi để giai đoạn sau (gắn với cơ chế quyết toán theo khoản mục). | File theo quy ước Attachment chung |
 | BR-06 | Khóa kinh phí sau khi đóng đề tài | Sau khi đề tài `COMPLETED`, khoản chi và kinh phí được cấp bị **khóa**, không sửa/xóa. Trước đó chủ nhiệm sửa/xóa được khoản chi của mình khi đề tài còn `IN_PROGRESS`. | Giữ toàn vẹn quyết toán |
-| BR-07 | Quyết toán & đóng đề tài | Khi đề tài `PASSED`, **Chuyên viên QL KHCN** thực hiện quyết toán và chuyển `ResearchProject: PASSED → COMPLETED` (qua domain service, phối hợp F06). Bản đơn giản **không** có điều kiện chặn tự động (không đối soát, không bắt buộc chứng từ cứng); chuyên viên rà soát thủ công trước khi đóng. Ghi audit. | Phối hợp F06; điều kiện chặt hơn để giai đoạn sau |
+| BR-07 | Quyết toán & đóng đề tài | Khi đề tài `PASSED`, **Chuyên viên QL KHCN** thực hiện quyết toán và chuyển `ResearchProject: PASSED → COMPLETED` (qua domain service, phối hợp F06). Pilot chưa bật đối soát cho phép chuyên viên xác nhận quyết toán sau khi rà thủ công. Khi đã bật, chỉ được đóng khi mọi khoản của đề tài đều `MATCHED`. Còn `UNRECONCILED` hoặc `MISMATCHED` thì giữ `PASSED` và liệt kê từng khoản cần xử lý. Khi đóng thành công, khóa kinh phí và ghi audit. | [RV-24](../../../specs/review-decisions.md#rv-24), F06 BR-09 |
 | BR-08 | Xác nhận cấp kinh phí một lần | **Chuyên viên** xác nhận tổng kinh phí được cấp cho đề tài, mặc định bằng `ProjectAssignment.approvedBudget`; tổng cấp **không vượt** `approvedBudget`. Khi xác nhận, hệ thống tách phí quản lý & kinh phí thực hiện ([BR-10]). Xác nhận một lần cho cả đề tài; điều chỉnh phải ghi audit. | Nhiều đợt cấp để giai đoạn sau |
 | BR-09 | Truy vết mọi thay đổi kinh phí | Xác nhận/điều chỉnh cấp kinh phí, **thay đổi cấu hình phí quản lý & override phí quản lý theo đề tài**, tạo/sửa/xóa khoản chi, đính/gỡ chứng từ, quyết toán đều ghi `AuditLog` (append-only). | Audit (overview §4.2) |
 | BR-10 | Phí quản lý cấp tổ chức (flat-rate) | Tổ chức cấu hình **một tỷ lệ phẳng** `managementFeeRate` (%) dùng chung, có **trần tùy chọn** `managementFeeCap` (VND). Khi xác nhận cấp: `managementFeeAmount = min(floor(allocation × rate), cap)` (làm tròn **xuống** đến đồng); `kinh phí thực hiện = allocation − managementFeeAmount`. Chuyên viên **được override** `managementFeeAmount` theo đề tài, ràng buộc `0 ≤ managementFeeAmount ≤ allocation` (ghi audit). Chỉ **quản trị** sửa được tỷ lệ/trần cấu hình; thay đổi cấu hình **không** hồi tố các đề tài đã xác nhận. | Nhiều mức theo nguồn KP/khoản mục để giai đoạn sau |
@@ -175,9 +179,10 @@ Bản đơn giản thao tác trên `BudgetAllocation` (kinh phí được cấp)
 - **AC-04 (Biên — vượt kinh phí thực hiện)** — Given tổng đã chi sắp vượt **kinh phí thực hiện** (= cấp −
   phí quản lý); When chủ nhiệm tạo khoản chi làm tổng chi vượt mức thực hiện; Then hệ thống **vẫn lưu** khoản
   chi và hiển thị **cảnh báo vượt kinh phí** (BR-03).
-- **AC-05 (Happy — quyết toán & đóng đề tài)** — Given đề tài `PASSED`; When chuyên viên thực hiện quyết
+- **AC-05 (Happy — quyết toán & đóng đề tài)** — Given đề tài `PASSED`, chuyên viên đã rà thủ công ở pilot chưa bật đối soát hoặc đã bật và mọi khoản đều `MATCHED`. When chuyên viên thực hiện quyết
   toán & đóng đề tài; Then `ResearchProject` chuyển `PASSED → COMPLETED` (qua domain service, phối hợp F06),
   kinh phí bị khóa, chủ nhiệm nhận thông báo, ghi audit (BR-06, BR-07).
+  Nếu đã bật đối soát và còn bất kỳ khoản `UNRECONCILED` hoặc `MISMATCHED`, giữ `PASSED`, trả về danh sách khoản vướng cùng trạng thái và giữ nguyên sổ.
 - **AC-06 (Negative — số tiền không hợp lệ)** — Given nhập `amount` ≤ 0 hoặc không phải số nguyên; When lưu
   khoản chi hoặc xác nhận cấp kinh phí; Then hệ thống báo lỗi validate, không lưu (BR-02).
 - **AC-07 (Negative — chủ nhiệm không được xác nhận cấp/quyết toán)** — Given người dùng là **Chủ nhiệm đề tài**;
@@ -212,8 +217,7 @@ Bản đơn giản thao tác trên `BudgetAllocation` (kinh phí được cấp)
   để tránh hai feature cùng đổi trạng thái.
 - **Chứng từ bắt buộc hay tùy chọn:** bản đơn giản cho đính chứng từ tùy chọn (BR-05). Cần PO xác nhận có
   cần bắt buộc tối thiểu 1 chứng từ cho mỗi khoản chi hay không.
-- **Điều kiện quyết toán:** bản đơn giản không có gate tự động (BR-07). Cần PO xác nhận đủ cho giai đoạn này,
-  hay cần tối thiểu cảnh báo khi tổng chi vượt mức cấp lúc quyết toán.
+- **Cảnh báo vượt mức khi quyết toán:** PO xác nhận có cần nhắc lại cảnh báo tổng chi vượt mức cấp tại lúc chuyên viên rà thủ công.
 - **Điều chỉnh kinh phí được cấp:** có cho chuyên viên sửa tổng cấp sau khi đã xác nhận (≤ `approvedBudget`)
   không, và xử lý ra sao khi tổng đã chi đã vượt mức cấp mới.
 - **Phí quản lý:** bản đơn giản dùng **một tỷ lệ phẳng cấp tổ chức + cho override theo đề tài**, thay đổi

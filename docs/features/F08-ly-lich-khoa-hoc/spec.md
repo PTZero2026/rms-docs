@@ -5,7 +5,7 @@ epic: "E3"
 owner: "PO/BA"
 status: Review       # Draft | Review | Approved
 version: 0.2
-updated: 2026-06-25
+updated: 2026-11-21
 ---
 
 # Lý lịch khoa học
@@ -117,7 +117,7 @@ flowchart LR
     A[Chọn 'Trích xuất lý lịch'] --> B[Chọn mẫu của tổ chức - VP-CV-TPL]
     B --> C[Hệ thống đổ dữ liệu lý lịch vào mẫu]
     C --> D[Xuất bản tài liệu để in/ký xác nhận]
-    D --> E[Ghi nhật ký: trích xuất lý lịch]
+    D --> E[Ghi mã và phiên bản mẫu vào nhật ký lần xuất]
 ```
 
 ## 4. Business rules
@@ -131,7 +131,7 @@ flowchart LR
 | BR-05 | Học hàm & học vị tách bạch, danh sách + năm nhận | **Học hàm** (danh mục `ACADEMIC_RANK`: GS/PGS) và **học vị** (danh mục `ACADEMIC_DEGREE`: TS/ThS/CN) là **hai nhóm riêng**; mỗi nhóm lưu **nhiều dòng**, mỗi dòng gồm loại + **năm nhận**. Năm nhận **≤ năm hiện tại** và (nếu có ngày sinh) **≥ năm sinh**. | Danh mục per-tenant (B01). |
 | BR-06 | Quá trình công tác là danh sách theo thời gian | Quá trình công tác lưu **nhiều dòng**; mỗi dòng gồm tổ chức/đơn vị, chức vụ, **từ ngày – đến ngày**. "Đến" bỏ trống = **đang công tác**. Ràng buộc **từ ≤ đến**. | — |
 | BR-07 | Lý lịch khoa học là khung nhìn tổng hợp, không lưu trùng | Phần khoa học của lý lịch **không nhập tay, không lưu trùng**: hệ thống gom **sản phẩm khoa học** (F07, chỉ bản đã duyệt), **vai trò trong đề tài** (F01/F04) và **giờ giảng quy đổi** (P03 — nếu tenant bật). | F08 = view trên `User` + `ResearchOutput` + vai trò ([data-model §4.6](../../architecture/data-model.md)). |
-| BR-08 | Trích xuất theo mẫu của tổ chức | Bản lý lịch trích xuất theo **template per-tenant**; nội dung lấy từ khung nhìn tổng hợp tại thời điểm trích xuất, phục vụ in/ký xác nhận. | VP-CV-TPL. |
+| BR-08 | Trích xuất theo mẫu của tổ chức | Nội dung lấy từ khung nhìn tổng hợp tại thời điểm trích xuất để in/ký xác nhận. Mỗi lần xuất dùng phiên bản mẫu của trường đang có hiệu lực tại thời điểm xuất. Nhật ký `EXPORT_CV` của lần đó ghi mã mẫu và phiên bản thực tế đã dùng. | VP-CV-TPL, [RV-25](../../../specs/review-decisions.md#rv-25). |
 | BR-09 | Phạm vi xem hồ sơ kiểm ở máy chủ | Chủ hồ sơ luôn xem được hồ sơ mình; người khác chỉ xem khi có quyền + trong phạm vi dữ liệu. Giao diện ẩn/hiện theo quyền **không** thay cho kiểm tra ở máy chủ. | ADR-0005, B03 BR-08. |
 | BR-10 | Mọi thay đổi hồ sơ đều ghi nhật ký | Tạo/sửa hồ sơ (kể cả sửa hộ) và trích xuất lý lịch đều **ghi nhật ký** (ai, khi nào, giá trị trước/sau). | Audit append-only (AGENTS.md §4.4). |
 
@@ -192,7 +192,7 @@ Viết theo Given / When / Then bằng ngôn ngữ nghiệp vụ; khẳng địn
   cố mở hồ sơ của U, Then hệ thống **từ chối ở máy chủ** dù giao diện có ẩn nút (BR-09).
 - **AC-13** (happy — trích xuất theo mẫu) — Given tenant T có mẫu lý lịch riêng, When người dùng trích xuất
   lý lịch của U, Then hệ thống đổ dữ liệu lý lịch vào **mẫu của T** và xuất bản tài liệu để in/ký, đồng
-  thời ghi nhật ký *trích xuất lý lịch* (BR-08, BR-10).
+  thời ghi mã và phiên bản mẫu thực tế vào nhật ký `EXPORT_CV` (BR-08, BR-10). Nếu trường kích hoạt v2 giữa hai lần xuất cùng lý lịch, tệp và nhật ký của lần đầu dùng v1, của lần sau dùng v2.
 
 ## 7. Phụ thuộc & rủi ro
 

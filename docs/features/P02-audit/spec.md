@@ -5,7 +5,7 @@ epic: "E0"
 owner: "Kiến trúc/DEV (SA)"
 status: Draft        # Draft | Review | Approved
 version: 0.1
-updated: 2026-06-12
+updated: 2026-11-21
 ---
 
 # Audit (nhật ký hành động nghiệp vụ)
@@ -48,9 +48,9 @@ thay đổi đó (ACID) → bản ghi **không bao giờ** bị sửa/xoá. Chuy
 | BR-01 | Ghi audit mọi đổi trạng thái | Mọi hành động đổi trạng thái nghiệp vụ phải sinh `AuditLog` | [§4.4](../../../AGENTS.md) |
 | BR-02 | Append-only | `AuditLog` không được sửa, không được xoá | bất biến |
 | BR-03 | Cùng transaction | Ghi audit trong cùng transaction với thay đổi nghiệp vụ (rollback thì không có audit "ma") | ACID |
-| BR-04 | Đủ thông tin truy vết | Mỗi bản ghi có actor (`actorType`/`actorId`/`onBehalfOf`), hành động, đối tượng đích, giá trị trước/sau, thời điểm | [data-model §4.7](../../architecture/data-model.md) |
+| BR-04 | Đủ thông tin truy vết | Mỗi bản ghi có actor (`actorType`/`actorId`/`onBehalfOf`), hành động, đối tượng đích, giá trị trước/sau, thời điểm. Với chuyên viên chuyển bước, lưu đơn vị của người thực hiện tại thời điểm đó. | [data-model §4.7](../../architecture/data-model.md) |
 | BR-05 | Tách log kỹ thuật | Audit nghiệp vụ tách khỏi log hạ tầng/kỹ thuật | — |
-| BR-06 | Xem theo quyền | Xem nhật ký tuân RLS tenant + RBAC; không lộ bản ghi ngoài phạm vi | [ADR-0008](../../architecture/decisions/0008-keycloak-idp-dang-nhap-email-otp.md) |
+| BR-06 | Xem theo quyền | Kiểm quyền trên đề tài theo tenant và phạm vi của người đọc tại thời điểm truy cập, kể cả qua liên kết cũ. | [ADR-0008](../../architecture/decisions/0008-keycloak-idp-dang-nhap-email-otp.md) |
 | BR-07 | AI/hệ thống là actor thật | AI/hệ thống ghi audit như một actor chịu RLS+RBAC, dùng `onBehalfOf` khi thay người; **không** tạo "user ảo" | [ADR-0010](../../architecture/decisions/0010-chuan-du-lieu-cho-ai-tham-gia.md) |
 
 ## 5. Dữ liệu (mức khái niệm)
@@ -66,7 +66,7 @@ Chi tiết trường → [data-model §4.7](../../architecture/data-model.md) v�
 - **AC-02** (BR-02) — Given một bản ghi `AuditLog`, When cố sửa hoặc xoá, Then bị từ chối.
 - **AC-03** (BR-03) — Given thao tác nghiệp vụ bị rollback, Then **không** tồn tại bản ghi audit cho thao tác đó.
 - **AC-04** (BR-04, BR-07) — Given hành động do hệ thống/AI thực hiện thay một người, Then audit ghi `actorType` đúng và `onBehalfOf` là người được thay.
-- **AC-05** (BR-06) — Given người dùng không đủ quyền hoặc khác tenant, When xem nhật ký, Then không thấy bản ghi ngoài phạm vi được phép.
+- **AC-05** (BR-04, BR-06) — Người dùng thiếu quyền hoặc khác tenant không thấy bản ghi ngoài phạm vi. Mỗi lần mở lịch sử, hệ thống kiểm quyền hiện tại trên đề tài. Nếu người đọc đã mất quyền, liên kết cũ không trả tên đề tài hay nội dung nhật ký. Người còn quyền thấy đúng người thực hiện và khoa của họ tại thời điểm thao tác. [RV-04](../../../specs/review-decisions.md#rv-04)
 
 ## 7. Phụ thuộc & rủi ro
 

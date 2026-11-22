@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "shadcn": {
+      "command": "corepack",
+      "args": ["pnpm", "--workspace-root", "--silent", "ui:mcp"]
+    }
+  }
+}

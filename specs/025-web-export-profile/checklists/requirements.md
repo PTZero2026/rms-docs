@@ -3,7 +3,7 @@ story: US-25
 feature: F08
 review_id: RV-25
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-21
 ---
 
 # Kiểm tra chất lượng đặc tả · US-25
@@ -35,4 +35,4 @@ Ngày 18/11/2026 · [Đặc tả](../spec.md). Checklist rà chất lượng vă
 - [x] Có kết quả mong đợi để đánh giá tiêu chí thành công.
 - [x] Đặc tả mô tả nhu cầu nghiệp vụ, thiết kế nằm ở plan.
 
-Bằng chứng: bộ dữ liệu một mẫu đã duyệt, một người có nhiều vai trò trên cùng đầu ra. Hai ca gốc kiểm US-25.1–2. Sau clarify, ca thứ ba kiểm RV-25.
+Bằng chứng: bộ dữ liệu hai phiên bản v1 và v2 có tiêu đề khác nhau của cùng một mẫu tenant, một người có hai vai trò trên cùng sản phẩm đã duyệt và một sản phẩm đang chờ duyệt. Hai ca gốc kiểm US-25.1–2. Rà lại ngày 21/11/2026. TC-03 kiểm hai tệp và hai sự kiện xuất khi chuyển từ v1 sang v2.

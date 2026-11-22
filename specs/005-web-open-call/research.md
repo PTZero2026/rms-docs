@@ -3,14 +3,14 @@ story: US-05
 feature: F02
 review_id: RV-05
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-21
 ---
 
 # Căn cứ và quyết định · US-05
 
 **Vấn đề.** Nếu danh mục hết hiệu lực giữa lúc soạn và mở kỳ thì sao?
 
-**Khuyến nghị hiện dùng.** Kiểm lại danh mục và bộ tiêu chí tại thời điểm mở, chỉ rõ mục phải thay.
+**Quyết định ngày 21/11/2026.** Khi chuyên viên bấm Mở kỳ, hệ thống kiểm lại hiệu lực của danh mục và bộ tiêu chí. Nếu có mục hết hiệu lực, kỳ vẫn ở trạng thái Nháp và hệ thống chỉ rõ mục cần thay. Sau khi thay mục và đáp ứng đủ điều kiện, chuyên viên có thể mở chính kỳ đó.
 
 **Lý do.** Trong trường hợp một lĩnh vực bắt buộc vừa ngừng hiệu lực trong bản nháp, người dùng cần thấy kết quả “kỳ vẫn nháp và hiển thị mục cần thay”. Phương án khác: Giữ cấu hình hợp lệ ở thời điểm lưu nháp. Dùng TC-03 để phân biệt hai phương án. [RV-05](../review-decisions.md#rv-05)
 

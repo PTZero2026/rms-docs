@@ -2,8 +2,8 @@
 title: "Quản lý kinh phí — Test plan"
 spec: "./spec.md"
 owner: "PO/BA"
-status: Draft
-updated: 2026-06-17
+status: Review
+updated: 2026-11-21
 ---
 
 # Quản lý kinh phí — Kế hoạch kiểm thử
@@ -23,17 +23,21 @@ updated: 2026-06-17
 
 | ID | Liên kết AC | Tiền điều kiện | Bước thực hiện | Kết quả mong đợi | Loại |
 |----|-------------|----------------|----------------|------------------|------|
-| TC-01 | AC-01 | Đề tài `IN_PROGRESS`, `approvedBudget=200 triệu` | Chuyên viên xác nhận cấp kinh phí (≤ 200 triệu) | Ghi nhận kinh phí được cấp, thông báo chủ nhiệm, audit | Happy |
+| TC-01 | AC-01 | Đề tài `IN_PROGRESS`, quyết định EFFECTIVE, duyệt 200 triệu, phí mẫu 5%, trần 3 triệu | Chuyên viên xác nhận cấp 100 triệu VND | Phí quản lý 3 triệu, kinh phí thực hiện 97 triệu, thông báo chủ nhiệm và audit | Happy |
 | TC-02 | AC-02 | Đề tài `IN_PROGRESS` của chủ nhiệm, đã cấp kinh phí | Chủ nhiệm tạo khoản chi `amount` > 0, mô tả, ngày + đính chứng từ | Lưu khoản chi, gắn chứng từ, cập nhật đã chi/còn lại, audit | Happy |
 | TC-03 | AC-03 | Đề tài đã có các khoản chi | Chuyên viên mở danh sách kinh phí đề tài | Hiện tổng cấp – đã chi – còn lại và danh sách khoản chi + chứng từ | Happy |
-| TC-04 | AC-04 | Tổng đã chi gần bằng kinh phí được cấp | Chủ nhiệm tạo khoản chi làm tổng chi vượt mức cấp | **Vẫn lưu** khoản chi, hiển thị cảnh báo vượt kinh phí | Biên |
-| TC-05 | AC-05 | Đề tài `PASSED` | Chuyên viên quyết toán & đóng đề tài | `PASSED → COMPLETED`, khóa kinh phí, thông báo, audit | Happy |
+| TC-04 | AC-04 | Cấp 100 triệu, phí 3 triệu, đã chi 96 triệu | Chủ nhiệm ghi chi thêm 2 triệu | Vẫn lưu và cảnh báo vì tổng chi 98 triệu đã vượt mức thực hiện 97 triệu | Biên |
+| TC-05 | AC-05 | Chạy riêng hai hồ sơ `PASSED`. Hồ sơ thứ nhất thuộc pilot chưa bật đối soát và chuyên viên đã rà thủ công. Hồ sơ thứ hai đã bật và mọi khoản đều `MATCHED`. | Chuyên viên quyết toán & đóng đề tài | `PASSED → COMPLETED`, khóa kinh phí, thông báo, audit | Happy |
 | TC-06 | AC-06 | — | Nhập `amount` ≤ 0 / không nguyên (khoản chi hoặc cấp kinh phí) | Lỗi validate, không lưu | Biên/Lỗi |
 | TC-07 | AC-07 | Người dùng là chủ nhiệm | Gọi xác nhận cấp kinh phí hoặc quyết toán/đóng đề tài | 403, không thực hiện | Negative |
 | TC-08 | AC-08 | Chủ nhiệm A | Truy cập/sửa kinh phí đề tài không thuộc A | Từ chối/ẩn (403), chỉ thấy đề tài của mình | Negative |
 | TC-09 | AC-09 | Đề tài `APPROVED` hoặc `COMPLETED` | Tạo/sửa khoản chi mới | Chặn (BR-01, BR-06) | Negative |
-| TC-10 | AC-08 | Xác nhận cấp `> approvedBudget` | Chuyên viên nhập tổng cấp vượt `approvedBudget` | Chặn, báo vượt mức được phê duyệt (BR-08) | Biên/Lỗi |
+| TC-10 | AC-01 | Xác nhận cấp `> approvedBudget` | Chuyên viên nhập tổng cấp vượt `approvedBudget` | Chặn, báo vượt mức được phê duyệt (BR-08) | Biên/Lỗi |
 | TC-11 | AC-05 | Đề tài đã `COMPLETED` | Cố sửa/xóa khoản chi hoặc đính chứng từ | Bị khóa, không thực hiện (BR-06) | Negative |
+| TC-12 | AC-10 | Tổng cấp 100 triệu VND | Chuyên viên đặt phí 2 triệu, rồi thử ở hai biên 0 và 100 triệu trên hồ sơ độc lập | Kinh phí thực hiện lần lượt 98 triệu, 100 triệu và 0. Từng override có audit |
+| TC-13 | AC-11 | Tổng cấp 100 triệu VND | Thử phí −1 VND và 100.000.001 VND | Mỗi lần trả lỗi validation, số tiền và audit thành công giữ nguyên |
+| TC-14 | AC-12 | Đã seed tỷ lệ và trần phí của trường A | Chuyên viên rồi chủ nhiệm thử sửa cấu hình tỷ lệ/trần tại API | Cả hai nhận 403, cấu hình áp dụng cho hồ sơ tiếp theo giữ giá trị ban đầu |
+| TC-15 | AC-05 | Đề tài `PASSED`, đã bật đối soát. Chạy riêng bộ chỉ còn `UNRECONCILED`, bộ chỉ còn `MISMATCHED` và bộ có cả hai cùng một khoản `MATCHED` | Chuyên viên yêu cầu đóng sổ | Giữ `PASSED`, liệt kê đúng mã và trạng thái của tất cả khoản vướng. Không khóa sổ hoặc phát thông báo hoàn thành | Biên |
 
 ## 3. Trường hợp biên & negative
 

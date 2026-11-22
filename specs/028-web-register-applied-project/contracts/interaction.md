@@ -3,7 +3,7 @@ story: US-28
 feature: F11
 review_id: RV-28
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-21
 ---
 
 # Hợp đồng hành vi · US-28
@@ -14,8 +14,8 @@ updated: 2026-11-18
 |---|---|
 | Đầu vào | Đơn vị chủ trì, đối tác ngoài và tổng kinh phí |
 | Kết quả thành công | Đầu mục dự án ứng dụng với kinh phí tổng |
-| Điều kiện từ chối / kết quả phụ | thiếu đối tác ngoài → chặn và yêu cầu bổ sung |
+| Điều kiện từ chối / kết quả phụ | thiếu đơn vị chủ trì khi lưu nháp → yêu cầu chọn đơn vị. Thiếu đối tác ngoài khi gửi duyệt → giữ Nháp và yêu cầu bổ sung |
 | Quyền | Lấy tenant và vai trò từ phiên hoặc ngữ cảnh worker đã xác thực. Kiểm trên đối tượng nguồn, cả khi đi theo liên kết trực tiếp. |
-| Trường hợp cần review | Đã có viện chủ trì, đối tác và 50 triệu VND → lưu dự án → đầu mục giữ 50 triệu, sổ chi đề tài F05 giữ nguyên |
+| Quyết định RV-28 | Phải có đơn vị chủ trì khi lưu nháp. Hồ sơ đủ các trường bắt buộc khác được lưu và mở lại dù chưa có đối tác ngoài. Khi gửi duyệt, nếu thiếu đối tác thì giữ Nháp và yêu cầu bổ sung. Khi đã có ít nhất một đối tác ngoài và đủ các điều kiện khác, chuyển sang Chờ duyệt. |
 
 Kiểm điều kiện ngay lúc ghi. Lưu thay đổi và sự kiện nghiệp vụ cùng giao dịch, rollback đồng thời nếu ghi lỗi. Hiển thị đầu mục dự án ứng dụng với kinh phí tổng; hiển thị riêng tình huống thiếu đối tác ngoài và cho người có quyền quay về dữ liệu nguồn. [Spec và nguồn](../spec.md).

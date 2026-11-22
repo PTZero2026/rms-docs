@@ -1,68 +1,28 @@
 ---
-title: "Quản lý người dùng — Test plan"
+title: "Kiểm thử B03 theo mô hình tài khoản v0.4"
+owner: "QA nghiệp vụ / PO"
 spec: "./spec.md"
-owner: "PO/BA"
-status: Draft
-version: 0.2
-updated: 2026-06-11
+status: Review
+updated: 2026-11-21
 ---
 
-# Quản lý người dùng — Kế hoạch kiểm thử
+# B03 · Quản lý người dùng
 
-> Mỗi test case bám vào một AC trong [`spec.md`](./spec.md). Không có AC tương ứng = thiếu yêu cầu,
-> báo lại BA/PO.
+Dùng hai realm A/B. Ở A seed hai admin hoạt động, một staff, một user và một đề tài đang tham chiếu người tạo. B có cùng email hiển thị với A và admin riêng. Chạy với token thật từ Keycloak thử và kiểm quyền ở API. Bản này theo 11 AC còn hiệu lực trong [spec v0.4](spec.md). Bộ ca lịch sử của mô hình nhiều vai trò ở [bản tháng 6](ref/test-plan-2026-06-11.md).
 
-## 1. Phạm vi kiểm thử
+| Ca | AC | Điều kiện và thao tác | Kết quả mong đợi |
+|---|---|---|---|
+| TC-01 | AC-01 | Admin A tạo người dùng có email mới và userType staff | Chỉ tenant A có tài khoản mới, isActive=true, userType=staff. Có ADMIN_CREATE_USER và danh tính liên kết |
+| TC-02 | AC-02 | Email mới qua OTP, gọi /auth/me lần đầu rồi gọi lại | Lần đầu trả isNew=true, userType=user, isActive=true, isProfileComplete=false và log tự tạo. Cùng issuer/sub chỉ có một user |
+| TC-03 | AC-03 | A đã có a@bv.vn. Admin A tạo A@bv.vn, sau đó kiểm user cùng email ở realm B | A nhận 409 và số tài khoản A giữ nguyên. Danh tính B độc lập |
+| TC-04 | AC-04 | Admin A tự khóa trong khi còn admin thứ hai | 400 và thông báo không thể tự khóa mình. Admin vẫn hoạt động |
+| TC-05 | AC-07 | U có đề tài đang tham chiếu. Admin ngừng hoạt động U | U có isActive=false, deletedAt được ghi, đề tài và liên kết tác giả còn nguyên |
+| TC-06 | AC-08 | U bị khóa nhưng giữ phiên còn hạn. Thử riêng tải lại và bấm Lưu hồ sơ đang mở, mỗi lần là yêu cầu đầu tiên sau khi khóa. Thử thêm với U vừa nhập đúng OTP | Mỗi yêu cầu trả 403 và ghi log từ chối. Người có quyền tra cứu thấy nội dung đã lưu và các bản ghi lịch sử trước khi khóa |
+| TC-07 | AC-09 | User chỉ có meetings.view gọi POST /admin/users | 403 ở backend, số user và log tạo thành công giữ nguyên |
+| TC-08 | AC-11 | Admin đổi user thành staff, user gọi lại API | Quyền hiệu lực là 11 quyền staff theo spec. ADMIN_CHANGE_USER_ROLE ghi giá trị trước và sau |
+| TC-09 | AC-12 | Admin khóa rồi mở khóa U đang active, thử quyền sau từng bước | Khóa trả 200, isActive=false, có ACCOUNT_LOCKED. Mở khóa trả isActive=true, có ACCOUNT_UNLOCKED |
+| TC-10 | AC-13 | User nộp hồ sơ nâng cấp hợp lệ, admin duyệt | Request PENDING trước duyệt. Sau duyệt request APPROVED, userType=author, đúng 3 quyền và có log |
+| TC-11 | AC-14 | Ở tầng service, cho chủ thể quản trị được ủy quyền thử khóa, đổi role và ngừng hoạt động admin cuối của A. Khôi phục fixture giữa các lượt | Mỗi lần nhận 409 vì phải còn admin hoạt động. Số admin A vẫn là 1. Admin B không được thao tác A |
+| TC-12 | AC-14 | Khi A còn hai admin, gửi đồng thời hai thao tác hợp lệ có thể làm mất cả hai quyền admin | Sau commit A vẫn còn ít nhất một admin hoạt động. Lệnh làm mất admin cuối bị chặn |
 
-- **Mặt:** BackOffice (BO-01..BO-06) và **API** (lớp thực thi quyền — bắt buộc test trực tiếp API, BR-08);
-  luồng **đăng nhập email-OTP / auto-provision** test qua tích hợp xác thực (stub Keycloak).
-- **Ngoài phạm vi:** cơ chế phát/refresh JWT & plugin Email-OTP của Keycloak, gửi thông báo (B04), lý lịch khoa học (F08), CRUD đơn vị (B01).
-- **Môi trường:** staging có **Keycloak stub** phát được JWT (`sub`, `email`) sau verify OTP; auto-provision **luôn bật** (không có cờ).
-- **Dữ liệu mẫu:** ≥2 đơn vị; vai trò chuẩn đã seed (gồm `USER` + 5 vai trò nghiệp vụ `isSystem = true`); 1 admin đang đăng nhập (X);
-  1 người dùng U đã là chủ nhiệm ≥1 đề tài; 1 tài khoản LOCKED; 1 tài khoản tự sinh (`AUTO`) vai trò `USER`.
-
-## 2. Test cases
-
-| ID | Liên kết AC | Tiền điều kiện | Bước thực hiện | Kết quả mong đợi | Loại |
-|----|-------------|----------------|----------------|------------------|------|
-| TC-01 | AC-01 | Admin có `USER.CREATE`; email mới | BO-02 nhập fullName/email/đơn vị, lưu | Tạo `User` `accountSource=ADMIN`, `ACTIVE`; audit `CREATE_USER` | Happy |
-| TC-02 | AC-02 | Email chưa có tài khoản RMS | Đăng nhập email-OTP lần đầu, verify OTP đúng | Tạo `User` khoá theo `keycloakId`, `accountSource=AUTO`, `ACTIVE`, vai trò `USER`; audit `AUTO_PROVISION_USER` | Happy |
-| TC-03 | AC-11 | Một email nhập OTP sai liên tục | Nhập OTP sai quá số lần cho phép | Khoá tạm theo email/IP (throttling); không phát JWT, không tạo tài khoản | Biên/Lỗi |
-| TC-04 | AC-03 | Đã có `a@benhvien.vn` | BO-02 tạo tài khoản mới email `A@benhvien.vn` | Báo lỗi trùng email; không tạo bản ghi | Biên/Lỗi |
-| TC-05 | AC-03 | Có 2 tài khoản | BO-02 sửa email của tài khoản 2 thành email trùng tài khoản 1 | Báo lỗi trùng email; không lưu | Biên/Lỗi |
-| TC-06 | AC-04 | Admin X đang đăng nhập | BO-03 mở chính tài khoản X, bấm Khóa | Nút Khóa disabled / API trả lỗi "Không thể khóa tài khoản đang đăng nhập"; `status` không đổi | Biên/Lỗi |
-| TC-07 | AC-04 | Admin X đang đăng nhập | Gọi API vô hiệu chính `id` của X | API từ chối; `status` X giữ `ACTIVE` | Biên/Lỗi |
-| TC-08 | AC-05 | Vai trò `SYSTEM_ADMIN` `isSystem=true` | BO-04 cố xóa vai trò này | Nút Xóa ẩn/disabled; API `ROLE.DELETE` trả lỗi; vai trò vẫn tồn tại | Biên/Lỗi |
-| TC-09 | AC-06 | Người dùng U `ACTIVE` | BO-03 gán U cả `PRINCIPAL_INVESTIGATOR` và `COMMITTEE_MEMBER` | Tập quyền hiệu lực của U = hợp quyền 2 vai trò; audit `ASSIGN_ROLE` | Happy |
-| TC-10 | AC-07 | U có vai trò `PRINCIPAL_INVESTIGATOR` và đã tạo đề tài | BO-03 gỡ vai trò `PRINCIPAL_INVESTIGATOR` khỏi U | Đề tài của U còn nguyên, `principalInvestigatorId/createdBy=U` không đổi; U mất quyền từ vai trò; audit `REMOVE_ROLE` | Happy |
-| TC-11 | AC-08 | U đã là chủ nhiệm ≥1 đề tài | Gọi API xóa cứng U | API từ chối xóa cứng; chỉ cho `INACTIVE` | Biên/Lỗi |
-| TC-12 | AC-08 | Tài khoản mới tạo, chưa phát sinh dữ liệu | Vô hiệu tài khoản | Chuyển `INACTIVE` thành công; audit `DISABLE_USER` | Happy |
-| TC-13 | AC-09 | Tài khoản U `status=LOCKED` | U verify OTP đúng rồi vào RMS | Từ chối truy cập (authZ); audit `DENY_LOGIN` | Biên/Lỗi |
-| TC-14 | AC-09 | Tài khoản `INACTIVE` | Verify OTP đúng rồi vào RMS | Từ chối truy cập (authZ); audit `DENY_LOGIN` | Biên/Lỗi |
-| TC-15 | AC-10 | User có vai trò `RESEARCH_MANAGEMENT_OFFICER` (chỉ xem) | Gọi API `USER.CREATE` trực tiếp | Backend trả 403 dù BO ẩn nút tạo | Biên/Lỗi |
-| TC-16 | AC-10 | User `RESEARCH_MANAGEMENT_OFFICER` | Mở BO-01/BO-03 xem danh sách & chi tiết | Xem được; không thấy nút sửa/gán quyền | Happy |
-| TC-17 | AC-03 (BR-09) | Tài khoản bất kỳ (Keycloak-backed) | BO-02 mở sửa, thử đổi `email` | Trường email chỉ đọc; không sửa được; cảnh báo "đồng bộ từ Keycloak" | Biên/Lỗi |
-| TC-18 | BR-07 (nền AC-05) | Quyền `RESEARCH_PROJECT.APPROVE` đã tồn tại | BO-05 tạo quyền mã `research_project.approve` / `RESEARCHPROJECT` (sai định dạng/trùng) | Validate lỗi định dạng `MODULE.ACTION` hoặc trùng `code`; không tạo | Biên/Lỗi |
-| TC-19 | AC-12 | Tài khoản tự sinh U vai trò `USER` | BO-03 gán vai trò `RESEARCH_MANAGEMENT_OFFICER` | U có quyền của vai trò (hợp quyền BR-05); audit `ASSIGN_ROLE` | Happy |
-
-## 3. Trường hợp biên & negative
-
-- **Dữ liệu rỗng:** tạo người dùng thiếu `fullName`/`email`/`unitId` → validate bắt buộc, chặn lưu.
-- **Trùng:** email khác hoa/thường (TC-04/05); mã vai trò trùng; mã quyền trùng (TC-18).
-- **Sai định dạng:** email không hợp lệ; `Permission.code` không theo `MODULE.ACTION` (TC-18).
-- **Tự khóa hệ thống:** tự khóa/vô hiệu chính mình (TC-06/07); *đề xuất* cảnh báo khi còn ≤1 admin `ACTIVE`.
-- **Vai trò hệ thống:** xóa/đổi `code` vai trò `isSystem=true` (TC-08).
-- **Toàn vẹn lịch sử:** gỡ vai trò không xóa dữ liệu (TC-10); không xóa cứng tài khoản có dữ liệu (TC-11).
-- **Quyền:** gọi thẳng API không đủ quyền trả 403 (TC-15); BO ẩn nút không thay backend (BR-08).
-- **Trạng thái:** đăng nhập tài khoản LOCKED/INACTIVE (TC-13/14); OTP sai quá ngưỡng → throttling (TC-03).
-- **Danh tính:** email (Keycloak) chỉ đọc tại RMS (TC-17); auto-provision gán `USER`, nâng quyền qua admin (TC-19).
-
-## 4. Checklist hồi quy
-
-- [ ] Đăng nhập email-OTP của tài khoản `ACTIVE` hiện có vẫn vào đúng theo vai trò (không bị auto-provision ghi đè).
-- [ ] Khi Keycloak sự cố: break-glass qua admin Keycloak (không còn lối mật khẩu RMS — ADR-0008 passwordless).
-- [ ] Tập quyền hiệu lực dùng ở các feature khác (vd F01 nộp đề tài, F03 chấm điểm) vẫn đúng sau khi đổi quyền vai trò.
-- [ ] Data scoping: chủ nhiệm chỉ thấy đề tài của mình, chuyên viên theo đơn vị/kỳ — không rộng/hẹp hơn.
-- [ ] `AuditLog` của các hành động cũ không bị sửa/xóa (append-only).
-- [ ] FK `ON DELETE RESTRICT` tới `User` còn nguyên — không có thao tác B03 làm rơi tham chiếu.
-- [ ] Phân trang & bộ lọc BO-01 đạt < 2s với dữ liệu lớn (NFR).
+Chạy bộ thử OTP hết hạn, replay, giới hạn thử ở realm trong N03. Đối chiếu tên sự kiện ActivityLog của B03 với bản ghi append-only P02 trong cùng thay đổi nghiệp vụ. PO/SA chốt ánh xạ quyền và action trước khi ký IAM. [Phiếu SA-02](../../architecture/rms-v0-sa-review.md) · [Lát khóa tài khoản](../../../specs/001-shared-lock-account/quickstart.md)

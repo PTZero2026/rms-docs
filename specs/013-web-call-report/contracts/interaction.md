@@ -3,7 +3,7 @@ story: US-13
 feature: B02
 review_id: RV-13
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-21
 ---
 
 # Hợp đồng hành vi · US-13
@@ -16,6 +16,6 @@ updated: 2026-11-18
 | Kết quả thành công | Số hồ sơ theo trạng thái, tổng cộng và danh sách đối chứng |
 | Điều kiện từ chối / kết quả phụ | chỉ có quyền một đơn vị → cả dòng chi tiết và tổng loại hồ sơ ngoài quyền |
 | Quyền | Lấy tenant và vai trò từ phiên hoặc ngữ cảnh worker đã xác thực. Kiểm trên đối tượng nguồn, cả khi đi theo liên kết trực tiếp. |
-| Trường hợp cần review | Có 3 hồ sơ đã cấp mã và một bản nháp chưa từng nộp → đếm cả kỳ rồi xuất danh sách → tổng 3, bản chưa từng nộp không có dòng |
+| Quyết định RV-13 | Trong kỳ và phạm vi được xem, mỗi hồ sơ đã cấp mã được tính một lần, kể cả khi nộp lại hoặc đang ở Nháp sau khi bị trả. Loại nháp chưa từng nộp, chưa có mã. Tổng, chi tiết và tệp xuất cùng dùng trạng thái tại thời điểm tạo bản chụp. |
 
 Truy vấn trong phạm vi hiện tại. Đọc hoặc mở liên kết giữ nguyên trạng thái hồ sơ. Hiển thị số hồ sơ theo trạng thái, tổng cộng và danh sách đối chứng; hiển thị riêng tình huống chỉ có quyền một đơn vị và cho người có quyền quay về dữ liệu nguồn. [Spec và nguồn](../spec.md).

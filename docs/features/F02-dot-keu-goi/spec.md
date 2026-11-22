@@ -5,7 +5,7 @@ epic: "E1"
 owner: "PO/BA"
 status: Draft        # Draft | Review | Approved
 version: 0.1
-updated: 2026-06-01
+updated: 2026-11-21
 ---
 
 # Kỳ nhận đề xuất
@@ -87,7 +87,7 @@ stateDiagram-v2
 | BR-01 | Khoảng nhận đề xuất hợp lệ | `endDate` ≥ `startDate`. Không cho mở kỳ nếu `endDate` đã ở quá khứ. | Validate cả khi tạo/sửa và khi mở |
 | BR-02 | Mã kỳ duy nhất | `code` là duy nhất toàn hệ thống (vd `KG-2026-01`). | Unique constraint trên `ProposalCall.code` |
 | BR-03 | Cấu hình bắt buộc khi mở | Để chuyển `DRAFT → OPEN` phải có: `name`, `code`, `startDate`, `endDate`, ≥1 `researchFieldIds`, `proposalTemplateId`, `reviewCriteriaSetId`. | Đảm bảo F01/F03 có đủ cấu hình |
-| BR-04 | Tham chiếu danh mục còn hiệu lực | `researchFieldIds`, `proposalTemplateId`, `reviewCriteriaSetId` phải trỏ tới bản ghi B01 đang `ACTIVE`. | `ON DELETE RESTRICT`, xem data-model §5 |
+| BR-04 | Tham chiếu danh mục còn hiệu lực | `researchFieldIds`, `proposalTemplateId`, `reviewCriteriaSetId` phải trỏ tới bản ghi B01 đang `ACTIVE` tại thời điểm mở kỳ. Nếu có tham chiếu hết hiệu lực, giữ `DRAFT` và chỉ rõ mục cần thay. | `ON DELETE RESTRICT`, xem data-model §5 |
 | BR-05 | Chỉ kỳ OPEN mới nhận đề xuất | Nhà khoa học chỉ nộp được khi kỳ `OPEN` **và** thời điểm nộp ≤ `endDate`. Kỳ `DRAFT`/`CLOSED`/`CANCELLED` từ chối nộp. | Kiểm tra phía backend F01 |
 | BR-06 | Khóa cấu hình sau khi có đề xuất | Khi kỳ đã `OPEN` và đã có ≥1 đề tài `SUBMITTED`: không sửa `startDate`, `researchFieldIds`, `proposalTemplateId`, `reviewCriteriaSetId`; **chỉ cho gia hạn `endDate` nhận đề xuất** về tương lai. | Tránh lệch dữ liệu với hồ sơ đã nộp |
 | BR-07 | Không hủy kỳ đã có đề xuất | Không cho `CANCELLED` nếu kỳ có bất kỳ đề tài nào ở `SUBMITTED` trở đi. Phải `CLOSED` thay vì `CANCELLED`. | Bảo toàn hồ sơ nhà khoa học |
@@ -117,7 +117,7 @@ Viết theo Given / When / Then — đầu vào trực tiếp cho `test-plan.md`
   Then kỳ được lưu ở trạng thái `DRAFT` và xuất hiện trong danh sách kỳ của BO.
 - **AC-02** (happy, mở) — Given kỳ `DRAFT` đã cấu hình đủ trường bắt buộc (BR-03) với danh mục B01 còn hiệu lực (BR-04),
   When chuyên viên bấm "Mở kỳ",
-  Then kỳ chuyển `OPEN`, ghi `AuditLog`, và nhà khoa học thấy kỳ trong danh sách FE (BR-08).
+  Then kỳ chuyển `OPEN`, ghi `AuditLog`, và nhà khoa học thấy kỳ trong danh sách FE (BR-08). Nếu lĩnh vực bắt buộc hoặc bộ tiêu chí hết hiệu lực sau khi lưu nháp, kỳ vẫn ở `DRAFT` và báo đúng mục. Sau khi thay mục hợp lệ, chuyên viên có thể mở chính kỳ đó khi đủ điều kiện. [RV-05](../../../specs/review-decisions.md#rv-05)
 - **AC-03** (happy, FE → F01) — Given một kỳ `OPEN` còn trong hạn nhận đề xuất,
   When nhà khoa học mở chi tiết kỳ và bấm "Nộp đề xuất",
   Then hệ thống điều hướng sang luồng F01 với `proposalCallId` và biểu mẫu thuyết minh của kỳ được nạp sẵn.

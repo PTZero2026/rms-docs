@@ -5,7 +5,7 @@ epic: "E0"
 owner: "PO/BA"
 status: Draft
 version: 0.4
-updated: 2026-07-02
+updated: 2026-11-21
 ---
 
 # Quản lý người dùng
@@ -263,7 +263,7 @@ Viết theo Given / When / Then bằng ngôn ngữ nghiệp vụ; enum/mã actio
 - **AC-07** (biên — không xóa cứng) — Given user U có ≥1 đề tài, When admin gọi `DELETE /admin/users/:id`,
   Then user chỉ được set `isActive=false` + `deletedAt=now()`; đề tài do U tạo vẫn còn (BR-04).
 - **AC-08** (lỗi — user bị khóa cố đăng nhập) — Given user U `isActive=false`, When U nhập đúng OTP
-  Keycloak và có JWT hợp lệ, When gọi bất kỳ endpoint RMS, Then RMS trả 403 và ghi log từ chối.
+  Keycloak và có JWT hợp lệ hoặc dùng phiên đã mở trước khi bị khóa, When gọi API nghiệp vụ kế tiếp, Then RMS trả 403 và ghi log từ chối. Quy tắc áp dụng cả khi tải lại và khi bấm Lưu. Hồ sơ đã lưu và lịch sử trước khi khóa vẫn tra cứu được theo quyền. [RV-01](../../../specs/review-decisions.md#rv-01)
 - **AC-09** (lỗi — quyền không đủ) — Given user `userType=user` (chỉ có `meetings.view`), When gọi
   `POST /admin/users`, Then RolesGuard trả 403 dù giao diện có ẩn nút (BR-08).
 - **AC-11** (happy — đổi vai trò) — Given user U `userType=user`, When admin gọi

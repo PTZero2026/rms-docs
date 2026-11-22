@@ -3,7 +3,7 @@ story: US-04
 feature: P02
 review_id: RV-04
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-21
 ---
 
 # Kế hoạch · Tra căn cứ chuyển bước
@@ -20,7 +20,7 @@ Một SPA trong `apps/web`, backend chia module, PostgreSQL và hợp đồng si
 
 ### Xử lý tại module P02
 
-Tra theo tenant, loại và ID đối tượng. Lọc quyền trước phân trang. Dùng người và thời điểm lưu tại sự kiện để tái hiện chuyển bước.
+Tra theo tenant, loại và ID đối tượng. Lọc quyền trước phân trang. Lưu người thực hiện và đơn vị của họ tại thời điểm chuyển bước. Khi trả sự kiện cho người còn quyền, dùng thông tin đã lưu đó.
 
 ## Constitution Check
 
@@ -29,7 +29,7 @@ Tra theo tenant, loại và ID đối tượng. Lọc quyền trước phân tra
 | Quyền và phạm vi | Xác định tenant, vai trò và đối tượng nguồn | Kiểm cả truy cập trực tiếp và dữ liệu ngoài quyền trong quickstart |
 | Vòng đời và audit | Mọi chuyển trạng thái đề tài phát sinh thuộc P01. Lát đọc này không phát lệnh chuyển. | Truy vấn trong phạm vi hiện tại. Đọc hoặc mở liên kết giữ nguyên trạng thái hồ sơ. |
 | Hợp đồng và định dạng | Nguồn triển khai tại `packages/api-contracts` | Đặc tả lời gọi trỏ về nguồn duy nhất. VND nguyên, UTC lưu trữ, dd/MM/yyyy và Asia/Ho_Chi_Minh khi hiển thị |
-| Phạm vi và review | RV-04 là giả định có người phụ trách | [RV-04](../review-decisions.md#rv-04). Đối chiếu với đặc tả module trước khi nhận task. |
+| Phạm vi và review | RV-04 đã chấp thuận ngày 21/11/2026 | [RV-04](../review-decisions.md#rv-04). Đối chiếu với đặc tả module trước khi nhận task. |
 
 ## Project Structure
 

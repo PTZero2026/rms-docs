@@ -3,7 +3,7 @@ story: US-30
 feature: P03
 review_id: RV-30
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-21
 ---
 
 # Kiểm tra chất lượng đặc tả · US-30
@@ -35,4 +35,4 @@ Ngày 18/11/2026 · [Đặc tả](../spec.md). Checklist rà chất lượng vă
 - [x] Có kết quả mong đợi để đánh giá tiêu chí thành công.
 - [x] Đặc tả mô tả nhu cầu nghiệp vụ, thiết kế nằm ở plan.
 
-Bằng chứng: bộ dữ liệu tenant bật P03, một sự kiện đã duyệt, một công thức do trường xác nhận. Hai ca gốc kiểm US-30.1–2. Sau clarify, ca thứ ba kiểm RV-30.
+Bằng chứng: bộ dữ liệu tenant thử bật P03, một hoạt động tháng 9 và hai phiên bản định mức mẫu. Hai ca gốc kiểm US-30.1–2. Rà lại ngày 21/11/2026. TC-03 kiểm cùng sự kiện gửi lại sau ngày đổi định mức và đối chiếu điều chỉnh có lý do.

@@ -3,7 +3,7 @@ title: "Quản lý kinh phí — Giao diện (một web app, phân quyền)"
 spec: "./spec.md"
 owner: "PO/BA"
 status: Draft
-updated: 2026-06-17
+updated: 2026-11-21
 ---
 
 # Quản lý kinh phí — Giao diện
@@ -104,8 +104,8 @@ Wireframe đặt trong `./assets/` (bổ sung khi có), link Figma nếu có.
 
 ### BO-03 — Quyết toán & đóng đề tài
 - Chỉ bật khi đề tài `PASSED` (BR-07). Hiển thị tổng được cấp – phí quản lý – kinh phí thực hiện – tổng đã chi –
-  còn lại và danh sách khoản chi để chuyên viên **rà soát thủ công** (bản đơn giản không có điều kiện chặn tự động).
-- Nút **Quyết toán & đóng đề tài** → chuyển `PASSED → COMPLETED` (domain service, phối hợp F06), khóa kinh phí,
+  còn lại và danh sách khoản chi để chuyên viên rà thủ công ở pilot chưa bật đối soát. Khi đã bật, hiển thị mã và trạng thái của từng khoản `UNRECONCILED` (chưa đối soát) hoặc `MISMATCHED` (sai lệch). Nếu còn khoản vướng, giữ `PASSED` khi chuyên viên yêu cầu đóng.
+- Khi đủ điều kiện BR-07, nút **Quyết toán & đóng đề tài** chuyển `PASSED → COMPLETED` (domain service, phối hợp F06), khóa kinh phí,
   thông báo chủ nhiệm (B04), ghi audit.
 
 ### SY-01 — Cấu hình phí quản lý

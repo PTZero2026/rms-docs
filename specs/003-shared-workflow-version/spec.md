@@ -5,7 +5,7 @@ epic: E0
 channel: shared
 wave: A
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-21
 ---
 
 # Giữ quy trình của hồ sơ đang chạy
@@ -14,9 +14,9 @@ updated: 2026-11-18
 
 ## Clarifications
 
-### Session 2026-11-18
+### Session 2026-11-21
 
-- Q: Áp dụng quy chế mới cho hồ sơ nào? → A: Chọn phiên bản đang hiệu lực khi tạo hồ sơ, giữ phiên bản của hồ sơ đã tồn tại. [RV-03](../review-decisions.md#rv-03). Khuyến nghị dùng để lập kế hoạch, chờ Chủ quy trình và kiến trúc sư xác nhận.
+- Q: Áp dụng quy chế mới cho hồ sơ nào? → A: Mỗi hồ sơ dùng phiên bản quy trình có hiệu lực lúc tạo cho đến khi hoàn tất. Khi v2 có hiệu lực, hồ sơ đang chờ duyệt theo v1 tiếp tục chuyển bước theo v1. Hồ sơ tạo từ thời điểm đó dùng v2. [RV-03](../review-decisions.md#rv-03)
 
 ## User Scenarios & Testing
 
@@ -29,7 +29,7 @@ Người quản lý quy trình phát hành một phiên bản cho hồ sơ mới
 - **AC-01** (US-03.1) — Given mẫu v2 hợp lệ. When kích hoạt và tạo hồ sơ. Then hồ sơ mới theo v2, hồ sơ cũ vẫn theo v1.
 - **AC-02** (US-03.2) — Given mẫu có bước thiếu trạng thái chuẩn. When kích hoạt. Then từ chối và nêu bước cần sửa.
 
-- **AC-03** (US-03.3, khuyến nghị) — Given Hồ sơ cũ còn một bước đang chờ khi v2 đã kích hoạt. When người xử lý hoàn tất bước. Then bước kế tiếp lấy từ v1.
+- **AC-03** (US-03.3) — Given Hồ sơ cũ còn một bước đang chờ khi v2 đã kích hoạt. When người xử lý hoàn tất bước. Then bước kế tiếp lấy từ v1.
 
 ### Edge Cases
 
@@ -42,7 +42,7 @@ Mẫu có bước thiếu trạng thái chuẩn → từ chối và nêu bước
 - **BR-01 / FR-001.** Khi mẫu v2 hợp lệ, người có quyền có thể kích hoạt và tạo hồ sơ. Kết quả phải quan sát được: hồ sơ mới theo v2, hồ sơ cũ vẫn theo v1 (AC-01).
 - **BR-02 / FR-002.** Với tình huống mẫu có bước thiếu trạng thái chuẩn, thao tác kích hoạt phải cho kết quả từ chối và nêu bước cần sửa (AC-02).
 
-- **BR-03 / FR-003 (đề xuất).** Chọn phiên bản đang hiệu lực khi tạo hồ sơ, giữ phiên bản của hồ sơ đã tồn tại. Kiểm bằng AC-03.
+- **BR-03 / FR-003.** Mỗi hồ sơ dùng phiên bản quy trình có hiệu lực lúc tạo cho đến khi hoàn tất. Khi v2 có hiệu lực, hồ sơ đang chờ duyệt theo v1 tiếp tục chuyển bước theo v1. Hồ sơ tạo từ thời điểm đó dùng v2. Kiểm bằng AC-03.
 
 ### Key Entities
 

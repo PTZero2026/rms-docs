@@ -3,7 +3,7 @@ story: US-04
 feature: P02
 review_id: RV-04
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-21
 ---
 
 # Mô hình dữ liệu · US-04
@@ -12,7 +12,7 @@ updated: 2026-11-18
 |---|---|---|
 | `AuditLog.targetId` | Sự kiện gắn đối tượng nguồn và chỉ người trong phạm vi hiện tại được đọc. | [P02](../../docs/features/P02-audit/spec.md) |
 
-AuditLog lưu tác nhân, đối tượng, hành động, trước/sau và giờ xảy ra. Quyền đọc lịch sử phụ thuộc quyền hiện tại trên đối tượng.
+Với sự kiện chuyên viên chuyển bước, AuditLog lưu cả người thực hiện và đơn vị của họ lúc thao tác, cùng đối tượng, hành động, trước/sau và giờ xảy ra. Quyền đọc lịch sử phụ thuộc quyền hiện tại trên đối tượng.
 
 Đối tượng nguồn và liên kết nghiệp vụ: Định danh đề tài và khoảng thời gian cần tra. Khung nhìn hoặc kết quả ghi: Danh sách sự kiện trong quyền, tác nhân, thời điểm, hành động. Truy vấn trong phạm vi hiện tại. Đọc hoặc mở liên kết giữ nguyên trạng thái hồ sơ.
 

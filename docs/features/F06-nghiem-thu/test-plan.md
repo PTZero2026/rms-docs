@@ -3,7 +3,7 @@ title: "Nghiệm thu — kế hoạch kiểm thử"
 spec: "./spec.md"
 owner: "QA nghiệp vụ"
 status: Review
-updated: 2026-11-18
+updated: 2026-11-21
 ---
 
 # Nghiệm thu cuối kỳ
@@ -21,8 +21,8 @@ Dựng một đề tài đang thực hiện, kỳ cuối, sản phẩm đã duy�
 | TC-07 | AC-07 | đề tài `IN_PROGRESS` chưa có kỳ cuối `PASSED` hoặc thiếu sản phẩm cam kết | chủ nhiệm đăng ký nghiệm thu | chặn, nêu điều kiện thiếu, giữ `IN_PROGRESS` (BR-01). |
 | TC-08 | AC-08 | thành viên hội đồng là chủ nhiệm/thành viên đề tài | mở hàng chờ chấm | đề tài đó bị ẩn và chặn tạo `ScoreSheet` (BR-03). |
 | TC-09 | AC-09 | thành viên nhập `score > maxScore` | gửi phiếu | lỗi validate, phiếu giữ `DRAFT` (BR-05). |
-| TC-10 | AC-10 | đề tài `PASSED` nhưng F05 còn giao dịch `MISMATCHED` | chuyên viên cố đóng đề tài | chặn, yêu cầu xử lý quyết toán trước (BR-09, F05 BR-07). |
+| TC-10 | AC-10 | đề tài `PASSED`, đã bật đối soát. Thử riêng `UNRECONCILED`, `MISMATCHED` và cả hai | chuyên viên cố đóng đề tài | giữ `PASSED`, nêu từng khoản vướng cùng trạng thái, sổ chưa khóa (BR-09, F05 BR-07). |
 | TC-11 | AC-11 | người dùng là Thành viên hội đồng (không phải chuyên viên) | gọi hành động ra kết luận/lập hội đồng/cho làm lại | 403, không thực hiện (BR-11). |
 | TC-12 | AC-12 | `EvaluationRound=CONCLUDED` | thành viên cố gửi/sửa phiếu | bị từ chối (BR-12). |
 
-TC-10 kiểm trường hợp đã có dữ liệu đối soát. Với pilot rà thủ công, chạy thêm TC-03 và nhánh cơ bản của [US-24](../../../specs/024-shared-close-project/quickstart.md). PO và kế toán trưởng cần xác nhận điều kiện áp dụng trước khi nghiệm thu phần đóng sổ. QA lưu số phiếu, trạng thái trước/sau và sự kiện audit cho từng ca. [Nguồn AC](spec.md)
+Với TC-04, thử cả pilot đã rà thủ công và đơn vị bật đối soát có mọi khoản `MATCHED`. TC-10 đối chiếu từng khoản chặn với TC-03 của [US-24](../../../specs/024-shared-close-project/quickstart.md). QA lưu số phiếu, trạng thái trước/sau và sự kiện audit cho từng ca. [Nguồn AC](spec.md)

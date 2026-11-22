@@ -5,7 +5,7 @@ epic: "E1"
 owner: "PO/BA"
 status: Draft        # Draft | Review | Approved
 version: 0.1
-updated: 2026-06-05
+updated: 2026-11-21
 ---
 
 # Xét duyệt hội đồng
@@ -22,7 +22,7 @@ chạy thủ công (gửi hồ sơ giấy/email, tổng hợp điểm bằng b�
 
 F03 số hóa toàn bộ vòng xét duyệt: lập hội đồng `type=PROPOSAL_REVIEW`, phân công thành viên, mở đợt đánh giá
 cho từng đề tài, để thành viên chấm điểm theo bộ tiêu chí, hệ thống tự tổng hợp điểm và hỗ trợ chuyên
-viên ra kết luận theo ngưỡng cấu hình.
+viên chốt kết quả khoa học theo ngưỡng cấu hình. Nếu quy chế yêu cầu thẩm định đạo đức, F03 xét hai kết quả song song theo [RV-11](../../../specs/review-decisions.md#rv-11).
 
 **Kết quả mong đợi:**
 - Đề tài chuyển trạng thái `SUBMITTED → UNDER_REVIEW → APPROVED | REJECTED` có truy vết đầy đủ.
@@ -35,7 +35,7 @@ viên ra kết luận theo ngưỡng cấu hình.
   - Lập `EvaluationCommittee` type `PROPOSAL_REVIEW`, phân công `CommitteeMember` (chủ tịch/phản biện/ủy viên/thư ký).
   - Tạo `EvaluationRound` cho từng đề tài → chuyển `ResearchProject` sang `UNDER_REVIEW`.
   - Thành viên hội đồng điền `ScoreSheet` (điểm từng `EvaluationCriterion` + nhận xét), gửi phiếu `DRAFT → SUBMITTED`.
-  - Tính `aggregateScore` theo trọng số; chuyên viên ra kết luận `APPROVED | REJECTED` theo ngưỡng `SystemSetting`.
+  - Tính `aggregateScore` theo trọng số; chuyên viên chốt kết luận khoa học theo ngưỡng `SystemSetting`. F03 kết hợp với kết quả đạo đức theo BR-08 trước khi công bố quyết định đề tài.
   - Thông báo kết quả cho chủ nhiệm (qua B04); chủ nhiệm xem tiến trình & kết quả ở FE.
 - **Ngoài phạm vi:**
   - Tạo/sửa `CriteriaSet`, `EvaluationCriterion` và ngưỡng điểm → thuộc **B01** (danh mục & cấu hình).
@@ -70,8 +70,12 @@ sequenceDiagram
     CV->>SYS: Xem bảng tổng hợp; yêu cầu ra kết luận
     SYS->>SYS: Kiểm tra đủ số phiếu SUBMITTED tối thiểu; tính aggregateScore
     SYS->>SYS: So ngưỡng (SystemSetting) → conclusion PASSED/FAILED
-    SYS->>SYS: ResearchProject: UNDER_REVIEW → APPROVED | REJECTED
-    SYS-->>CN: Thông báo kết quả APPROVED/REJECTED (+ nhận xét nếu công khai)
+    alt Khoa học đạt và đạo đức bắt buộc còn chờ hoặc yêu cầu bổ sung
+        SYS-->>CN: Hiển thị việc còn chờ, đề tài vẫn UNDER_REVIEW
+    else Có đủ căn cứ cho quyết định cuối theo BR-08
+        SYS->>SYS: Chuyển đề tài sang APPROVED hoặc REJECTED qua P01
+        SYS-->>CN: Thông báo kết quả khi chuyển trạng thái
+    end
 ```
 
 ### 3.2 Chuyển trạng thái đề tài trong phạm vi F03
@@ -79,8 +83,8 @@ sequenceDiagram
 ```mermaid
 stateDiagram-v2
     SUBMITTED --> UNDER_REVIEW : Chuyên viên tạo EvaluationRound (đã gán hội đồng) [BR-01]
-    UNDER_REVIEW --> APPROVED : Đủ phiếu + aggregateScore ≥ ngưỡng [BR-05, BR-06]
-    UNDER_REVIEW --> REJECTED : Đủ phiếu + aggregateScore < ngưỡng [BR-05, BR-06]
+    UNDER_REVIEW --> APPROVED : Khoa học đạt và đạo đức đã thông qua hoặc không bắt buộc [BR-07, BR-08]
+    UNDER_REVIEW --> REJECTED : Khoa học không đạt hoặc khoa học đạt và đạo đức từ chối cuối cùng [BR-08]
     APPROVED --> [*] : Bàn giao sang F04
     REJECTED --> [*]
 ```
@@ -102,7 +106,7 @@ stateDiagram-v2
 | BR-05 | Điểm hợp lệ theo tiêu chí | Mỗi `CriterionScore.score` phải `0 ≤ score ≤ EvaluationCriterion.maxScore`. Phiếu phải có đủ điểm cho **tất cả** tiêu chí của bộ trước khi gửi. | Validate khi gửi phiếu (`DRAFT → SUBMITTED`) |
 | BR-06 | Tính điểm theo trọng số | `ScoreSheet.totalScore = Σ(CriterionScore.score × EvaluationCriterion.weight)`. `EvaluationRound.aggregateScore = trung bình totalScore các ScoreSheet trạng thái SUBMITTED`. Làm tròn 2 chữ số thập phân. | Hệ thống tính, không nhập tay |
 | BR-07 | Đủ phiếu mới kết luận | Chỉ ra kết luận khi số `ScoreSheet` `SUBMITTED` ≥ `PROPOSAL_REVIEW.MIN_SUBMITTED_SCORE_SHEETS` (`SystemSetting`). Thiếu phiếu → chặn kết luận, báo còn thiếu. | Mặc định cấu hình; điều chỉnh ở B01 |
-| BR-08 | Kết luận theo ngưỡng | `aggregateScore ≥ PROPOSAL_REVIEW.PASSING_SCORE` → `conclusion=PASSED` → `ResearchProject=APPROVED`; ngược lại `conclusion=FAILED` → `ResearchProject=REJECTED`. Đặt `EvaluationRound.status=CONCLUDED`. | Ngưỡng từ `SystemSetting` |
+| BR-08 | Kết luận khoa học và quyết định đề tài | Khi đủ phiếu, chốt đợt khoa học `CONCLUDED`. Điểm đạt hoặc vượt `PROPOSAL_REVIEW.PASSING_SCORE` cho kết luận `PASSED`, dưới ngưỡng cho `FAILED` và đề tài chuyển `REJECTED`. Với kết quả khoa học `PASSED`, áp dụng các nhánh đạo đức ở AC-03/04 khi chốt khoa học hoặc khi nhận kết quả đạo đức sau đó. | [RV-11](../../../specs/review-decisions.md#rv-11) |
 | BR-09 | Tách bạch quyền | Chỉ **Chuyên viên QL KHCN** được lập hội đồng, mở đợt, ra kết luận. **Thành viên hội đồng** chỉ xem hồ sơ được phân công và chấm phiếu của mình. | RBAC backend (overview §4.1) |
 | BR-10 | Khóa sau kết luận | Khi `EvaluationRound=CONCLUDED`, không nhận/sửa/rút `ScoreSheet`; không đổi kết luận trừ khi chuyên viên mở lại đợt có `reason` (ghi audit). | Mở lại là ngoại lệ, ghi `AuditLog` |
 | BR-11 | Công khai nhận xét | Nhận xét hội đồng chỉ hiển thị cho chủ nhiệm khi `PROPOSAL_REVIEW.PUBLIC_COMMENTS=true`; mặc định ẩn danh tính người chấm. | Cấu hình B01 |
@@ -110,7 +114,7 @@ stateDiagram-v2
 ## 5. Dữ liệu
 
 Dùng chung mô hình hội đồng/đánh giá — xem [data-model §4.4](../../architecture/data-model.md#44-hội-đồng--đánh-giá-f03-f06).
-F03 thao tác trên các thực thể với `type=PROPOSAL_REVIEW`.
+Bảng dưới mô tả đợt chấm khoa học `type=PROPOSAL_REVIEW`. Với hồ sơ thuộc diện thẩm định, F03 đọc thêm kết quả của hội đồng đạo đức cho cùng đề tài theo [bản đồ chuyển đổi](../../architecture/migration-coverage.md).
 
 | Thực thể | Vai trò trong F03 | Trường trọng yếu |
 |---|---|---|
@@ -122,7 +126,7 @@ F03 thao tác trên các thực thể với `type=PROPOSAL_REVIEW`.
 | `CriterionScore` | Điểm từng tiêu chí | `scoreSheetId`, `evaluationCriterionId`, `score` |
 | `ResearchProject` | Đối tượng được xét | `status` (đổi qua domain service) |
 | `SystemSetting` | Tham số ngưỡng | `PROPOSAL_REVIEW.MIN_SUBMITTED_SCORE_SHEETS`, `PROPOSAL_REVIEW.PASSING_SCORE`, `PROPOSAL_REVIEW.PUBLIC_COMMENTS` |
-| `Notification` | Thông báo kết quả | Sinh khi vào xét duyệt & khi có kết luận (B04) |
+| `Notification` | Thông báo kết quả | Sinh khi vào xét duyệt và khi đề tài nhận quyết định cuối (B04) |
 | `AuditLog` | Audit | Lập HĐ, gửi phiếu, ra kết luận, mở lại đợt |
 
 > Ràng buộc bổ sung F03 cần (đã có trong data-model): unique (`committeeMemberId`,`evaluationRoundId`) cho
@@ -139,11 +143,12 @@ F03 thao tác trên các thực thể với `type=PROPOSAL_REVIEW`.
   ích, đợt đang `COLLECTING_SCORES`; When thành viên nhập đủ điểm cho mọi tiêu chí (mỗi điểm trong `[0, maxScore]`)
   kèm nhận xét rồi gửi phiếu; Then `ScoreSheet` chuyển `DRAFT → SUBMITTED`, hệ thống tính `totalScore` theo
   trọng số và khóa phiếu không cho sửa.
-- **AC-03 (Happy — kết luận APPROVED)** — Given số phiếu `SUBMITTED` ≥ ngưỡng tối thiểu và `aggregateScore` ≥
-  `PASSING_SCORE`; When chuyên viên ra kết luận; Then `EvaluationRound.conclusion=PASSED`, đợt chuyển `CONCLUDED`,
-  `ResearchProject` chuyển `APPROVED`, chủ nhiệm nhận thông báo kết quả.
+- **AC-03 (Khoa học đạt)** — Khi đủ phiếu `SUBMITTED` và `aggregateScore ≥ PASSING_SCORE`, chuyên viên chốt đợt khoa học `CONCLUDED` với `conclusion=PASSED`.
+  - Khi hồ sơ không cần thẩm định đạo đức hoặc đã được hội đồng đạo đức thông qua, chuyển đề tài sang `APPROVED` và gửi một thông báo phê duyệt cho chủ nhiệm.
+  - Khi thẩm định bắt buộc còn chờ hoặc yêu cầu bổ sung, giữ `UNDER_REVIEW`. Chủ nhiệm thấy bước đang chờ hoặc nội dung cần bổ sung. Khi hội đồng thông qua sau đó, chuyển `APPROVED` và thông báo một lần, kể cả khi xử lý lại cùng kết quả.
 - **AC-04 (Biên — điểm ngưỡng REJECTED)** — Given đủ phiếu nhưng `aggregateScore < PASSING_SCORE`; When chuyên
   viên ra kết luận; Then `conclusion=FAILED`, `ResearchProject` chuyển `REJECTED`, chủ nhiệm nhận thông báo từ chối.
+  - Nếu khoa học đã `PASSED` và hội đồng đạo đức bắt buộc từ chối cuối cùng, giữ kết luận khoa học `PASSED`, chuyển đề tài sang `REJECTED` và thông báo kết luận cho chủ nhiệm (BR-08).
 - **AC-05 (Biên — thiếu phiếu)** — Given số phiếu `SUBMITTED` < `MIN_SUBMITTED_SCORE_SHEETS`; When chuyên viên cố
   ra kết luận; Then hệ thống chặn, hiển thị số phiếu còn thiếu, không đổi trạng thái đề tài (BR-07).
 - **AC-06 (Negative — xung đột lợi ích)** — Given thành viên hội đồng đồng thời là chủ nhiệm/thành viên

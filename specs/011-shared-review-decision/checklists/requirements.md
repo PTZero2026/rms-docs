@@ -3,12 +3,12 @@ story: US-11
 feature: F03
 review_id: RV-11
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-21
 ---
 
 # Kiểm tra chất lượng đặc tả · US-11
 
-Ngày 18/11/2026 · [Đặc tả](../spec.md). Checklist rà chất lượng văn bản. Quyết định nghiệp vụ có người duyệt riêng.
+Lập ngày 18/11/2026, rà lại ngày 21/11/2026 · [Đặc tả](../spec.md). Checklist rà chất lượng văn bản. Quyết định nghiệp vụ có người duyệt riêng.
 
 ## Nội dung
 
@@ -35,4 +35,4 @@ Ngày 18/11/2026 · [Đặc tả](../spec.md). Checklist rà chất lượng vă
 - [x] Có kết quả mong đợi để đánh giá tiêu chí thành công.
 - [x] Đặc tả mô tả nhu cầu nghiệp vụ, thiết kế nằm ở plan.
 
-Bằng chứng: bộ dữ liệu ba bộ phiếu dựng sẵn ở trên, dưới và bằng ngưỡng. Hai ca gốc kiểm US-11.1–2. Sau clarify, ca thứ ba kiểm RV-11.
+Bằng chứng: bộ dữ liệu ba bộ phiếu dựng sẵn ở trên, dưới và bằng ngưỡng. Hai ca gốc kiểm US-11.1–2. TC-01 và các biến thể TC-03 kiểm thời điểm chuyển trạng thái, việc cần bổ sung và số thông báo khi ghi lại kết quả đạo đức.

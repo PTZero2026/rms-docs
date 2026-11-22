@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "playwright test",
+    "test:v0": "playwright test --config playwright.v0.config.ts",
     "test:headed": "playwright test --headed",
     "report": "playwright show-report",
     "codegen": "playwright codegen https://tl-nckh.vnest.vn/",

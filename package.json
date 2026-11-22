@@ -1,0 +1,23 @@
+{
+  "name": "rms",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.34.5",
+  "engines": { "node": ">=24.13.0 <25" },
+  "scripts": {
+    "dev": "pnpm --filter @rms/web dev",
+    "build": "pnpm typecheck && pnpm --filter @rms/web build",
+    "typecheck": "pnpm -r --if-present typecheck",
+    "test": "node --test apps/web/src/demo/*.test.mjs apps/web/src/features/*/*.test.mjs",
+    "lint": "eslint apps/web packages/ui",
+    "ui:add": "pnpm --dir packages/ui exec shadcn add --cwd ../../apps/web",
+    "ui:mcp": "pnpm --dir apps/web exec ../../packages/ui/node_modules/.bin/shadcn mcp"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10",
+    "eslint": "^10",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "globals": "^17",
+    "typescript-eslint": "^8"
+  }
+}

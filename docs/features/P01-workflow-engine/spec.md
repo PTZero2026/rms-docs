@@ -5,7 +5,7 @@ epic: "E0"
 owner: "Kiến trúc/DEV (SA)"
 status: Draft        # Draft | Review | Approved
 version: 0.1
-updated: 2026-06-12
+updated: 2026-11-21
 ---
 
 # Workflow engine (vòng đời ResearchProject)
@@ -56,7 +56,7 @@ Khi một tác nhân yêu cầu chuyển bước (`execute(entity, transitionCod
 | BR-01 | Chuyển trạng thái chỉ qua engine | Mọi đổi trạng thái `ResearchProject` đi qua engine; cấm update enum ở UI/tầng dữ liệu | [§4.2](../../../AGENTS.md) |
 | BR-02 | Ranh giới cấu hình | Per-tenant chỉ được chọn *graph* và *chọn guard/effect nào* từ **danh mục cố định**; cài đặt guard/effect luôn ở code domain | ADR-0007 |
 | BR-03 | Mỗi bước có `statusSemantic` | Mỗi step gắn một `statusSemantic` hợp lệ — từ vựng chuẩn để báo cáo/business rule chạy xuyên tổ chức | dùng cho B02 |
-| BR-04 | Ghim version | Mỗi đề tài ghim version template lúc tạo; sửa graph **không** ảnh hưởng đề tài đang chạy | versioning bắt buộc |
+| BR-04 | Ghim version | Mỗi hồ sơ dùng phiên bản quy trình có hiệu lực lúc tạo cho mọi bước đến khi hoàn tất. | versioning bắt buộc |
 | BR-05 | Quyền theo role RMS | `allowedRoles` của transition trỏ về **role RMS** (không phải realm-role Keycloak); phân quyền thực thi ở backend | [ADR-0005](../../architecture/decisions/0005-sso-va-rbac.md) |
 | BR-06 | Validate graph khi kích hoạt | Đúng 1 step khởi đầu, mọi step kết thúc reachable, không transition mồ côi, mọi step có `statusSemantic` hợp lệ | guard-rail |
 | BR-07 | Lịch sử append-only | Mỗi transition thành công ghi `WorkflowHistory` + `AuditLog` trong cùng transaction; append-only | [§4.4](../../../AGENTS.md) |
@@ -76,7 +76,7 @@ Chi tiết bảng/trường → [data-model §3, §4.8](../../architecture/data-
 
 - **AC-01** (BR-01) — Given có cố gắng đổi trạng thái đề tài trực tiếp (ngoài engine), When thực hiện, Then bị từ chối; chỉ engine mới đổi được trạng thái.
 - **AC-02** (BR-02, BR-03) — Given tổ chức ráp lifecycle riêng từ catalog (vd `DRAFT→DUYỆT_NHANH→IN_PROGRESS→DONE`), When chạy, Then engine chạy đúng **không cần sửa code**, mỗi bước có `statusSemantic` hợp lệ.
-- **AC-03** (BR-04) — Given đề tài đang chạy trên template v1, When admin sửa graph thành v2, Then đề tài đó **vẫn** theo v1 tới khi kết thúc.
+- **AC-03** (BR-04) — Given hồ sơ X đang chờ duyệt theo v1, When v2 có hiệu lực và hồ sơ Y được tạo, Then X chuyển bước theo v1 đến khi hoàn tất, còn Y theo v2 từ lúc tạo. [RV-03](../../../specs/review-decisions.md#rv-03)
 - **AC-04** (BR-05) — Given tác nhân thiếu role RMS mà transition yêu cầu, When thực hiện, Then bị chặn ở backend.
 - **AC-05** (BR-06) — Given graph thiếu `statusSemantic` ở một bước hoặc có transition mồ côi, When kích hoạt template, Then bị từ chối kèm thông báo lỗi rõ.
 - **AC-06** (BR-07) — Given một transition thành công, Then sinh đúng một bản ghi `WorkflowHistory` + `AuditLog`, và không thể sửa/xoá.

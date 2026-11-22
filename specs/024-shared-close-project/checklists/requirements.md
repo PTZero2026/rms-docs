@@ -3,7 +3,7 @@ story: US-24
 feature: F05
 review_id: RV-24
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-21
 ---
 
 # Kiểm tra chất lượng đặc tả · US-24
@@ -35,4 +35,4 @@ Ngày 18/11/2026 · [Đặc tả](../spec.md). Checklist rà chất lượng vă
 - [x] Có kết quả mong đợi để đánh giá tiêu chí thành công.
 - [x] Đặc tả mô tả nhu cầu nghiệp vụ, thiết kế nằm ở plan.
 
-Bằng chứng: bộ dữ liệu đề tài PASSED, kịch bản F05 cơ bản, điều kiện F06 AC-10 cần PO xác định trước khi giao. Hai ca gốc kiểm US-24.1–2. Sau clarify, ca thứ ba kiểm RV-24.
+Bằng chứng: bộ dữ liệu hồ sơ PASSED cho hai chế độ, gồm pilot rà thủ công và đơn vị bật đối soát với các khoản MATCHED, UNRECONCILED, MISMATCHED. Hai ca gốc kiểm US-24.1–2. Ca TC-03 kiểm các khoản chưa đối soát, sai lệch và trường hợp có cả hai. Rà lại theo RV-24 ngày 21/11/2026.

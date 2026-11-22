@@ -1,0 +1,37 @@
+.extension-workspace, .ext-modal { min-width: 0; }
+.extension-workspace .panel { padding: clamp(.9rem, 2vw, 1.35rem); }
+.extension-workspace h2, .ext-group legend { font-weight: 650; }
+.extension-workspace .page-heading { align-items: flex-start; }
+.extension-workspace .page-heading h1 { overflow-wrap: anywhere; }
+.extension-workspace h2 { font-size: 1.1rem; }
+.extension-workspace [data-slot="tabs-content"] { min-width: 0; }
+.ext-grid, .ext-facts, .ext-filters { display: grid; gap: .9rem 1.25rem; }
+.ext-grid, .ext-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.ext-filters { grid-template-columns: repeat(auto-fit, minmax(min(10rem, 100%), 1fr)); align-items: end; }
+.ext-title, .ext-actions, .ext-line, .ext-team, .ext-checks { display: flex; align-items: center; flex-wrap: wrap; gap: .6rem 1rem; }
+.ext-title, .ext-line { justify-content: space-between; }
+.ext-line { padding: .65rem 0; border-bottom: 1px solid var(--border); }
+.ext-line > div:first-child { flex: 1 1 12rem; min-width: 0; overflow-wrap: anywhere; }
+.ext-line:last-child { border: 0; }
+.ext-facts dt, .extension-workspace td small { display: block; color: var(--muted-foreground); font-size: .8rem; }
+.ext-facts dd { margin-top: .25rem; font-weight: 500; overflow-wrap: anywhere; white-space: pre-line; }
+.ext-select { width: 100%; min-height: 2.15rem; border: 1px solid var(--input); background: var(--background); color: var(--foreground); border-radius: var(--radius); padding: .35rem .55rem; font: inherit; font-size: .875rem; }
+.ext-select:focus-visible, .ext-checks input:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+.ext-modal[data-slot="dialog-content"] { width: min(40rem, calc(100vw - 2rem)); max-width: 40rem; max-height: 88dvh; overflow-y: auto; }
+.ext-modal .stack, .ext-group, .ext-editor { display: grid; gap: .9rem; }
+.ext-group { min-width: 0; margin: 0; padding: 1rem; border: 1px solid var(--border); border-radius: var(--radius); }
+.ext-group legend { padding: 0 .3rem; }
+.ext-group > button { justify-self: start; }
+.ext-team { align-items: end; }
+.ext-team > [data-slot="field"] { flex: 1 1 8rem; min-width: 0; }
+.ext-checks label { display: inline-flex; gap: .5rem; align-items: center; min-height: 2rem; }
+.extension-workspace .record-link { max-width: min(34rem, 70vw); white-space: normal; text-align: left; }
+.extension-workspace .metric strong { display: block; font-variant-numeric: tabular-nums; }
+.extension-workspace td small { white-space: normal; }
+@media (max-width: 650px) {
+  .ext-grid, .ext-facts, .ext-detail { grid-template-columns: minmax(0,1fr); }
+  .ext-filters { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .ext-group { padding: .75rem; }
+  .ext-filters [data-slot="field"]:has(input[type="search"]) { grid-column: 1 / -1; }
+}
+

@@ -3,7 +3,7 @@ story: US-28
 feature: F11
 review_id: RV-28
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-21
 ---
 
 # Tasks · Kê khai dự án phục vụ sản xuất
@@ -25,8 +25,8 @@ Mục tiêu độc lập: Người kê khai ghi đơn vị chủ trì, đối t�
 - [ ] T003 [P] [US1] Viết ca US-28.1 / US-28.2 và TC-04 trong `e2e/applied-project/register-applied-project/acceptance.spec.ts`; so kết quả với [quickstart](quickstart.md).
 - [ ] T004 [P] [US1] Áp ràng buộc [data-model.md](data-model.md) `AppliedProject.totalBudgetVnd` khi đọc/ghi qua `apps/backend/src/modules/applied-project/register-applied-project/data.ts`.
 - [ ] T005 [US1] Thực hiện FR-001/002 trong `apps/backend/src/modules/applied-project/register-applied-project/service.ts`. Cho chọn hoặc nhập đối tác theo danh mục của trường. Lưu tổng VND tại đầu mục. Kiểm có viện khi lưu và có ít nhất một đối tác khi gửi duyệt. Kiểm nhánh AC-02 theo [quickstart](quickstart.md).
-- [ ] T006 [US1] Tích hợp điểm tương tác trong `apps/web/src/features/applied-project/register-applied-project/view.tsx`. Hiển thị đầu mục dự án ứng dụng với kinh phí tổng; hiển thị riêng tình huống thiếu đối tác ngoài và cho người có quyền quay về dữ liệu nguồn.
-- [ ] T007 [US1] Áp dụng kết luận RV-28 cho FR-003 trong `apps/backend/src/modules/applied-project/register-applied-project/service.ts` và kiểm TC-03 ở `e2e/applied-project/register-applied-project/boundary.spec.ts`. Yêu cầu đơn vị chủ trì khi lưu, kiểm ít nhất một đối tác ngoài tại lúc gửi duyệt.
+- [ ] T006 [US1] Tích hợp điểm tương tác trong `apps/web/src/features/applied-project/register-applied-project/view.tsx`. Hiển thị đầu mục dự án ứng dụng với kinh phí tổng; hiển thị yêu cầu bổ sung đối tác khi gửi duyệt, cho lưu nháp thiếu đối tác và cho người có quyền quay về dữ liệu nguồn.
+- [ ] T007 [US1] Áp dụng kết luận RV-28 cho FR-003 trong `apps/backend/src/modules/applied-project/register-applied-project/service.ts` và kiểm TC-03 ở `e2e/applied-project/register-applied-project/boundary.spec.ts`. Kiểm lưu và mở lại nháp khi danh sách đối tác rỗng. Trên cùng mã hồ sơ, xác minh gửi thiếu đối tác giữ Nháp và gửi lại sau khi thêm đối tác chuyển Chờ duyệt.
 
 ## Phase 4 · Hồi quy
 
@@ -34,4 +34,4 @@ Mục tiêu độc lập: Người kê khai ghi đơn vị chủ trì, đối t�
 
 ## Phụ thuộc và cách giao
 
-T001 → T002 → (T003 ∥ T004) → T005 → T006 → T007 → T008. T003 và T004 dùng tệp riêng sau khi chốt giao tiếp. Giao lát US1 với dữ liệu mẫu trước, sau đó chạy lại bằng module thật. Dùng [RV-28](../review-decisions.md#rv-28) để chốt nhánh biên trước khi nghiệm thu.
+T001 → T002 → (T003 ∥ T004) → T005 → T006 → T007 → T008. T003 và T004 dùng tệp riêng sau khi chốt giao tiếp. Giao lát US1 với dữ liệu mẫu trước, sau đó chạy lại bằng module thật. Dùng [RV-28](../review-decisions.md#rv-28) làm căn cứ nghiệm thu hai thao tác lưu nháp và gửi duyệt.

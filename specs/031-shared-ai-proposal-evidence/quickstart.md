@@ -3,7 +3,7 @@ story: US-31
 feature: F01
 review_id: RV-31
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-21
 ---
 
 # Kiểm tra đầu cuối · US-31
@@ -19,6 +19,8 @@ Trong môi trường thử của repo code, tạo hai tenant A/B và người c�
 
 Lấy bảng đối chứng có chữ ký PO/BA trước khi đưa AC mới vào feature nguồn. Tắt dịch vụ và kiểm đường thủ công. Với từng dẫn chứng hãy mở lại đúng trang/đoạn bằng cùng tài khoản.
 
-**Đối chiếu nghiệp vụ.** Trên 50 hồ sơ gán nhãn độc lập, tính số mục thiếu tìm đúng/tổng mục thiếu và số báo sai/tổng cảnh báo. Mục tiêu ≥90%, ≤10%, không lộ chéo hoặc bịa dẫn chứng.
+**Kiểm quyền nguồn theo [RV-35](../review-decisions.md#rv-35).** Với TC-02, thử riêng hai hồ sơ cùng trường: người dùng đọc được nhưng nguồn chưa được phép dùng cho AI, và nguồn được phép dùng cho AI nhưng người dùng vừa mất quyền đọc. Mở lại yêu cầu đã lưu. Trong cả hai ca, kiểm dữ liệu gửi cho mô hình và kết quả hiển thị đều vắng đoạn bị hạn chế. Với nguồn đủ cả hai quyền, đối chiếu phiên bản nguồn, mô hình, mẫu lệnh và lựa chọn dùng/bỏ của từng gợi ý.
 
-**Đạt khi** cả bốn ca và phép đối chiếu nghiệp vụ khớp kết quả dự kiến. Lưu chứng cứ TC-03 cho PO, chủ dữ liệu trường và QA AI. [RV-31](../review-decisions.md#rv-31).
+**Đối chiếu nghiệp vụ theo SC-003 (RV-31 tạm chốt).** Trên 50 hồ sơ gán nhãn độc lập, tính số mục thiếu tìm đúng/tổng mục thiếu và số báo sai/tổng cảnh báo. Mục tiêu ≥90%, ≤10%, không lộ chéo hoặc bịa dẫn chứng.
+
+**Đạt khi** cả bốn ca và phép đối chiếu nghiệp vụ khớp kết quả dự kiến. Lưu số đếm và tỷ lệ thực đo theo SC-003 cùng chứng cứ TC-03 cho PO, chủ dữ liệu trường và QA AI. [RV-31](../review-decisions.md#rv-31).

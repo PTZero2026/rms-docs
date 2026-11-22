@@ -24,4 +24,4 @@ qua tích hợp. Sổ cái thật vẫn ở hệ thống tài chính; RMS chỉ 
 ## Hệ quả
 - `BudgetTransaction.reconciliationStatus` (`MATCHED`/`MISMATCHED`/`UNRECONCILED`) là kết quả đối soát định kỳ.
 - Có cơ chế đối soát thủ công (nhập file) khi chưa có API — degrade chấp nhận được.
-- Đóng đề tài (`COMPLETED`) yêu cầu quyết toán không còn giao dịch `MISMATCHED` tồn đọng.
+- Đóng đề tài (`COMPLETED`) tuân theo chế độ đối soát của đơn vị. Theo [RV-24 ngày 21/11/2026](../../../specs/review-decisions.md#rv-24), pilot chưa bật dùng xác nhận rà thủ công. Khi đã bật, mọi khoản của đề tài phải `MATCHED`; `UNRECONCILED` và `MISMATCHED` đều chặn đóng.

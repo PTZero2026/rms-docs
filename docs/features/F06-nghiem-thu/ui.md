@@ -3,7 +3,7 @@ title: "Nghiệm thu — Giao diện (một web app, phân quyền)"
 spec: "./spec.md"
 owner: "PO/BA"
 status: Draft
-updated: 2026-06-09
+updated: 2026-11-21
 ---
 
 # Nghiệm thu — Giao diện
@@ -117,8 +117,7 @@ Wireframe đặt trong `./assets/` (bổ sung khi có), link Figma nếu có.
 - **Ra kết luận:** chỉ khi đủ phiếu (BR-07); thiếu phiếu → chặn, báo số phiếu thiếu, không đổi trạng thái
   → AC-06. So `aggregateScore` với `ACCEPTANCE.PASSING_SCORE` (BR-08): ≥ ngưỡng → `PASSED`
   (`UNDER_ACCEPTANCE → PASSED`); ngược lại → `FAILED`; đặt `EvaluationRound=CONCLUDED`.
-- **Đạt:** sau khi F05 xác nhận quyết toán xong (không còn `MISMATCHED`) → `PASSED → COMPLETED` (BR-09);
-  cố đóng khi còn `MISMATCHED` → chặn, yêu cầu xử lý quyết toán trước → AC-10. → AC-04.
+- **Đạt:** sau khi F05 xác nhận quyết toán theo chế độ của đơn vị, chuyển `PASSED → COMPLETED` (BR-09, AC-04). Nếu đã bật đối soát và còn khoản `UNRECONCILED` hoặc `MISMATCHED`, hiển thị từng khoản vướng và giữ `PASSED` (AC-10).
 - **Không đạt:** cho làm lại kèm `reason` & **thời hạn** → `FAILED → IN_PROGRESS`, tăng số lần làm lại,
   không vượt `ACCEPTANCE.MAX_REDO_COUNT`, ghi audit (BR-10) → AC-05.
 - **Mở lại đợt sau kết luận:** chỉ chuyên viên, kèm `reason`, ghi `AuditLog` (BR-12).
@@ -135,7 +134,7 @@ Wireframe đặt trong `./assets/` (bổ sung khi có), link Figma nếu có.
 | Thiếu phiếu khi kết luận | (Chặn) "Chưa đủ phiếu chấm để kết luận (cần thêm {n} phiếu)." (AC-06) |
 | Kết luận đạt | "Đề tài đã nghiệm thu ĐẠT." |
 | Kết luận không đạt | "Đề tài chưa đạt, được làm lại đến {hạn}." |
-| Còn giao dịch MISMATCHED khi đóng | (Chặn) "Cần xử lý quyết toán (còn giao dịch chưa khớp) trước khi đóng đề tài." (AC-10) |
+| Đã bật đối soát và còn giao dịch cần xử lý | “Cần xử lý các khoản sau trước khi đóng đề tài.” Liệt kê mã khoản, trạng thái chưa đối soát hoặc sai lệch. (AC-10) |
 | Sai quyền | "Bạn không có quyền thực hiện thao tác này." (AC-11) |
 | Khóa sau kết luận | "Đợt đánh giá đã kết luận, không thể gửi/sửa phiếu." (AC-12) |
 
