@@ -1,3 +1,4 @@
+import { choose } from "../../lib/choice.mjs"
 import {execFileSync} from "node:child_process"
 import {test,expect} from "@playwright/test"
 import {randomUUID} from "node:crypto"
@@ -35,7 +36,7 @@ test("F07 approves an independent research output and exposes the publication in
     const editor=author.getByRole("region",{name:"Sản phẩm ngoài đề tài"})
     await editor.getByRole("button",{name:"Kê khai sản phẩm độc lập"}).click()
     await editor.getByLabel("Tên sản phẩm").fill(title)
-    await editor.getByLabel("Loại sản phẩm").selectOption("BOOK")
+    await choose(editor.getByLabel("Loại sản phẩm"), "BOOK")
     await editor.getByLabel("Thông tin công bố").fill("Nhà xuất bản Khoa học, 2026")
     await expect(editor.getByRole("checkbox",{name:co.account.email})).toHaveCount(0)
     await editor.getByLabel("Email đồng tác giả khác khoa").fill(co.account.email)
@@ -56,7 +57,7 @@ test("F07 approves an independent research output and exposes the publication in
     const queue=reviewer.getByRole("region",{name:"Sản phẩm ngoài đề tài"})
     const pending=queue.getByRole("article").filter({hasText:title})
     await expect(pending.getByRole("button",{name:"bien-ban-hop.pdf"})).toBeVisible()
-    await pending.getByLabel("Tác giả chính hoặc liên hệ").selectOption(pi.account.id)
+    await choose(pending.getByLabel("Tác giả chính hoặc liên hệ"), pi.account.id)
     await pending.getByLabel("Tỷ lệ % · "+pi.account.email).fill("70")
     await expect(pending.getByRole("button",{name:"Duyệt sản phẩm"})).toBeDisabled()
     await pending.getByLabel("Tỷ lệ % · "+co.account.email).fill("30")

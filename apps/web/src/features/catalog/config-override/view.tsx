@@ -1,3 +1,13 @@
+import { ValidatedForm } from "@rms/ui/components/validated-form"
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription,
+  AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
+} from "@rms/ui/components/alert-dialog"
+import { ValueInput } from "@rms/ui/components/date-input"
+import { Disclosure } from "@rms/ui/components/disclosure"
+import { ChoiceOption, ChoiceSelect } from "@rms/ui/components/choice-select"
+import { Checkbox } from "@rms/ui/components/checkbox"
+import { Textarea } from "@rms/ui/components/textarea"
 import { useCallback,useEffect,useId,useRef,useState } from "react"
 import { Button } from "@rms/ui/components/button"
 import { Input } from "@rms/ui/components/input"
@@ -32,6 +42,7 @@ export default function ConfigurationView({session}:{session:SignedInSession}) {
   const [message,setMessage]=useState(""),[busy,setBusy]=useState(false)
   const [detail,setDetail]=useState<ConfigurationDetail>()
   const [confirm,setConfirm]=useState<"save"|"delete">()
+  const confirmOpener=useRef<HTMLButtonElement | null>(null)
   const [selected,setSelected]=useState<Row>()
   const slug=session.params.path.slug
   const accessGeneration=useRef(0)
@@ -127,11 +138,11 @@ export default function ConfigurationView({session}:{session:SignedInSession}) {
   return <section className="grid gap-4 py-4" aria-label="Quản lý cấu hình">
     <h2>Cấu hình hệ thống</h2>
     {!listing&&message&&<Button variant="outline" disabled={busy} onClick={()=>setQuery({...query})}>Tải lại danh sách</Button>}
-    <details><summary className="cursor-pointer">Bộ lọc cấu hình</summary><form className="mt-3 flex flex-wrap items-end gap-2" onSubmit={e=>{e.preventDefault();setQuery({...filters,skip:0})}}>
-      {Object.entries(filterLabels).map(([k,label])=><label key={k}>{label}<Input type={/From|To/.test(k)?"date":"text"} onChange={e=>setFilters({...filters,[k]:e.target.value||undefined})}/></label>)}
-      {(["public","active"] as const).map(k=><label key={k}>{k==="active"?"Hoạt động":"Công khai"}<select onChange={e=>setFilters({...filters,[k]:e.target.value===""?undefined:e.target.value==="true"})}><option value="">Tất cả</option><option value="true">Có</option><option value="false">Không</option></select></label>)}
+    <Disclosure title={<> Bộ lọc cấu hình </>}><ValidatedForm className="mt-3 flex flex-wrap items-end gap-2" onSubmit={e=>{e.preventDefault();setQuery({...filters,skip:0})}}>
+      {Object.entries(filterLabels).map(([k,label])=><label key={k}>{label}<ValueInput type={/From|To/.test(k)?"date":"text"} onValueChange={next => setFilters({...filters,[k]:next||undefined})}/></label>)}
+      {(["public","active"] as const).map(k=><label key={k}>{k==="active"?"Hoạt động":"Công khai"}<ChoiceSelect onValueChange={choiceValue => setFilters({...filters,[k]:choiceValue===""?undefined:choiceValue==="true"})}><ChoiceOption value="">Tất cả</ChoiceOption><ChoiceOption value="true">Có</ChoiceOption><ChoiceOption value="false">Không</ChoiceOption></ChoiceSelect></label>)}
       <Button type="submit" variant="outline">Tìm cấu hình</Button>
-    </form></details>
+    </ValidatedForm></Disclosure>
     {listing && <><p>{listing.total} bản cấu hình</p>
       {listing.canWrite&&listing.scope==="tenant"&&<Button className="justify-self-start" variant="outline" disabled={busy}
         onClick={()=>{setOpen(false);setDetail(undefined);setLayoutOpen(true)}}>Bố cục trang chủ theo vai trò</Button>}
@@ -147,16 +158,29 @@ export default function ConfigurationView({session}:{session:SignedInSession}) {
     {open && listing?.canWrite && <fieldset disabled={busy} className="grid gap-3"><legend>{editing?"Sửa cấu hình":"Tạo cấu hình"} · {listing.scope==="shared"?"Chung":slug}</legend>
       <label>Mã cấu hình<Input value={form.key} disabled={editing} onChange={e=>setForm({...form,key:e.target.value})}/></label>
       {Object.entries(labels).map(([k,label])=><label key={k}>{label}<Input value={form[k as keyof typeof labels]} onChange={e=>setForm({...form,[k]:e.target.value})}/></label>)}
-      {(["active","public"] as const).map(k=><label key={k}><input type="checkbox" checked={form[k]} onChange={e=>setForm({...form,[k]:e.target.checked})}/> {k==="active"?"Đang hoạt động":"Đánh dấu công khai"}</label>)}
-      <label>Cách nhập <select value={mode} onChange={e=>{setMode(e.target.value);setText("");setFile(undefined)}}><option value="text">Văn bản</option><option value="base64">Base64</option><option value="file">Tệp</option></select></label>
-      {mode==="file"?<label>Tệp nội dung<Input type="file" onChange={e=>setFile(e.target.files?.[0])}/></label>:<div><label htmlFor={contentField}>Nội dung</label><textarea id={contentField} className="block w-full rounded border p-2" value={text} onChange={e=>setText(e.target.value)}/></div>}
+      {(["active","public"] as const).map(k=><label key={k}><Checkbox checked={form[k]} onCheckedChange={checked => setForm({...form,[k]:checked})}/> {k==="active"?"Đang hoạt động":"Đánh dấu công khai"}</label>)}
+      <label>Cách nhập <ChoiceSelect value={mode} onValueChange={choiceValue => {setMode(choiceValue);setText("");setFile(undefined)}}><ChoiceOption value="text">Văn bản</ChoiceOption><ChoiceOption value="base64">Base64</ChoiceOption><ChoiceOption value="file">Tệp</ChoiceOption></ChoiceSelect></label>
+      {mode==="file"?<label>Tệp nội dung<Input type="file" onChange={e=>setFile(e.target.files?.[0])}/></label>:<div><label htmlFor={contentField}>Nội dung</label><Textarea id={contentField} className="block w-full rounded border p-2" value={text} onChange={e=>setText(e.target.value)}/></div>}
       {editing && <p>Để trống nội dung để giữ bản hiện tại.</p>}
       <div className="flex flex-wrap gap-2"><Button variant="outline" onClick={()=>void run(()=>save(true))}>Xem trước</Button>
-      <Button onClick={()=>editing && listing.scope==="shared"?setConfirm("save"):void run(()=>save())}>Lưu cấu hình</Button>
-      {editing && <Button variant="outline" onClick={()=>setConfirm("delete")}>Xóa cấu hình</Button>}
+      <Button aria-haspopup={editing && listing.scope==="shared" ? "dialog" : undefined} onClick={event=>{
+        if(editing && listing.scope==="shared"){confirmOpener.current=event.currentTarget;setConfirm("save")}
+        else void run(()=>save())
+      }}>Lưu cấu hình</Button>
+      {editing && <Button variant="destructive" aria-haspopup="dialog" onClick={event=>{confirmOpener.current=event.currentTarget;setConfirm("delete")}}>Xóa cấu hình</Button>}
       <Button variant="outline" onClick={()=>{setOpen(false);setConfirm(undefined)}}>Đóng biểu mẫu</Button></div>
-      {confirm && <div role="group" aria-label="Xác nhận thay đổi"><p>{confirm==="delete"?"Xóa vĩnh viễn":"Ghi đè"} {form.key} · {listing.scope==="shared"?"Chung cho mọi trường":slug}?</p>
-        <Button onClick={()=>void run(()=>confirm==="delete"?remove():save())}>Xác nhận {form.key}</Button> <Button variant="outline" onClick={()=>setConfirm(undefined)}>Hủy</Button></div>}
+      <AlertDialog open={!!confirm} onOpenChange={next=>{if(!next)setConfirm(undefined)}}>
+        <AlertDialogContent onCloseAutoFocus={event=>{event.preventDefault();confirmOpener.current?.focus()}}>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{confirm==="delete"?"Xóa cấu hình":"Ghi đè cấu hình"}</AlertDialogTitle>
+            <AlertDialogDescription>{confirm==="delete"?"Xóa vĩnh viễn":"Ghi đè nội dung của"} {form.key} · {listing.scope==="shared"?"Chung cho mọi trường":slug}?</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Hủy</AlertDialogCancel>
+            <AlertDialogAction variant="destructive" onClick={()=>void run(()=>confirm==="delete"?remove():save())}>Xác nhận {form.key}</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </fieldset>}
     <p role="status">{message}</p>
   </section>

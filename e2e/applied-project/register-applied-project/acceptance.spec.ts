@@ -1,3 +1,4 @@
+import { choose } from "../../lib/choice.mjs"
 import {execFileSync} from "node:child_process"
 import {test,expect,type Page} from "@playwright/test"
 import {randomUUID} from "node:crypto"
@@ -39,11 +40,11 @@ test("F11 reopens a 50-million VND draft and retains the same project through pa
     await app.getByLabel("Tổng kinh phí").fill("50000000")
     await app.getByRole("button",{name:"Lưu nháp dự án"}).click()
     await expect(app.getByRole("status")).toContainText("Chọn đơn vị")
-    await app.getByLabel("Đơn vị chủ trì").selectOption(unit)
-    await app.getByLabel("Loại dự án").selectOption("SERVICE")
+    await choose(app.getByLabel("Đơn vị chủ trì"), unit)
+    await choose(app.getByLabel("Loại dự án"), "SERVICE")
     await app.getByRole("button",{name:"Thêm thành viên"}).click()
     await app.getByLabel("Email thành viên 1").fill(member.account.email)
-    await app.getByLabel("Vai trò người tham gia 1").selectOption("SECRETARY")
+    await choose(app.getByLabel("Vai trò người tham gia 1"), "SECRETARY")
     await app.getByLabel("Tỷ lệ thành viên 1 (%)").fill("30")
     const incoming=pi.waitForResponse(r=>r.url().includes("/applied-projects/")&&r.request().method()==="PUT")
     await app.getByRole("button",{name:"Lưu nháp dự án"}).click()
@@ -53,7 +54,7 @@ test("F11 reopens a 50-million VND draft and retains the same project through pa
     await expect(app.getByText("Nháp · Viện môi trường · 50.000.000 ₫")).toBeVisible()
     await app.getByRole("button",{name:"Gửi duyệt dự án"}).click()
     await expect(app.getByRole("status")).toContainText("đối tác ngoài")
-    await app.getByLabel("Chọn đối tác từ danh mục").selectOption("WATER")
+    await choose(app.getByLabel("Chọn đối tác từ danh mục"), "WATER")
     await app.getByLabel("Đối tác ngoài").fill("Viện kiểm định")
     await expect(app.getByRole("button",{name:"Bỏ Công ty cấp nước"})).toBeVisible()
     await app.getByRole("button",{name:"Lưu nháp dự án"}).click()
@@ -74,7 +75,7 @@ test("F11 reopens a 50-million VND draft and retains the same project through pa
     await expect(desk.getByText("Lý do quyết định · Bổ sung hợp đồng đã ký")).toBeVisible()
     if(process.env.RMS_BROWSER_FIXTURE_BUCKET){
       await open(pi);await app.getByRole("button",{name:title}).click()
-      await app.getByLabel("Loại minh chứng").selectOption("CONTRACT")
+      await choose(app.getByLabel("Loại minh chứng"), "CONTRACT")
       await app.getByLabel("Tải tệp căn cứ").setInputFiles(fileURLToPath(new URL("./evidence/hop-dong-thu.pdf",import.meta.url)))
       await app.getByRole("button",{name:"Tải và xác nhận tệp"}).click()
       await expect(app.getByRole("button",{name:"hop-dong-thu.pdf"})).toBeVisible()
@@ -92,7 +93,7 @@ test("F11 reopens a 50-million VND draft and retains the same project through pa
       await form.getByLabel("Tóm tắt kết quả").fill("Đã bàn giao mô hình lọc nước theo biên bản.")
       await form.getByRole("button",{name:"Gửi kết quả xác nhận"}).click()
       await expect(form.getByRole("alert")).toContainText("ACCEPTANCE_MINUTES")
-      await form.getByLabel("Loại tệp kết quả").selectOption("ACCEPTANCE_MINUTES")
+      await choose(form.getByLabel("Loại tệp kết quả"), "ACCEPTANCE_MINUTES")
       await form.getByLabel("Tải tệp căn cứ").setInputFiles(fileURLToPath(new URL("../../review/meeting-minutes/evidence/bien-ban-hop.pdf",import.meta.url)))
       await form.getByRole("button",{name:"Tải và xác nhận tệp"}).click()
       await expect(app.getByRole("button",{name:"bien-ban-hop.pdf"})).toBeVisible()

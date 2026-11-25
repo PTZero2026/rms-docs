@@ -1,3 +1,4 @@
+import { ChoiceSelect } from "@rms/ui/components/choice-select"
 import { useId, useState } from 'react'
 import type { ComponentProps, ReactNode } from 'react'
 import { Alert, AlertDescription } from '@rms/ui/components/alert'
@@ -94,14 +95,14 @@ export function Choice({
   label: caption,
   children,
   ...props
-}: ComponentProps<'select'> & { label: string }) {
+}: ComponentProps<typeof ChoiceSelect> & { label: string }) {
   const id = useId()
   return (
     <Field>
       <FieldLabel htmlFor={id}>{caption}</FieldLabel>
-      <select {...props} id={id} className="intake-select">
+      <ChoiceSelect {...props} id={id} className="intake-select">
         {children}
-      </select>
+      </ChoiceSelect>
     </Field>
   )
 }

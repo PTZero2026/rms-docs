@@ -35,7 +35,7 @@ test("home separates task ids from target ids, uses the source date and respects
       const list=principal.getByRole("region",{name:"Việc cần làm"})
       await expect(list.getByText("4 việc · 1 quá hạn")).toBeVisible()
       await expect(list.getByText("Chưa có hạn")).toBeVisible()
-      await list.getByRole("button",{name:"Quá hạn",exact:true}).click()
+      await list.getByRole("radio",{name:"Quá hạn",exact:true}).click()
       await expect(list.getByRole("link")).toHaveCount(1)
       const item=list.getByRole("link",{name:/Báo cáo kỳ 2/})
       work=(await item.getAttribute("href"))!

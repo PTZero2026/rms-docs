@@ -28,7 +28,9 @@ test("F07 uses the school's product labels and rechecks a retired type at submis
     await author.getByRole("button",{name:"Sản phẩm khoa học",exact:true}).click()
     const panel=author.getByRole("region",{name:"Sản phẩm đề tài"})
     await panel.getByRole("button",{name:"Kê khai sản phẩm"}).click()
-    await expect(panel.getByLabel("Loại sản phẩm").locator("option")).toHaveText(["Bản đồ nghiên cứu"])
+    await panel.getByLabel("Loại sản phẩm").click()
+    await expect(author.getByRole("listbox").getByRole("option")).toHaveText(["Bản đồ nghiên cứu"])
+    await author.keyboard.press("Escape")
     await panel.getByLabel("Tên sản phẩm").fill("Bản đồ lưu vực Cầu")
     await panel.getByLabel("Thông tin công bố").fill("Bản đồ nghiên cứu địa hình lưu vực")
     if(process.env.RMS_BROWSER_FIXTURE_BUCKET){

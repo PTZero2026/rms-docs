@@ -1,3 +1,5 @@
+import { ChoiceOption, ChoiceSelect } from "@rms/ui/components/choice-select"
+import { Checkbox } from "@rms/ui/components/checkbox"
 import {useEffect,useState} from "react"
 import {Button} from "@rms/ui/components/button"
 import type {operations} from "@rms/api-contracts"
@@ -31,8 +33,8 @@ export function DeliveryLog({session}:{session:SignedInSession}){
     }catch(e){refresh();setError(e instanceof Error?e.message:"Không thể kết nối.")}finally{setBusy(false)}
   }
   return <section aria-label="Nhật ký gửi thông báo" className="grid min-w-0 gap-3 rounded border p-3">
-    <h3>Nhật ký gửi thông báo</h3><label>Trạng thái gửi <select disabled={busy} value={filter} onChange={e=>{setFilter(e.target.value as Filter);setSkip(0);setMessage("");refresh()}}>
-      <option value="failed">Chỉ lỗi</option><option value="reconcile">Chờ đối soát</option><option value="all">Tất cả lượt gửi</option></select></label>
+    <h3>Nhật ký gửi thông báo</h3><label>Trạng thái gửi <ChoiceSelect disabled={busy} value={filter} onValueChange={choiceValue => {setFilter(choiceValue as Filter);setSkip(0);setMessage("");refresh()}}>
+      <ChoiceOption value="failed">Chỉ lỗi</ChoiceOption><ChoiceOption value="reconcile">Chờ đối soát</ChoiceOption><ChoiceOption value="all">Tất cả lượt gửi</ChoiceOption></ChoiceSelect></label>
     {page&&<><p>{page.total} lượt gửi</p><ul className="grid gap-2">{page.items.map(row=><li className="grid gap-1 rounded border p-2" key={row.id}>
       <strong>{row.recipient}</strong><p>{row.title} · {row.channel==="smtp"?"Email":row.channel==="sms"?"SMS":"Trong ứng dụng"}</p>
       <p>{labels[row.status]} · {row.attempts} lần thử · {date.format(new Date(row.createdAt))}</p>
@@ -41,7 +43,7 @@ export function DeliveryLog({session}:{session:SignedInSession}){
       {row.templateMissing&&<p>Thiếu mẫu cho kênh này. Hệ thống đã dùng nội dung mặc định.</p>}
       {row.error&&<p>Mã phản hồi · {row.error}</p>}
       {row.status==="failed"&&row.channel!=="in_app"&&<div className="flex flex-wrap items-center gap-3">
-        <label><input type="checkbox" disabled={busy} checked={selected.includes(row.id)} onChange={e=>setSelected(e.target.checked?[...selected,row.id]:selected.filter(id=>id!==row.id))}/> Chọn lượt gửi</label>
+        <label><Checkbox disabled={busy} checked={selected.includes(row.id)} onCheckedChange={checked => setSelected(checked?[...selected,row.id]:selected.filter(id=>id!==row.id))}/> Chọn lượt gửi</label>
         <Button disabled={busy} variant="outline" onClick={()=>void resend([row])}>Gửi lại</Button></div>}
     </li>)}</ul>
     {selected.length>0&&<Button disabled={busy} onClick={()=>void resend(page.items.filter(r=>selected.includes(r.id)))}>Gửi lại đã chọn ({selected.length})</Button>}

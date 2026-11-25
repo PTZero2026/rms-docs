@@ -1,3 +1,5 @@
+import { ChoiceOption, ChoiceSelect } from "@rms/ui/components/choice-select"
+import { Checkbox } from "@rms/ui/components/checkbox"
 import { useState } from 'react'
 import type { FeatureProps } from '../../demo/types'
 import { AcceptancePage } from './acceptance-page'
@@ -114,17 +116,17 @@ function ProjectList({ p, projects }: { p: FeatureProps; projects: Row[] }) {
       >
         <div className="toolbar">
           <Search label="Tìm theo tên, mã đề tài hoặc đơn vị" value={query} set={setQuery} />
-          <select aria-label="Lọc trạng thái đề tài" value={status} onChange={(e) => setStatus(e.target.value)}>
-            <option value="">Mọi trạng thái</option>
+          <ChoiceSelect aria-label="Lọc trạng thái đề tài" value={status} onValueChange={setStatus}>
+            <ChoiceOption value="">Mọi trạng thái</ChoiceOption>
             {stages[f].map((s) => (
-              <option key={s} value={s}>
+              <ChoiceOption key={s} value={s}>
                 {states[s]}
-              </option>
+              </ChoiceOption>
             ))}
-          </select>
+          </ChoiceSelect>
           {progress && (
             <label>
-              <input type="checkbox" checked={late} onChange={(e) => setLate(e.target.checked)} /> Kỳ quá hạn
+              <Checkbox checked={late} onCheckedChange={setLate} /> Kỳ quá hạn
               chưa nộp
             </label>
           )}

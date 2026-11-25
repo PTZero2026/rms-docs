@@ -1,3 +1,5 @@
+import { routeUrl } from "../../demo/catalog"
+import { ValidatedForm } from "@rms/ui/components/validated-form"
 import { useState } from 'react'
 import { formatVietnamDate } from '../../format-date'
 import { Button } from '@rms/ui/components/button'
@@ -35,7 +37,7 @@ function DecisionForm({ctx,row,action,close}: {ctx: FeatureProps; row: DemoRow; 
   const [error,setError] = useState(policyIssue)
   const reasonRequired = needsReason.includes(action)
   const label = action === 'submit' && row.kind === 'student-project' ? 'Nộp đăng ký' : actionNames[action]
-  return <Modal title={label} description={row.title} close={close}><form className="stack" noValidate onSubmit={e => { e.preventDefault()
+  return <Modal title={label} description={row.title} close={close}><ValidatedForm className="stack" noValidate onSubmit={e => { e.preventDefault()
     try {
       let source = row
       let current = ctx
@@ -60,7 +62,7 @@ function DecisionForm({ctx,row,action,close}: {ctx: FeatureProps; row: DemoRow; 
     {action === 'reopen' && <TextField label="Hạn nộp lại kết quả" type="date" required value={deadline} onChange={setDeadline}/>}
     {(reasonRequired || action === 'pass') && <TextField label={action === 'pass' || action === 'fail' ? 'Kết luận nghiệm thu' : 'Lý do'} required={reasonRequired} multiline value={reason} onChange={setReason}/>}
     <Footer label={label} close={close}/>
-  </form></Modal>
+  </ValidatedForm></Modal>
 }
 export function Detail({ctx,row}: {ctx: FeatureProps; row: DemoRow}) {
   const feature = sourceOf(row)
@@ -110,7 +112,7 @@ export function Detail({ctx,row}: {ctx: FeatureProps; row: DemoRow}) {
     </div>
     {ledger.length > 0 && <section className="panel stack"><h2>Giờ giảng đã ghi sổ</h2>{ledger.map(r =>
       <div className="ext-line" key={r.id}><div>{names[r.owner]} · {r.fields.recognitionPeriodCode}<p className="muted">{r.fields.formulaVersion} · {statuses[r.status]}</p></div>
-        <Button variant="link" onClick={() => ctx.go('P03',r.id)}>{r.fields.hours} giờ →</Button></div>)}</section>}
+        <Button variant="link" asChild><a href={routeUrl('P03', r.id)}>{r.fields.hours} giờ →</a></Button></div>)}</section>}
     <section className="panel stack"><h2>Lịch sử xử lý</h2>{history.length ? history.map(e =>
       <div key={e.id} className="ext-line"><div>{e.action}<p className="muted">{e.actor} · {formatVietnamDate(e.at, 'minute')}</p></div></div>
     ) : <Blank title="Chưa có thao tác mới trên hồ sơ"/>}</section>

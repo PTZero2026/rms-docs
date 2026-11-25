@@ -1,3 +1,6 @@
+import { DateInput } from "@rms/ui/components/date-input"
+import { Textarea } from "@rms/ui/components/textarea"
+import { ChoiceOption, ChoiceSelect } from "@rms/ui/components/choice-select"
 import {useState} from "react"
 import type {operations} from "@rms/api-contracts"
 import {Button} from "@rms/ui/components/button"
@@ -36,10 +39,10 @@ export function ResultPanel({session,page,project,onSaved,onFile}:{session:Signe
   }
   return <section className="grid gap-2 rounded border p-3" aria-label="Kết quả dự án"><h3>Kết quả dự án · {resultLabels[project.resultStatus]}</h3>
     {owner&&project.resultStatus==="DRAFT"?<fieldset className="grid gap-2" disabled={busy}>
-      <label>Ngày nghiệm thu<Input type="date" value={date} onChange={e=>setDate(e.target.value)}/></label>
-      <label>Tóm tắt kết quả<textarea className="block w-full border p-2" maxLength={10000} value={summary} onChange={e=>setSummary(e.target.value)}/></label>
+      <label>Ngày nghiệm thu<DateInput value={date} onValueChange={setDate}/></label>
+      <label>Tóm tắt kết quả<Textarea className="block w-full border p-2" maxLength={10000} value={summary} onChange={e=>setSummary(e.target.value)}/></label>
       <p>Minh chứng để xác nhận · {required.map(c=>page.catalog.evidence.find(e=>e.code===c)?.label??c).join(" hoặc ")}</p>
-      <label>Loại tệp kết quả <select value={code} onChange={e=>setCode(e.target.value)}><option value="">Chọn loại</option>{page.catalog.evidence.map(c=><option value={c.code} key={c.code}>{c.label}</option>)}</select></label>
+      <label>Loại tệp kết quả <ChoiceSelect value={code} onValueChange={setCode}><ChoiceOption value="">Chọn loại</ChoiceOption>{page.catalog.evidence.map(c=><ChoiceOption value={c.code} key={c.code}>{c.label}</ChoiceOption>)}</ChoiceSelect></label>
       {code&&<ProjectFile session={session} project={project.id} revision={revision} extension={{module:"applied-project",evidenceType:code}} onFile={()=>void onFile().catch(e=>setMessage(e.message))}/>}
       <Button disabled={!summary.trim()||!date} onClick={()=>void save("submit")}>Gửi kết quả xác nhận</Button>
     </fieldset>:<>{project.resultDate&&<p>Ngày nghiệm thu · {project.resultDate.split("-").reverse().join("/")}</p>}{project.resultSummary&&<p>{project.resultSummary}</p>}</>}

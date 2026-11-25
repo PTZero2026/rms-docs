@@ -1,3 +1,5 @@
+import { ValidatedForm } from "@rms/ui/components/validated-form"
+import { Textarea } from "@rms/ui/components/textarea"
 import { useEffect, useState } from "react"
 import type { operations } from "@rms/api-contracts"
 import { Button } from "@rms/ui/components/button"
@@ -43,14 +45,14 @@ export function AuthorRequests({session,queue=false,canApply=false}:{session:Sig
       session.api.PATCH("/api/tenants/{slug}/users/author-requests/{id}/reject",options),approve?"Đã duyệt quyền tác giả.":"Đã từ chối yêu cầu.")
   }
   return <section className="grid gap-3" aria-label={queue?"Duyệt yêu cầu tác giả":"Yêu cầu quyền tác giả"}>
-    {items&&canApply&&items[0]?.status!=="APPROVED"&&!items.some(r=>r.status==="PENDING")&&<form className="grid gap-2" onSubmit={e=>{e.preventDefault();submit(new FormData(e.currentTarget))}}>
+    {items&&canApply&&items[0]?.status!=="APPROVED"&&!items.some(r=>r.status==="PENDING")&&<ValidatedForm className="grid gap-2" onSubmit={e=>{e.preventDefault();submit(new FormData(e.currentTarget))}}>
       <label>Học hàm hoặc học vị<Input name="title" required maxLength={160}/></label>
       <label>Chuyên môn<Input name="specialty" required maxLength={240}/></label>
       <label>Số chứng chỉ<Input name="license" maxLength={100}/></label>
       <label>Năm tốt nghiệp<Input name="year" type="number" min={1}/></label>
       <label>Hướng nghiên cứu<Input name="direction" maxLength={2000}/></label>
-      <label>Đường dẫn minh chứng HTTPS, mỗi dòng một đường dẫn<textarea className="block w-full rounded border p-2" name="evidence" required/></label>
-      <Button disabled={busy}>Gửi yêu cầu lên tác giả</Button></form>}
+      <label>Đường dẫn minh chứng HTTPS, mỗi dòng một đường dẫn<Textarea className="block w-full rounded border p-2" name="evidence" required/></label>
+      <Button type="submit" disabled={busy}>Gửi yêu cầu lên tác giả</Button></ValidatedForm>}
     {items?.length===0&&<p>{queue?"Chưa có yêu cầu chờ duyệt.":"Chưa có yêu cầu."}</p>}
     {items?.map(r=><article key={r.id} className="grid gap-2 rounded border p-3"><h4>{r.email} · {labels[r.status]}</h4>
       <p>{r.application.academicTitle} · {r.application.specialty}</p>

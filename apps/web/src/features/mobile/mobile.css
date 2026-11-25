@@ -133,7 +133,7 @@
     min-height: 44px;
     color: var(--quiet);
   }
-  .mobile-filters button[aria-pressed="true"] {
+  .mobile-filters button[data-state="on"] {
     background: var(--background);
     color: var(--primary);
     box-shadow: 0 1px 4px #1c453023;

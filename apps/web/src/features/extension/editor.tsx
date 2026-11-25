@@ -1,4 +1,8 @@
+import { ValidatedForm } from "@rms/ui/components/validated-form"
+import { Checkbox } from "@rms/ui/components/checkbox"
 import { useId, useState } from 'react'
+import { Combobox, ComboboxInput, ComboboxContent, ComboboxList, ComboboxItem } from "@rms/ui/components/combobox"
+import { Field, FieldLabel, FieldDescription } from "@rms/ui/components/field"
 import { Button } from '@rms/ui/components/button'
 import type { DemoRow, FeatureProps } from '../../demo/types'
 import { managingBodies } from './catalogue'
@@ -6,6 +10,8 @@ import { catalog, codes, contributors, dateLabel, entries, featureInfo, names, o
 import type { Contributor } from './model'
 import { EvidenceFields, Footer, options, pairs, Problem, SelectField, TextField, messageOf } from './controls'
 import { saveDraft } from './workflow'
+
+const partners = ["Công ty Khai thác công trình thủy lợi Sông Nhuệ", "Công ty CP Kỹ thuật nước Việt"]
 
 function TeamEditor({ team, change, mentoring, eligible }: { team: Contributor[]; change: (v: Contributor[]) => void; mentoring: boolean; eligible: Record<string,string> }) {
   const update = (i: number, patch: Partial<Contributor>) => change(team.map((p,n) => i === n ? { ...p,...patch } : p))
@@ -40,7 +46,7 @@ export function Editor({ ctx, initial, finish, close }: { ctx: FeatureProps; ini
   const setUnit = (unit: string) => setRow(r => ({...r, unit,
     owner: creatingStudent ? Object.keys(studentsIn(unit))[0] : r.owner, fields: {...r.fields, scopeUnit: unit || ctx.session.unit, group: creatingStudent ? Object.keys(studentsIn(unit))[0] : r.fields.group,
     callId: student ? ctx.rows.find(c => c.kind === 'ext-student-call' && c.unit === unit && openCall(c))?.id || '' : r.fields.callId }}))
-  return <form className="stack ext-editor" noValidate onSubmit={e => {
+  return <ValidatedForm className="stack ext-editor" noValidate onSubmit={e => {
     e.preventDefault()
     try {
       const saved = saveDraft(ctx,row,reason)
@@ -66,8 +72,16 @@ export function Editor({ ctx, initial, finish, close }: { ctx: FeatureProps; ini
         {feature === 'F09' && <TextField label="Lĩnh vực nghiên cứu" value={f.discipline} onChange={v => set('discipline',v)}/>}
         {!student && <TextField label={feature === 'F12' ? 'Ngày diễn ra' : 'Ngày bắt đầu'} type="date" value={f.start} required onChange={v => set('start',v)}/>}
         {!student && feature !== 'F12' && <TextField label="Ngày kết thúc" type="date" value={f.end} required onChange={v => set('end',v)}/>}
-        {feature === 'F11' && <><TextField label="Đối tác ngoài" hint="Cần ít nhất một đối tác trước khi gửi duyệt." list={partnerList} value={f.partner} onChange={v => set('partner',v)}/>
-          <datalist id={partnerList}><option>Công ty Khai thác công trình thủy lợi Sông Nhuệ</option><option>Công ty CP Kỹ thuật nước Việt</option></datalist></>}
+        {feature === 'F11' && <Field>
+          <FieldLabel htmlFor={partnerList}>Đối tác ngoài</FieldLabel>
+          <Combobox items={partners} inputValue={f.partner ?? ""} onInputValueChange={value => set("partner", value)}>
+            <ComboboxInput id={partnerList} aria-describedby={partnerList + "-hint"} />
+            <ComboboxContent><ComboboxList>{(partner: string) =>
+              <ComboboxItem key={partner} value={partner}>{partner}</ComboboxItem>
+            }</ComboboxList></ComboboxContent>
+          </Combobox>
+          <FieldDescription id={partnerList + "-hint"}>Cần ít nhất một đối tác trước khi gửi duyệt.</FieldDescription>
+        </Field>}
         {!student && <TextField label={feature === 'F12' ? 'Đề nghị hỗ trợ (VND)' : 'Tổng kinh phí (VND)'} type="number" value={f.budget} onChange={v => set('budget',v)}/>}
       </div>
       {student && <><TextField label="Mục tiêu nghiên cứu" required multiline value={f.objective} onChange={v => set('objective',v)}/>
@@ -78,13 +92,13 @@ export function Editor({ ctx, initial, finish, close }: { ctx: FeatureProps; ini
     {student && <fieldset className="ext-group"><legend>Nhóm sinh viên</legend>
       {creatingStudent ? <SelectField label="Trưởng nhóm" value={row.owner} choices={pairs(studentsIn(row.unit))} onChange={owner => setRow({...row,owner,fields:{...f,group:[...new Set([...group,owner])].join(',')}})}/>
         : <p className="muted">Trưởng nhóm · {names[row.owner]}</p>}
-      <div className="ext-checks">{Object.entries(studentsIn(row.unit)).map(([id,name]) => <label key={id}><input type="checkbox" checked={group.includes(id)}
-        disabled={id === row.owner} onChange={e => set('group',(e.target.checked ? [...group,id] : group.filter(p => p !== id)).join(','))}/>{name}</label>)}</div>
+      <div className="ext-checks">{Object.entries(studentsIn(row.unit)).map(([id,name]) => <label key={id}><Checkbox checked={group.includes(id)}
+        disabled={id === row.owner} onCheckedChange={checked => set('group',(checked ? [...group,id] : group.filter(p => p !== id)).join(','))}/>{name}</label>)}</div>
     </fieldset>}
     <TeamEditor eligible={student ? Object.fromEntries(Object.entries(teachers).filter(([id]) => ctx.rows.some(a => a.kind === 'account' && a.owner === id && a.status === 'ACTIVE' && a.fields.userType === 'author') || id === 'mai' || contributors(row).some(p => p.id === id))) : teachers} mentoring={student} team={contributors(row)} change={v => set('contributors',JSON.stringify(v))}/>
     {(!student || required.length > 0) && <EvidenceFields required={required} value={entries(row)} change={v => set('evidence',JSON.stringify(v))}/>}
     {initial.status !== 'DRAFT' && <TextField label="Lý do thay đổi sau phê duyệt" required multiline value={reason} onChange={setReason}/>}
     <Footer label={initial.status === 'DRAFT' ? 'Lưu bản nháp' : 'Lưu thay đổi'} close={close}/>
-  </form>
+  </ValidatedForm>
 }
 

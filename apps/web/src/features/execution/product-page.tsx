@@ -1,3 +1,4 @@
+import { ChoiceOption, ChoiceSelect } from "@rms/ui/components/choice-select"
 import { sourceAllowed } from '../../demo/source-rights.ts'
 import { useState } from 'react'
 import { promisedOutputs } from './acceptance'
@@ -337,26 +338,26 @@ export function ProductPage(p: FeatureProps) {
       <Panel title={'Danh mục sản phẩm (' + filtered.length + ')'}>
         <div className="toolbar">
           <Search label="Tìm tên sản phẩm, nơi công bố" value={query} set={setQuery} />
-          <select
+          <ChoiceSelect
             aria-label="Lọc trạng thái duyệt"
             value={status}
-            onChange={(e) => setStatus(e.target.value)}
+            onValueChange={setStatus}
           >
-            <option value="">Mọi trạng thái</option>
+            <ChoiceOption value="">Mọi trạng thái</ChoiceOption>
             {['DRAFT', 'PENDING_APPROVAL', 'APPROVED', 'REJECTED'].map((s) => (
-              <option key={s} value={s}>
+              <ChoiceOption key={s} value={s}>
                 {states[s]}
-              </option>
+              </ChoiceOption>
             ))}
-          </select>
-          <select aria-label="Lọc loại sản phẩm" value={type} onChange={(e) => setType(e.target.value)}>
-            <option value="">Mọi loại sản phẩm</option>
+          </ChoiceSelect>
+          <ChoiceSelect aria-label="Lọc loại sản phẩm" value={type} onValueChange={setType}>
+            <ChoiceOption value="">Mọi loại sản phẩm</ChoiceOption>
             {Object.entries(typeNames).map(([k, v]) => (
-              <option key={k} value={k}>
+              <ChoiceOption key={k} value={k}>
                 {v}
-              </option>
+              </ChoiceOption>
             ))}
-          </select>
+          </ChoiceSelect>
         </div>
         <Grid
           caption="Sản phẩm khoa học"

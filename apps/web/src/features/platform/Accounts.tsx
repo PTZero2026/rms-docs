@@ -1,3 +1,7 @@
+import { routeUrl } from "../../demo/catalog"
+import { ValidatedForm } from "@rms/ui/components/validated-form"
+import { Disclosure } from "@rms/ui/components/disclosure"
+import { ChoiceOption, ChoiceSelect } from "@rms/ui/components/choice-select"
 import { useState } from "react"
 import { ChevronRight, Plus, ShieldCheck, UserRound } from "lucide-react"
 import { Button } from "@rms/ui/components/button"
@@ -86,10 +90,10 @@ export default function Accounts(p: FeatureProps) {
           <Button
             key={label}
             variant={tab === id ? "secondary" : "ghost"}
-            onClick={() => p.go("B03", id)}
-          >
+            asChild
+          ><a href={routeUrl("B03", id)}>
             {label}
-          </Button>
+          </a></Button>
         ))}
       </div>
       {tab === "roles" ? (
@@ -98,12 +102,9 @@ export default function Accounts(p: FeatureProps) {
           {Object.entries(permissions)
             .filter(([k]) => admin || k === own.fields.userType)
             .map(([k, v]) => (
-              <details key={k} className="disclose">
-                <summary>
-                  {typeNames[k]} · {v.length} quyền
-                </summary>
+              <Disclosure key={k} className="disclose" title={<> {typeNames[k]} · {v.length} quyền </>}>
                 <p>{v.join(" · ")}</p>
-              </details>
+              </Disclosure>
             ))}
         </section>
       ) : tab === "requests" ? (
@@ -118,14 +119,14 @@ export default function Accounts(p: FeatureProps) {
           </div>
           {reqs.length ? (
             reqs.map((r) => (
-              <button className="project-row" key={r.id} onClick={() => setEdit(r.id)}>
+              <Button variant="ghost" size="content" className="project-row" key={r.id} onClick={() => setEdit(r.id)}>
                 <UserRound />
                 <span className="task-copy">
                   <b>{r.title}</b>
                   <small>{r.unit}</small>
                 </span>
                 <Status value={r.status} />
-              </button>
+              </Button>
             ))
           ) : (
             <Blank title="Chưa có yêu cầu nâng quyền" />
@@ -133,7 +134,7 @@ export default function Accounts(p: FeatureProps) {
         </section>
       ) : selected ? (
         <section className="panel pad stack">
-          {admin && <Back onClick={() => p.go("B03")} />}
+          {admin && <Back href={routeUrl("B03")} />}
           <div className="profile-head">
             <span className="avatar">{initials(selected.title)}</span>
             <h2>{selected.title}</h2>
@@ -166,13 +167,13 @@ export default function Accounts(p: FeatureProps) {
                 </Button>
               )}
               {p.rows.some((r) => r.kind === "profile" && r.owner === selected.owner) && (
-                <Button variant="outline" onClick={() => p.go("F08", selected.owner)}>
+                <Button variant="outline" asChild><a href={routeUrl("F08", selected.owner)}>
                   Mở lý lịch khoa học
-                </Button>
+                </a></Button>
               )}
-              <Button variant="ghost" onClick={() => p.go("P02", selected.id)}>
+              <Button variant="ghost" asChild><a href={routeUrl("P02", selected.id)}>
                 Nhật ký
-              </Button>
+              </a></Button>
             </div>
           )}
         </section>
@@ -187,19 +188,19 @@ export default function Accounts(p: FeatureProps) {
               value={q}
               onChange={(e) => setQ(e.target.value)}
             />
-            <select
+            <ChoiceSelect
               aria-label="Trạng thái tài khoản"
               value={filter}
-              onChange={(e) => setFilter(e.target.value)}
+              onValueChange={setFilter}
             >
-              <option value="all">Mọi trạng thái</option>
-              <option value="ACTIVE">Đang hoạt động</option>
-              <option value="LOCKED">Đã khóa</option>
-              <option value="DISABLED">Ngừng hoạt động</option>
-            </select>
+              <ChoiceOption value="all">Mọi trạng thái</ChoiceOption>
+              <ChoiceOption value="ACTIVE">Đang hoạt động</ChoiceOption>
+              <ChoiceOption value="LOCKED">Đã khóa</ChoiceOption>
+              <ChoiceOption value="DISABLED">Ngừng hoạt động</ChoiceOption>
+            </ChoiceSelect>
           </div>
           {filtered.map((r) => (
-            <button key={r.id} className="project-row" onClick={() => p.go("B03", r.id)}>
+            <Button variant="ghost" size="content" key={r.id} className="project-row" asChild><a href={routeUrl("B03", r.id)}>
               <span className="avatar small">{initials(r.title)}</span>
               <span className="task-copy">
                 <b>{r.title}</b>
@@ -209,7 +210,7 @@ export default function Accounts(p: FeatureProps) {
               </span>
               <Status value={r.status} />
               <ChevronRight size={15} />
-            </button>
+            </a></Button>
           ))}
           {!filtered.length && <Blank title="Không tìm thấy người dùng" />}
         </section>
@@ -339,7 +340,7 @@ function AccountForm({
       hint="Dùng danh tính giả lập cho phiên trình diễn."
       close={close}
     >
-      <form
+      <ValidatedForm
         className="stack"
         onSubmit={(e) => {
           e.preventDefault()
@@ -410,8 +411,8 @@ function AccountForm({
           )}
         </FieldGroup>
         <ErrorLine message={error} />
-        <Button>Lưu tài khoản</Button>
-      </form>
+        <Button type="submit">Lưu tài khoản</Button>
+      </ValidatedForm>
     </Editor>
   )
 }
@@ -426,7 +427,7 @@ function UpgradeForm({ p, close }: { p: FeatureProps; close: () => void }) {
       hint="Quản trị đơn vị sẽ xem xét hồ sơ học thuật của bạn."
       close={close}
     >
-      <form
+      <ValidatedForm
         className="stack"
         onSubmit={(e) => {
           e.preventDefault()
@@ -449,14 +450,14 @@ function UpgradeForm({ p, close }: { p: FeatureProps; close: () => void }) {
           <TextField label="Hướng nghiên cứu" value={direction} change={setDirection} required />
           <label className="form-label">
             Minh chứng (chỉ lưu tên tệp)
-            <input type="file" onChange={(e) => setEvidence(e.target.files?.[0]?.name ?? "")} />
+            <Input type="file" onChange={(e) => setEvidence(e.target.files?.[0]?.name ?? "")} />
           </label>
         </FieldGroup>
-        <Button>
+        <Button type="submit">
           <ShieldCheck />
           Gửi yêu cầu
         </Button>
-      </form>
+      </ValidatedForm>
     </Editor>
   )
 }

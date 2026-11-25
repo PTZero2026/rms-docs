@@ -1,3 +1,4 @@
+import { choose } from "../../lib/choice.mjs"
 import {expect,test} from "@playwright/test"
 import {execFileSync} from "node:child_process"
 import {provision} from "../../integration/session-fixture"
@@ -17,7 +18,7 @@ test("B04 admin previews two channel templates, removes one and the officer sees
     for (const page of [admin,officer]){
       await page.getByRole("button",{name:"Hộp thông báo",exact:true}).click()
       await page.getByRole("button",{name:"Tùy chọn nhận thông báo"}).click()
-      await page.getByLabel("Nhóm sự kiện").selectOption("PROGRESS_REPORT_OVERDUE")
+      await choose(page.getByLabel("Nhóm sự kiện"), "PROGRESS_REPORT_OVERDUE")
       await page.getByRole("button",{name:"Mẫu thông báo theo kênh"}).click()
     }
     const editor=admin.getByRole("region",{name:"Mẫu thông báo theo kênh"})
@@ -32,7 +33,7 @@ test("B04 admin previews two channel templates, removes one and the officer sees
     await expect(editor.getByText("Khảo sát nguồn nước · hạn 15/12/2026")).toBeVisible()
     await editor.getByRole("button",{name:"Lưu mẫu"}).click()
     await expect(editor.getByText("Đã lưu mẫu thông báo.")).toBeVisible()
-    await editor.getByLabel("Kênh của mẫu").selectOption("smtp")
+    await choose(editor.getByLabel("Kênh của mẫu"), "smtp")
     await editor.getByLabel("Tiêu đề mẫu").fill("Email nhắc kỳ {{period}}")
     await editor.getByLabel("Nội dung mẫu").fill("Hạn nộp là {{dueDate}}.")
     await editor.getByRole("button",{name:"Lưu mẫu"}).click()
@@ -42,7 +43,7 @@ test("B04 admin previews two channel templates, removes one and the officer sees
     await editor.screenshot({path:fileURLToPath(new URL("../../../docs/reviews/screenshots/notifications/xem-truoc-mau.png",import.meta.url))})
     const notice=execFileSync(process.execPath,[fileURLToPath(new URL("../../../apps/backend/test/db/seed-template-notice.mjs",import.meta.url)),
       manager.account.id,staff.account.id],{encoding:"utf8"}).trim()
-    await editor.getByLabel("Kênh của mẫu").selectOption("in_app")
+    await choose(editor.getByLabel("Kênh của mẫu"), "in_app")
     await editor.getByRole("button",{name:"Gỡ mẫu",exact:true}).click()
     await editor.getByRole("button",{name:"Xác nhận gỡ mẫu"}).click()
     await expect(editor.getByText("Thiếu mẫu cho kênh này.")).toBeVisible()

@@ -1,3 +1,4 @@
+import { ChoiceOption } from "@rms/ui/components/choice-select"
 import { useState } from 'react'
 import { ProposalTeam } from './ProposalTeam'
 import { ProposalFiles, attachments } from './ProposalFiles'
@@ -87,12 +88,12 @@ export function ProposalEditor({
               label="Kỳ nhận đề xuất"
               value={form.callId}
               disabled={Boolean(id)}
-              onChange={(e) => setForm({ ...form, callId: e.target.value, discipline: '' })}
+              onValueChange={choiceValue => setForm({ ...form, callId: choiceValue, discipline: '' })}
             >
               {calls.map((c) => (
-                <option key={c.id} value={c.id}>
+                <ChoiceOption key={c.id} value={c.id}>
                   {c.title}
-                </option>
+                </ChoiceOption>
               ))}
             </Choice>
             <FieldText
@@ -103,13 +104,13 @@ export function ProposalEditor({
             <Choice
               label="Lĩnh vực nghiên cứu"
               value={form.discipline}
-              onChange={(e) => update('discipline', e.target.value)}
+              onValueChange={choiceValue => update('discipline', choiceValue)}
             >
-              <option value="">Chọn lĩnh vực</option>
+              <ChoiceOption value="">Chọn lĩnh vực</ChoiceOption>
               {ids(call?.fields.disciplines).map((key) => (
-                <option key={key} value={key}>
+                <ChoiceOption key={key} value={key}>
                   {referenceName(app.rows, key)}
-                </option>
+                </ChoiceOption>
               ))}
             </Choice>
             <Facts

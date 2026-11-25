@@ -1,3 +1,7 @@
+import { routeUrl } from "../../demo/catalog"
+import { ValidatedForm } from "@rms/ui/components/validated-form"
+import { Checkbox } from "@rms/ui/components/checkbox"
+import { ChoiceOption } from "@rms/ui/components/choice-select"
 import { useState } from 'react'
 import { Button } from '@rms/ui/components/button'
 import type { DemoRow, FeatureProps } from '../../demo/types'
@@ -34,7 +38,7 @@ export function CouncilScreen({ app, council }: { app: FeatureProps; council?: D
         {council && !editing && <Button onClick={() => setEditing(true)}>Sửa phân công</Button>}
       </Heading>
       {editing ? (
-        <form
+        <ValidatedForm
           className="panel stack"
           onSubmit={(e) => {
             e.preventDefault()
@@ -60,16 +64,13 @@ export function CouncilScreen({ app, council }: { app: FeatureProps; council?: D
             return (
               <div key={uid} className="form-grid">
                 <label className="intake-check">
-                  <input
-                    type="checkbox"
+                  <Checkbox
                     checked={!!seat}
-                    onChange={(e) =>
-                      setSeats(
-                        e.target.checked
+                    onCheckedChange={checked => setSeats(
+                        checked
                           ? [...seats, { user: uid, role: 'REVIEWER' }]
                           : seats.filter((s) => s.user !== uid),
-                      )
-                    }
+                      )}
                   />
                   {names[uid]}
                 </label>
@@ -77,18 +78,16 @@ export function CouncilScreen({ app, council }: { app: FeatureProps; council?: D
                   <Choice
                     label={'Chức danh của ' + names[uid]}
                     value={seat.role}
-                    onChange={(e) =>
-                      setSeats(
+                    onValueChange={choiceValue => setSeats(
                         seats.map((s) =>
-                          s.user === uid ? { ...s, role: e.target.value as Seat['role'] } : s,
+                          s.user === uid ? { ...s, role: choiceValue as Seat['role'] } : s,
                         ),
-                      )
-                    }
+                      )}
                   >
                     {Object.entries(councilRoles).map(([value, text]) => (
-                      <option key={value} value={value}>
+                      <ChoiceOption key={value} value={value}>
                         {text}
-                      </option>
+                      </ChoiceOption>
                     ))}
                   </Choice>
                 )}
@@ -98,11 +97,11 @@ export function CouncilScreen({ app, council }: { app: FeatureProps; council?: D
           <Problem text={error} />
           <div className="intake-actions">
             <Button type="submit">Lưu hội đồng</Button>
-            <Button type="button" variant="outline" onClick={() => app.go('F03')}>
+            <Button type="button" variant="outline" asChild><a href={routeUrl('F03')}>
               Quay lại
-            </Button>
+            </a></Button>
           </div>
-        </form>
+        </ValidatedForm>
       ) : (
         <>
           <Panel title="Thành phần hội đồng">

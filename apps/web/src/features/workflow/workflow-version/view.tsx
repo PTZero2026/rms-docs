@@ -1,3 +1,5 @@
+import { Checkbox } from "@rms/ui/components/checkbox"
+import { ChoiceOption, ChoiceSelect } from "@rms/ui/components/choice-select"
 import { useCallback,useEffect,useState } from "react"
 import type { components } from "@rms/api-contracts"
 import { semanticCodes } from "@rms/api-contracts/workflow"
@@ -9,7 +11,7 @@ type Graph=components["schemas"]["WorkflowGraph"]
 type Step=Graph["steps"][number]
 type Edge=Graph["transitions"][number]
 function choices<T extends string>(label:string,values:readonly T[],selected:T[],change:(next:T[])=>void) {
-  return <fieldset><legend>{label}</legend><div className="flex flex-wrap gap-3">{values.map(v=><label key={v}><input type="checkbox" checked={selected.includes(v)} onChange={e=>change(e.target.checked?[...selected,v]:selected.filter(x=>x!==v))}/> {v}</label>)}</div></fieldset>
+  return <fieldset><legend>{label}</legend><div className="flex flex-wrap gap-3">{values.map(v=><label key={v}><Checkbox checked={selected.includes(v)} onCheckedChange={checked => change(checked?[...selected,v]:selected.filter(x=>x!==v))}/> {v}</label>)}</div></fieldset>
 }
 export default function WorkflowEditor({session}:{session:SignedInSession}) {
   const [graph,setGraph]=useState<Graph>(),[version,setVersion]=useState(0)
@@ -42,22 +44,22 @@ export default function WorkflowEditor({session}:{session:SignedInSession}) {
   }
   return <section className="grid gap-4 py-4"><h2>Mẫu quy trình · {version?"Phiên bản "+version:"Chưa kích hoạt"}</h2>
     <fieldset disabled={busy} className="grid gap-3 rounded border p-4"><legend>Bước xử lý</legend>
-      <label>Chọn bước <select value={si} onChange={e=>setSi(+e.target.value)}>{g.steps.map((s,i)=><option key={i} value={i}>{s.code||"Bước mới"}</option>)}</select></label>
+      <label>Chọn bước <ChoiceSelect value={si} onValueChange={choiceValue => setSi(+choiceValue)}>{g.steps.map((s,i)=><ChoiceOption key={i} value={i}>{s.code||"Bước mới"}</ChoiceOption>)}</ChoiceSelect></label>
       {step && <><label>Mã bước<Input value={step.code} onChange={e=>updateStep({code:e.target.value})}/></label>
-        <label>Trạng thái chuẩn <select value={step.semantic} onChange={e=>updateStep({semantic:e.target.value as Step["semantic"]})}>{semanticCodes.map(code=><option key={code}>{code}</option>)}</select></label>
-        <div className="flex gap-4"><label><input type="checkbox" checked={step.initial} onChange={e=>updateStep({initial:e.target.checked})}/> Bước đầu</label>
-        <label><input type="checkbox" checked={step.final} onChange={e=>updateStep({final:e.target.checked})}/> Kết thúc</label></div></>}
+        <label>Trạng thái chuẩn <ChoiceSelect value={step.semantic} onValueChange={choiceValue => updateStep({semantic:choiceValue as Step["semantic"]})}>{semanticCodes.map(code=><ChoiceOption value={code} key={code}>{code}</ChoiceOption>)}</ChoiceSelect></label>
+        <div className="flex gap-4"><label><Checkbox checked={step.initial} onCheckedChange={checked => updateStep({initial:checked})}/> Bước đầu</label>
+        <label><Checkbox checked={step.final} onCheckedChange={checked => updateStep({final:checked})}/> Kết thúc</label></div></>}
       <div className="flex gap-2"><Button variant="outline" onClick={()=>{setSi(g.steps.length);setGraph({...g,steps:[...g.steps,{code:"",semantic:"DRAFT",initial:false,final:false}]})}}>Thêm bước</Button>
       {step && <Button variant="outline" onClick={()=>{setSi(0);setGraph({...g,steps:g.steps.filter((_,i)=>i!==si)})}}>Bỏ bước</Button>}</div>
     </fieldset>
     <fieldset disabled={busy} className="grid gap-3 rounded border p-4"><legend>Chuyển bước</legend>
-      <label>Chọn thao tác <select value={ei} onChange={e=>setEi(+e.target.value)}>{g.transitions.map((t,i)=><option key={i} value={i}>{t.code||"Thao tác mới"}</option>)}</select></label>
+      <label>Chọn thao tác <ChoiceSelect value={ei} onValueChange={choiceValue => setEi(+choiceValue)}>{g.transitions.map((t,i)=><ChoiceOption key={i} value={i}>{t.code||"Thao tác mới"}</ChoiceOption>)}</ChoiceSelect></label>
       {edge && <><label>Mã thao tác<Input value={edge.code} onChange={e=>updateEdge({code:e.target.value})}/></label>
-        <div className="flex flex-wrap gap-3">{(["from","to"] as const).map(k=><label key={k}>{k==="from"?"Bước nguồn":"Bước đích"} <select value={edge[k]} onChange={e=>updateEdge({[k]:e.target.value})}>{g.steps.map((s,i)=><option key={i}>{s.code}</option>)}</select></label>)}</div>
+        <div className="flex flex-wrap gap-3">{(["from","to"] as const).map(k=><label key={k}>{k==="from"?"Bước nguồn":"Bước đích"} <ChoiceSelect value={edge[k]} onValueChange={choiceValue => updateEdge({[k]:choiceValue})}>{g.steps.map((s,i)=><ChoiceOption value={s.code} key={i}>{s.code}</ChoiceOption>)}</ChoiceSelect></label>)}</div>
         {choices("Vai trò thực hiện",["admin","staff","author","user"],edge.roles,roles=>updateEdge({roles}))}
         {choices("Điều kiện",["requireComment","validateProposalContent","authorCancellableOnly"],edge.guards,guards=>updateEdge({guards}))}
         {choices("Tác vụ sau chuyển",["syncProposalStatus","setRevisionDeadline","clearRevision","notify"],edge.effects,effects=>updateEdge({effects}))}
-        <label><input type="checkbox" checked={edge.requiresComment} onChange={e=>updateEdge({requiresComment:e.target.checked})}/> Bắt buộc ghi lý do</label></>}
+        <label><Checkbox checked={edge.requiresComment} onCheckedChange={checked => updateEdge({requiresComment:checked})}/> Bắt buộc ghi lý do</label></>}
       <div className="flex gap-2"><Button variant="outline" onClick={()=>{setEi(g.transitions.length);setGraph({...g,transitions:[...g.transitions,{code:"",from:g.steps[0]?.code??"",to:g.steps[1]?.code??"",roles:["staff"],requiresComment:false,guards:[],effects:[]}]})}}>Thêm thao tác</Button>
       {edge && <Button variant="outline" onClick={()=>{setEi(0);setGraph({...g,transitions:g.transitions.filter((_,i)=>i!==ei)})}}>Bỏ thao tác</Button>}</div>
     </fieldset><div className="flex flex-wrap gap-2"><Button disabled={busy} onClick={()=>void activate()}>Kích hoạt phiên bản {version+1}</Button>

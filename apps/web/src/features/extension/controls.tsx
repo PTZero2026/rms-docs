@@ -1,7 +1,8 @@
+import { ValueInput } from "@rms/ui/components/date-input"
+import { ChoiceOption, ChoiceSelect } from "@rms/ui/components/choice-select"
 import { useEffect, useId, useRef } from 'react'
 import type { ReactNode } from 'react'
 import { Field, FieldLabel, FieldDescription } from '@rms/ui/components/field'
-import { Input } from '@rms/ui/components/input'
 import { Textarea } from '@rms/ui/components/textarea'
 import { Alert, AlertDescription } from '@rms/ui/components/alert'
 import { Button } from '@rms/ui/components/button'
@@ -14,15 +15,14 @@ export type Choice = { value: string; label: string }
 export const options = (list: string[]): Choice[] => list.map(s => ({ value: s, label: s }))
 export const pairs = (obj: Record<string,string>): Choice[] => Object.entries(obj).map(([value,label]) => ({ value, label }))
 type Control = { label: string; value: string; onChange: (value: string) => void; hint?: string; required?: boolean }
-export function TextField({ label, value, onChange, hint, required, type = 'text', multiline = false, list }: Control & {
-  type?: 'text'|'date'|'number'|'search'; multiline?: boolean; list?: string
+export function TextField({ label, value, onChange, hint, required, type = 'text', multiline = false }: Control & {
+  type?: 'text'|'date'|'number'|'search'; multiline?: boolean
 }) {
   const id = useId()
-  const common = { id, value: value || '', required, 'aria-describedby': hint ? id + '-hint' : undefined,
-    onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => onChange(e.target.value) }
+  const common = { id, value: value || '', required, 'aria-describedby': hint ? id + '-hint' : undefined }
   return <Field>
     <FieldLabel htmlFor={id}>{label}{required && ' *'}</FieldLabel>
-    {multiline ? <Textarea {...common} rows={3}/> : <Input {...common} type={type} list={list} step={type === 'number' ? 'any' : undefined}/>}
+    {multiline ? <Textarea {...common} onChange={e => onChange(e.target.value)} rows={3}/> : <ValueInput onValueChange={onChange} {...common} type={type} step={type === 'number' ? 'any' : undefined}/>}
     {hint && <FieldDescription id={id + '-hint'}>{hint}</FieldDescription>}
   </Field>
 }
@@ -30,9 +30,9 @@ export function SelectField({ label, value, onChange, choices, required, hint }:
   const id = useId()
   return <Field>
     <FieldLabel htmlFor={id}>{label}{required && ' *'}</FieldLabel>
-    <select className="ext-select" id={id} value={value || ''} required={required} aria-describedby={hint ? id + '-hint' : undefined} onChange={e => onChange(e.target.value)}>
-      {choices.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
-    </select>
+    <ChoiceSelect className="ext-select" id={id} value={value || ''} required={required} aria-describedby={hint ? id + '-hint' : undefined} onValueChange={onChange}>
+      {choices.map(c => <ChoiceOption key={c.value} value={c.value}>{c.label}</ChoiceOption>)}
+    </ChoiceSelect>
     {hint && <FieldDescription id={id + '-hint'}>{hint}</FieldDescription>}
   </Field>
 }

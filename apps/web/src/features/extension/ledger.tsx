@@ -1,3 +1,5 @@
+import { routeUrl } from "../../demo/catalog"
+import { ValidatedForm } from "@rms/ui/components/validated-form"
 import { useState } from 'react'
 import { Button } from '@rms/ui/components/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@rms/ui/components/tabs'
@@ -22,7 +24,7 @@ function Adjustment({ ctx, row, close }: { ctx: FeatureProps; row: DemoRow; clos
   const target = formula ? recalculatedHours(formula,row) : current
   const delta = mode === 'recalculate' ? String(rounded(target-current)) : input
   return <Modal title="Điều chỉnh giờ giảng" description={names[row.owner] + ' · ' + row.title} close={close}>
-    <form className="stack" noValidate onSubmit={e => { e.preventDefault()
+    <ValidatedForm className="stack" noValidate onSubmit={e => { e.preventDefault()
       try {
         const record = adjustHours(ctx,row,delta,reason)
         if (mode === 'recalculate' && formula) {
@@ -40,7 +42,7 @@ function Adjustment({ ctx, row, close }: { ctx: FeatureProps; row: DemoRow; clos
       <Facts facts={[[ 'Hiện ghi nhận',num(current) + ' giờ' ],['Sau điều chỉnh',num(current + Number(delta || 0)) + ' giờ']]}/>
       <TextField label="Lý do điều chỉnh" required multiline value={reason} onChange={setReason}/>
       <Footer label="Ghi dòng điều chỉnh" close={close}/>
-    </form></Modal>
+    </ValidatedForm></Modal>
 }
 function OutputForm({ctx,close}: {ctx: FeatureProps;close:()=>void}) {
   const possible = ctx.rows.filter(r => r.kind === 'output' && r.status === 'APPROVED' && r.fields.access === 'FULL' && scoped(ctx,r) && officer(ctx.session,r) && ['PATENT','ARTICLE'].includes(r.fields.type))
@@ -54,7 +56,7 @@ function OutputForm({ctx,close}: {ctx: FeatureProps;close:()=>void}) {
   const authors = codes(source?.fields.authors)
   const types = source?.fields.type === 'PATENT' ? {PATENT:'Bằng sáng chế',UTILITY_SOLUTION:'Giải pháp hữu ích'} : {SCIE_Q1:'Bài báo SCIE Q1',SCIE_Q2:'Bài báo SCIE Q2'}
   return <Modal title="Quy đổi sản phẩm khoa học" description="Chọn sản phẩm F07 đã duyệt và đối chiếu căn cứ phân loại trước khi ghi sổ." close={close}>
-    {!source ? <><Blank title="Chưa có sản phẩm đủ điều kiện"/><Button variant="outline" onClick={close}>Đóng</Button></> : <form className="stack" noValidate onSubmit={e => { e.preventDefault()
+    {!source ? <><Blank title="Chưa có sản phẩm đủ điều kiện"/><Button variant="outline" onClick={close}>Đóng</Button></> : <ValidatedForm className="stack" noValidate onSubmit={e => { e.preventDefault()
       try {
         const updates = postOutput(ctx,id,category,source.fields.reviewedAt?.slice(0,10) || date,shares)
         if (!updates.length) { setNotice('Sự kiện đã được ghi sổ. Tổng giờ và phân bổ được giữ nguyên.'); setError(''); return }
@@ -66,7 +68,7 @@ function OutputForm({ctx,close}: {ctx: FeatureProps;close:()=>void}) {
       {source.fields.reviewedAt ? <p>Ngày duyệt · {dateLabel(source.fields.reviewedAt)}</p> : <TextField label="Ngày nghiệp vụ theo văn bản duyệt" type="date" required value={date} onChange={setDate}/>}
       {authors.map(id => <TextField key={id} type="number" label={'Tỉ lệ đóng góp (%) · ' + (names[id] || id)} value={shares[id] || ''} onChange={v => setShares({...shares,[id]:v})}/>)}
       <Footer label="Quy đổi và ghi sổ" close={close}/>
-    </form>}
+    </ValidatedForm>}
   </Modal>
 }
 function HourDetail({ctx,record}: {ctx: FeatureProps;record:DemoRow}) {
@@ -80,12 +82,12 @@ function HourDetail({ctx,record}: {ctx: FeatureProps;record:DemoRow}) {
   const profile = ctx.rows.find(r => r.kind === 'profile' && r.owner === record.owner && scoped(ctx,r))
   const sourceVisible = source && (source.kind === 'output' ? source.owner === ctx.session.userId || codes(source.fields.authors).includes(ctx.session.userId) || officer(ctx.session,source) : canRead(ctx.session,source))
   return <>
-    <div><Button variant="link" onClick={() => ctx.go('P03')}>← Sổ giờ giảng</Button></div>
+    <div><Button variant="link" asChild><a href={routeUrl('P03')}>← Sổ giờ giảng</a></Button></div>
     <div className="page-heading"><div><Status value={record.status}/><h1>{record.title}</h1><p className="muted">{names[record.owner] || record.owner} · {record.unit}</p></div></div>
     <div className="ext-actions">
       {canAdjust && <Button onClick={() => setEditing(true)}>Điều chỉnh giờ</Button>}
-      {sourceVisible && <Button variant="outline" onClick={() => ctx.go(f.sourceFeature,source.id)}>Mở hồ sơ nguồn {f.sourceFeature}</Button>}
-      {profile && <Button variant="outline" onClick={() => ctx.go('F08',profile.id)}>Mở lý lịch F08</Button>}
+      {sourceVisible && <Button variant="outline" asChild><a href={routeUrl(f.sourceFeature, source.id)}>Mở hồ sơ nguồn {f.sourceFeature}</a></Button>}
+      {profile && <Button variant="outline" asChild><a href={routeUrl('F08', profile.id)}>Mở lý lịch F08</a></Button>}
       {source && source.kind !== 'output' && officer(ctx.session,source) && <Button variant="outline" onClick={() => {
         try { const updates = postHours(ctx.rows,source)
           if (updates.length) ctx.commit('Ghi sổ sự kiện nguồn',updates,source)
@@ -112,7 +114,7 @@ export function Ledger({ctx}: {ctx: FeatureProps}) {
   const visible = ctx.rows.filter(r => canReadHours(ctx.session,r) && scoped(ctx,r))
   if (ctx.route.id) {
     const r = visible.find(r => r.id === ctx.route.id)
-    return r ? <HourDetail key={r.id} ctx={ctx} record={r}/> : <Blank title="Không tìm thấy dòng giờ trong phạm vi truy cập"><Button variant="link" onClick={() => ctx.go('P03')}>Về sổ giờ giảng</Button></Blank>
+    return r ? <HourDetail key={r.id} ctx={ctx} record={r}/> : <Blank title="Không tìm thấy dòng giờ trong phạm vi truy cập"><Button variant="link" asChild><a href={routeUrl('P03')}>Về sổ giờ giảng</a></Button></Blank>
   }
   const descriptors = [
     ['owner','Giảng viên'],['unit','Đơn vị'],['recognitionPeriodType','Loại kỳ'],['recognitionPeriodCode','Kỳ ghi nhận'],['sourceFeature','Nguồn'],['status','Loại dòng'],
@@ -130,7 +132,7 @@ export function Ledger({ctx}: {ctx: FeatureProps}) {
         <section className="panel stack"><h2>Sổ chi tiết</h2><div className="ext-filters">{descriptors.map(([k,label]) =>
           <SelectField key={k} label={label} value={filters[k] || ''} onChange={v => setFilters({...filters,[k]:v})} choices={[{value:'',label:'Tất cả'},...Array.from(new Set(visible.map(r => value(r,k)))).filter(Boolean).sort().map(v => ({value:v,label:names[v] || statuses[v] || periodLabels[v] || v}))]}/>)}</div>
           {rows.length ? <Table className="data-table"><TableHeader><TableRow>{['Nguồn ghi nhận','Giảng viên','Kỳ','Phiên bản','Số giờ'].map(h => <TableHead key={h}>{h}</TableHead>)}</TableRow></TableHeader>
-            <TableBody>{rows.map(r => <TableRow key={r.id}><TableCell><button className="record-link" onClick={() => ctx.go('P03',r.id)}>{r.title}</button><small>{r.fields.sourceFeature} · {statuses[r.status]}</small></TableCell>
+            <TableBody>{rows.map(r => <TableRow key={r.id}><TableCell><Button variant="link" size="content" className="record-link" asChild><a href={routeUrl('P03', r.id)}>{r.title}</a></Button><small>{r.fields.sourceFeature} · {statuses[r.status]}</small></TableCell>
               <TableCell>{names[r.owner] || r.owner}</TableCell><TableCell>{r.fields.recognitionPeriodCode}</TableCell><TableCell>{r.fields.formulaVersion}</TableCell><TableCell>{num(r.fields.hours)}</TableCell></TableRow>)}</TableBody></Table>
           : <Blank title="Chưa có dòng giờ phù hợp">Các hồ sơ đủ điều kiện sẽ xuất hiện sau khi quy đổi.</Blank>}
         </section>

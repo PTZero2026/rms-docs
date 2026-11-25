@@ -1,3 +1,4 @@
+import { ChoiceOption } from "@rms/ui/components/choice-select"
 import { useState } from 'react'
 import { Button } from '@rms/ui/components/button'
 import { Choice, FieldText, Grid, Problem } from './ui'
@@ -24,9 +25,9 @@ export function ProposalFiles({
   const [error, setError] = useState('')
   return (
     <>
-      <Choice label="Loại tài liệu" value={category} onChange={(e) => setCategory(e.target.value)}>
+      <Choice label="Loại tài liệu" value={category} onValueChange={setCategory}>
         {categories.map((c) => (
-          <option key={c}>{c}</option>
+          <ChoiceOption value={c} key={c}>{c}</ChoiceOption>
         ))}
       </Choice>
       <FieldText

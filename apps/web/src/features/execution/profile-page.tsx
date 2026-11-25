@@ -1,3 +1,4 @@
+import { ChoiceOption, ChoiceSelect } from "@rms/ui/components/choice-select"
 import { useState } from 'react'
 import type { FeatureProps } from '../../demo/types'
 import { Button } from '@rms/ui/components/button'
@@ -166,13 +167,13 @@ export function ProfilePage(p: FeatureProps) {
       {switching && (
         <div className="toolbar">
           <label htmlFor="exec-profile-switch">Hồ sơ đang xem</label>
-          <select id="exec-profile-switch" value={r.id} onChange={(e) => p.go('F08', e.target.value)}>
+          <ChoiceSelect id="exec-profile-switch" value={r.id} onValueChange={choiceValue => p.go('F08', choiceValue)}>
             {profiles.map((x) => (
-              <option value={x.id} key={x.id}>
+              <ChoiceOption value={x.id} key={x.id}>
                 {x.title} · {x.unit}
-              </option>
+              </ChoiceOption>
             ))}
-          </select>
+          </ChoiceSelect>
         </div>
       )}
       <Panel title="Thông tin nhà nghiên cứu" tools={<ProfileEdit p={p} r={r} />}>

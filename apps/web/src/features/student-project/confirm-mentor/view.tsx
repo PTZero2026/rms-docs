@@ -1,3 +1,5 @@
+import { ChoiceOption, ChoiceSelect } from "@rms/ui/components/choice-select"
+import { Checkbox } from "@rms/ui/components/checkbox"
 import {StudentResultPanel} from "../StudentResultPanel"
 import {StudentAmendment} from "../StudentAmendment"
 import {StudentProgress} from "../StudentProgress"
@@ -37,9 +39,9 @@ export function StudentProjects({session}:{session:SignedInSession}){
     {page&&editing&&<div className="grid gap-2"><label>Tên đề tài sinh viên<Input value={title} onChange={e=>setTitle(e.target.value)}/></label>
       <label>Mục tiêu nghiên cứu<Input value={objective} maxLength={4000} onChange={e=>setObjective(e.target.value)}/></label>
       <label>Sản phẩm dự kiến<Input value={product} maxLength={4000} onChange={e=>setProduct(e.target.value)}/></label>
-      <label>Đợt đăng ký<select value={call} onChange={e=>setCall(e.target.value)}>{page.calls.map(c=><option key={c.code}>{c.code}</option>)}</select></label>
-      <label>Giảng viên hướng dẫn<select value={mentor} onChange={e=>setMentor(e.target.value)}><option value="">Chọn giảng viên</option>{page.people.filter(x=>x.kind==="MENTOR").map(p=><option value={p.id} key={p.id}>{p.label}</option>)}</select></label>
-      <fieldset><legend>Thành viên nhóm</legend>{page.people.filter(x=>x.kind==="STUDENT").map(p=><label key={p.id} className="block"><input type="checkbox" checked={members.includes(p.id)} disabled={p.id===page.accountId} onChange={e=>setMembers(e.target.checked?[...members,p.id]:members.filter(id=>id!==p.id))}/> {p.label}</label>)}</fieldset>
+      <label>Đợt đăng ký<ChoiceSelect value={call} onValueChange={setCall}>{page.calls.map(c=><ChoiceOption value={c.code} key={c.code}>{c.code}</ChoiceOption>)}</ChoiceSelect></label>
+      <label>Giảng viên hướng dẫn<ChoiceSelect value={mentor} onValueChange={setMentor}><ChoiceOption value="">Chọn giảng viên</ChoiceOption>{page.people.filter(x=>x.kind==="MENTOR").map(p=><ChoiceOption value={p.id} key={p.id}>{p.label}</ChoiceOption>)}</ChoiceSelect></label>
+      <fieldset><legend>Thành viên nhóm</legend>{page.people.filter(x=>x.kind==="STUDENT").map(p=><label key={p.id} className="block"><Checkbox checked={members.includes(p.id)} disabled={p.id===page.accountId} onCheckedChange={checked => setMembers(checked?[...members,p.id]:members.filter(id=>id!==p.id))}/> {p.label}</label>)}</fieldset>
       <Button disabled={busy} onClick={()=>void action(editing,"register")}>Mời giảng viên xác nhận</Button></div>}
     {page?.items.map(r=><article key={r.id} className="grid gap-2 rounded border p-3"><h3>{r.title}</h3><p>{r.call} · {r.status==="DRAFT"?states[r.mentorState]:stages[r.status]}</p>{r.reason&&<p>{r.reason}</p>}
       <p>Giảng viên hướng dẫn · {r.mentorLabel}</p><p>Nhóm sinh viên · {r.memberLabels.join(", ")}</p>

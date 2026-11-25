@@ -1,7 +1,8 @@
+import { ValueInput } from "@rms/ui/components/date-input"
+import { ChoiceOption, ChoiceSelect } from "@rms/ui/components/choice-select"
 import { useId } from "react"
 import type { ReactNode } from "react"
 import { Field, FieldError, FieldLabel } from "@rms/ui/components/field"
-import { Input } from "@rms/ui/components/input"
 import { Textarea } from "@rms/ui/components/textarea"
 import {
   Dialog,
@@ -71,12 +72,12 @@ export function TextField({
           disabled={disabled}
         />
       ) : (
-        <Input
+        <ValueInput
           id={id}
           required={required}
           value={value}
           type={type}
-          onChange={(e) => change(e.target.value)}
+          onValueChange={change}
           disabled={disabled}
         />
       )}
@@ -100,13 +101,13 @@ export function Choice({
   return (
     <Field>
       <FieldLabel htmlFor={id}>{label}</FieldLabel>
-      <select id={id} value={value} disabled={disabled} onChange={(e) => change(e.target.value)}>
+      <ChoiceSelect id={id} value={value} disabled={disabled} onValueChange={change}>
         {Object.entries(options).map(([k, v]) => (
-          <option key={k} value={k}>
+          <ChoiceOption key={k} value={k}>
             {v}
-          </option>
+          </ChoiceOption>
         ))}
-      </select>
+      </ChoiceSelect>
     </Field>
   )
 }

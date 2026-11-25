@@ -1,3 +1,6 @@
+import { ValidatedForm } from "@rms/ui/components/validated-form"
+import { ChoiceOption, ChoiceSelect } from "@rms/ui/components/choice-select"
+import { Checkbox } from "@rms/ui/components/checkbox"
 import {useCallback,useEffect,useState} from "react"
 import {Button} from "@rms/ui/components/button"
 import {Input} from "@rms/ui/components/input"
@@ -34,23 +37,23 @@ export function Preferences({session,admin,canViewTemplates}:{session:SignedInSe
     }catch(e){setMessage(e instanceof Error?e.message:"Không thể kết nối.")}finally{setBusy(false)}
   }
   return <section className="grid gap-3 rounded border p-3" aria-label="Tùy chọn thông báo">
-    <label>Nhóm sự kiện<select className="block w-full rounded border p-2" value={code} onChange={e=>{select(e.target.value);setMessage("")}}>
-      {rows?.map(r=><option key={r.code} value={r.code}>{r.label}</option>)}</select></label>
+    <label>Nhóm sự kiện<ChoiceSelect className="w-full" value={code} onValueChange={choiceValue => {select(choiceValue);setMessage("")}}>
+      {rows?.map(r=><ChoiceOption key={r.code} value={r.code}>{r.label}</ChoiceOption>)}</ChoiceSelect></label>
     {rule&&<div key={rule.code+"-"+rule.revision+"-"+rule.ownEmail+"-"+rule.ownSms} className="grid gap-3">
-      <form className="grid gap-2" onSubmit={e=>{e.preventDefault();void submit(new FormData(e.currentTarget),false)}}>
-        <label><input type="checkbox" name="email" defaultChecked={rule.ownEmail} disabled={rule.mandatory||!rule.email}/> Nhận email cá nhân</label>
+      <ValidatedForm className="grid gap-2" onSubmit={e=>{e.preventDefault();void submit(new FormData(e.currentTarget),false)}}>
+        <label><Checkbox name="email" defaultChecked={rule.ownEmail} disabled={rule.mandatory||!rule.email}/> Nhận email cá nhân</label>
         {rule.mandatory&&<p>Email bắt buộc cho nhóm sự kiện này.</p>}
         {!rule.email&&<p>Trường đã tắt email cho sự kiện này.</p>}
-        {rule.highPriority&&<><label><input type="checkbox" name="sms" defaultChecked={rule.ownSms} disabled={!rule.sms}/> Nhận SMS cá nhân</label>
+        {rule.highPriority&&<><label><Checkbox name="sms" defaultChecked={rule.ownSms} disabled={!rule.sms}/> Nhận SMS cá nhân</label>
           {!rule.hasPhone&&<p>Cập nhật số điện thoại trong hồ sơ để nhận SMS.</p>}
           {!rule.sms&&<p>Trường đã tắt SMS cho sự kiện này.</p>}</>}
-        <Button disabled={busy||((rule.mandatory||!rule.email)&&!(rule.highPriority&&rule.sms))}>Lưu tùy chọn cá nhân</Button></form>
-      {admin&&<form className="grid gap-2 border-t pt-3" aria-label="Quy tắc của trường" onSubmit={e=>{e.preventDefault();void submit(new FormData(e.currentTarget),true)}}>
-        <label><input type="checkbox" name="email" defaultChecked={rule.email}/> Bật email toàn trường cho nhóm này</label>
-        {rule.highPriority&&<label><input type="checkbox" name="sms" defaultChecked={rule.sms}/> Bật SMS toàn trường cho nhóm này</label>}
+        <Button type="submit" disabled={busy||((rule.mandatory||!rule.email)&&!(rule.highPriority&&rule.sms))}>Lưu tùy chọn cá nhân</Button></ValidatedForm>
+      {admin&&<ValidatedForm className="grid gap-2 border-t pt-3" aria-label="Quy tắc của trường" onSubmit={e=>{e.preventDefault();void submit(new FormData(e.currentTarget),true)}}>
+        <label><Checkbox name="email" defaultChecked={rule.email}/> Bật email toàn trường cho nhóm này</label>
+        {rule.highPriority&&<label><Checkbox name="sms" defaultChecked={rule.sms}/> Bật SMS toàn trường cho nhóm này</label>}
         <label>Tiêu đề trong ứng dụng<Input name="title" required maxLength={180} defaultValue={rule.title}/></label>
         <label>Tiêu đề email<Input name="subject" required maxLength={180} defaultValue={rule.mailSubject}/></label>
-        <Button disabled={busy}>Lưu quy tắc của trường</Button></form>}
+        <Button type="submit" disabled={busy}>Lưu quy tắc của trường</Button></ValidatedForm>}
     </div>}
     {rule&&canViewTemplates&&<Button variant="outline" aria-expanded={showTemplates}
       onClick={()=>setShowTemplates(!showTemplates)}>Mẫu thông báo theo kênh</Button>}

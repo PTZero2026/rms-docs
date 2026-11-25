@@ -1,3 +1,4 @@
+import { choose } from "../../lib/choice.mjs"
 import { verifyAcceptance } from "../../acceptance/request-acceptance/acceptance"
 import { followExecution } from "../../progress/assign-project/acceptance"
 import { execFileSync } from "node:child_process"
@@ -30,10 +31,10 @@ test("staff opens the review, assigned member submits a weighted ballot, PI read
     await operator.getByRole("button",{name:"Xét duyệt hội đồng"}).click()
     await operator.getByText("Lập hội đồng xét duyệt",{exact:true}).click()
     await operator.getByLabel("Tên hội đồng",{exact:true}).fill("Hội đồng Thủy văn")
-    await operator.getByLabel("Chức danh "+member.email).selectOption("REVIEWER")
-    await operator.getByLabel("Chức danh "+pi.email).selectOption("MEMBER")
+    await choose(operator.getByLabel("Chức danh "+member.email), "REVIEWER")
+    await choose(operator.getByLabel("Chức danh "+pi.email), "MEMBER")
     await operator.getByRole("button",{name:"Lưu hội đồng"}).click()
-    await operator.getByLabel("Hồ sơ của kỳ đã đóng").selectOption(project)
+    await choose(operator.getByLabel("Hồ sơ của kỳ đã đóng"), project)
     await operator.getByRole("button",{name:"Chốt hồ sơ hợp lệ"}).click()
     await operator.getByLabel("Bắt buộc thẩm định đạo đức").check()
     await operator.getByText("Lập hội đồng xét duyệt",{exact:true}).click()
@@ -79,7 +80,7 @@ test("staff opens the review, assigned member submits a weighted ballot, PI read
     await author.getByRole("button",{name:"Mở thuyết minh"}).click()
     await author.getByRole("button",{name:"Xem kết quả xét duyệt"}).click()
     await expect(author.getByText("Bổ sung văn bản đồng thuận theo biên bản 12.",{exact:true})).toBeVisible()
-    await operator.getByLabel("Kết quả của hội đồng đạo đức").selectOption("APPROVED")
+    await choose(operator.getByLabel("Kết quả của hội đồng đạo đức"), "APPROVED")
     await operator.getByLabel("Căn cứ hoặc yêu cầu bổ sung").fill("Hội đồng thông qua theo biên bản 13.")
     await operator.getByRole("button",{name:"Ghi kết quả đạo đức"}).click()
     await expect(operator.getByText("Trạng thái đề tài · Đã phê duyệt")).toBeVisible()

@@ -1,3 +1,4 @@
+import { ValidatedForm } from "@rms/ui/components/validated-form"
 import { useState } from 'react'
 import { Button } from '@rms/ui/components/button'
 import type { DemoRow, FeatureProps } from '../../demo/types'
@@ -16,7 +17,7 @@ function FormulaEditor({ ctx, template, close }: { ctx: FeatureProps; template: 
   const set = (k:string,v:string) => setRow({...r,fields:{...f,[k]:v}})
   const bands = f.bands ? JSON.parse(f.bands) as [number,number][] : []
   return <Modal title="Tạo phiên bản định mức" description={r.title + ' · Phân bổ theo tỉ lệ đóng góp của từng người.'} close={close}>
-    <form className="stack" noValidate onSubmit={e => { e.preventDefault()
+    <ValidatedForm className="stack" noValidate onSubmit={e => { e.preventDefault()
       try { const saved = saveFormula(ctx,r); ctx.commit('Tạo phiên bản định mức ' + f.version,[saved],saved); close() } catch(e) { setError(messageOf(e)) }
     }}><Problem message={error}/>
       <div className="ext-grid"><TextField label="Phiên bản" required value={f.version} onChange={v => set('version',v)}/>
@@ -30,7 +31,7 @@ function FormulaEditor({ ctx, template, close }: { ctx: FeatureProps; template: 
         <TextField key={i} label={'Số giờ từ ' + money(String(min))} type="number" value={String(h)} onChange={v => set('bands',JSON.stringify(bands.map((b,n) => n === i ? [min,Number(v)] : b)))}/>)}</fieldset>}
       {f.activity === 'SCIE_Q2' && <TextField label="Số văn bản hoặc căn cứ PO xác nhận hệ số" required value={f.poDecision} onChange={v => set('poDecision',v)}/>}
       <Footer label="Lưu phiên bản" close={close}/>
-    </form>
+    </ValidatedForm>
   </Modal>
 }
 function CalendarEditor({ctx,close}: {ctx:FeatureProps;close:()=>void}) {
@@ -38,7 +39,7 @@ function CalendarEditor({ctx,close}: {ctx:FeatureProps;close:()=>void}) {
   const [f,set] = useState({...original.fields})
   const [error,setError] = useState('')
   return <Modal title="Lịch ghi nhận giờ giảng" description="Kỳ đã ghi trên các dòng giờ được giữ theo lịch tại lần quy đổi đầu tiên." close={close}>
-    <form className="stack" onSubmit={e => { e.preventDefault()
+    <ValidatedForm className="stack" onSubmit={e => { e.preventDefault()
       if (ctx.session.role !== 'admin' || !ctx.e4Enabled) return
       if (![f.academicMonth,f.fiscalMonth].every(v => Number.isInteger(Number(v)) && Number(v) >= 1 && Number(v) <= 12)) { setError('Chọn tháng mở kỳ từ 1 đến 12.'); return }
       const updated = {...original,fields:f}
@@ -47,7 +48,7 @@ function CalendarEditor({ctx,close}: {ctx:FeatureProps;close:()=>void}) {
       <TextField label="Tháng mở năm học" type="number" value={f.academicMonth} onChange={academicMonth => set({...f,academicMonth})}/>
       <TextField label="Tháng mở năm tài khóa" type="number" value={f.fiscalMonth} onChange={fiscalMonth => set({...f,fiscalMonth})}/>
       <Footer label="Lưu lịch" close={close}/>
-    </form></Modal>
+    </ValidatedForm></Modal>
 }
 export function Formulas({ctx}: {ctx: FeatureProps}) {
   const rows = ctx.rows.filter(r => r.kind === 'ext-formula')

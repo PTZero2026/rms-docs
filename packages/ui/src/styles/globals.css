@@ -127,3 +127,22 @@
     @apply bg-background text-foreground;
     }
 }
+input[data-slot="input"][type="number"] {
+  appearance: textfield;
+}
+input[data-slot="input"][type="number"]::-webkit-inner-spin-button,
+input[data-slot="input"][type="number"]::-webkit-outer-spin-button {
+  appearance: none;
+  margin: 0;
+}
+
+/* Touch targets for portalled controls follow the device pointer as well. */
+@media (pointer: coarse), (max-width: 600px) {
+  [data-slot="select-trigger"], [data-slot="select-item"],
+  [data-slot="combobox-item"], [data-slot="toggle-group-item"] {
+    min-height: 44px;
+  }
+  [data-slot="calendar"] {
+    --cell-size: clamp(36px, 12vw, 44px);
+  }
+}

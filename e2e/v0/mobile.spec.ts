@@ -1,3 +1,4 @@
+import { choose } from "../lib/choice.mjs"
 import { expect, test, type Page } from "@playwright/test"
 
 const nav = (page: Page) => page.getByRole("navigation", { name: "Điều hướng nhanh" })
@@ -20,7 +21,7 @@ for (const width of [320, 360, 390]) {
     test("US-33 · lọc quá hạn rồi mở kỳ báo cáo ở F04", async ({ page }) => {
       await page.goto("/")
       const work = queue(page)
-      await work.getByRole("button", { name: "Quá hạn", exact: true }).click()
+      await work.getByRole("radio", { name: "Quá hạn", exact: true }).click()
       await expect(work).toContainText("18/11/2026")
       await expect(work).not.toContainText("28/11/2026")
       await fits(page)
@@ -28,7 +29,7 @@ for (const width of [320, 360, 390]) {
       await expect(page).toHaveURL(/#\/F04\//)
       await expect(page.locator("main")).toContainText("Đo kiểm thiết bị")
       await page.goBack()
-      await work.getByRole("button", { name: "Tất cả", exact: true }).click()
+      await work.getByRole("radio", { name: "Tất cả", exact: true }).click()
       await expect(work.getByRole("link", { name: /Đối chiếu số liệu/ })).toBeVisible()
       expect(
         await page.evaluate(() => localStorage.getItem("rms.frontend.demo.2026-11.v1")),
@@ -38,21 +39,21 @@ for (const width of [320, 360, 390]) {
     test("US-34 · đọc từng tin, quay lại và tải lại bộ lọc", async ({ page }) => {
       await page.goto("/")
       await nav(page).getByRole("link", { name: "Hộp thư" }).click()
-      await page.getByRole("button", { name: "Chưa đọc", exact: true }).click()
-      await page.getByRole("button", { name: /Kỳ nhận đề xuất đã mở/ }).click()
+      await page.getByRole("radio", { name: "Chưa đọc", exact: true }).click()
+      await page.getByRole("link", { name: /Kỳ nhận đề xuất đã mở/ }).click()
       await expect(page.getByRole("heading", { name: "Kỳ nhận đề xuất đã mở" })).toBeVisible()
       await page.goBack()
       await page.reload()
-      await expect(page.getByRole("button", { name: "Chưa đọc", exact: true })).toHaveAttribute(
-        "aria-pressed",
+      await expect(page.getByRole("radio", { name: "Chưa đọc", exact: true })).toHaveAttribute(
+        "aria-checked",
         "true",
       )
       await expect(page.locator("main")).not.toContainText("Kỳ nhận đề xuất đã mở")
-      await page.getByRole("button", { name: /Đến kỳ cập nhật tiến độ/ }).click()
-      await page.getByRole("button", { name: "Quay lại danh sách" }).click()
+      await page.getByRole("link", { name: /Đến kỳ cập nhật tiến độ/ }).click()
+      await page.getByRole("link", { name: "Quay lại danh sách" }).click()
       await expect(page.locator("main")).toContainText("Không có thông báo trong mục này")
-      await page.getByRole("button", { name: "Tất cả", exact: true }).click()
-      await expect(page.getByRole("button", { name: /Kỳ nhận đề xuất đã mở/ })).toContainText(
+      await page.getByRole("radio", { name: "Tất cả", exact: true }).click()
+      await expect(page.getByRole("link", { name: /Kỳ nhận đề xuất đã mở/ })).toContainText(
         "Đã đọc",
       )
       await fits(page)
@@ -61,8 +62,8 @@ for (const width of [320, 360, 390]) {
     test("US-35 · tra mã kỳ, xem hạn và mở đúng điều kiện", async ({ page }) => {
       await page.goto("/")
       await nav(page).getByRole("link", { name: "Kỳ đề xuất" }).click()
-      await expect(page.getByRole("button", { name: "Đang nhận", exact: true })).toHaveAttribute(
-        "aria-pressed",
+      await expect(page.getByRole("radio", { name: "Đang nhận", exact: true })).toHaveAttribute(
+        "aria-checked",
         "true",
       )
       const search = page.getByLabel("Tìm theo tên hoặc mã kỳ")
@@ -75,7 +76,7 @@ for (const width of [320, 360, 390]) {
       await call.click()
       await expect(page).toHaveURL(/#\/F02\/call-01$/)
       await expect(page.locator("main")).toContainText("Mẫu thuyết minh đề tài cấp cơ sở")
-      await expect(page.getByRole("button", { name: "Lập đề xuất cho kỳ này" })).toBeVisible()
+      await expect(page.getByRole("link", { name: "Lập đề xuất cho kỳ này" })).toBeVisible()
     })
   })
 }
@@ -83,7 +84,7 @@ for (const width of [320, 360, 390]) {
 async function switchPerson(page: Page, name: string, tenant = "tlu") {
   await page.getByRole("button", { name: "Phiên mô phỏng" }).click()
   const dialog = page.getByRole("dialog")
-  await dialog.getByLabel("Đơn vị", { exact: true }).selectOption(tenant)
+  await choose(dialog.getByLabel("Đơn vị", { exact: true }), tenant)
   await dialog.getByRole("button", { name: new RegExp(name) }).click()
   await expect(dialog).toBeHidden()
 }
@@ -109,7 +110,7 @@ for (const width of [360, 390]) {
       const work = queue(page)
       await expect(work).toContainText("Hạn 21/11/2026")
       await expect(work).toContainText("Chưa có hạn")
-      await work.getByRole("button", { name: "Quá hạn" }).click()
+      await work.getByRole("radio", { name: "Quá hạn" }).click()
       await expect(work).toContainText("Không có việc quá hạn")
       await work.getByRole("button", { name: "Xem tất cả việc" }).click()
       await expect(work.getByRole("link")).toHaveCount(4)
@@ -149,7 +150,7 @@ for (const width of [360, 390]) {
       ).toEqual(snapshot)
       await switchPerson(page, "Lê Thanh Mai", "hmu")
       await page.goto("/#/B04/unread")
-      await expect(page.getByRole("button", { name: /Kỳ nhận đề xuất đã mở/ })).toContainText(
+      await expect(page.getByRole("link", { name: /Kỳ nhận đề xuất đã mở/ })).toContainText(
         "Chưa đọc",
       )
     })
@@ -178,12 +179,12 @@ for (const width of [360, 390]) {
       await expect(main).toContainText("21/11/2026")
       await expect(main).not.toContainText("Kỳ tháng sau")
       await expect(main).not.toContainText("Nghiên cứu ứng dụng đợt thu")
-      await main.getByRole("button", { name: "Tất cả" }).click()
+      await main.getByRole("radio", { name: "Tất cả" }).click()
       await expect(main).toContainText("Kỳ tháng sau")
       await expect(main).not.toContainText("Sáng kiến liên ngành đợt xuân")
       await switchPerson(page, "Nguyễn Hoài An")
       await page.goto("/#/F02")
-      await main.getByRole("button", { name: "Tất cả" }).click()
+      await main.getByRole("radio", { name: "Tất cả" }).click()
       await expect(main).toContainText("Sáng kiến liên ngành đợt xuân")
       await expect(main).toContainText("Nghiên cứu ứng dụng đợt thu")
     })

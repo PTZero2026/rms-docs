@@ -1,3 +1,4 @@
+import { choose } from "../../lib/choice.mjs"
 import {test,expect} from "@playwright/test"
 import {randomUUID} from "node:crypto"
 import {fileURLToPath} from "node:url"
@@ -36,10 +37,10 @@ test("B04 unit officer returns two rejected emails to the queue and leaves uncer
     await log.getByRole("button",{name:"Gửi lại đã chọn (2)"}).click()
     await expect(log.getByText("Đã đưa 2 lượt gửi vào hàng đợi.")).toBeVisible()
     await expect(log.getByText("0 lượt gửi",{exact:true})).toBeVisible()
-    await log.getByLabel("Trạng thái gửi").selectOption("reconcile")
+    await choose(log.getByLabel("Trạng thái gửi"), "reconcile")
     await expect(log.getByText("1 lượt gửi",{exact:true})).toBeVisible()
     await expect(log.getByRole("button",{name:"Gửi lại",exact:true})).toHaveCount(0)
-    await log.getByLabel("Trạng thái gửi").selectOption("all")
+    await choose(log.getByLabel("Trạng thái gửi"), "all")
     await expect(log.getByText(/Chờ gửi · 0 lần thử/)).toHaveCount(5)
     await reader.getByRole("button",{name:"Hộp thông báo",exact:true}).click()
     await expect(reader.getByRole("button",{name:"Nhật ký gửi thông báo"})).toHaveCount(0)

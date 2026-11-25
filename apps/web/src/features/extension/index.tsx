@@ -1,3 +1,4 @@
+import { routeUrl } from "../../demo/catalog"
 import { useState } from 'react'
 import { Button } from '@rms/ui/components/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@rms/ui/components/tabs'
@@ -34,7 +35,7 @@ function RecordList({ctx,feature}: {ctx:FeatureProps;feature:Source}) {
   const pending = all.filter(r => ['PENDING_APPROVAL','SUBMITTED','RESULT_PENDING','FINAL_SUBMITTED','UNDER_REVIEW','UNDER_ACCEPTANCE'].includes(r.status))
   return <>
     <div className="page-heading"><div><h1>{info.title}</h1><p className="muted">{descriptions[feature]}</p></div>
-      {canCreate(ctx.session,feature) && <Button onClick={() => ctx.go(feature,'new')}>{info.create}</Button>}
+      {canCreate(ctx.session,feature) && <Button asChild><a href={routeUrl(feature, 'new')}>{info.create}</a></Button>}
       {ctx.session.role === 'admin' && !student && <Button variant="outline" onClick={() => setPolicy(true)}>Quy tắc minh chứng</Button>}
     </div>
     <Tabs defaultValue="list">
@@ -49,7 +50,7 @@ function RecordList({ctx,feature}: {ctx:FeatureProps;feature:Source}) {
             {cols.map(k => <SelectField key={k} label={k} value={filters[k] || ''} onChange={v => setFilters({...filters,[k]:v})}
               choices={[{value:'',label:'Tất cả'},...Array.from(new Set(all.map(r => lookup(r,k)))).filter(Boolean).sort().map(v => ({value:v,label:statuses[v] || v}))]}/>)}</div>
           {shown.length ? <Table className="data-table"><TableHeader><TableRow>{['Hồ sơ',student ? 'Trưởng nhóm / GVHD' : info.category,feature === 'F11' ? 'Giá trị hợp đồng' : 'Đơn vị','Trạng thái'].map(h => <TableHead key={h}>{h}</TableHead>)}</TableRow></TableHeader>
-            <TableBody>{shown.map(r => <TableRow key={r.id}><TableCell><button className="record-link" onClick={() => ctx.go(feature,r.id)}>{r.title}</button>
+            <TableBody>{shown.map(r => <TableRow key={r.id}><TableCell><Button variant="link" size="content" className="record-link" asChild><a href={routeUrl(feature, r.id)}>{r.title}</a></Button>
               <small>{[r.fields.code,feature === 'F11' ? r.fields.partner || 'Chưa có đối tác' : student ? categoryTitle(ctx.rows,r) : r.fields.agency].filter(Boolean).join(' · ')}</small></TableCell>
               <TableCell>{student ? <>{names[r.owner]}<small>{r.fields.confirmedMentor ? names[r.fields.confirmedMentor] : 'Chưa xác nhận GVHD'}</small></> : categoryTitle(ctx.rows,r)}</TableCell>
               <TableCell>{feature === 'F11' ? money(r.fields.budget) : r.unit || '—'}</TableCell><TableCell><Status value={r.status}/></TableCell></TableRow>)}</TableBody></Table>
@@ -70,12 +71,12 @@ function SourcePage({ctx,feature}: {ctx:FeatureProps;feature:Source}) {
   </>
   if (ctx.route.id) {
     const row = ctx.rows.find(r => r.id === ctx.route.id && r.kind === featureInfo[feature].kind && scoped(ctx,r) && canRead(ctx.session,r))
-    return row ? <Detail ctx={ctx} row={row}/> : <Blank title="Không tìm thấy hồ sơ trong phạm vi truy cập"><Button variant="link" onClick={() => ctx.go(feature)}>Về danh sách</Button></Blank>
+    return row ? <Detail ctx={ctx} row={row}/> : <Blank title="Không tìm thấy hồ sơ trong phạm vi truy cập"><Button variant="link" asChild><a href={routeUrl(feature)}>Về danh sách</a></Button></Blank>
   }
   return <RecordList ctx={ctx} feature={feature}/>
 }
 export default function Extension(ctx: FeatureProps) {
-  if (!ctx.e4Enabled) return <Blank title="Trường chưa bật hoạt động mở rộng"><Button variant="link" onClick={() => ctx.go('B06')}>Về tổng quan</Button></Blank>
+  if (!ctx.e4Enabled) return <Blank title="Trường chưa bật hoạt động mở rộng"><Button variant="link" asChild><a href={routeUrl('B06')}>Về tổng quan</a></Button></Blank>
   const feature = ctx.route.feature
   const key = [ctx.session.tenant,ctx.session.userId,ctx.session.role,feature,ctx.route.id].join('/')
   return <div className="extension-workspace stack" key={key}>{feature === 'P03' ? <Ledger ctx={ctx}/> : Object.hasOwn(featureInfo,feature) ?

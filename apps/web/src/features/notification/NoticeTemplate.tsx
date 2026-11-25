@@ -1,3 +1,5 @@
+import { ChoiceOption, ChoiceSelect } from "@rms/ui/components/choice-select"
+import { Textarea } from "@rms/ui/components/textarea"
 import {useEffect,useState} from "react"
 import {Button} from "@rms/ui/components/button"
 import {Input} from "@rms/ui/components/input"
@@ -21,9 +23,9 @@ export function NoticeTemplate(props:Props){
   return <section aria-label="Mẫu thông báo theo kênh" className="grid min-w-0 gap-3 rounded border p-3">
     <h3 className="font-semibold">Mẫu thông báo theo kênh</h3>
     <label>Kênh của mẫu
-      <select className="block w-full rounded border p-2" value={channel} onChange={e=>setChannel(e.target.value as Template["channel"])}>
-        <option value="in_app">Trong ứng dụng</option><option value="smtp">Email</option>{props.highPriority&&<option value="sms">SMS</option>}
-      </select>
+      <ChoiceSelect className="w-full" value={channel} onValueChange={choiceValue => setChannel(choiceValue as Template["channel"])}>
+        <ChoiceOption value="in_app">Trong ứng dụng</ChoiceOption><ChoiceOption value="smtp">Email</ChoiceOption>{props.highPriority&&<ChoiceOption value="sms">SMS</ChoiceOption>}
+      </ChoiceSelect>
     </label>
     <TemplateForm key={props.code+channel} {...props} channel={channel}/>
   </section>
@@ -78,7 +80,7 @@ function TemplateForm({session,code,channel,admin,onDenied,onSaved}:Props & {cha
       <p className="break-words text-sm">Biến có thể dùng · {saved.variables.map(v=>"{{"+v+"}}").join(", ")}</p>
       <fieldset className="grid min-w-0 gap-2" disabled={busy}>
         <label>Tiêu đề mẫu<Input value={title} readOnly={!admin} maxLength={180} onChange={e=>{resetFeedback();setTitle(e.target.value)}}/></label>
-        <label>Nội dung mẫu<textarea className="block w-full rounded border p-2" rows={4} maxLength={4000}
+        <label>Nội dung mẫu<Textarea className="block w-full rounded border p-2" rows={4} maxLength={4000}
           readOnly={!admin} value={body} onChange={e=>{resetFeedback();setBody(e.target.value)}}/></label>
         <div className="flex flex-wrap gap-2">
           <Button variant="outline" disabled={!title.trim()||!body.trim()} onClick={()=>void submit("preview")}>Xem trước</Button>

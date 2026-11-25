@@ -33,8 +33,8 @@ export function ScientificProfile({id,session,manager}:{id:string;session:Signed
   }
   function records(rows:Profile["projects"]){return rows.length?<ul>{rows.map(row=><li key={row.id}>{row.projectId?<a className="underline" href={"?project="+row.projectId}>{row.title}</a>:row.title} · {row.label}</li>)}</ul>:<p>Chưa có dữ liệu.</p>}
   return <section className="grid max-w-3xl gap-3 rounded border p-4" aria-label="Lý lịch khoa học"><h2>Lý lịch khoa học</h2>
-    {profile&&<><h3>{profile.name}</h3><p>{profile.email} · {profile.unit}</p><Button variant="outline" onClick={()=>setEditing(!editing)}>Thông tin công tác và học vị</Button>{editing&&<ProfessionalProfile id={id} session={session} onSaved={()=>setRound(n=>n+1)}/>}<h3>Đề tài tham gia</h3>{records(profile.projects)}
+    {profile&&<><h3>{profile.name}</h3><p>{profile.email} · {profile.unit}</p><Button variant="outline" aria-expanded={editing} onClick={()=>setEditing(!editing)}>Thông tin công tác và học vị</Button>{editing&&<ProfessionalProfile id={id} session={session} onSaved={()=>setRound(n=>n+1)}/>}<h3>Đề tài tham gia</h3>{records(profile.projects)}
     <h3>Sản phẩm khoa học đã duyệt</h3>{records(profile.outputs)}{profile.hours&&<><h3>Giờ giảng quy đổi</h3>{profile.hours.map(p=><p key={p.code}>{p.code} · {p.total} giờ</p>)}{!profile.hours.length&&<p>Chưa ghi nhận giờ.</p>}
-    <Button variant="outline" onClick={()=>setShowLedger(!showLedger)}>Xem sổ giờ giảng</Button>{showLedger&&<TeachingLedger session={session} person={id} manager={manager} onAdjusted={()=>setRound(n=>n+1)}/>}</>}<Button disabled={busy} onClick={()=>void download()}>Xuất lý lịch PDF</Button></>}
+    <Button variant="outline" aria-expanded={showLedger} onClick={()=>setShowLedger(!showLedger)}>Xem sổ giờ giảng</Button>{showLedger&&<TeachingLedger session={session} person={id} manager={manager} onAdjusted={()=>setRound(n=>n+1)}/>}</>}<Button disabled={busy} onClick={()=>void download()}>Xuất lý lịch PDF</Button></>}
     {message&&<p role="status">{message}</p>}</section>
 }

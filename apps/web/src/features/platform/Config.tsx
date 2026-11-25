@@ -1,3 +1,7 @@
+import { routeUrl } from "../../demo/catalog"
+import { Disclosure } from "@rms/ui/components/disclosure"
+import { ChoiceOption, ChoiceSelect } from "@rms/ui/components/choice-select"
+import { Checkbox } from "@rms/ui/components/checkbox"
 import { useEffect, useState } from "react"
 import { Download, FileSliders, Plus, Settings2 } from "lucide-react"
 import { Button } from "@rms/ui/components/button"
@@ -88,15 +92,15 @@ export default function Config(p: FeatureProps) {
     <Heading title="Cấu hình đơn vị" description={platform ? "Cấu hình dùng chung cho các đơn vị" : tenants[p.session.tenant]}
       action={<Button onClick={() => setEditor({})}><Plus data-icon="inline-start" />Tạo cấu hình</Button>} />
     <div className="tabs-bar">
-      <Button variant={home ? "ghost" : "secondary"} onClick={() => p.go("B01")}>Danh mục cấu hình</Button>
-      <Button variant={home ? "secondary" : "ghost"} onClick={() => p.go("B01", "home")}>Bố cục trang chủ</Button>
+      <Button variant={home ? "ghost" : "secondary"} asChild><a href={routeUrl("B01")}>Danh mục cấu hình</a></Button>
+      <Button variant={home ? "secondary" : "ghost"} asChild><a href={routeUrl("B01", "home")}>Bố cục trang chủ</a></Button>
     </div>
     {home ? <HomeLayout p={p} platform={platform} /> : target ? <section className="panel pad stack">
-      <Back onClick={() => p.go("B01")} /><h2>{target.title}</h2>
+      <Back href={routeUrl("B01")} /><h2>{target.title}</h2>
       <ConfigDetail key={JSON.stringify(target.fields)} row={target} effective={effectiveRow(all, target.fields.key)} />
       <div className="toolbar">
         {target.fields.scope === "shared" && !platform && tenantOverride
-          ? <Button onClick={() => p.go("B01", tenantOverride.id)}>Mở bản riêng của đơn vị</Button>
+          ? <Button asChild><a href={routeUrl("B01", tenantOverride.id)}>Mở bản riêng của đơn vị</a></Button>
           : <Button onClick={() => setEditor({ initial: target })}>{target.fields.scope === "shared" && !platform ? "Ghi đè cho đơn vị" : "Chỉnh sửa"}</Button>}
         {(platform || target.fields.scope === "tenant") && <Button variant="outline" onClick={() => {
           setError(""); setDeletion({ row: target, commit: p.commit })
@@ -106,24 +110,23 @@ export default function Config(p: FeatureProps) {
       <div className="section-heading"><h2>Danh mục cấu hình</h2><FileSliders size={18} /></div>
       <div className="toolbar pad">
         <Input aria-label="Tìm cấu hình" placeholder="Tìm theo tên, khóa hoặc nhóm…" value={query} onChange={e => setQuery(e.target.value)} />
-        {!platform && <select aria-label="Phạm vi" value={filter} onChange={e => setFilter(e.target.value)}>
-          <option value="all">Mọi phạm vi</option><option value="tenant">Đơn vị</option><option value="shared">Dùng chung</option>
-        </select>}
+        {!platform && <ChoiceSelect aria-label="Phạm vi" value={filter} onValueChange={setFilter}>
+          <ChoiceOption value="all">Mọi phạm vi</ChoiceOption><ChoiceOption value="tenant">Đơn vị</ChoiceOption><ChoiceOption value="shared">Dùng chung</ChoiceOption>
+        </ChoiceSelect>}
       </div>
-      {catalogEntries.length > 0 && <details className="pad">
-        <summary>Danh mục kỳ nhận đề xuất</summary>
+      {catalogEntries.length > 0 && <Disclosure className="pad" title={<> Danh mục kỳ nhận đề xuất </>}>
         {catalogEntries.map(ref => {
           const applied = effectiveRow(all, "CATALOG." + ref.id + ".STATUS")
-          return <button className="project-row" key={ref.id} onClick={() => setEditor({ initial: applied, catalogEntry: ref })}>
+          return <Button variant="ghost" size="content" className="project-row" key={ref.id} onClick={() => setEditor({ initial: applied, catalogEntry: ref })}>
             <span className="task-copy"><b>{ref.title}</b></span>
             <span className="pill">{(applied?.fields.value ?? ref.status) === "ACTIVE" ? "Đang dùng" : "Ngừng dùng"}</span>
-          </button>
+          </Button>
         })}
-      </details>}
-      {list.map(r => <button key={r.id} className="project-row" onClick={() => p.go("B01", r.id)}>
+      </Disclosure>}
+      {list.map(r => <Button variant="ghost" size="content" key={r.id} className="project-row" asChild><a href={routeUrl("B01", r.id)}>
         <Settings2 size={17} /><span className="task-copy"><b>{r.title}</b><small>{r.fields.key} · {r.fields.group} · {r.fields.mime}</small></span>
         <span className="pill">{r.fields.scope === "tenant" ? "Đơn vị" : "Dùng chung"}</span>
-      </button>)}
+      </a></Button>)}
       {!list.length && <Blank title="Không tìm thấy cấu hình" />}
     </section>}
     {deletion && <Editor title="Xóa cấu hình?" hint={platform ? "Các đơn vị đang dùng bản chung sẽ mất giá trị này." : "Đơn vị sẽ dùng lại bản chung nếu có."}
@@ -175,8 +178,8 @@ function LayoutOptions({ p, role, platform }: { p: FeatureProps; role: Role; pla
   return <fieldset disabled={busy} className="stack">
     <legend>{platform ? "Bản dùng chung cho các đơn vị" : tenants[p.session.tenant]}</legend>
     {[...keys, ...Object.keys(widgets).filter(k => !keys.includes(k))].map((k, i) => <div className="toolbar" key={k}>
-      <label className="check"><input type="checkbox" checked={keys.includes(k)}
-        onChange={e => change(e.target.checked ? [...keys, k] : keys.filter(x => x !== k))} />{widgets[k]}</label>
+      <label className="check"><Checkbox checked={keys.includes(k)}
+        onCheckedChange={checked => change(checked ? [...keys, k] : keys.filter(x => x !== k))} />{widgets[k]}</label>
       {keys.includes(k) && i > 0 && <Button variant="ghost" size="sm" aria-label={"Đưa lên " + widgets[k]} onClick={() => {
         const ordered = [...keys]; [ordered[i-1], ordered[i]] = [ordered[i], ordered[i-1]]; change(ordered)
       }}>Đưa lên</Button>}

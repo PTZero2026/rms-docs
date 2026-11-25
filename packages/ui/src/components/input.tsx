@@ -1,7 +1,9 @@
+import { FileDrop } from "./file-drop"
 import * as React from "react"
 import { cn } from "cn"
 
 function Input({ className, type, ...props }: React.ComponentProps<"input">) {
+  if (type === "file") return <FileDrop {...props} className={className} />
   return (
     <input
       type={type}

@@ -1,3 +1,4 @@
+import { Checkbox } from "@rms/ui/components/checkbox"
 import { sourceAllowed } from '../../demo/source-rights.ts'
 import { useState } from 'react'
 import { Button } from '@rms/ui/components/button'
@@ -23,7 +24,7 @@ export function EvidencePanel({ app, project }: { app: FeatureProps; project: De
   return (
     <Panel title="Đối chiếu thuyết minh bằng AI mô phỏng">
       <label className="intake-check">
-        <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} />
+        <Checkbox checked={consent} onCheckedChange={setConsent} />
         Cho phép đối chiếu mục phương pháp trong bản nháp đã lưu
       </label>
       <div className="intake-actions">

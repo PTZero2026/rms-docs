@@ -1,3 +1,5 @@
+import { ValidatedForm } from "@rms/ui/components/validated-form"
+import { Checkbox } from "@rms/ui/components/checkbox"
 import { useState } from 'react'
 import { Button } from '@rms/ui/components/button'
 import type { DemoRow, FeatureProps } from '../../demo/types'
@@ -9,14 +11,14 @@ import { Blank, Footer, messageOf, Modal, options, Problem, SelectField, TextFie
 function CheckTypes({ title, value, change }: { title: string; value: string; change: (v:string) => void }) {
   const selected = codes(value)
   return <fieldset className="ext-group"><legend>{title}</legend><div className="ext-checks">{Object.entries(evidenceLabels).map(([k,name]) =>
-    <label key={k}><input type="checkbox" checked={selected.includes(k)} onChange={e => change((e.target.checked ? [...selected,k] : selected.filter(c => c !== k)).join(','))}/>{name}</label>)}</div></fieldset>
+    <label key={k}><Checkbox checked={selected.includes(k)} onCheckedChange={checked => change((checked ? [...selected,k] : selected.filter(c => c !== k)).join(','))}/>{name}</label>)}</div></fieldset>
 }
 function CallEditor({ctx,initial,close}: {ctx: FeatureProps; initial: DemoRow; close: () => void}) {
   const [r,set] = useState(initial)
   const [error,setError] = useState('')
   const field = (k: string,v:string) => set({...r,fields:{...r.fields,[k]:v}})
   return <Modal title="Cấu hình đợt sinh viên" description="Phạm vi khoa, thời hạn và điều kiện nộp đề tài." close={close}>
-    <form className="stack" noValidate onSubmit={e => { e.preventDefault()
+    <ValidatedForm className="stack" noValidate onSubmit={e => { e.preventDefault()
       try {
         if (!ctx.e4Enabled || !officer(ctx.session,r) || !scoped(ctx,r)) throw new Error('Thiếu quyền quản lý đợt của khoa.')
         const f = r.fields
@@ -39,7 +41,7 @@ function CallEditor({ctx,initial,close}: {ctx: FeatureProps; initial: DemoRow; c
       <CheckTypes title="Minh chứng khi nộp đăng ký" value={r.fields.declaration} change={v => field('declaration',v)}/>
       <CheckTypes title="Minh chứng kết quả cuối" value={r.fields.result} change={v => field('result',v)}/>
       <Footer label="Lưu đợt" close={close}/>
-    </form>
+    </ValidatedForm>
   </Modal>
 }
 export function Calls({ctx}: {ctx: FeatureProps}) {
@@ -61,7 +63,7 @@ export function PolicyEditor({ctx,feature,close}: { ctx: FeatureProps; feature: 
   const change = (key:string,v:string) => setRow({...row,fields:{...row.fields,[key]:v}})
   if (!row) return <Modal title="Quy tắc minh chứng" description="Chưa có loại hồ sơ đang hoạt động trong danh mục B01." close={close}><Button onClick={close}>Đóng</Button></Modal>
   return <Modal title="Quy tắc minh chứng" description="Quy tắc áp dụng cho hồ sơ của trường khi gửi và xét duyệt." close={close}>
-    <form className="stack" onSubmit={e => { e.preventDefault()
+    <ValidatedForm className="stack" onSubmit={e => { e.preventDefault()
       if (!ctx.e4Enabled || ctx.session.role !== 'admin') return
       const saved = encodePolicy(row)
       ctx.commit('Cập nhật quy tắc minh chứng ' + saved.title,[saved],saved); close()
@@ -71,7 +73,7 @@ export function PolicyEditor({ctx,feature,close}: { ctx: FeatureProps; feature: 
       {feature !== 'F12' && <><CheckTypes title="Giai đoạn kết quả" value={row.fields.result} change={v => change('result',v)}/>
         <SelectField label="Thời điểm ghi nhận giờ" value={row.fields.trigger} choices={[{value:'approval',label:'Khi duyệt kê khai'},{value:'result',label:'Khi duyệt kết quả'}]} onChange={v => change('trigger',v)}/></>}
       <Footer label="Lưu quy tắc" close={close}/>
-    </form>
+    </ValidatedForm>
   </Modal>
 }
 

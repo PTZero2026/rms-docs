@@ -1,3 +1,4 @@
+import { Textarea } from "@rms/ui/components/textarea"
 import { useState } from "react"
 import { Button } from "@rms/ui/components/button"
 import { Input } from "@rms/ui/components/input"
@@ -29,7 +30,7 @@ export default function ScoreSheet({session,assignment,acceptance=false,onAccess
         <Input type="number" min={0} max={c.maxScore} step="any" value={points[c.key]??""} onChange={e=>{
           const next={...points};if(e.target.value==="")delete next[c.key];else next[c.key]=Number(e.target.value);setPoints(next)
         }}/></label>)}
-      <label>Nhận xét chuyên môn<textarea className="block w-full rounded border p-2" maxLength={4000} value={comment} onChange={e=>setComment(e.target.value)}/></label>
+      <label>Nhận xét chuyên môn<Textarea className="block w-full rounded border p-2" maxLength={4000} value={comment} onChange={e=>setComment(e.target.value)}/></label>
       {!sheet?.submitted&&<div className="flex flex-wrap gap-2"><Button variant="outline" onClick={()=>void save(false)}>Lưu nháp phiếu</Button>
         <Button onClick={()=>void save(true)}>Gửi phiếu chấm</Button></div>}</fieldset>
     {sheet?.submitted&&<p>Điểm phiếu đã gửi · {sheet.total}</p>}<p role="status">{message}</p></article>

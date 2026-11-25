@@ -1,5 +1,6 @@
 import { Component, lazy, Suspense, useEffect, useState } from "react"
 import type { ReactNode } from "react"
+import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction } from "@rms/ui/components/alert-dialog"
 import { Button } from "@rms/ui/components/button"
 import Shell from "./demo/Shell"
 import Home from "./demo/Home"
@@ -36,9 +37,19 @@ class FaultBoundary extends Component<
         <p>Hãy tải lại để thử lại với dữ liệu đang lưu trên máy.</p>
         <Button onClick={() => location.reload()}>Tải lại</Button>
         {this.props.onRecover && (
-          <Button variant="outline" onClick={this.props.onRecover}>
-            Khôi phục dữ liệu mẫu
-          </Button>
+          <AlertDialog>
+            <AlertDialogTrigger asChild><Button variant="outline">Khôi phục dữ liệu mẫu</Button></AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Khôi phục dữ liệu mẫu?</AlertDialogTitle>
+                <AlertDialogDescription>Thao tác này xóa thay đổi mô phỏng của cả hai đơn vị trên trình duyệt này.</AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Hủy</AlertDialogCancel>
+                <AlertDialogAction variant="destructive" onClick={this.props.onRecover}>Khôi phục</AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         )}
       </section>
     ) : (
@@ -143,7 +154,7 @@ function Workspace() {
         <Blank
           title="Chức năng không khả dụng"
           body="Kiểm tra vai trò và tính năng được bật ở đơn vị hiện tại."
-          action={<Button onClick={() => go("B06")}>Về tổng quan</Button>}
+          action={<Button asChild><a href={routeUrl("B06")}>Về tổng quan</a></Button>}
         />
       ) : (
         <FaultBoundary key={[session.tenant, session.userId, session.role, f, route.id].join("/")}>
@@ -172,14 +183,8 @@ export function App() {
   return (
     <FaultBoundary
       onRecover={() => {
-        if (
-          window.confirm(
-            "Xóa thay đổi mô phỏng của cả hai đơn vị trên trình duyệt này và khôi phục dữ liệu mẫu?",
-          )
-        ) {
-          localStorage.removeItem(worldKey)
-          location.reload()
-        }
+        localStorage.removeItem(worldKey)
+        location.reload()
       }}
     >
       <Workspace />

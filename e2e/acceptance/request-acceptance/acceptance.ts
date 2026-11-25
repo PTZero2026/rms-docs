@@ -1,3 +1,4 @@
+import { choose } from "../../lib/choice.mjs"
 import { randomUUID } from "node:crypto"
 import { fileURLToPath } from "node:url"
 import { expect,type Page } from "@playwright/test"
@@ -18,7 +19,7 @@ export async function verifyAcceptance(officer:Page,pi:Page,member:Page,project:
   const applicant=await open(pi,"Nghiệm thu đề tài")
   await expect(applicant.getByText("Kỳ cuối · Kỳ 1 · Đạt")).toBeVisible()
   await applicant.getByLabel("Tóm tắt hồ sơ cuối").fill("Hoàn thành số liệu, báo cáo cuối kỳ và bài báo theo cam kết.")
-  await applicant.getByLabel("Tệp hồ sơ cuối").selectOption({label:"Bao-cao-ky-1.pdf"})
+  await choose(applicant.getByLabel("Tệp hồ sơ cuối"), {label:"Bao-cao-ky-1.pdf"})
   await applicant.getByRole("button",{name:"Nộp hồ sơ nghiệm thu"}).click()
   await expect(applicant.getByText("Đã nộp hồ sơ nghiệm thu.")).toBeVisible()
   await officer.goto("/app/school-1")
@@ -26,10 +27,10 @@ export async function verifyAcceptance(officer:Page,pi:Page,member:Page,project:
   const office=officer.getByRole("region",{name:"Nghiệm thu đề tài",exact:true})
   await office.getByText("Lập hội đồng nghiệm thu",{exact:true}).click()
   await office.getByLabel("Tên hội đồng nghiệm thu").fill("Hội đồng nghiệm thu cuối kỳ")
-  await office.getByLabel("Vai trò nghiệm thu "+memberEmail).selectOption("SECRETARY")
+  await choose(office.getByLabel("Vai trò nghiệm thu "+memberEmail), "SECRETARY")
   await office.getByRole("button",{name:"Lưu hội đồng nghiệm thu"}).click()
   await expect(office.getByText("Đã lập hội đồng.")).toBeVisible()
-  await office.getByLabel("Tiêu chí nghiệm thu").selectOption(doi)
+  await choose(office.getByLabel("Tiêu chí nghiệm thu"), doi)
   await office.getByRole("button",{name:"Mở đợt nghiệm thu"}).click()
   await office.getByRole("button",{name:"Chốt kết luận nghiệm thu"}).click()
   await expect(office.getByRole("alert")).toContainText("Còn thiếu 1 phiếu")
@@ -92,7 +93,7 @@ export async function verifyAcceptance(officer:Page,pi:Page,member:Page,project:
   await close.getByRole("button",{name:"Quyết toán và đóng đề tài"}).click()
   await expect(close.getByText("Đã quyết toán và khóa sổ · Rà thủ công")).toBeVisible()
   const archived=await open(officer,"Nghiệm thu đề tài")
-  await archived.getByLabel("Chủ quy trình nhận yêu cầu").selectOption({label:processOwner})
+  await choose(archived.getByLabel("Chủ quy trình nhận yêu cầu"), {label:processOwner})
   await archived.getByLabel("Lý do điều chỉnh kết luận").fill("Đối chiếu biên bản sau khi khóa sổ.")
   await archived.getByRole("button",{name:"Gửi yêu cầu đính chính"}).click()
   await expect(archived.getByText(/Đã chuyển cho/)).toBeVisible()

@@ -1,3 +1,4 @@
+import { ChoiceOption, ChoiceSelect } from "@rms/ui/components/choice-select"
 import { useCallback, useEffect, useLayoutEffect, useState } from "react"
 import type { components } from "@rms/api-contracts"
 import { defaultTheme, themeIssues, type Palette, type ThemeTokens } from "@rms/api-contracts/theme"
@@ -52,9 +53,9 @@ export default function ThemeEditor({session,onApply}:{session:SignedInSession;o
   }
   if(!data) return <p role="status">{message||"Đang đọc giao diện…"}</p>
   return <section className="grid gap-4 py-4"><h2>Giao diện đơn vị · Phiên bản {data.active.revision}</h2>
-    <label>Chế độ xem trước <select value={mode} onChange={e=>setMode(e.target.value==="dark"?"dark":"light")}><option value="light">Sáng</option><option value="dark">Tối</option></select></label>
-    <label>Phông chữ <select value={tokens.font} onChange={e=>setTokens({...tokens,font:e.target.value as ThemeTokens["font"]})}><option value="geist">Geist</option><option value="system">Hệ thống</option><option value="serif">Georgia</option></select></label>
-    <label>Bo góc <select value={tokens.radius} onChange={e=>setTokens({...tokens,radius:e.target.value as ThemeTokens["radius"]})}><option value="sm">Nhỏ</option><option value="md">Vừa</option><option value="lg">Lớn</option></select></label>
+    <label>Chế độ xem trước <ChoiceSelect value={mode} onValueChange={choiceValue => setMode(choiceValue==="dark"?"dark":"light")}><ChoiceOption value="light">Sáng</ChoiceOption><ChoiceOption value="dark">Tối</ChoiceOption></ChoiceSelect></label>
+    <label>Phông chữ <ChoiceSelect value={tokens.font} onValueChange={choiceValue => setTokens({...tokens,font:choiceValue as ThemeTokens["font"]})}><ChoiceOption value="geist">Geist</ChoiceOption><ChoiceOption value="system">Hệ thống</ChoiceOption><ChoiceOption value="serif">Georgia</ChoiceOption></ChoiceSelect></label>
+    <label>Bo góc <ChoiceSelect value={tokens.radius} onValueChange={choiceValue => setTokens({...tokens,radius:choiceValue as ThemeTokens["radius"]})}><ChoiceOption value="sm">Nhỏ</ChoiceOption><ChoiceOption value="md">Vừa</ChoiceOption><ChoiceOption value="lg">Lớn</ChoiceOption></ChoiceSelect></label>
     <div className="grid gap-3 sm:grid-cols-2">{(Object.keys(labels) as (keyof Palette)[]).map(k=><label className="grid gap-1" key={k}>{labels[k]}
       <Input aria-invalid={invalid.includes(mode+"."+k)} value={tokens[mode][k]} onChange={e=>setTokens({...tokens,[mode]:{...tokens[mode],[k]:e.target.value}})} />
     </label>)}</div>
@@ -65,7 +66,7 @@ export default function ThemeEditor({session,onApply}:{session:SignedInSession;o
       <Button disabled={busy||!saved||!!invalid.length} onClick={()=>void change("publish")}>Áp dụng</Button>
       <Button variant="outline" disabled={busy} onClick={()=>void change("reload")}>Tải lại giao diện</Button>
     </div>
-    {data.history.length>1 && <div className="flex flex-wrap gap-2"><label>Khôi phục về <select value={source} onChange={e=>setSource(Number(e.target.value))}>{data.history.slice(1).map(v=><option key={v} value={v}>Phiên bản {v}</option>)}</select></label>
+    {data.history.length>1 && <div className="flex flex-wrap gap-2"><label>Khôi phục về <ChoiceSelect value={source} onValueChange={choiceValue => setSource(Number(choiceValue))}>{data.history.slice(1).map(v=><ChoiceOption key={v} value={v}>Phiên bản {v}</ChoiceOption>)}</ChoiceSelect></label>
       <Button variant="outline" disabled={busy} onClick={()=>void change("rollback")}>Khôi phục phiên bản</Button></div>}
     <p role="status">{message}</p>
   </section>

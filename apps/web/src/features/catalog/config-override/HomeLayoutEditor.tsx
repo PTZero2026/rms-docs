@@ -1,3 +1,5 @@
+import { ChoiceOption, ChoiceSelect } from "@rms/ui/components/choice-select"
+import { Checkbox } from "@rms/ui/components/checkbox"
 import {useEffect,useState} from "react"
 import {Button} from "@rms/ui/components/button"
 import type {operations} from "@rms/api-contracts"
@@ -74,9 +76,9 @@ function LayoutForm({session,role,changeRole,close,onAccessLost}:Props & {role:H
     <header className="flex flex-wrap items-center justify-between gap-2"><h2>Bố cục trang chủ theo vai trò</h2>
       <Button variant="outline" disabled={busy} onClick={close}>Về cấu hình hệ thống</Button></header>
     <label className="grid gap-1">Vai trò áp dụng
-      <select value={role} disabled={busy} className="rounded border p-2" onChange={e=>changeRole(e.target.value as HomeRole)}>
-        {Object.entries(roles).map(([key,name])=><option key={key} value={key}>{name}</option>)}
-      </select>
+      <ChoiceSelect value={role} disabled={busy} className="rounded border p-2" onValueChange={choiceValue => changeRole(choiceValue as HomeRole)}>
+        {Object.entries(roles).map(([key,name])=><ChoiceOption key={key} value={key}>{name}</ChoiceOption>)}
+      </ChoiceSelect>
     </label>
     {current&&<fieldset disabled={busy||stale} className="grid min-w-0 gap-2">
       <legend className="font-semibold">Thẻ và thứ tự hiển thị</legend>
@@ -85,8 +87,8 @@ function LayoutForm({session,role,changeRole,close,onAccessLost}:Props & {role:H
         {ordered.map((widget,i)=>{
           const selected=i<draft.length
           return <li key={widget} className="flex flex-wrap items-center justify-between gap-2 py-2">
-            <label className="flex min-h-10 items-center gap-2"><input type="checkbox" checked={selected} aria-label={labels[widget]}
-              onChange={e=>change(e.target.checked?[...draft,widget]:draft.filter(w=>w!==widget))}/>{labels[widget]}</label>
+            <label className="flex min-h-10 items-center gap-2"><Checkbox checked={selected} aria-label={labels[widget]}
+              onCheckedChange={checked => change(checked?[...draft,widget]:draft.filter(w=>w!==widget))}/>{labels[widget]}</label>
             {selected&&<div className="flex gap-1">
               <Button variant="outline" size="sm" aria-label={"Đưa "+labels[widget]+" lên"} disabled={i===0} onClick={()=>move(i,-1)}>Lên</Button>
               <Button variant="outline" size="sm" aria-label={"Đưa "+labels[widget]+" xuống"} disabled={i===draft.length-1} onClick={()=>move(i,1)}>Xuống</Button>

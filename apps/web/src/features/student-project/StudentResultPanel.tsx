@@ -1,3 +1,6 @@
+import { DateInput } from "@rms/ui/components/date-input"
+import { ChoiceOption, ChoiceSelect } from "@rms/ui/components/choice-select"
+import { Textarea } from "@rms/ui/components/textarea"
 import {useState} from "react"
 import type {operations} from "@rms/api-contracts"
 import {Button} from "@rms/ui/components/button"
@@ -39,15 +42,15 @@ export function StudentResultPanel({session,item,actor,refresh}:Props){
     {!!item.finalEvidence.length&&<ul>{item.finalEvidence.map(e=><li key={e.code}>{e.label} · {item.files.some(f=>f.code===e.code)?"Đã có tệp":"Chưa có tệp"}</li>)}</ul>}
     {!!item.files.length&&<ul>{item.files.map(f=><li key={f.id}><Button variant="link" onClick={()=>void download(f.id)}>{f.filename}</Button></li>)}</ul>}
     {drafting&&<>
-      {item.finalEvidence.length>0&&<><label>Loại minh chứng cuối<select value={code} onChange={e=>setCode(e.target.value)}>{item.finalEvidence.map(e=><option key={e.code} value={e.code}>{e.label}</option>)}</select></label>
+      {item.finalEvidence.length>0&&<><label>Loại minh chứng cuối<ChoiceSelect value={code} onValueChange={setCode}>{item.finalEvidence.map(e=><ChoiceOption key={e.code} value={e.code}>{e.label}</ChoiceOption>)}</ChoiceSelect></label>
         <ProjectFile key={code} session={session} project={item.id} revision={item.revision} extension={{module:"student-project",evidenceType:code}} onFile={refresh}/></>}
-      <label>Tóm tắt kết quả cuối<textarea className="block w-full rounded border p-2" value={message} maxLength={4000} onChange={e=>setMessage(e.target.value)}/></label>
+      <label>Tóm tắt kết quả cuối<Textarea className="block w-full rounded border p-2" value={message} maxLength={4000} onChange={e=>setMessage(e.target.value)}/></label>
       <Button onClick={()=>void decide("submit")} disabled={!message.trim()}>Nộp kết quả cuối</Button>
     </>}
     {reviewing&&<p>{item.mentorEndorsed?"Giảng viên đã xác nhận kết quả":item.requireMentorFinal?"Chờ giảng viên xác nhận kết quả":"Đợt này cho phép khoa nghiệm thu trực tiếp"}</p>}
     {reviewing&&mentor&&!item.mentorEndorsed&&<Button onClick={()=>void decide("endorse")}>Xác nhận kết quả đủ điều kiện</Button>}
     {reviewing&&(mentor||item.canReview)&&<>
-      <label>Nhận xét kết quả<textarea className="block w-full rounded border p-2" maxLength={4000} value={message} onChange={e=>setMessage(e.target.value)}/></label>
+      <label>Nhận xét kết quả<Textarea className="block w-full rounded border p-2" maxLength={4000} value={message} onChange={e=>setMessage(e.target.value)}/></label>
       <Button variant="outline" disabled={!message.trim()} onClick={()=>void decide("revise")}>Yêu cầu nộp lại kết quả</Button>
     </>}
     {reviewing&&item.canReview&&(!item.requireMentorFinal||item.mentorEndorsed)&&<>
@@ -55,8 +58,8 @@ export function StudentResultPanel({session,item,actor,refresh}:Props){
       <Button variant="outline" disabled={!message.trim()} onClick={()=>void decide("fail")}>Ghi nhận không đạt</Button>
     </>}
     {item.status==="FAILED"&&item.canReview&&<>
-      <label>Hạn nộp lại kết quả<input type="date" value={deadline} onChange={e=>setDeadline(e.target.value)}/></label>
-      <label>Lý do cho làm lại<textarea className="block w-full rounded border p-2" maxLength={4000} value={message} onChange={e=>setMessage(e.target.value)}/></label>
+      <label>Hạn nộp lại kết quả<DateInput value={deadline} onValueChange={setDeadline}/></label>
+      <label>Lý do cho làm lại<Textarea className="block w-full rounded border p-2" maxLength={4000} value={message} onChange={e=>setMessage(e.target.value)}/></label>
       <Button variant="outline" disabled={!message.trim()||!deadline} onClick={()=>void decide("reopen")}>Cho nhóm làm lại</Button>
     </>}
     {item.acceptanceDate&&<p>Ngày nghiệm thu · {item.acceptanceDate.split("-").reverse().join("/")}</p>}

@@ -1,3 +1,5 @@
+import { DateInput } from "@rms/ui/components/date-input"
+import { ChoiceOption, ChoiceSelect } from "@rms/ui/components/choice-select"
 import {useEffect,useState} from "react"
 import {Button} from "@rms/ui/components/button"
 import {Input} from "@rms/ui/components/input"
@@ -48,7 +50,7 @@ export function EvidenceEntries({session,kind}:{session:SignedInSession;kind:Kin
   const editable=!!page&&(!selected||selected.ownerId===page.actorId&&selected.status==="DRAFT")
   const membersChanged=upper&&!!selected&&(members.length!==selected.members.length||members.some((m,i)=>m.email!==selected.members[i].email||m.share!==selected.members[i].share))
   const dirty=!!selected&&(selected.title!==title||selected.category!==category||upper&&selected.body!==body||(selected.hostId??"")!==host||selected.date!==date||membersChanged)
-  const select=(label:string,value:string,change:(v:string)=>void,choices:Page["units"],optional=false)=><label>{label}<select className="block border p-2" value={value} onChange={e=>change(e.target.value)}>{optional&&<option value="">Chưa chọn</option>}{choices.map(c=><option key={c.code} value={c.code}>{c.label}</option>)}</select></label>
+  const select=(label:string,value:string,change:(v:string)=>void,choices:Page["units"],optional=false)=><label>{label}<ChoiceSelect value={value} onValueChange={change}>{optional&&<ChoiceOption value="">Chưa chọn</ChoiceOption>}{choices.map(c=><ChoiceOption key={c.code} value={c.code}>{c.label}</ChoiceOption>)}</ChoiceSelect></label>
   return <section className="grid max-w-3xl gap-3 rounded border p-4" aria-label={heading}><h2>{heading}</h2>
     {page&&<><Button variant="outline" onClick={()=>setRound(r=>r+1)}>Tải lại đầu mục</Button>
       <ul>{page.items.map(x=><li key={x.id}><Button variant="link" onClick={()=>open(x)}>{x.title}</Button> · {labels[x.status]}</li>)}</ul>
@@ -57,7 +59,7 @@ export function EvidenceEntries({session,kind}:{session:SignedInSession;kind:Kin
         {select(upper?"Cấp nhiệm vụ":"Loại hoạt động",category,setCategory,page.catalog.types)}
         {upper&&select("Cơ quan quản lý",body,setBody,page.catalog.bodies)}
         {select("Đơn vị chủ trì",host,setHost,page.units,true)}
-        <label>Ngày nghiệp vụ<Input type="date" value={date} onChange={e=>setDate(e.target.value)}/></label>
+        <label>Ngày nghiệp vụ<DateInput value={date} onValueChange={setDate}/></label>
         {upper&&<MemberShares members={members} onChange={setMembers}/>}
         <Button disabled={busy} onClick={()=>void action("save")}>Lưu nháp đầu mục</Button></>}
       {selected&&<><h3>{selected.title}</h3><p>Trạng thái · {labels[selected.status]}</p>

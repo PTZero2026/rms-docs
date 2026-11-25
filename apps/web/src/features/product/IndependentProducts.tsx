@@ -1,3 +1,5 @@
+import { ChoiceOption, ChoiceSelect } from "@rms/ui/components/choice-select"
+import { Checkbox } from "@rms/ui/components/checkbox"
 import {ProductCreditApproval,useProductHours} from "./ProductCreditApproval"
 import {useEffect,useState} from "react"
 import type {operations} from "@rms/api-contracts"
@@ -83,18 +85,18 @@ export function IndependentProducts({session}:{session:SignedInSession}){
     {page?.canCreate&&!editor&&<Button variant="outline" disabled={!types.choices?.length} onClick={()=>edit()}>Kê khai sản phẩm độc lập</Button>}
     {editor&&page&&<fieldset className="grid gap-2 rounded border p-3" disabled={busy}><legend>Bản kê khai ngoài đề tài</legend>
       <label>Tên sản phẩm<Input value={editor.title} onChange={e=>change("title",e.target.value)}/></label>
-      <label>Loại sản phẩm<select value={editor.kind} onChange={e=>change("kind",e.target.value)}>
-        {!types.choices?.some(t=>t.code===editor.kind)&&<option disabled value={editor.kind}>{types.label(editor.kind)} · Đã ngừng dùng</option>}
-        {types.choices?.map(t=><option key={t.code} value={t.code}>{t.label}</option>)}</select></label>
+      <label>Loại sản phẩm<ChoiceSelect value={editor.kind} onValueChange={choiceValue => change("kind",choiceValue)}>
+        {!types.choices?.some(t=>t.code===editor.kind)&&<ChoiceOption disabled value={editor.kind}>{types.label(editor.kind)} · Đã ngừng dùng</ChoiceOption>}
+        {types.choices?.map(t=><ChoiceOption key={t.code} value={t.code}>{t.label}</ChoiceOption>)}</ChoiceSelect></label>
       <label>Năm công bố<Input type="number" value={editor.year??""} onChange={e=>change("year",e.target.value?Number(e.target.value):null)}/></label>
       <label>Thông tin công bố<Input value={editor.publication} onChange={e=>change("publication",e.target.value)}/></label>
-      <fieldset><legend>Tác giả</legend>{Array.from(options,([id,label])=><label className="block" key={id}><input type="checkbox" checked={editor.authors.includes(id)}
-        onChange={e=>change("authors",e.target.checked?[...editor.authors,id]:editor.authors.filter(other=>other!==id))}/> {label}</label>)}</fieldset>
+      <fieldset><legend>Tác giả</legend>{Array.from(options,([id,label])=><label className="block" key={id}><Checkbox checked={editor.authors.includes(id)}
+        onCheckedChange={checked => change("authors",checked?[...editor.authors,id]:editor.authors.filter(other=>other!==id))}/> {label}</label>)}</fieldset>
       <label>Email đồng tác giả khác khoa<Input type="email" value={email} onChange={e=>setEmail(e.target.value)}/></label>
       <Button type="button" variant="outline" disabled={!email.trim()} onClick={()=>void addAuthor()}>Thêm đồng tác giả theo email</Button>
       {!page.defaultAuthorId&&<p>Tác giả đứng tên · {options.get(selected?.ownerId??editor.authors[0])??"Chọn tác giả đầu tiên trong đơn vị phụ trách"}</p>}
       {selected?<><fieldset><legend>Minh chứng dùng cho bản kê khai</legend>{selected.attachments.map(f=><label key={f.id} className="block">
-        <input type="checkbox" checked={editor.files.includes(f.id)} onChange={e=>change("files",e.target.checked?[...editor.files,f.id]:editor.files.filter(id=>id!==f.id))}/> {f.label}</label>)}</fieldset>
+        <Checkbox checked={editor.files.includes(f.id)} onCheckedChange={checked => change("files",checked?[...editor.files,f.id]:editor.files.filter(id=>id!==f.id))}/> {f.label}</label>)}</fieldset>
         {selected.status==="REJECTED"&&<p>Lưu bản sửa thành nháp rồi mở lại để tải minh chứng mới.</p>}
         {selected.status==="DRAFT"&&<ProjectFile session={session} project={selected.id} revision={selected.revision} extension={{module:"product",evidenceType:"OUTPUT"}}
           onFile={id=>{setEditor(v=>v&&({...v,files:[...new Set([...v.files,id])]}));reload(n=>n+1)}}/>}</>:<p>Lưu nháp để có thể đính kèm minh chứng.</p>}
@@ -106,7 +108,7 @@ export function IndependentProducts({session}:{session:SignedInSession}){
       {row.reason&&<p>Nhận xét · {row.reason}</p>}
       {row.attachments.filter(f=>row.files.includes(f.id)).map(f=><Button variant="link" key={f.id} onClick={()=>void download(row.id,f.id)}>{f.label}</Button>)}
       {row.canEdit&&(row.status==="DRAFT"||row.status==="REJECTED")&&<Button variant="outline" onClick={()=>edit(row)}>Sửa bản kê khai</Button>}
-      {row.canEdit&&row.status==="DRAFT"&&<><label><input type="checkbox" checked={!!distinct[row.id]} onChange={e=>setDistinct({...distinct,[row.id]:e.target.checked})}/> Đã đối chiếu và xác nhận khác sản phẩm trùng thông tin</label>
+      {row.canEdit&&row.status==="DRAFT"&&<><label><Checkbox checked={!!distinct[row.id]} onCheckedChange={checked => setDistinct({...distinct,[row.id]:checked})}/> Đã đối chiếu và xác nhận khác sản phẩm trùng thông tin</label>
         <Button disabled={busy} onClick={()=>void act(row,"submit")}>Gửi duyệt sản phẩm</Button></>}
       {row.canReview&&["PENDING_APPROVAL","APPROVED"].includes(row.status)&&<>
         <label>Nhận xét của chuyên viên<Input value={reasons[row.id]??""} onChange={e=>setReasons({...reasons,[row.id]:e.target.value})}/></label>

@@ -1,3 +1,6 @@
+import { ValidatedForm } from "@rms/ui/components/validated-form"
+import { ValueInput } from "@rms/ui/components/date-input"
+import { ChoiceOption, ChoiceSelect } from "@rms/ui/components/choice-select"
 import {useEffect,useState} from "react"
 import {Button} from "@rms/ui/components/button"
 import {Input} from "@rms/ui/components/input"
@@ -28,26 +31,26 @@ export function ProfessionalProfile({id,session,onSaved}:{id:string;session:Sign
   }
   const qualifications=p.data.qualifications??[],jobs=p.data.jobs??[]
   function select(key:"gender"|"position"|"affiliation",label:string,opts:{id:string;name:string}[]){
-    return show(key)&&<label>{label}{required(key)?" *":""}<select className="block border p-2" required={required(key)} value={profile.data[key]??""} onChange={e=>put(key,e.target.value)}><option value="">Chọn</option>{opts.map(o=><option key={o.id} value={o.id}>{o.name}</option>)}</select></label>
+    return show(key)&&<label>{label}{required(key)?" *":""}<ChoiceSelect required={required(key)} value={profile.data[key]??""} onValueChange={choiceValue => put(key,choiceValue)}><ChoiceOption value="">Chọn</ChoiceOption>{opts.map(o=><ChoiceOption key={o.id} value={o.id}>{o.name}</ChoiceOption>)}</ChoiceSelect></label>
   }
-  return <form className="grid gap-3" aria-label="Hồ sơ công tác" onSubmit={e=>{e.preventDefault();void save()}}>
+  return <ValidatedForm className="grid gap-3" aria-label="Hồ sơ công tác" onSubmit={e=>{e.preventDefault();void save()}}>
     <h3>Hồ sơ công tác</h3><p>Trường/Viện · {p.institution}</p><p>Email · {p.email}</p>
     <label>Họ tên trên hồ sơ<Input required value={p.fullName} onChange={e=>setProfile({...p,fullName:e.target.value})}/></label>
     {select("gender","Giới tính",["Nam","Nữ","Khác"].map(v=>({id:v,name:v})))}
-    {([["birthDate","Ngày sinh","date"],["phone","Điện thoại liên hệ","tel"],["address","Địa chỉ liên hệ","text"]] as const).map(([k,label,type])=>show(k)&&<label key={k}>{label}{required(k)?" *":""}<Input type={type} required={required(k)} value={p.data[k]??""} onChange={e=>put(k,e.target.value)}/></label>)}
+    {([["birthDate","Ngày sinh","date"],["phone","Điện thoại liên hệ","tel"],["address","Địa chỉ liên hệ","text"]] as const).map(([k,label,type])=>show(k)&&<label key={k}>{label}{required(k)?" *":""}<ValueInput type={type} required={required(k)} value={p.data[k]??""} onValueChange={next => put(k,next)}/></label>)}
     {select("affiliation","Phòng ban công tác",p.units)}{select("position","Chức vụ",p.positions.map(v=>({id:v,name:v})))}
     {show("qualifications")&&(["DEGREE","RANK"] as const).map(kind=>{
       const title=kind==="DEGREE"?"Học vị":"Học hàm",options=kind==="DEGREE"?p.degrees:p.ranks
       return <fieldset key={kind} className="grid gap-2"><legend>{title}</legend>
         {qualifications.map((q,i)=>q.kind===kind&&<div key={i} className="flex flex-wrap gap-2">
-          <label>Loại {title.toLowerCase()}<select value={q.name} onChange={e=>put("qualifications",qualifications.map((v,j)=>j===i?{...v,name:e.target.value}:v))}>{options.map(v=><option key={v}>{v}</option>)}</select></label>
+          <label>Loại {title.toLowerCase()}<ChoiceSelect value={q.name} onValueChange={choiceValue => put("qualifications",qualifications.map((v,j)=>j===i?{...v,name:choiceValue}:v))}>{options.map(v=><ChoiceOption value={v} key={v}>{v}</ChoiceOption>)}</ChoiceSelect></label>
           <label>Năm nhận {title.toLowerCase()}<Input type="number" value={q.year||""} onChange={e=>put("qualifications",qualifications.map((v,j)=>j===i?{...v,year:Number(e.target.value)}:v))}/></label>
           <Button type="button" variant="outline" onClick={()=>put("qualifications",qualifications.filter((_,j)=>i!==j))}>Xóa dòng {title.toLowerCase()}</Button></div>)}
         <Button type="button" variant="outline" disabled={!options.length} onClick={()=>put("qualifications",[...qualifications,{kind,name:options[0],year:new Date().getFullYear()}])}>Thêm {title.toLowerCase()}</Button></fieldset>
     })}
     {show("jobs")&&<fieldset className="grid gap-2"><legend>Quá trình công tác</legend>
-      {jobs.map((j,i)=><div key={i} className="grid gap-1 rounded border p-2">{([["place","Nơi công tác","text"],["from","Từ ngày","date"],["to","Đến ngày","date"]] as const).map(([key,label,type])=><label key={key}>{label}<Input type={type} required={key!=="to"} value={j[key]??""} onChange={e=>put("jobs",jobs.map((v,n)=>n===i?{...v,[key]:key==="to"?e.target.value||null:e.target.value}:v))}/></label>)}{!j.to&&<p>Đang công tác</p>}
+      {jobs.map((j,i)=><div key={i} className="grid gap-1 rounded border p-2">{([["place","Nơi công tác","text"],["from","Từ ngày","date"],["to","Đến ngày","date"]] as const).map(([key,label,type])=><label key={key}>{label}<ValueInput type={type} required={key!=="to"} value={j[key]??""} onValueChange={next => put("jobs",jobs.map((v,n)=>n===i?{...v,[key]:key==="to"?next||null:next}:v))}/></label>)}{!j.to&&<p>Đang công tác</p>}
         <Button type="button" variant="outline" onClick={()=>put("jobs",jobs.filter((_,n)=>i!==n))}>Xóa quá trình</Button></div>)}
       <Button type="button" variant="outline" onClick={()=>put("jobs",[...jobs,{place:"",from:"",to:null}])}>Thêm quá trình công tác</Button></fieldset>}
-    <Button disabled={busy}>Lưu hồ sơ công tác</Button><p role="status">{message}</p></form>
+    <Button type="submit" disabled={busy}>Lưu hồ sơ công tác</Button><p role="status">{message}</p></ValidatedForm>
 }

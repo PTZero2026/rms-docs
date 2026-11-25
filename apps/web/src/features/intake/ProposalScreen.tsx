@@ -1,3 +1,6 @@
+import { routeUrl } from "../../demo/catalog"
+import { ChoiceOption } from "@rms/ui/components/choice-select"
+import { Checkbox } from "@rms/ui/components/checkbox"
 import { useState } from 'react'
 import { attachments } from './ProposalFiles'
 import { assignments } from './ProposalTeam'
@@ -119,7 +122,7 @@ function ProposalList({ app, projects }: { app: FeatureProps; projects: DemoRow[
         }
       >
         {app.session.role === 'researcher' && (
-          <Button onClick={() => app.go('F01', 'new')}>Lập đề xuất</Button>
+          <Button asChild><a href={routeUrl('F01', 'new')}>Lập đề xuất</a></Button>
         )}
       </Heading>
       <Panel title={officer ? 'Hồ sơ tiếp nhận' : 'Danh sách đề xuất'}>
@@ -131,22 +134,22 @@ function ProposalList({ app, projects }: { app: FeatureProps; projects: DemoRow[
             value={term}
             onChange={(e) => setTerm(e.target.value)}
           />
-          <Choice label="Kỳ nhận đề xuất" value={callId} onChange={(e) => setCall(e.target.value)}>
-            <option value="">Tất cả kỳ</option>
+          <Choice label="Kỳ nhận đề xuất" value={callId} onValueChange={setCall}>
+            <ChoiceOption value="">Tất cả kỳ</ChoiceOption>
             {app.rows
               .filter((c) => c.kind === 'call' && projects.some((p) => p.fields.callId === c.id))
               .map((c) => (
-                <option key={c.id} value={c.id}>
+                <ChoiceOption key={c.id} value={c.id}>
                   {c.title}
-                </option>
+                </ChoiceOption>
               ))}
           </Choice>
-          <Choice label="Trạng thái" value={status} onChange={(e) => setStatus(e.target.value)}>
-            <option value="">Tất cả trạng thái</option>
+          <Choice label="Trạng thái" value={status} onValueChange={setStatus}>
+            <ChoiceOption value="">Tất cả trạng thái</ChoiceOption>
             {[...new Set(projects.map((p) => p.status))].map((s) => (
-              <option key={s} value={s}>
+              <ChoiceOption key={s} value={s}>
                 {label(s)}
-              </option>
+              </ChoiceOption>
             ))}
           </Choice>
         </div>
@@ -160,17 +163,15 @@ function ProposalList({ app, projects }: { app: FeatureProps; projects: DemoRow[
                     p.status === 'SUBMITTED' &&
                     p.fields.checked === 'true' &&
                     p.fields.finalized !== 'true' ? (
-                      <input
+                      <Checkbox
                         aria-label={'Chọn ' + p.title}
-                        type="checkbox"
+
                         checked={selected.includes(p.id)}
-                        onChange={(e) =>
-                          select(
-                            e.target.checked
+                        onCheckedChange={checked => select(
+                            checked
                               ? [...selected, p.id]
                               : selected.filter((id) => id !== p.id),
-                          )
-                        }
+                          )}
                       />
                     ) : null,
                   ]

@@ -92,7 +92,7 @@ export default function AccountHome({ slug }: {slug: string}) {
             else if(target==="reports")setReportOpen(true)
             else setCallsOpen(true)
           }}/>)}
-        {account.userType==="admin" && connection && <Button variant="outline" onClick={()=>setEditor(!editor)}>Giao diện đơn vị</Button>}
+        {account.userType==="admin" && connection && <Button variant="outline" aria-expanded={editor} onClick={()=>setEditor(!editor)}>Giao diện đơn vị</Button>}
         {editor && account.userType==="admin" && connection && <ThemeEditor session={connection} onApply={setTokens} />}
         {account.userType==="admin" && <Button variant="outline" aria-expanded={flowOpen} onClick={()=>setFlowOpen(!flowOpen)}>Cấu hình quy trình</Button>}
         {account.userType==="admin" && flowOpen && connection && <WorkflowEditor session={connection}/>}

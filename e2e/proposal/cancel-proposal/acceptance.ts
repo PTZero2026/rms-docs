@@ -6,7 +6,7 @@ export async function checkWithdrawal(officer:Page,author:Page,project:string,co
   await officer.goto(path)
   await officer.getByRole("button",{name:"Mở thuyết minh"}).click()
   const open=async(page:Page)=>{
-    await page.locator("summary").filter({hasText:"Hủy đề xuất"}).click()
+    await page.getByRole("button",{name:"Hủy đề xuất",exact:true}).click()
     return page.getByRole("button",{name:"Xác nhận hủy đề xuất"})
   }
   const staffConfirm=await open(officer)
@@ -20,7 +20,7 @@ export async function checkWithdrawal(officer:Page,author:Page,project:string,co
     await expect(page.getByText("Lý do hủy · "+reason,{exact:true})).toBeVisible()
     await expect(page.getByText("Mã đề tài "+code,{exact:true})).toBeVisible()
     await expect(page.getByLabel("Tên đề xuất")).toBeDisabled()
-    await expect(page.locator("summary").filter({hasText:"Hủy đề xuất"})).toHaveCount(0)
+    await expect(page.getByRole("button",{name:"Hủy đề xuất",exact:true})).toHaveCount(0)
   }
   await verify(author)
   await expect(author.getByText("Đã hủy đề xuất.",{exact:true})).toBeVisible()

@@ -1,3 +1,5 @@
+import { Checkbox } from "@rms/ui/components/checkbox"
+import { ChoiceOption } from "@rms/ui/components/choice-select"
 import type { Dispatch, SetStateAction } from 'react'
 import { names, ids } from './model'
 import type { ProposalForm } from './proposals'
@@ -36,10 +38,9 @@ export function ProposalTeam({
           return (
             <div key={uid}>
               <label className="intake-check">
-                <input
-                  type="checkbox"
+                <Checkbox
                   checked={selected}
-                  onChange={(e) => setMember(uid, e.target.checked ? detail : undefined)}
+                  onCheckedChange={checked => setMember(uid, checked ? detail : undefined)}
                 />
                 {name}
               </label>
@@ -48,12 +49,10 @@ export function ProposalTeam({
                   <Choice
                     label={'Vai trò của ' + name}
                     value={detail.role}
-                    onChange={(e) =>
-                      setMember(uid, { ...detail, role: e.target.value as Assignment['role'] })
-                    }
+                    onValueChange={choiceValue => setMember(uid, { ...detail, role: choiceValue as Assignment['role'] })}
                   >
-                    <option value="MEMBER">Thành viên</option>
-                    <option value="SECRETARY">Thư ký</option>
+                    <ChoiceOption value="MEMBER">Thành viên</ChoiceOption>
+                    <ChoiceOption value="SECRETARY">Thư ký</ChoiceOption>
                   </Choice>
                   <FieldText
                     label={'Nhiệm vụ của ' + name}

@@ -67,16 +67,15 @@ export function Blank({
   )
 }
 export function Back({
-  onClick,
+  href,
   label = "Quay lại danh sách",
 }: {
-  onClick: () => void
+  href: string
   label?: string
 }) {
   return (
-    <Button variant="ghost" onClick={onClick}>
-      <ArrowLeft data-icon="inline-start" />
-      {label}
+    <Button variant="ghost" asChild>
+      <a href={href}><ArrowLeft data-icon="inline-start" />{label}</a>
     </Button>
   )
 }

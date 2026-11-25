@@ -39,8 +39,8 @@ test("a broken professional profile source leaves the home page usable and retri
     await home.getByRole("link",{name:"Xem tất cả thông báo"}).click()
     await expect(page.getByRole("region",{name:"Hộp thông báo"}).getByText(/\d+ tin chưa đọc/)).toBeVisible()
     const work=home.getByRole("region",{name:"Việc cần làm"})
-    await work.getByRole("button",{name:"Quá hạn",exact:true}).click()
-    await expect(work.getByRole("button",{name:"Quá hạn",pressed:true})).toBeVisible()
+    await work.getByRole("radio",{name:"Quá hạn",exact:true}).click()
+    await expect(work.getByRole("radio",{name:"Quá hạn",checked:true})).toBeVisible()
     await expect(work.getByText(/\d+ việc · \d+ quá hạn/)).toBeVisible()
     await expect(profile.getByRole("alert")).toBeVisible()
     await home.screenshot({path:fileURLToPath(new URL("../../../docs/reviews/screenshots/home/loi-rieng-ly-lich.png",import.meta.url))})
@@ -51,7 +51,7 @@ test("a broken professional profile source leaves the home page usable and retri
     await profile.getByRole("button",{name:"Thử lại"}).click()
     await expect(profile.getByRole("button",{name:"Bổ sung thông tin còn thiếu trong lý lịch"})).toBeVisible()
     expect(reads).toEqual(["widgets/profile"])
-    await expect(work.getByRole("button",{name:"Quá hạn",pressed:true})).toBeVisible()
+    await expect(work.getByRole("radio",{name:"Quá hạn",checked:true})).toBeVisible()
   }finally{if(!repaired)await restore()}
 })
 
@@ -129,7 +129,7 @@ test("home drops private content after a role refresh or an account lock",async(
   await expect(work.getByText(/\d+ việc · \d+ quá hạn/)).toBeVisible()
   provision("UPDATE rms.account SET is_active=false WHERE id=:'id'",{id:manager.account.id})
   const rejected=page.waitForResponse(r=>r.url().includes("/home/work?group=overdue"))
-  await work.getByRole("button",{name:"Quá hạn",exact:true}).click()
+  await work.getByRole("radio",{name:"Quá hạn",exact:true}).click()
   expect((await rejected).status()).toBe(403)
   await expect(home).toHaveCount(0)
   await expect(page.getByRole("alert")).toContainText("quyền truy cập trang chủ")

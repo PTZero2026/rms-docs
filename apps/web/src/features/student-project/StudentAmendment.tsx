@@ -1,3 +1,5 @@
+import { ChoiceOption, ChoiceSelect } from "@rms/ui/components/choice-select"
+import { Checkbox } from "@rms/ui/components/checkbox"
 import {useState} from "react"
 import {Button} from "@rms/ui/components/button"
 import {Input} from "@rms/ui/components/input"
@@ -35,14 +37,14 @@ export function StudentAmendment({session,item,refresh}:Props){
         <label>Tên đề tài điều chỉnh<Input value={title} maxLength={500} onChange={e=>setTitle(e.target.value)}/></label>
         <label>Mục tiêu điều chỉnh<Input value={objective} maxLength={4000} onChange={e=>setObjective(e.target.value)}/></label>
         <label>Sản phẩm dự kiến sau điều chỉnh<Input value={product} maxLength={4000} onChange={e=>setProduct(e.target.value)}/></label>
-        <label>Giảng viên phụ trách bản điều chỉnh<select className="block border p-2" value={mentorId} onChange={e=>setMentor(e.target.value)}>
-          {!people.some(p=>p.id===mentorId&&p.kind==="MENTOR")&&<option value={mentorId}>Chọn giảng viên hiện hành</option>}
-          {people.filter(p=>p.kind==="MENTOR").map(p=><option key={p.id} value={p.id}>{p.label}</option>)}</select></label>
+        <label>Giảng viên phụ trách bản điều chỉnh<ChoiceSelect value={mentorId} onValueChange={setMentor}>
+          {!people.some(p=>p.id===mentorId&&p.kind==="MENTOR")&&<ChoiceOption value={mentorId}>Chọn giảng viên hiện hành</ChoiceOption>}
+          {people.filter(p=>p.kind==="MENTOR").map(p=><ChoiceOption key={p.id} value={p.id}>{p.label}</ChoiceOption>)}</ChoiceSelect></label>
         <fieldset><legend>Nhóm sinh viên sau điều chỉnh</legend>
-          {people.filter(p=>p.kind==="STUDENT").map(p=><label key={p.id} className="block"><input type="checkbox" checked={members.includes(p.id)} disabled={p.id===item.leader}
-            onChange={e=>setMembers(e.target.checked?[...members,p.id]:members.filter(id=>id!==p.id))}/> {p.label}{p.id===item.leader?" · Trưởng nhóm":""}</label>)}
-          {item.members.filter(id=>!people.some(p=>p.id===id)).map(id=><label className="block" key={id}><input type="checkbox" checked={members.includes(id)} disabled={id===item.leader}
-            onChange={e=>setMembers(e.target.checked?[...members,id]:members.filter(v=>v!==id))}/> {item.memberLabels[item.members.indexOf(id)]} · Đã rời danh sách của khoa</label>)}
+          {people.filter(p=>p.kind==="STUDENT").map(p=><label key={p.id} className="block"><Checkbox checked={members.includes(p.id)} disabled={p.id===item.leader}
+            onCheckedChange={checked => setMembers(checked?[...members,p.id]:members.filter(id=>id!==p.id))}/> {p.label}{p.id===item.leader?" · Trưởng nhóm":""}</label>)}
+          {item.members.filter(id=>!people.some(p=>p.id===id)).map(id=><label className="block" key={id}><Checkbox checked={members.includes(id)} disabled={id===item.leader}
+            onCheckedChange={checked => setMembers(checked?[...members,id]:members.filter(v=>v!==id))}/> {item.memberLabels[item.members.indexOf(id)]} · Đã rời danh sách của khoa</label>)}
         </fieldset>
         <label>Lý do điều chỉnh<Input value={reason} maxLength={2000} onChange={e=>setReason(e.target.value)}/></label>
         <Button disabled={!reason.trim()||!title.trim()} onClick={()=>void save()}>Gửi bản điều chỉnh cho GVHD</Button>

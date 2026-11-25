@@ -1,3 +1,5 @@
+import { ChoiceOption, ChoiceSelect } from "@rms/ui/components/choice-select"
+import { Textarea } from "@rms/ui/components/textarea"
 import { useState } from "react"
 import { RoundAmendment } from "../amendment"
 import { Button } from "@rms/ui/components/button"
@@ -30,9 +32,9 @@ export function ReviewDecision({session,round,onChange}:{session:SignedInSession
     {!round.conclusion&&<Button disabled={pending} onClick={()=>void save(false)}>Chốt kết luận khoa học</Button>}
     <p>Thẩm định đạo đức · {translated(round.ethics)}</p>{round.ethicsNote&&<p>{round.ethicsNote}</p>}
     {round.projectStatus==="UNDER_REVIEW"&&["PENDING","SUPPLEMENT"].includes(round.ethics)&&
-      <fieldset disabled={pending} className="grid gap-2"><label>Kết quả của hội đồng đạo đức <select value={result} onChange={e=>setResult(e.target.value as Ethics["result"])}>
-        <option value="SUPPLEMENT">Yêu cầu bổ sung</option><option value="APPROVED">Thông qua</option><option value="REJECTED">Từ chối cuối cùng</option></select></label>
-        <label>Căn cứ hoặc yêu cầu bổ sung<textarea className="block w-full rounded border p-2" value={note} onChange={e=>setNote(e.target.value)}/></label>
+      <fieldset disabled={pending} className="grid gap-2"><label>Kết quả của hội đồng đạo đức <ChoiceSelect value={result} onValueChange={choiceValue => setResult(choiceValue as Ethics["result"])}>
+        <ChoiceOption value="SUPPLEMENT">Yêu cầu bổ sung</ChoiceOption><ChoiceOption value="APPROVED">Thông qua</ChoiceOption><ChoiceOption value="REJECTED">Từ chối cuối cùng</ChoiceOption></ChoiceSelect></label>
+        <label>Căn cứ hoặc yêu cầu bổ sung<Textarea className="block w-full rounded border p-2" value={note} onChange={e=>setNote(e.target.value)}/></label>
         <Button disabled={!note.trim()} onClick={()=>void save(true)}>Ghi kết quả đạo đức</Button></fieldset>}
     <p role="status">{message}</p>
     <RoundAmendment session={session} id={round.id} status={[round.status,round.projectStatus].join("/")} onChanged={async()=>{

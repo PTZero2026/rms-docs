@@ -1,3 +1,4 @@
+import { choose } from "../../lib/choice.mjs"
 import {checkHours} from "../../teaching-hour/teaching-hours/acceptance"
 import {test,expect,type Page,type Locator} from "@playwright/test"
 import {fileURLToPath} from "node:url"
@@ -39,7 +40,7 @@ test("F09 reviews the ministry decision and F12 validates each school's conferen
       await expect(form.getByText("Trạng thái · Nháp")).toBeVisible()
     }
     async function attach(form:Locator,code:string){
-      await form.getByLabel("Loại minh chứng").selectOption(code)
+      await choose(form.getByLabel("Loại minh chứng"), code)
       await form.getByLabel("Tải tệp căn cứ").setInputFiles(fileURLToPath(new URL("../../profile/export-profile/evidence/cv-v1.pdf",import.meta.url)))
       await form.getByRole("button",{name:"Tải và xác nhận tệp"}).click()
       await expect(form.getByRole("button",{name:"cv-v1.pdf"}).first()).toBeVisible()

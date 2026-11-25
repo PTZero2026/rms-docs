@@ -1,3 +1,4 @@
+import { ChoiceOption, ChoiceSelect } from "@rms/ui/components/choice-select"
 import {useEffect,useState} from "react"
 import {Button} from "@rms/ui/components/button"
 import {Input} from "@rms/ui/components/input"
@@ -29,10 +30,10 @@ export function ProductCreditApproval({enabled,authors,busy,approve}:{enabled:bo
     approve(credits)
   }
   return <>{multiple&&<fieldset disabled={busy} className="grid gap-2"><legend>Phân bổ giờ công bố</legend>
-    <label>Tác giả chính hoặc liên hệ<select value={lead} onChange={e=>{
-      const id=e.target.value;setLead(id)
+    <label>Tác giả chính hoặc liên hệ<ChoiceSelect value={lead} onValueChange={choiceValue => {
+      const id=choiceValue;setLead(id)
       if(!total&&id)setShares({[id]:100})
-    }}><option value="">Chọn tác giả</option>{authors.map(a=><option key={a.id} value={a.id}>{a.label}</option>)}</select></label>
+    }}><ChoiceOption value="">Chọn tác giả</ChoiceOption>{authors.map(a=><ChoiceOption key={a.id} value={a.id}>{a.label}</ChoiceOption>)}</ChoiceSelect></label>
     {authors.map(a=><label key={a.id}>Tỷ lệ % · {a.label}<Input type="number" min={0} max={100} step={1} value={shares[a.id]??0}
       onChange={e=>setShares({...shares,[a.id]:Number(e.target.value)})}/></label>)}
     <p>Tổng phân bổ · {total}%</p>

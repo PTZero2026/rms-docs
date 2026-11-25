@@ -1,3 +1,4 @@
+import { Checkbox } from "@rms/ui/components/checkbox"
 import { useEffect, useEffectEvent, useState } from "react"
 import { FilterPair } from "../mobile/FilterPair"
 import { usePhoneLayout } from "../mobile/usePhoneLayout"
@@ -6,7 +7,7 @@ import { Button } from "@rms/ui/components/button"
 import { Heading, Blank, Status, Back } from "../../demo/ui"
 import { demoRecord, configValue } from "../../demo/base-seed"
 import { eventCatalog, channels, inbox } from "../../demo/notifications"
-import { vietnamDate } from "../../demo/catalog"
+import { vietnamDate, routeUrl } from "../../demo/catalog"
 import { unitAllowed } from "../../demo/identity"
 import { rowVisible } from "../../demo/views"
 import type { FeatureProps } from "../../demo/types"
@@ -75,10 +76,10 @@ export default function Notifications(p: FeatureProps) {
           <Button
             key={label}
             variant={route.id === id || (!id && inboxPage) ? "secondary" : "ghost"}
-            onClick={() => go("B04", id)}
-          >
+            asChild
+          ><a href={routeUrl("B04", id)}>
             {label}
-          </Button>
+          </a></Button>
         ))}
       </div>
       {preferences ? (
@@ -96,21 +97,19 @@ export default function Notifications(p: FeatureProps) {
                   <small>{item.required ? "Thông báo bắt buộc" : "Luôn nhận trong ứng dụng"}</small>
                 </div>
                 <label className="check">
-                  <input
-                    type="checkbox"
+                  <Checkbox
                     checked={!!ch.email}
                     disabled={!!item.required || policy?.fields.email === "false"}
-                    onChange={(e) => updatePref(key, "email", e.target.checked)}
+                    onCheckedChange={checked => updatePref(key, "email", checked)}
                   />
                   Email
                 </label>
                 {item.important && (
                   <label className="check">
-                    <input
-                      type="checkbox"
+                    <Checkbox
                       checked={ch.sms}
                       disabled={policy?.fields.sms !== "true"}
-                      onChange={(e) => updatePref(key, "sms", e.target.checked)}
+                      onCheckedChange={checked => updatePref(key, "sms", checked)}
                     />
                     SMS
                   </label>
@@ -125,20 +124,19 @@ export default function Notifications(p: FeatureProps) {
           <Choice label="Sự kiện" value={event} change={setEvent} options={opts} />
           {["email", "sms"].map((channel) => (
             <label className="check" key={channel}>
-              <input
-                type="checkbox"
+              <Checkbox
                 checked={
                   channel === "email"
                     ? config?.fields.email !== "false"
                     : config?.fields.sms === "true"
                 }
                 disabled={channel === "sms" && !eventCatalog[event].important}
-                onChange={(e) => {
+                onCheckedChange={checked => {
                   const r =
                     config ??
                     demoRecord("channels-" + event, "channel-policy", opts[event], { event })
                   commit("Cập nhật kênh gửi", [
-                    { ...r, fields: { ...r.fields, [channel]: String(e.target.checked) } },
+                    { ...r, fields: { ...r.fields, [channel]: String(checked) } },
                   ])
                 }}
               />
@@ -156,9 +154,9 @@ export default function Notifications(p: FeatureProps) {
             Sửa mẫu thông báo
           </Button>
           <p>Nhắc trước hạn {configValue(rows, "NOTICE.DAYS") ?? "7"} ngày.</p>
-          <Button variant="ghost" onClick={() => go("B01")}>
+          <Button variant="ghost" asChild><a href={routeUrl("B01")}>
             Mở cấu hình nhắc hạn
-          </Button>
+          </a></Button>
         </section>
       ) : delivery ? (
         <section className="panel">
@@ -204,7 +202,7 @@ export default function Notifications(p: FeatureProps) {
         </section>
       ) : selected ? (
         <section className="panel pad stack">
-          <Back onClick={() => showUnread(fromUnread)} />
+          <Back href={routeUrl("B04", fromUnread ? "unread" : undefined)} />
           <h2>{selected.title}</h2>
           <p>{selected.fields.text ?? selected.fields.message}</p>
           <div className="toolbar">
@@ -275,18 +273,18 @@ export default function Notifications(p: FeatureProps) {
           </div>
           {shown.length ? (
             shown.map((r) => (
-              <button
+              <Button variant="ghost" size="content"
                 className="project-row"
                 key={r.id}
-                onClick={() => go("B04", fromUnread ? "unread~" + r.id : r.id)}
-              >
+                asChild
+              ><a href={routeUrl("B04", fromUnread ? "unread~" + r.id : r.id)}>
                 <Bell size={17} />
                 <span className="task-copy">
                   <b>{r.title}</b>
                   <small>{r.fields.at ? vietnamDate(r.fields.at, true) : r.fields.text}</small>
                 </span>
                 <Status value={r.status} />
-              </button>
+              </a></Button>
             ))
           ) : (
             <Blank title="Không có thông báo trong mục này" />

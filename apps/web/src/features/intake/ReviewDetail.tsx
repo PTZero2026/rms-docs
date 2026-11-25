@@ -1,3 +1,5 @@
+import { ChoiceOption } from "@rms/ui/components/choice-select"
+import { Checkbox } from "@rms/ui/components/checkbox"
 import { useState } from 'react'
 import { Button } from '@rms/ui/components/button'
 import type { DemoRow, FeatureProps } from '../../demo/types'
@@ -177,11 +179,11 @@ function RoundManagement({ app, p, r }: { app: FeatureProps; p: DemoRow; r: Demo
             <Choice
               label="Kết quả thẩm định"
               value={ethics}
-              onChange={(e) => setEthics(e.target.value as typeof ethics)}
+              onValueChange={choiceValue => setEthics(choiceValue as typeof ethics)}
             >
-              <option value="SUPPLEMENT">Yêu cầu bổ sung</option>
-              <option value="APPROVED">Thông qua</option>
-              <option value="REJECTED">Từ chối cuối cùng</option>
+              <ChoiceOption value="SUPPLEMENT">Yêu cầu bổ sung</ChoiceOption>
+              <ChoiceOption value="APPROVED">Thông qua</ChoiceOption>
+              <ChoiceOption value="REJECTED">Từ chối cuối cùng</ChoiceOption>
             </Choice>
             <Area
               label="Nội dung biên bản hoặc yêu cầu bổ sung"
@@ -226,20 +228,19 @@ export function ReviewDetail({
               <Choice
                 label="Hội đồng được phân công"
                 value={council}
-                onChange={(e) => setCouncil(e.target.value)}
+                onValueChange={setCouncil}
               >
-                <option value="">Chọn hội đồng</option>
+                <ChoiceOption value="">Chọn hội đồng</ChoiceOption>
                 {councils.map((c) => (
-                  <option key={c.id} value={c.id}>
+                  <ChoiceOption key={c.id} value={c.id}>
                     {c.title}
-                  </option>
+                  </ChoiceOption>
                 ))}
               </Choice>
               <label className="intake-check">
-                <input
-                  type="checkbox"
+                <Checkbox
                   checked={ethics}
-                  onChange={(e) => setEthics(e.target.checked)}
+                  onCheckedChange={setEthics}
                 />
                 Hồ sơ bắt buộc thẩm định đạo đức
               </label>

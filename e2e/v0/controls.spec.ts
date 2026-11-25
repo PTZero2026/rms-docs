@@ -1,0 +1,82 @@
+import { expect, test } from "@playwright/test"
+
+test("Chọn trường bằng bàn phím, đóng bằng Escape và giữ focus trong hộp thoại", async ({ page }) => {
+  await page.goto("/")
+  await page.getByRole("button", { name: "Phiên mô phỏng", exact: true }).click()
+  const dialog = page.getByRole("dialog")
+  const trigger = dialog.getByRole("combobox", { name: "Đơn vị", exact: true })
+  await trigger.focus()
+  await trigger.press("Enter")
+  const list = page.getByRole("listbox")
+  await expect(list.getByRole("option")).toHaveCount(2)
+  await page.keyboard.press("End")
+  await expect(list.getByRole("option", { name: "Đại học Y Hà Nội" })).toBeFocused()
+  await page.keyboard.press("Enter")
+  await expect(trigger).toHaveAttribute("data-value", "hmu")
+  await expect(trigger).toBeFocused()
+  await trigger.press("ArrowDown")
+  await expect(list).toBeVisible()
+  await page.keyboard.press("Escape")
+  await expect(dialog).toBeVisible()
+  await expect(trigger).toBeFocused()
+  await page.keyboard.press("Escape")
+  await expect(dialog).toBeHidden()
+  await expect(page.getByRole("button", { name: "Phiên mô phỏng", exact: true })).toBeFocused()
+})
+
+test("Lịch dùng ngày Việt Nam và ô đối tác nhận cả gợi ý lẫn văn bản tự nhập", async ({ page }) => {
+  await page.goto("/#/F11/new")
+  const partner = page.getByRole("combobox", { name: "Đối tác ngoài" })
+  await partner.fill("Khai thác")
+  await page.getByRole("option", { name: /Sông Nhuệ/ }).click()
+  await expect(partner).toHaveValue(/Sông Nhuệ/)
+  await partner.fill("Đối tác thử nghiệm")
+  await partner.press("Escape")
+  await expect(partner).toHaveValue("Đối tác thử nghiệm")
+  const date = page.getByLabel("Ngày bắt đầu", { exact: false }).first()
+  await date.fill("29/02/2028")
+  await expect(date).toHaveValue("29/02/2028")
+  await date.fill("31/02/2028")
+  await expect(date).toHaveAttribute("aria-invalid", "true")
+  await date.fill("28/02/2028")
+  await page.getByRole("button", { name: "Mở lịch" }).first().click()
+  const calendar = page.getByRole("dialog", { name: "Chọn ngày" })
+  await expect(calendar.getByRole("grid")).toBeVisible()
+  await calendar.getByRole("button", { name: /29/ }).click()
+  await expect(date).toHaveValue("29/02/2028")
+})
+
+test("Chọn từ máy, kéo thả và dán cùng chuyển tệp vào hồ sơ", async ({ page }) => {
+  await page.addInitScript(() => sessionStorage.setItem("rms.persona", JSON.stringify({ tenant: "tlu", role: "admin", userId: "ha" })))
+  await page.goto("/#/B01")
+  await page.getByRole("button", { name: "Tạo cấu hình" }).click()
+  const dialog = page.getByRole("dialog")
+  await dialog.getByLabel("Nguồn nội dung").click()
+  await page.getByRole("option", { name: "Tải tệp thử" }).click()
+  const drop = dialog.getByRole("group", { name: "Nhận tệp bằng kéo thả hoặc dán" })
+  let chooserCount = 0
+  page.on("filechooser", () => { chooserCount++ })
+  await drop.click()
+  await drop.focus()
+  for (const kind of ["drop", "paste"]) {
+    await drop.evaluate((target, kind) => {
+      const data = new DataTransfer()
+      data.items.add(new File(["nội dung"], kind + ".txt", { type: "text/plain" }))
+      const event = kind === "drop"
+        ? new DragEvent("drop", { bubbles: true, cancelable: true, dataTransfer: data })
+        : new ClipboardEvent("paste", { bubbles: true, cancelable: true, clipboardData: data })
+      target.dispatchEvent(event)
+    }, kind)
+    await expect(drop.locator("..")).toContainText(kind + ".txt")
+    const input = dialog.locator("input[type=file]")
+    expect(await input.evaluate(node => (node as HTMLInputElement).files?.[0]?.name)).toBe(kind + ".txt")
+  }
+  expect(chooserCount).toBe(0)
+  const [chooser] = await Promise.all([
+    page.waitForEvent("filechooser"),
+    dialog.getByRole("button", { name: "Chọn tệp từ máy" }).click(),
+  ])
+  await chooser.setFiles({ name: "browse.txt", mimeType: "text/plain", buffer: Buffer.from("RMS") })
+  await expect(drop.locator("..")).toContainText("browse.txt")
+  expect(chooserCount).toBe(1)
+})

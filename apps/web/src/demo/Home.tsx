@@ -22,7 +22,7 @@ import { Button } from "@rms/ui/components/button"
 import { Heading, Blank, Status } from "./ui"
 import type { FeatureProps } from "./types"
 import { dashboardTasks, featureOf, rowVisible } from "./views"
-import { canOpen, vietnamDate } from "./catalog"
+import { canOpen, vietnamDate, routeUrl } from "./catalog"
 import { configValue } from "./base-seed"
 import { inbox } from "./notifications"
 import { tenants } from "./identity"
@@ -32,7 +32,7 @@ import { usePhoneLayout } from "../features/mobile/usePhoneLayout"
 import art from "../assets/river-atlas.webp"
 export default function Home(p: FeatureProps) {
   const phone = usePhoneLayout()
-  const { rows, session, go } = p
+  const { rows, session } = p
   const [allTasks, setAllTasks] = useState(false)
   const visible = rows.filter((r) => rowVisible(r, session, rows))
   const projects = visible.filter(
@@ -165,7 +165,7 @@ export default function Home(p: FeatureProps) {
     color: "#8e86ad",
     n: projects.length - groups.reduce((s, g) => s + g.n, 0),
   })
-  const heroAction = admin ? () => go("B01") : call ? () => go("F02", call.id) : () => go("B04")
+  const heroUrl = admin ? routeUrl("B01") : call ? routeUrl("F02", call.id) : routeUrl("B04")
   const banner = (
     <section
       className="call-banner"
@@ -185,16 +185,16 @@ export default function Home(p: FeatureProps) {
             ? "Hạn nhận hồ sơ · " + vietnamDate(call.fields.due)
             : "Theo dõi cập nhật liên quan đến hồ sơ của bạn."}
       </p>
-      <Button variant="secondary" onClick={heroAction}>
+      <Button variant="secondary" asChild><a href={heroUrl}>
         {admin ? "Mở cấu hình" : call ? "Xem thông tin kỳ" : "Xem thông báo"}
         <ArrowUpRight data-icon="inline-end" />
-      </Button>
+      </a></Button>
     </section>
   )
   const metricCards = (
     <section className="home-metrics" aria-label="Số liệu trong phạm vi">
       {metrics.map(({ label, n, icon: Icon, dest }, i) => (
-        <button key={label} onClick={() => go(dest)} className={"metric-link tone-" + i}>
+        <Button variant="ghost" size="content" key={label} asChild className={"metric-link tone-" + i}><a href={routeUrl(dest)}>
           <span className="metric-symbol">
             <Icon size={19} />
           </span>
@@ -203,7 +203,7 @@ export default function Home(p: FeatureProps) {
             <strong>{n.toLocaleString("vi-VN")}</strong>
           </span>
           <ArrowUpRight size={15} className="metric-open" />
-        </button>
+        </a></Button>
       ))}
     </section>
   )
@@ -236,7 +236,7 @@ export default function Home(p: FeatureProps) {
                 </div>
                 {tasks.length ? (
                   (allTasks ? tasks : tasks.slice(0, 4)).map((t) => (
-                    <button className="task-row" key={t.id} onClick={() => go(t.feature, t.target)}>
+                    <Button variant="ghost" size="content" className="task-row" key={t.id} asChild><a href={routeUrl(t.feature, t.target)}>
                       <span
                         className={"task-symbol " + (t.date && t.date < "2026-11-21" ? "late" : "")}
                       >
@@ -253,7 +253,7 @@ export default function Home(p: FeatureProps) {
                         <span className="late-label">Quá hạn</span>
                       )}
                       <ChevronRight size={15} />
-                    </button>
+                    </a></Button>
                   ))
                 ) : (
                   <Blank
@@ -262,7 +262,7 @@ export default function Home(p: FeatureProps) {
                   />
                 )}
                 {tasks.length > 4 && (
-                  <Button variant="ghost" onClick={() => setAllTasks(!allTasks)}>
+                  <Button variant="ghost" aria-expanded={allTasks} onClick={() => setAllTasks(!allTasks)}>
                     {allTasks ? "Thu gọn" : "Xem thêm " + (tasks.length - 4) + " việc"}
                   </Button>
                 )}
@@ -299,11 +299,11 @@ export default function Home(p: FeatureProps) {
             </div>
             {projects.length ? (
               projects.slice(0, 5).map((r) => (
-                <button
+                <Button variant="ghost" size="content"
                   className="project-row"
                   key={r.id}
-                  onClick={() => go(featureOf(r, session), r.id)}
-                >
+                  asChild
+                ><a href={routeUrl(featureOf(r, session), r.id)}>
                   <span className="project-symbol">
                     <Files size={18} />
                   </span>
@@ -315,23 +315,23 @@ export default function Home(p: FeatureProps) {
                   </span>
                   <Status value={r.status} />
                   <ChevronRight size={15} />
-                </button>
+                </a></Button>
               ))
             ) : (
               <div className="toolbar pad">
-                <Button variant="outline" onClick={() => go("F08")}>
+                <Button variant="outline" asChild><a href={routeUrl("F08")}>
                   <UserRound />
                   Lý lịch của tôi
-                </Button>
+                </a></Button>
                 {session.role === "user" ? (
-                  <Button variant="outline" onClick={() => go("B03", "requests")}>
+                  <Button variant="outline" asChild><a href={routeUrl("B03", "requests")}>
                     Yêu cầu nâng quyền
-                  </Button>
+                  </a></Button>
                 ) : (
-                  <Button variant="outline" onClick={() => go("F02")}>
+                  <Button variant="outline" asChild><a href={routeUrl("F02")}>
                     <ArrowDownToLine />
                     Các kỳ đề xuất
-                  </Button>
+                  </a></Button>
                 )}
               </div>
             )}
@@ -340,20 +340,20 @@ export default function Home(p: FeatureProps) {
           <section key={section} className="panel">
             <div className="section-heading">
               <h2>Thông báo gần đây</h2>
-              <Button variant="ghost" onClick={() => go("B04")}>
+              <Button variant="ghost" asChild><a href={routeUrl("B04")}>
                 Xem tất cả <ArrowRight />
-              </Button>
+              </a></Button>
             </div>
             {notices.length ? (
               notices.slice(0, 5).map((n) => (
-                <button key={n.id} className="project-row" onClick={() => go("B04", n.id)}>
+                <Button variant="ghost" size="content" key={n.id} className="project-row" asChild><a href={routeUrl("B04", n.id)}>
                   <Clock3 size={17} />
                   <span className="task-copy">
                     <b>{n.title}</b>
                     <small>{n.fields.text || "Thông báo trong ứng dụng"}</small>
                   </span>
                   <ChevronRight size={15} />
-                </button>
+                </a></Button>
               ))
             ) : (
               <p className="muted pad">Chưa có thông báo mới.</p>

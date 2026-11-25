@@ -1,3 +1,4 @@
+import { Textarea } from "@rms/ui/components/textarea"
 import {useState} from "react"
 import {Button} from "@rms/ui/components/button"
 import type {operations} from "@rms/api-contracts"
@@ -22,7 +23,7 @@ export function StudentProgress({session,item,actor,refresh}:{session:SignedInSe
   return <fieldset className="grid gap-2 rounded border p-3" disabled={busy}><legend>Tiến độ thực hiện</legend>
     {item.progressAt?<><p>{item.progressNote}</p><p>{item.progressLabel} · {time.format(new Date(item.progressAt))}</p></>:
       item.requireProgress&&<p>Cần ghi tiến độ trước khi nộp kết quả cuối.</p>}
-    {canRecord&&<><label>Nội dung tiến độ<textarea className="block w-full rounded border p-2" maxLength={4000} value={note} onChange={e=>setNote(e.target.value)}/></label>
+    {canRecord&&<><label>Nội dung tiến độ<Textarea className="block w-full rounded border p-2" maxLength={4000} value={note} onChange={e=>setNote(e.target.value)}/></label>
       <Button variant="outline" disabled={!note.trim()} onClick={()=>void save()}>Ghi nhận tiến độ</Button></>}
     {error&&<p role="alert">{error}</p>}
   </fieldset>

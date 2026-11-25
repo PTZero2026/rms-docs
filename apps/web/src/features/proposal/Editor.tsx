@@ -1,3 +1,6 @@
+import { Disclosure } from "@rms/ui/components/disclosure"
+import { ChoiceOption, ChoiceSelect } from "@rms/ui/components/choice-select"
+import { Textarea } from "@rms/ui/components/textarea"
 import { formatVietnamDate } from "../../format-date"
 import {Suggestions} from "../assistant/Suggestions"
 import { useCallback,useEffect,useState } from "react"
@@ -88,12 +91,12 @@ export default function ProposalEditor({session,call,id}:{session:SignedInSessio
     {record&&["UNDER_REVIEW","APPROVED","REJECTED"].includes(record.semantic)&&<OwnerResult session={session} id={record.id}/>}
     <fieldset className="grid gap-3" disabled={!editable||busy}>
       <label>Tên đề xuất<Input value={draft.title} onChange={e=>setDraft({...draft,title:e.target.value})}/></label>
-      <label>Lĩnh vực đề tài <select value={draft.fieldId??""} onChange={e=>setDraft({...draft,fieldId:e.target.value||null})}>
-        <option value="">Chọn lĩnh vực</option>{options.map(o=><option key={o.id} value={o.id}>{o.name}</option>)}</select></label>
+      <label>Lĩnh vực đề tài <ChoiceSelect value={draft.fieldId??""} onValueChange={choiceValue => setDraft({...draft,fieldId:choiceValue||null})}>
+        <ChoiceOption value="">Chọn lĩnh vực</ChoiceOption>{options.map(o=><ChoiceOption key={o.id} value={o.id}>{o.name}</ChoiceOption>)}</ChoiceSelect></label>
       <label>Thời gian thực hiện (tháng)<Input type="number" min={1} step={1} value={draft.months??""} onChange={e=>setDraft({...draft,months:e.target.value===""?null:Number(e.target.value)})}/></label>
       <label>Kinh phí đề xuất (VND)<Input type="number" min={0} step={1} value={draft.budget??""} onChange={e=>setDraft({...draft,budget:e.target.value===""?null:Number(e.target.value)})}/></label>
       {fields.map(f=><label key={f.key}>{f.label}{f.required?" (cần khi nộp)":""}
-        <textarea className="block w-full rounded border p-2" value={draft.document[f.key]??""} onChange={e=>setDraft({...draft,document:{...draft.document,[f.key]:e.target.value}})}/></label>)}
+        <Textarea className="block w-full rounded border p-2" value={draft.document[f.key]??""} onChange={e=>setDraft({...draft,document:{...draft.document,[f.key]:e.target.value}})}/></label>)}
       <CommitmentFields session={session} value={draft.commitments??{}} onChange={v=>setDraft({...draft,commitments:v})}/>
       <fieldset><legend>Thành viên bổ sung</legend>{draft.memberIds.map(id=><div key={id}>{record?.members.find(m=>m.id===id)?.email??id} {editable&&<Button variant="outline" onClick={()=>setDraft({...draft,memberIds:draft.memberIds.filter(x=>x!==id)})}>Bỏ thành viên</Button>}</div>)}
         {editable && <div className="flex flex-wrap items-end gap-2"><label>Mã tài khoản thành viên<Input value={member} onChange={e=>setMember(e.target.value)}/></label>
@@ -102,7 +105,7 @@ export default function ProposalEditor({session,call,id}:{session:SignedInSessio
     <div className="flex flex-wrap gap-2">{editable&&<Button disabled={busy||!draft.title.trim()} onClick={()=>void save("draft")}>Lưu nháp đề xuất</Button>}
       {record?.canEdit&&<Button disabled={busy||dirty||!receiving} onClick={()=>void save("submit")}>Nộp đề xuất</Button>}</div>
     {record?.canEdit&&!receiving&&<p>Kỳ hiện không nhận đề xuất.</p>}
-    {record?.canReturn&&<fieldset disabled={busy} className="grid gap-2"><label>Lý do cần bổ sung<textarea className="block w-full rounded border p-2" value={reason} onChange={e=>setReason(e.target.value)}/></label>
+    {record?.canReturn&&<fieldset disabled={busy} className="grid gap-2"><label>Lý do cần bổ sung<Textarea className="block w-full rounded border p-2" value={reason} onChange={e=>setReason(e.target.value)}/></label>
       <Button className="justify-self-start" onClick={()=>void save("return")}>Trả hồ sơ bổ sung</Button></fieldset>}
     {record?.canCancel&&<CancelProposal key={"cancel-"+record.id+"-"+record.revision} busy={busy} dirty={dirty} onConfirm={value=>void save("cancel",value)}/>}
     <p role="status">{message}</p></section>
@@ -110,12 +113,12 @@ export default function ProposalEditor({session,call,id}:{session:SignedInSessio
 
 function CancelProposal({busy,dirty,onConfirm}:{busy:boolean;dirty:boolean;onConfirm:(reason:string)=>void}){
   const [value,setValue]=useState("")
-  return <details><summary className="w-fit cursor-pointer">Hủy đề xuất</summary>
+  return <Disclosure title={<> Hủy đề xuất </>}>
     <fieldset disabled={busy} className="mt-2 grid gap-2">
-      <label>Lý do hủy đề xuất<textarea maxLength={4000} value={value}
+      <label>Lý do hủy đề xuất<Textarea maxLength={4000} value={value}
         className="block w-full rounded border p-2" onChange={e=>setValue(e.target.value)}/></label>
       <p>{dirty?"Hệ thống sẽ hủy phiên bản đã lưu. Các chỉnh sửa chưa lưu sẽ bị bỏ.":"Hồ sơ đã hủy vẫn lưu để tra cứu."}</p>
       <Button variant="destructive" className="justify-self-start" disabled={!value.replace(/[\p{Z}\p{C}]/gu,"")}
         onClick={()=>onConfirm(value)}>Xác nhận hủy đề xuất</Button>
-    </fieldset></details>
+    </fieldset></Disclosure>
 }

@@ -1,3 +1,7 @@
+import { ValidatedForm } from "@rms/ui/components/validated-form"
+import { ValueInput } from "@rms/ui/components/date-input"
+import { Checkbox } from "@rms/ui/components/checkbox"
+import { ChoiceOption, ChoiceSelect } from "@rms/ui/components/choice-select"
 import { useId, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { Button } from '@rms/ui/components/button'
@@ -78,14 +82,11 @@ function Control({
             const selected = value.split(',').filter(Boolean)
             return (
               <label key={key}>
-                <input
-                  type="checkbox"
+                <Checkbox
                   checked={selected.includes(key)}
-                  onChange={(e) =>
-                    onChange(
-                      (e.target.checked ? [...selected, key] : selected.filter((s) => s !== key)).join(','),
-                    )
-                  }
+                  onCheckedChange={checked => onChange(
+                      (checked ? [...selected, key] : selected.filter((s) => s !== key)).join(','),
+                    )}
                 />{' '}
                 {name}
               </label>
@@ -93,21 +94,21 @@ function Control({
           })}
         </div>
       ) : type === 'choice' ? (
-        <select {...props} value={value} onChange={(e) => onChange(e.target.value)}>
+        <ChoiceSelect {...props} value={value} onValueChange={onChange}>
           {spec.options?.map(([k, v]) => (
-            <option key={k} value={k}>
+            <ChoiceOption key={k} value={k}>
               {v}
-            </option>
+            </ChoiceOption>
           ))}
-        </select>
+        </ChoiceSelect>
       ) : type === 'long' ? (
         <Textarea {...props} value={value} onChange={(e) => onChange(e.target.value)} rows={3} />
       ) : type === 'check' ? (
-        <input
+        <Checkbox
           id={id}
-          type="checkbox"
+
           checked={value === 'yes'}
-          onChange={(e) => onChange(e.target.checked ? 'yes' : '')}
+          onCheckedChange={checked => onChange(checked ? 'yes' : '')}
         />
       ) : type === 'file' || type === 'files' ? (
         <div className="exec-file">
@@ -136,14 +137,14 @@ function Control({
           <small>{value || 'Chưa chọn tệp'} · Chỉ lưu tên tệp.</small>
         </div>
       ) : (
-        <Input
+        <ValueInput
           {...props}
           type={type}
           min={spec.min}
           max={spec.max}
           step={spec.step}
           value={value}
-          onChange={(e) => onChange(e.target.value)}
+          onValueChange={onChange}
         />
       )}
       {hint && (
@@ -222,7 +223,7 @@ export function Action({
               {description || subject?.title || 'Kiểm tra thông tin trước khi xác nhận.'}
             </DialogDescription>
           </DialogHeader>
-          <form
+          <ValidatedForm
             onSubmit={(e) => {
               e.preventDefault()
               try {
@@ -267,7 +268,7 @@ export function Action({
               </Button>
               <Button type="submit">{confirm || 'Xác nhận'}</Button>
             </DialogFooter>
-          </form>
+          </ValidatedForm>
         </DialogContent>
       </Dialog>
       <span role="status" className="sr-only">

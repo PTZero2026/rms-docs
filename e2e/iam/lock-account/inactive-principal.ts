@@ -22,7 +22,7 @@ export async function checkInactivePrincipal(
   await manager.getByRole("button",{name:"Mở thuyết minh"}).click()
   await expect(manager.getByLabel("Tên đề xuất")).toHaveValue(proposal.title)
   await expect(manager.getByRole("button",{name:"Trả hồ sơ bổ sung"})).toHaveCount(0)
-  await expect(manager.locator("summary").filter({hasText:"Hủy đề xuất"})).toHaveCount(0)
+  await expect(manager.getByRole("button",{name:"Hủy đề xuất",exact:true})).toHaveCount(0)
   await manager.getByRole("button", { name: "Quản lý người dùng" }).click()
   await manager.getByLabel("Tên hoặc email").fill(principal.email)
   await manager.getByRole("button", { name: "Tìm người dùng" }).click()

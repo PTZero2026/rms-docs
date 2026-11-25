@@ -1,3 +1,6 @@
+import { DateInput } from "@rms/ui/components/date-input"
+import { Disclosure } from "@rms/ui/components/disclosure"
+import { Checkbox } from "@rms/ui/components/checkbox"
 import { useEffect,useState } from "react"
 import { Button } from "@rms/ui/components/button"
 import { Input } from "@rms/ui/components/input"
@@ -50,14 +53,14 @@ export default function Budget({session,id}:{session:SignedInSession;id:string})
         {BigInt(d.balance)<0n&&<p role="status">Vượt kinh phí {vnd(String(-BigInt(d.balance)))}</p>}
         {d.allocation.settlementMode&&<strong>Đã quyết toán và khóa sổ · {d.allocation.settlementMode==="MANUAL"?"Rà thủ công":"Đã đối soát"}</strong>}
       </>:<p>Chưa xác nhận cấp kinh phí.</p>}
-      {active&&d.officer&&d.approvedBudget&&<details open={!d.allocation}><summary>{d.allocation?"Điều chỉnh tổng cấp":"Cấp kinh phí"}</summary>
+      {active&&d.officer&&d.approvedBudget&&<Disclosure defaultOpen={!d.allocation} title={<> {d.allocation?"Điều chỉnh tổng cấp":"Cấp kinh phí"} </>}>
         <fieldset disabled={busy} className="grid gap-2"><label>Tổng cấp (VND)<Input inputMode="numeric" value={allocated} onChange={e=>amount(e.target.value)}/></label>
         <label>Phí điều chỉnh (nếu có)<Input inputMode="numeric" value={override} onChange={e=>fee(e.target.value)}/></label>
         <label>Lý do điều chỉnh<Input value={note} onChange={e=>setNote(e.target.value)}/></label>
         <Button onClick={()=>change(()=>{
           const body={amount:allocated,override:override.trim()||null,note,revision:d.allocation?.revision}
           return d.allocation?session.api.PUT("/api/tenants/{slug}/projects/{id}/budget/allocation",{params,body}):session.api.POST("/api/tenants/{slug}/projects/{id}/budget/allocation",{params,body})
-        },"Đã ghi nhận kinh phí.")}>{d.allocation?"Lưu điều chỉnh":"Xác nhận cấp kinh phí"}</Button></fieldset></details>}
+        },"Đã ghi nhận kinh phí.")}>{d.allocation?"Lưu điều chỉnh":"Xác nhận cấp kinh phí"}</Button></fieldset></Disclosure>}
       {d.items.map(row=><article key={row.id} className="grid gap-1 rounded border p-2"><strong>{row.description} · {vnd(row.amount)}</strong>
         <span>{row.date.split("-").reverse().join("/")} · {labels[row.reconciliation]}</span><span className="break-all">Mã khoản chi · {row.id}</span>
         {row.files.map(f=><div key={f}><Button variant="outline" onClick={()=>fileLink(f)}>{d.files.find(x=>x.id===f)?.filename??"Xem chứng từ"}</Button>
@@ -71,9 +74,9 @@ export default function Budget({session,id}:{session:SignedInSession;id:string})
       {active&&d.principal&&d.allocation&&<fieldset disabled={busy} className="grid gap-2"><legend>{editing?"Sửa phiếu chi":"Ghi khoản chi"}</legend>
         <label>Nội dung chi<Input value={draft.description} onChange={e=>setDraft({...draft,description:e.target.value})}/></label>
         <label>Số tiền chi (VND)<Input inputMode="numeric" value={draft.amount} onChange={e=>setDraft({...draft,amount:e.target.value})}/></label>
-        <label>Ngày chi<Input type="date" value={draft.date} onChange={e=>setDraft({...draft,date:e.target.value})}/></label>
-        <fieldset><legend>Chứng từ đính kèm</legend>{d.files.map(f=><label className="block" key={f.id}><input type="checkbox" checked={draft.files.includes(f.id)}
-          onChange={e=>setDraft({...draft,files:e.target.checked?[...draft.files,f.id]:draft.files.filter(id=>id!==f.id)})}/> {f.filename}</label>)}</fieldset>
+        <label>Ngày chi<DateInput value={draft.date} onValueChange={next => setDraft({...draft,date:next})}/></label>
+        <fieldset><legend>Chứng từ đính kèm</legend>{d.files.map(f=><label className="block" key={f.id}><Checkbox checked={draft.files.includes(f.id)}
+          onCheckedChange={checked => setDraft({...draft,files:checked?[...draft.files,f.id]:draft.files.filter(id=>id!==f.id)})}/> {f.filename}</label>)}</fieldset>
         <ProjectFile session={session} project={id} revision={d.projectRevision} onFile={(fileId,filename)=>{setDraft(prev=>({...prev,files:[...prev.files,fileId]}));setData({...d,files:[...d.files,{id:fileId,filename}]})}}/>
         <Button onClick={()=>change(()=>session.api.PUT("/api/tenants/{slug}/projects/{id}/budget/expenses/{expenseId}",{params:expenseParams(draft.id),body:{amount:draft.amount,date:draft.date,description:draft.description,files:draft.files,revision:draft.revision}}),"Đã lưu khoản chi.")}>Lưu khoản chi</Button>
         {editing&&<><label>Lý do hủy khoản chi<Input value={voidReason} onChange={e=>setVoidReason(e.target.value)}/></label>
@@ -81,7 +84,7 @@ export default function Budget({session,id}:{session:SignedInSession;id:string})
           <Button variant="outline" onClick={()=>setDraft(empty())}>Quay về tạo khoản mới</Button></>}
       </fieldset>}
       {settle&&d.officer&&d.allocation&&<fieldset disabled={busy} className="grid gap-2"><legend>Quyết toán</legend>
-        {d.reconciliationEnabled?<p>Các khoản chi phải có kết quả Khớp.</p>:<label><input type="checkbox" checked={checked} onChange={e=>check(e.target.checked)}/> Đã rà soát thủ công</label>}
+        {d.reconciliationEnabled?<p>Các khoản chi phải có kết quả Khớp.</p>:<label><Checkbox checked={checked} onCheckedChange={check}/> Đã rà soát thủ công</label>}
         <Button onClick={()=>change(()=>session.api.POST("/api/tenants/{slug}/projects/{id}/budget/settle",{params,body:{manualReviewed:checked}}),"Đã quyết toán và khóa sổ.")}>Quyết toán và đóng đề tài</Button></fieldset>}
     </>}{error&&<p role="alert" className="break-words">{error}</p>}{message&&<p role="status">{message}</p>}
   </section>

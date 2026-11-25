@@ -1,4 +1,4 @@
-import { Button } from "@rms/ui/components/button"
+import { ToggleGroup, ToggleGroupItem } from "@rms/ui/components/toggle-group"
 
 type Props = {
   label: string
@@ -9,17 +9,10 @@ type Props = {
 
 export function FilterPair({ label, options, secondActive, onChange }: Props) {
   return (
-    <div role="group" aria-label={label} className="mobile-filters">
-      {options.map((text, index) => (
-        <Button
-          key={text}
-          variant="ghost"
-          aria-pressed={secondActive === (index === 1)}
-          onClick={() => onChange(index === 1)}
-        >
-          {text}
-        </Button>
-      ))}
-    </div>
+    <ToggleGroup type="single" aria-label={label} className="mobile-filters"
+      value={secondActive ? "second" : "first"} onValueChange={value => { if (value) onChange(value === "second") }}>
+      <ToggleGroupItem value="first">{options[0]}</ToggleGroupItem>
+      <ToggleGroupItem value="second">{options[1]}</ToggleGroupItem>
+    </ToggleGroup>
   )
 }

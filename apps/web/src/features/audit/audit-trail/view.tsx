@@ -1,3 +1,5 @@
+import { ValidatedForm } from "@rms/ui/components/validated-form"
+import { DateInput } from "@rms/ui/components/date-input"
 import { useEffect,useState } from "react"
 import type { operations } from "@rms/api-contracts"
 import { Button } from "@rms/ui/components/button"
@@ -59,15 +61,15 @@ export default function ProjectHistory({session}:{session:SignedInSession}) {
   return <section className="grid gap-4 py-4" aria-label="Tra cứu hồ sơ">
     {id?<><Button className="justify-self-start" variant="outline" onClick={()=>select("")}>Về danh sách hồ sơ</Button>
       <h2>Lịch sử hồ sơ</h2>
-      {!error && <form className="flex flex-wrap items-end gap-2" onSubmit={e=>{e.preventDefault();setSkip(0);setRange({...dates});refresh()}}>
-        <label>Từ ngày<Input type="date" value={dates.from} onChange={e=>setDates({...dates,from:e.target.value})}/></label>
-        <label>Đến ngày<Input type="date" value={dates.to} onChange={e=>setDates({...dates,to:e.target.value})}/></label>
-        <Button variant="outline">Lọc sự kiện</Button></form>}
-      {trail && <><h3>{trail.project.title}</h3>{trail.project.hasProposal&&<Button variant="outline" onClick={()=>setEditing(!editing)}>Mở thuyết minh</Button>}
-        <Button variant="outline" onClick={()=>setProgress(!progress)}>Giao đề tài và tiến độ</Button>
-        <Button variant="outline" onClick={()=>setBudget(!budget)}>Kinh phí đề tài</Button>
-        <Button variant="outline" onClick={()=>setProducts(!products)}>Sản phẩm khoa học</Button>
-        <Button variant="outline" onClick={()=>setAcceptance(!acceptance)}>Nghiệm thu đề tài</Button>
+      {!error && <ValidatedForm className="flex flex-wrap items-end gap-2" onSubmit={e=>{e.preventDefault();setSkip(0);setRange({...dates});refresh()}}>
+        <label>Từ ngày<DateInput value={dates.from} onValueChange={next => setDates({...dates,from:next})}/></label>
+        <label>Đến ngày<DateInput value={dates.to} onValueChange={next => setDates({...dates,to:next})}/></label>
+        <Button type="submit" variant="outline">Lọc sự kiện</Button></ValidatedForm>}
+      {trail && <><h3>{trail.project.title}</h3>{trail.project.hasProposal&&<Button variant="outline" aria-expanded={editing} onClick={()=>setEditing(!editing)}>Mở thuyết minh</Button>}
+        <Button variant="outline" aria-expanded={progress} onClick={()=>setProgress(!progress)}>Giao đề tài và tiến độ</Button>
+        <Button variant="outline" aria-expanded={budget} onClick={()=>setBudget(!budget)}>Kinh phí đề tài</Button>
+        <Button variant="outline" aria-expanded={products} onClick={()=>setProducts(!products)}>Sản phẩm khoa học</Button>
+        <Button variant="outline" aria-expanded={acceptance} onClick={()=>setAcceptance(!acceptance)}>Nghiệm thu đề tài</Button>
         {acceptance&&<Acceptance key={id} id={id} session={session}/>}
         {products&&<Products key={id} id={id} session={session}/>}
         {budget&&<Budget key={id} id={id} session={session}/>}
@@ -80,8 +82,8 @@ export default function ProjectHistory({session}:{session:SignedInSession}) {
           {row.reason && <p>{row.reason}</p>}{row.onBehalfOf && <p>Đại diện cho {row.onBehalfOf}</p>}
         </li>)}</ol></>}
     </>:<><h2>Hồ sơ nghiên cứu</h2>
-      <form className="flex items-end gap-2" onSubmit={e=>{e.preventDefault();setSkip(0);setFind(search);refresh()}}>
-        <label>Tên đề tài<Input value={search} onChange={e=>setSearch(e.target.value)}/></label><Button>Tìm hồ sơ</Button></form>
+      <ValidatedForm className="flex items-end gap-2" onSubmit={e=>{e.preventDefault();setSkip(0);setFind(search);refresh()}}>
+        <label>Tên đề tài<Input value={search} onChange={e=>setSearch(e.target.value)}/></label><Button type="submit">Tìm hồ sơ</Button></ValidatedForm>
       {projects && <><p>{projects.total} hồ sơ trong phạm vi</p><ul>{projects.items.map(p=><li key={p.id}>
         <a className="underline" href={link(p.id)} onClick={e=>{if(!e.ctrlKey&&!e.metaKey){e.preventDefault();select(p.id)}}}>{p.title}</a>
         <span> · {p.status}</span></li>)}</ul></>}</>}

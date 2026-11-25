@@ -64,7 +64,7 @@ function SuggestReceipt({ data, patch }: { data: Data; patch: (d: Data) => void 
     )
   return (
     <div className="exec-reading">
-      <Button type="button" size="sm" variant="outline" onClick={() => setOpen(!open)}>
+      <Button type="button" size="sm" variant="outline" aria-expanded={open} onClick={() => setOpen(!open)}>
         {open ? 'Bỏ gợi ý' : 'Đọc phiếu mẫu bằng OCR'}
       </Button>
       {open && (

@@ -1,3 +1,4 @@
+import { choose } from "../../lib/choice.mjs"
 import {execFileSync} from "node:child_process"
 import {readFileSync} from "node:fs"
 import {expect,test} from "@playwright/test"
@@ -49,7 +50,7 @@ test("F10 uses the invited lecturer's answer for just one of a student's two app
     for(const title of ["Đăng ký A","Đăng ký B"]){
       await student.getByRole("button",{name:"Tạo đăng ký"}).click()
       await student.getByLabel("Tên đề tài sinh viên").fill(title)
-      await student.getByLabel("Giảng viên hướng dẫn").selectOption(m.account.id)
+      await choose(student.getByLabel("Giảng viên hướng dẫn"), m.account.id)
       const saved=student.waitForResponse(r=>r.url().includes("/student-projects/")&&r.request().method()==="PUT")
       await student.getByRole("button",{name:"Mời giảng viên xác nhận"}).click()
       id=(await (await saved).json()).id
@@ -106,7 +107,7 @@ test("F10 uses the invited lecturer's answer for just one of a student's two app
     await faculty.getByRole("button",{name:"Điều chỉnh hồ sơ đã duyệt"}).click()
     await faculty.getByLabel("Mục tiêu điều chỉnh").fill("Đo lưu lượng theo mùa")
     await faculty.getByLabel("Sản phẩm dự kiến sau điều chỉnh").fill("Bản đồ quan trắc")
-    await faculty.getByLabel("Giảng viên phụ trách bản điều chỉnh").selectOption(successor.account.id)
+    await choose(faculty.getByLabel("Giảng viên phụ trách bản điều chỉnh"), successor.account.id)
     await faculty.getByLabel("Lý do điều chỉnh").fill("Khoa phân công lại theo chuyên môn quan trắc")
     await faculty.getByRole("button",{name:"Gửi bản điều chỉnh cho GVHD"}).click()
     await expect(faculty).toContainText("Chờ xác nhận bản điều chỉnh")
@@ -132,7 +133,7 @@ test("F10 uses the invited lecturer's answer for just one of a student's two app
       async function attachFinalEvidence(){
         for(const [code,name,path] of [["REPORT","bao-cao-tong-ket.pdf","../../review/meeting-minutes/evidence/bien-ban-hop.pdf"],
           ["PRODUCT","san-pham-quan-trac.pdf","../../applied-project/register-applied-project/evidence/hop-dong-thu.pdf"]]){
-          await dossier.getByLabel("Loại minh chứng cuối").selectOption(code)
+          await choose(dossier.getByLabel("Loại minh chứng cuối"), code)
           await dossier.getByLabel("Tải tệp căn cứ").setInputFiles({name,mimeType:"application/pdf",buffer:readFileSync(new URL(path,import.meta.url))})
           await dossier.getByRole("button",{name:"Tải và xác nhận tệp"}).click()
           await expect(dossier.getByRole("button",{name})).toBeVisible()

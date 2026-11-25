@@ -1,3 +1,4 @@
+import { ValidatedForm } from "@rms/ui/components/validated-form"
 import { useEffect, useId, useRef, useState } from "react"
 import { Button } from "@rms/ui/components/button"
 import { Field, FieldGroup, FieldLabel } from "@rms/ui/components/field"
@@ -91,7 +92,7 @@ export default function ConfigForm({ p, initial, catalogEntry, platform, close, 
   return <Editor title={source ? "Cập nhật cấu hình" : "Tạo cấu hình"}
     hint={platform ? "Áp dụng cho các đơn vị đang dùng bản chung. Đơn vị có bản riêng giữ giá trị của mình." : "Áp dụng cho đơn vị " + p.session.tenant.toUpperCase() + " ngay sau khi lưu."}
     close={() => { if (!busy) close() }}>
-    <form onSubmit={e => { e.preventDefault(); void process(true) }}>
+    <ValidatedForm onSubmit={e => { e.preventDefault(); void process(true) }}>
       <fieldset disabled={busy} className="stack min-w-0" onChangeCapture={resetFeedback}>
         <FieldGroup>
           <div className="grid-two">
@@ -132,6 +133,6 @@ export default function ConfigForm({ p, initial, catalogEntry, platform, close, 
           {busy && <span role="status">Đang xử lý…</span>}
         </div>
       </fieldset>
-    </form>
+    </ValidatedForm>
   </Editor>
 }

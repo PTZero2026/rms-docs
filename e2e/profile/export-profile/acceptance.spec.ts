@@ -1,3 +1,4 @@
+import { choose } from "../../lib/choice.mjs"
 import {test,expect} from "@playwright/test"
 import {existsSync,mkdirSync,writeFileSync} from "node:fs"
 import {homedir} from "node:os"
@@ -29,7 +30,7 @@ test("F08 binds the printed heading and audit to each effective B01 version",asy
     const professional=cv.getByRole("form",{name:"Hồ sơ công tác"})
     await expect(professional.getByText("Trường/Viện · Đại học Thủy lợi")).toBeVisible()
     await expect(professional.getByLabel("Địa chỉ liên hệ")).toHaveCount(0)
-    await professional.getByLabel("Chức vụ").selectOption("Giảng viên")
+    await choose(professional.getByLabel("Chức vụ"), "Giảng viên")
     await professional.getByLabel("Ngày sinh").fill("1985-02-03")
     await professional.getByRole("button",{name:"Thêm học vị"}).click()
     await professional.getByLabel("Năm nhận học vị").fill("2015")

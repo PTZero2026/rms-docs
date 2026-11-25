@@ -1,3 +1,6 @@
+import { Disclosure } from "@rms/ui/components/disclosure"
+import { ChoiceOption, ChoiceSelect } from "@rms/ui/components/choice-select"
+import { Checkbox } from "@rms/ui/components/checkbox"
 import {MeetingMinutes} from "../meetings/view"
 import { useCallback,useEffect,useState } from "react"
 import { Button } from "@rms/ui/components/button"
@@ -39,33 +42,33 @@ export default function Reviews({session,staff}:{session:SignedInSession;staff:b
   const params=(id:string)=>({path:{...session.params.path,id}})
   const chosen=setup?.projects.find(p=>p.id===project)
   return <section className="grid gap-4 py-4" aria-label="Xét duyệt hội đồng">
-    {setup&&<><details><summary>Lập hội đồng xét duyệt</summary><fieldset className="grid gap-2" disabled={busy}>
+    {setup&&<><Disclosure title={<> Lập hội đồng xét duyệt </>}><fieldset className="grid gap-2" disabled={busy}>
       <label>Tên hội đồng<Input value={name} onChange={e=>setName(e.target.value)}/></label>
-      {setup.accounts.map(a=><label key={a.id}>{a.label} <select aria-label={"Chức danh "+a.label} value={seats.find(s=>s.accountId===a.id)?.role??""}
-        onChange={e=>setSeats([...seats.filter(s=>s.accountId!==a.id),...(e.target.value?[{accountId:a.id,role:e.target.value as Seat["role"]}]:[])])}>
-        <option value="">Chọn chức danh</option>{Object.entries(roles).map(([key,v])=><option key={key} value={key}>{v}</option>)}</select></label>)}
+      {setup.accounts.map(a=><label key={a.id}>{a.label} <ChoiceSelect aria-label={"Chức danh "+a.label} value={seats.find(s=>s.accountId===a.id)?.role??""}
+        onValueChange={choiceValue => setSeats([...seats.filter(s=>s.accountId!==a.id),...(choiceValue?[{accountId:a.id,role:choiceValue as Seat["role"]}]:[])])}>
+        <ChoiceOption value="">Chọn chức danh</ChoiceOption>{Object.entries(roles).map(([key,v])=><ChoiceOption key={key} value={key}>{v}</ChoiceOption>)}</ChoiceSelect></label>)}
       <Button disabled={!name.trim()||!seats.length} onClick={()=>void run(async()=>{
         const r=await session.api.POST("/api/tenants/{slug}/review/committees",{params:session.params,body:{name,seats}})
         if(!r.data)throw Error(r.error?.message);setCommittee(r.data.id);setName("");setSeats([])
-      })}>Lưu hội đồng</Button></fieldset></details>
+      })}>Lưu hội đồng</Button></fieldset></Disclosure>
       <fieldset className="grid gap-2" disabled={busy}><legend>Mở đợt xét duyệt</legend>
-        <label>Hồ sơ của kỳ đã đóng <select value={project} onChange={e=>setProject(e.target.value)}><option value="">Chọn hồ sơ</option>
-          {setup.projects.map(p=><option key={p.id} value={p.id}>{p.label}</option>)}</select></label>
+        <label>Hồ sơ của kỳ đã đóng <ChoiceSelect value={project} onValueChange={setProject}><ChoiceOption value="">Chọn hồ sơ</ChoiceOption>
+          {setup.projects.map(p=><ChoiceOption key={p.id} value={p.id}>{p.label}</ChoiceOption>)}</ChoiceSelect></label>
         {chosen&&!chosen.finalized&&<Button variant="outline" onClick={()=>void run(async()=>{
           const r=await session.api.POST("/api/tenants/{slug}/projects/{id}/finalize",{params:params(project)})
           if(!r.data)throw Error(r.error?.message)
         })}>Chốt hồ sơ hợp lệ</Button>}
-        <label>Hội đồng phụ trách <select value={committee} onChange={e=>setCommittee(e.target.value)}><option value="">Chọn hội đồng</option>
-          {setup.committees.map(c=><option key={c.id} value={c.id}>{c.label}</option>)}</select></label>
-        <label><input type="checkbox" checked={ethics} onChange={e=>setEthics(e.target.checked)}/> Bắt buộc thẩm định đạo đức</label>
+        <label>Hội đồng phụ trách <ChoiceSelect value={committee} onValueChange={setCommittee}><ChoiceOption value="">Chọn hội đồng</ChoiceOption>
+          {setup.committees.map(c=><ChoiceOption key={c.id} value={c.id}>{c.label}</ChoiceOption>)}</ChoiceSelect></label>
+        <label><Checkbox checked={ethics} onCheckedChange={setEthics}/> Bắt buộc thẩm định đạo đức</label>
         <Button disabled={!chosen?.finalized||!committee} onClick={()=>void run(async()=>{
           const r=await session.api.POST("/api/tenants/{slug}/projects/{id}/reviews",{params:params(project),body:{committeeId:committee,ethicsRequired:ethics}})
           if(!r.data)throw Error(r.error?.message);setRound(r.data);setProject("")
         })}>Mở đợt chấm</Button></fieldset>
-      {setup.rounds.length>0&&<label>Đợt xét duyệt <select value={round?.id??""} onChange={e=>{const id=e.target.value;setRound(undefined);if(id)void run(async()=>{
+      {setup.rounds.length>0&&<label>Đợt xét duyệt <ChoiceSelect value={round?.id??""} onValueChange={choiceValue => {const id=choiceValue;setRound(undefined);if(id)void run(async()=>{
         const r=await session.api.GET("/api/tenants/{slug}/review/rounds/{id}",{params:params(id),cache:"no-store"})
         if(!r.data)throw Error(r.error?.message);setRound(r.data)
-      })}}><option value="">Chọn đợt</option>{setup.rounds.map(r=><option key={r.id} value={r.id}>{r.label}</option>)}</select></label>}
+      })}}><ChoiceOption value="">Chọn đợt</ChoiceOption>{setup.rounds.map(r=><ChoiceOption key={r.id} value={r.id}>{r.label}</ChoiceOption>)}</ChoiceSelect></label>}
       {round&&<ReviewDecision key={round.id} session={session} round={round} onChange={setRound}/>}</>}
     <MeetingMinutes session={session} kind="PROPOSAL_REVIEW"/><h3>Phiếu được phân công</h3>{queue.length?queue.map(r=><ScoreSheet key={r.id} session={session} assignment={r} onAccessLost={scope=>{
       setQueue(current=>scope==="session"?[]:current.filter(row=>row.id!==r.id))

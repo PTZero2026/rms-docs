@@ -1,6 +1,7 @@
+import { ChoiceOption, ChoiceSelect } from "@rms/ui/components/choice-select"
 import { ServiceStatus } from "./ServiceStatus"
-import { useEffect, useState } from "react"
-import type { ReactNode } from "react"
+import { useEffect, useRef, useState } from "react"
+import type { MouseEvent, ReactNode } from "react"
 import {
   ArrowRight,
   Bell,
@@ -57,7 +58,7 @@ export default function Shell(p: Props) {
     "Quản lý nghiên cứu",
     "Kết quả nghiên cứu",
   ])
-  const { session, go, route, rows } = p
+  const { session, route, rows } = p
   const current = items.find((x) => x.id === route.feature)
   const accessible = items.filter((x) => canOpen(x.id, session.role, p.e4Enabled))
   const [tenant, setTenant] = useState<Tenant>(session.tenant)
@@ -68,13 +69,24 @@ export default function Shell(p: Props) {
         )
       : []
   const [signIn, setSignIn] = useState(false)
+  const opener = useRef<HTMLElement | null>(null)
+  function rememberOpener() {
+    opener.current = document.activeElement instanceof HTMLElement ? document.activeElement : null
+  }
+  function restoreFocus(event: Event) {
+    event.preventDefault()
+    if (opener.current?.isConnected) opener.current.focus()
+    else document.getElementById("main")?.focus()
+  }
   const openSession = () => {
+    rememberOpener()
     setSignIn(false)
     setTenant(session.tenant)
     setDialog("session")
   }
-  const follow = (id: string, target?: string) => {
-    go(id, target)
+  const closeAfterNavigation = (event: MouseEvent<HTMLAnchorElement>) => {
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return
+    opener.current = null
     setMenu(false)
     setDialog("")
   }
@@ -82,6 +94,7 @@ export default function Shell(p: Props) {
     const handler = (event: KeyboardEvent) => {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
         event.preventDefault()
+        if (!document.querySelector(".search-dialog")) rememberOpener()
         setDialog((value) => (value === "search" ? "" : "search"))
         setQuery("")
       }
@@ -104,7 +117,7 @@ export default function Shell(p: Props) {
           <small>Quản lý nghiên cứu</small>
         </div>
       </div>
-      <button className="tenant-button" onClick={openSession}>
+      <Button variant="ghost" size="content" className="tenant-button" aria-haspopup="dialog" aria-expanded={dialog === "session"} onClick={openSession}>
         <span className="tenant-icon">
           <Building2 size={18} />
         </span>
@@ -113,13 +126,13 @@ export default function Shell(p: Props) {
           <b>{tenants[session.tenant]}</b>
         </span>
         <ChevronsUpDown size={14} />
-      </button>
+      </Button>
       <nav aria-label="Chức năng" className="sidebar-nav">
         {groups.map((group) => {
           const show = expanded.includes(group)
           return (
             <section key={group}>
-              <button
+              <Button variant="ghost" size="content"
                 className="group-toggle"
                 aria-expanded={show}
                 onClick={() =>
@@ -128,7 +141,7 @@ export default function Shell(p: Props) {
               >
                 {group}
                 <ChevronDown size={13} className={show ? "" : "fold"} />
-              </button>
+              </Button>
               {show &&
                 accessible
                   .filter((i) => i.group === group)
@@ -149,14 +162,14 @@ export default function Shell(p: Props) {
           )
         })}
       </nav>
-      <button className="account-button" onClick={openSession}>
+      <Button variant="ghost" size="content" className="account-button" aria-haspopup="dialog" aria-expanded={dialog === "session"} onClick={openSession}>
         <span className="avatar">{initials(session.name)}</span>
         <span>
           <b>{session.name}</b>
           <small>{roleNames[session.role]}</small>
         </span>
         <ChevronsUpDown size={14} />
-      </button>
+      </Button>
     </>
   )
   function countUnread() {
@@ -223,7 +236,8 @@ export default function Shell(p: Props) {
             variant="ghost"
             size="icon"
             aria-label="Mở điều hướng"
-            onClick={() => setMenu(true)}
+            aria-haspopup="dialog" aria-expanded={menu}
+            onClick={() => { rememberOpener(); setMenu(true) }}
           >
             <Menu />
           </Button>
@@ -239,9 +253,10 @@ export default function Shell(p: Props) {
             <b>{current?.label ?? "Trang không tồn tại"}</b>
           </div>
           <div className="top-actions">
-            <button
-              className="global-search"
+            <Button variant="ghost" size="content"
+              className="global-search" aria-haspopup="dialog" aria-expanded={dialog === "search"}
               onClick={() => {
+                rememberOpener()
                 setQuery("")
                 setDialog("search")
               }}
@@ -252,19 +267,20 @@ export default function Shell(p: Props) {
               <kbd>
                 <Command size={10} />K
               </kbd>
-            </button>
-            <button
+            </Button>
+            <Button variant="ghost" size="content"
               className="bell-button"
-              onClick={() => setDialog("notices")}
+              aria-haspopup="dialog" aria-expanded={dialog === "notices"}
+              onClick={() => { rememberOpener(); setDialog("notices") }}
               aria-label={"Thông báo, " + countUnread() + " chưa đọc"}
             >
               <Bell size={19} />
               {!!countUnread() && <i />}
-            </button>
-            <button className="demo-button" aria-label="Phiên mô phỏng" onClick={openSession}>
+            </Button>
+            <Button variant="ghost" size="content" className="demo-button" aria-label="Phiên mô phỏng" aria-haspopup="dialog" aria-expanded={dialog === "session"} onClick={openSession}>
               <SlidersHorizontal size={14} />
               <span>Phiên mô phỏng</span>
-            </button>
+            </Button>
           </div>
         </header>
         <main id="main" tabIndex={-1} className="workspace">
@@ -295,33 +311,35 @@ export default function Shell(p: Props) {
           if (!open) setDialog("")
         }}
       >
-        <DialogContent>
+        <DialogContent onCloseAutoFocus={restoreFocus}>
           <DialogHeader>
             <DialogTitle>Thông báo gần đây</DialogTitle>
             <DialogDescription>Năm thông báo mới nhất trong hộp thư của bạn.</DialogDescription>
           </DialogHeader>
           <div className="search-results">
             {(p.locked ? [] : inbox(rows, session.userId)).slice(0, 5).map((n) => (
-              <button key={n.id} onClick={() => follow("B04", n.id)}>
-                <Bell size={16} />
-                <span>
-                  <b>{n.title}</b>
-                  <small>{n.status === "UNREAD" ? "Chưa đọc" : "Đã đọc"}</small>
-                </span>
-                <ChevronRight size={15} />
-              </button>
+              <Button variant="ghost" size="content" key={n.id} asChild>
+                <a href={routeUrl("B04", n.id)} onClick={closeAfterNavigation}>
+                  <Bell size={16} />
+                  <span>
+                    <b>{n.title}</b>
+                    <small>{n.status === "UNREAD" ? "Chưa đọc" : "Đã đọc"}</small>
+                  </span>
+                  <ChevronRight size={15} />
+                </a>
+              </Button>
             ))}
           </div>
           {(p.locked || !rows.some((r) => r.kind === "notice" && r.owner === session.userId)) && (
             <Blank title="Chưa có thông báo" />
           )}
-          <Button variant="outline" onClick={() => follow("B04")}>
-            Mở hộp thư
+          <Button variant="outline" asChild>
+            <a href={routeUrl("B04")} onClick={closeAfterNavigation}>Mở hộp thư</a>
           </Button>
         </DialogContent>
       </Dialog>
       <Sheet open={menu} onOpenChange={setMenu}>
-        <SheetContent side="left" className="mobile-sidebar">
+        <SheetContent onCloseAutoFocus={restoreFocus} side="left" className="mobile-sidebar">
           <SheetHeader className="sr-only">
             <SheetTitle>Điều hướng RMS</SheetTitle>
             <SheetDescription>Chọn chức năng</SheetDescription>
@@ -335,7 +353,7 @@ export default function Shell(p: Props) {
           if (!v) setDialog("")
         }}
       >
-        <DialogContent className="session-dialog">
+        <DialogContent onCloseAutoFocus={restoreFocus} className="session-dialog">
           <DialogHeader>
             <DialogTitle>Chuyển phiên mô phỏng</DialogTitle>
             <DialogDescription>
@@ -344,20 +362,20 @@ export default function Shell(p: Props) {
           </DialogHeader>
           <label className="form-label">
             Đơn vị
-            <select
+            <ChoiceSelect
               aria-label="Đơn vị"
               value={tenant}
-              onChange={(e) => setTenant(e.target.value as Tenant)}
+              onValueChange={choiceValue => setTenant(choiceValue as Tenant)}
             >
               {Object.entries(tenants).map(([k, n]) => (
-                <option key={k} value={k}>
+                <ChoiceOption key={k} value={k}>
                   {n}
-                </option>
+                </ChoiceOption>
               ))}
-            </select>
+            </ChoiceSelect>
           </label>
           <ServiceStatus />
-          <Button variant="outline" onClick={() => setSignIn(!signIn)}>
+          <Button variant="outline" aria-expanded={signIn} onClick={() => setSignIn(!signIn)}>
             {signIn ? "Chọn tài khoản có sẵn" : "Đăng nhập bằng email mẫu"}
           </Button>
           {signIn ? (
@@ -373,7 +391,7 @@ export default function Shell(p: Props) {
           ) : (
             <div className="persona-list">
               {accounts.map((a) => (
-                <button
+                <Button variant="ghost" size="content"
                   key={a.id}
                   onClick={() => {
                     const role = roleForAccount(a)
@@ -404,7 +422,7 @@ export default function Shell(p: Props) {
                   ) : (
                     <ChevronRight size={15} />
                   )}
-                </button>
+                </Button>
               ))}
             </div>
           )}
@@ -416,7 +434,7 @@ export default function Shell(p: Props) {
           if (!v) setDialog("")
         }}
       >
-        <DialogContent className="search-dialog">
+        <DialogContent onCloseAutoFocus={restoreFocus} className="search-dialog">
           <DialogHeader>
             <DialogTitle>Tìm kiếm trong RMS</DialogTitle>
             <DialogDescription>
@@ -433,14 +451,16 @@ export default function Shell(p: Props) {
           <div className="search-results">
             {results.length ? (
               results.map((r) => (
-                <button key={r.key} onClick={() => follow(r.feature, r.id)}>
-                  <Search size={15} />
-                  <span>
-                    <b>{r.label}</b>
-                    <small>{r.meta}</small>
-                  </span>
-                  <ArrowRight size={15} />
-                </button>
+                <Button variant="ghost" size="content" key={r.key} asChild>
+                  <a href={routeUrl(r.feature, r.id)} onClick={closeAfterNavigation}>
+                    <Search size={15} />
+                    <span>
+                      <b>{r.label}</b>
+                      <small>{r.meta}</small>
+                    </span>
+                    <ArrowRight size={15} />
+                  </a>
+                </Button>
               ))
             ) : (
               <Blank title="Không tìm thấy kết quả" />

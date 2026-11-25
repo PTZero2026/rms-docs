@@ -1,3 +1,4 @@
+import { choose } from "../../lib/choice.mjs"
 import {test,expect,type Page} from "@playwright/test"
 import {randomUUID,createHash} from "node:crypto"
 import {readFileSync} from "node:fs"
@@ -27,7 +28,7 @@ test("an assigned secretary versions meeting minutes and readers outside that co
       await p.getByRole("button",{name:"Xét duyệt hội đồng",exact:true}).click()
       const panel=p.getByRole("region",{name:"Biên bản cuộc họp"})
       await panel.getByRole("button",{name:"Biên bản cuộc họp"}).click()
-      await panel.getByLabel("Vòng hội đồng").selectOption(ids.round)
+      await choose(panel.getByLabel("Vòng hội đồng"), ids.round)
       return panel
     }
     const panel=await minutes(secretary)

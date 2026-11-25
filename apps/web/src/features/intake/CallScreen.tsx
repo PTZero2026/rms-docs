@@ -1,3 +1,8 @@
+import { routeUrl } from "../../demo/catalog"
+import { ValidatedForm } from "@rms/ui/components/validated-form"
+import { DateInput } from "@rms/ui/components/date-input"
+import { Checkbox } from "@rms/ui/components/checkbox"
+import { ChoiceOption } from "@rms/ui/components/choice-select"
 import { CallCards } from '../mobile/CallCards'
 import { usePhoneLayout } from '../mobile/usePhoneLayout'
 import { useState } from 'react'
@@ -46,7 +51,7 @@ function CallEditor({
   const { error, run } = useAction()
   const update = (key: keyof CallForm, value: string) => set({ ...form, [key]: value })
   return (
-    <form
+    <ValidatedForm
       className="panel stack"
       onSubmit={(event) => {
         event.preventDefault()
@@ -69,35 +74,28 @@ function CallEditor({
           value={form.code}
           onChange={(e) => update('code', e.target.value)}
         />
-        <FieldText
-          label="Bắt đầu nhận"
-          type="date"
+        <label className="grid gap-1">Bắt đầu nhận<DateInput
           value={form.start}
-          onChange={(e) => update('start', e.target.value)}
-        />
-        <FieldText
-          label="Hạn nhận hồ sơ"
-          type="date"
+          onValueChange={next => update('start', next)}
+        /></label>
+        <label className="grid gap-1">Hạn nhận hồ sơ<DateInput
           value={form.due}
-          onChange={(e) => update('due', e.target.value)}
-        />
+          onValueChange={next => update('due', next)}
+        /></label>
       </div>
       <fieldset>
         <legend>Lĩnh vực tiếp nhận</legend>
         {references(app.rows, 'discipline').map((r) => (
           <label className="intake-check" key={r.id}>
-            <input
-              type="checkbox"
+            <Checkbox
               checked={ids(form.disciplines).includes(r.id)}
-              onChange={(e) =>
-                update(
+              onCheckedChange={checked => update(
                   'disciplines',
-                  (e.target.checked
+                  (checked
                     ? [...ids(form.disciplines), r.id]
                     : ids(form.disciplines).filter((id) => id !== r.id)
                   ).join(','),
-                )
-              }
+                )}
             />
             {r.title}
           </label>
@@ -109,14 +107,14 @@ function CallEditor({
             key={key}
             label={key === 'template' ? 'Biểu mẫu thuyết minh' : 'Bộ tiêu chí xét duyệt'}
             value={form[key]}
-            onChange={(e) => update(key, e.target.value)}
+            onValueChange={choiceValue => update(key, choiceValue)}
           >
-            <option value="">Chọn từ danh mục</option>
+            <ChoiceOption value="">Chọn từ danh mục</ChoiceOption>
             {references(app.rows, key).map((r) => (
-              <option key={r.id} value={r.id} disabled={r.status !== 'ACTIVE'}>
+              <ChoiceOption key={r.id} value={r.id} disabled={r.status !== 'ACTIVE'}>
                 {r.title}
                 {r.status !== 'ACTIVE' ? ' (hết hiệu lực)' : ''}
-              </option>
+              </ChoiceOption>
             ))}
           </Choice>
         ))}
@@ -128,7 +126,7 @@ function CallEditor({
           Hủy chỉnh sửa
         </Button>
       </div>
-    </form>
+    </ValidatedForm>
   )
 }
 export function CallScreen(app: FeatureProps) {
@@ -168,7 +166,7 @@ export function CallScreen(app: FeatureProps) {
           }
         >
           {session.role === 'officer' && (
-            <Button onClick={() => go('F02', 'new')}>Lập kỳ mới</Button>
+            <Button asChild><a href={routeUrl('F02', 'new')}>Lập kỳ mới</a></Button>
           )}
         </Heading>
         <Panel title="Danh sách kỳ">
@@ -230,7 +228,7 @@ export function CallScreen(app: FeatureProps) {
             />
             <div className="intake-actions">
               {receiving(call) && session.role === 'researcher' && (
-                <Button onClick={() => go('F01', 'new~' + call.id)}>Lập đề xuất cho kỳ này</Button>
+                <Button asChild><a href={routeUrl('F01', 'new~' + call.id)}>Lập đề xuất cho kỳ này</a></Button>
               )}
               {managed(app, call) && (
                 <>
@@ -267,12 +265,10 @@ export function CallScreen(app: FeatureProps) {
                       detail="Chọn hạn mới sau hạn hiện tại và sau ngày 21/11/2026."
                       onConfirm={() => write('extend', 'Gia hạn kỳ nhận đề xuất')}
                     >
-                      <FieldText
-                        label="Hạn nhận mới"
-                        type="date"
+                      <label className="grid gap-1">Hạn nhận mới<DateInput
                         value={due}
-                        onChange={(e) => setDue(e.target.value)}
-                      />
+                        onValueChange={setDue}
+                      /></label>
                     </ActionDialog>
                   )}
                 </>

@@ -1,3 +1,4 @@
+import { choose } from "../../lib/choice.mjs"
 import { expect, test } from "@playwright/test"
 import { readFile } from "node:fs/promises"
 import { fileURLToPath } from "node:url"
@@ -13,7 +14,7 @@ test("B01 admin previews a detected PNG, reads XML in its stored charset and dow
   await page.getByRole("button", { name: "Cấu hình hệ thống" }).click()
   await page.getByRole("button", { name: "Thêm cấu hình" }).click()
   await page.getByLabel("Mã cấu hình").fill(key)
-  await page.getByLabel("Cách nhập").selectOption("file")
+  await choose(page.getByLabel("Cách nhập"), "file")
   await page.getByLabel("Tệp nội dung").setInputFiles({ name: "mau.bin", mimeType: "application/octet-stream", buffer: png })
   await page.getByRole("button", { name: "Xem trước", exact: true }).click()
   await expect(page.getByText(/Xem trước · image\/png · .+ · 3072 byte/)).toBeVisible()
@@ -41,7 +42,7 @@ test("B01 admin previews a detected PNG, reads XML in its stored charset and dow
   const original = Buffer.from(xml, "utf16le")
   const row = page.getByRole("row").filter({ has: page.getByRole("cell", { name: key, exact: true }) })
   await row.getByRole("button", { name: "Sửa", exact: true }).click()
-  await page.getByLabel("Cách nhập").selectOption("base64")
+  await choose(page.getByLabel("Cách nhập"), "base64")
   await page.getByLabel("Loại nội dung", { exact: true }).fill("application/xml")
   await page.getByLabel("Bảng mã").fill("utf-16le")
   await page.getByLabel("Nội dung", { exact: true }).fill(original.toString("base64"))

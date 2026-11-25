@@ -1,3 +1,4 @@
+import { choose } from "../../../../../e2e/lib/choice.mjs"
 // Run against a local V0 server with RMS_TEST_URL=http://127.0.0.1:5173 node --test platform.browser.mjs
 import { after, before, test } from "node:test"
 import assert from "node:assert/strict"
@@ -63,10 +64,10 @@ test("P01 saves and edits an incomplete draft, validates at activation and keeps
   await expect(page.getByRole("alert")).toBeVisible()
   await button(page, "Chỉnh sửa bản nháp").click()
   await button(dialog, "Bỏ chuyển bước").click()
-  await dialog.getByLabel("Chuyển bước cần sửa").selectOption("0")
+  await choose(dialog.getByLabel("Chuyển bước cần sửa"), "0")
   await dialog.getByLabel("Bắt buộc nhập lý do").check()
   await dialog.getByLabel("Thành viên hội đồng", { exact: true }).check()
-  await dialog.getByLabel("Bước cần đổi tên").selectOption("DRAFT")
+  await choose(dialog.getByLabel("Bước cần đổi tên"), "DRAFT")
   await dialog.getByLabel("Tên bước hiển thị").fill("Đang soạn")
   await button(dialog, "Lưu bản nháp").click()
   await button(page, "Kích hoạt phiên bản").click()
@@ -100,7 +101,7 @@ test("P01 saves and edits an incomplete draft, validates at activation and keeps
 async function newSample(page, kind = "png") {
   await button(page, "Tạo cấu hình").click()
   const dialog = page.getByRole("dialog")
-  await dialog.getByLabel("Tệp mẫu", { exact: true }).selectOption(kind)
+  await choose(dialog.getByLabel("Tệp mẫu", { exact: true }), kind)
   await button(dialog, "Dùng tệp mẫu").click()
   return dialog
 }
@@ -135,7 +136,7 @@ test("B01 refuses 20 MiB + 1, handles IndexedDB quota, then retries the same 20 
   assert.equal(await countBlobs(page), 0)
   const client = await context.newCDPSession(page)
   await client.send("Storage.overrideQuotaForOrigin", { origin: base, quotaSize: 1024 * 1024 })
-  await dialog.getByLabel("Tệp mẫu", { exact: true }).selectOption("limit")
+  await choose(dialog.getByLabel("Tệp mẫu", { exact: true }), "limit")
   await button(dialog, "Dùng tệp mẫu").click()
   await button(dialog, "Lưu cấu hình").click()
   await expect(dialog.getByRole("alert")).toContainText("dung lượng")
@@ -218,11 +219,12 @@ test("catalog status and role layout apply in the existing F02 and B06 screens",
   await page.getByText("Danh mục kỳ nhận đề xuất", { exact: true }).click()
   await page.getByRole("button", { name: /Mẫu thuyết minh đề tài cấp cơ sở/ }).click()
   const dialog = page.getByRole("dialog")
-  await dialog.getByLabel("Hiệu lực").selectOption("INACTIVE")
+  await choose(dialog.getByLabel("Hiệu lực"), "INACTIVE")
   await submitConfig(dialog)
   const officer = await workspace(context, "F02/new", "tlu", "an")
+  await officer.getByRole("combobox", {name: /Biểu mẫu/}).click()
   await expect(officer.getByRole("option", { name: /Mẫu thuyết minh đề tài cấp cơ sở/ })).toBeDisabled()
-  await button(page, "Bố cục trang chủ").click()
+  await page.getByRole("link", { name: "Bố cục trang chủ" }).click()
   await page.getByRole("checkbox", { name: "Thông báo gần đây" }).uncheck()
   await button(page, "Lưu bố cục").click()
   await expect(page.getByRole("status")).toContainText("Đã áp dụng")

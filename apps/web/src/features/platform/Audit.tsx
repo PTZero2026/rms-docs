@@ -4,7 +4,7 @@ import { Input } from "@rms/ui/components/input"
 import { Button } from "@rms/ui/components/button"
 import { rowVisible } from "../../demo/views"
 import { Blank, Heading } from "../../demo/ui"
-import { statusNames, vietnamDate } from "../../demo/catalog"
+import { statusNames, vietnamDate, routeUrl } from "../../demo/catalog"
 import type { FeatureProps } from "../../demo/types"
 import { DetailFields, Editor } from "./shared"
 export default function Audit(p: FeatureProps) {
@@ -37,14 +37,14 @@ export default function Audit(p: FeatureProps) {
             placeholder="Tìm theo hồ sơ, hành động hoặc người thực hiện…"
           />
           {p.route.id && (
-            <Button variant="outline" onClick={() => p.go("P02")}>
+            <Button variant="outline" asChild><a href={routeUrl("P02")}>
               Xem toàn bộ nhật ký
-            </Button>
+            </a></Button>
           )}
         </div>
         {events.length ? (
           events.map((e) => (
-            <button className="project-row" key={e.id} onClick={() => setEventId(e.id)}>
+            <Button variant="ghost" size="content" className="project-row" key={e.id} onClick={() => setEventId(e.id)}>
               <History size={17} />
               <span className="task-copy">
                 <b>{e.action}</b>
@@ -53,7 +53,7 @@ export default function Audit(p: FeatureProps) {
                 </small>
               </span>
               <time>{vietnamDate(e.at, true)}</time>
-            </button>
+            </Button>
           ))
         ) : (
           <Blank title="Chưa có sự kiện trong phạm vi này" />

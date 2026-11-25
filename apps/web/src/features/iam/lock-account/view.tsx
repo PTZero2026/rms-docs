@@ -1,3 +1,6 @@
+import { ValidatedForm } from "@rms/ui/components/validated-form"
+import { Disclosure } from "@rms/ui/components/disclosure"
+import { ChoiceOption, ChoiceSelect } from "@rms/ui/components/choice-select"
 import {CreateAccount} from "./CreateAccount"
 import { formatVietnamDate } from "../../../format-date"
 import {AuthorRequests} from "../author-request/AuthorRequests"
@@ -86,11 +89,11 @@ export function AccountDirectory({session,actor}:{session:SignedInSession;actor:
       setReceipt(result.data);setConfirm(false);setRound(n=>n+1)
     }catch(e){setMessage(e instanceof Error?e.message:"Không thể kết nối.")}finally{setBusy(false)}
   }
-  return <section className="grid gap-4 py-4"><h2>Người dùng trong phạm vi</h2>{actor.userType==="admin"&&<details><summary>Cấp tài khoản mới</summary><CreateAccount session={session} onCreated={()=>setRound(n=>n+1)}/></details>}
+  return <section className="grid gap-4 py-4"><h2>Người dùng trong phạm vi</h2>{actor.userType==="admin"&&<Disclosure title={<> Cấp tài khoản mới </>}><CreateAccount session={session} onCreated={()=>setRound(n=>n+1)}/></Disclosure>}
     {actor.userType==="admin"&&<><Button variant="outline" aria-expanded={queue} onClick={()=>setQueue(!queue)}>Xét yêu cầu quyền tác giả</Button>
       {queue&&<AuthorRequests session={session} queue/>}</>}
-    <form className="flex items-end gap-2" onSubmit={e=>{e.preventDefault();setQuery(search);setSkip(0);setRound(n=>n+1)}}>
-      <label>Tên hoặc email<Input value={search} onChange={e=>setSearch(e.target.value)}/></label><Button>Tìm người dùng</Button></form>
+    <ValidatedForm className="flex items-end gap-2" onSubmit={e=>{e.preventDefault();setQuery(search);setSkip(0);setRound(n=>n+1)}}>
+      <label>Tên hoặc email<Input value={search} onChange={e=>setSearch(e.target.value)}/></label><Button type="submit">Tìm người dùng</Button></ValidatedForm>
     <p>{total} tài khoản</p>
     <ul className="grid gap-2">{list.map(row=><li key={row.id}><Button variant="outline" disabled={busy} onClick={()=>void open(row.id)}>{row.email}</Button> · {status(row)}</li>)}</ul>
     {(skip>0||total>20)&&<div><Button disabled={!skip} onClick={()=>setSkip(skip-20)}>Trang trước</Button><Button disabled={skip+20>=total} onClick={()=>setSkip(skip+20)}>Trang sau</Button></div>}
@@ -98,9 +101,9 @@ export function AccountDirectory({session,actor}:{session:SignedInSession;actor:
       <p>{receipt.account.email} · {receipt.account.userType} · {status(receipt.account)}</p>
       <a className="underline" href={"?profile="+receipt.account.id}>Xem lý lịch khoa học</a>
       {actor.userType==="admin"&&!receipt.account.deletedAt&&<div className="flex flex-wrap items-end gap-2 py-2"><label>Vai trò tài khoản
-        <select className="block rounded border p-2" value={role} onChange={e=>setRole(e.target.value as Profile["userType"])}>{["user","author","staff","admin"].map(v=><option key={v}>{v}</option>)}</select></label>
+        <ChoiceSelect value={role} onValueChange={choiceValue => setRole(choiceValue as Profile["userType"])}>{["user","author","staff","admin"].map(v=><ChoiceOption value={v} key={v}>{v}</ChoiceOption>)}</ChoiceSelect></label>
         <Button variant="outline" disabled={busy||role===receipt.account.userType} onClick={()=>void administer(false)}>Lưu vai trò</Button>
-        {actor.id!==receipt.account.id&&<Button variant="outline" disabled={busy} onClick={()=>setEndAccess(!endAccess)}>Ngừng hoạt động</Button>}
+        {actor.id!==receipt.account.id&&<Button variant="outline" disabled={busy} aria-expanded={endAccess} onClick={()=>setEndAccess(!endAccess)}>Ngừng hoạt động</Button>}
         {endAccess&&<div><p>Ngừng hoạt động tài khoản {receipt.account.email} và giữ lịch sử nghiên cứu?</p><Button disabled={busy} onClick={()=>void administer(true)}>Xác nhận ngừng hoạt động</Button></div>}</div>}
       {receipt.event && <p>Sự kiện {receipt.event.action} · {formatVietnamDate(receipt.event.at, "second")}</p>}
       {actor.userType==="admin" && actor.id!==receipt.account.id && !receipt.account.deletedAt &&

@@ -78,8 +78,8 @@ function InboxPage({session,filter,id,admin,canManageDelivery}:{session:SignedIn
       {detail&&<article><h3>{detail.title}</h3><time dateTime={detail.createdAt}>{date.format(new Date(detail.createdAt))}</time>
         <p className="break-words">{detail.body}</p>{detail.targetId&&<a className="underline" href={"?project="+detail.targetId}>Mở hồ sơ nguồn</a>}</article>}</>:
       <><FilterPair label="Lọc thông báo" options={["Tất cả","Chưa đọc"]} secondActive={filter==="unread"} onChange={v=>{setSkip(0);change(v?"unread":"all")}}/>
-        {page?.items.map(n=><button className="grid min-h-11 gap-1 rounded border p-3 text-start" key={n.id} onClick={()=>change(filter,n.id)}>
-          <strong>{n.title}</strong><span>{n.readAt?"Đã đọc":"Chưa đọc"} · {date.format(new Date(n.createdAt))}</span></button>)}
+        {page?.items.map(n=><Button variant="ghost" size="content" className="grid min-h-11 gap-1 rounded border p-3 text-start" key={n.id} onClick={()=>change(filter,n.id)}>
+          <strong>{n.title}</strong><span>{n.readAt?"Đã đọc":"Chưa đọc"} · {date.format(new Date(n.createdAt))}</span></Button>)}
         {page&&!total&&<p>{filter==="unread"?"Bạn đã đọc hết thông báo.":"Hộp thông báo đang trống."}</p>}
         {!!page?.unread&&<Button variant="outline" disabled={busy} onClick={markAll}>Đánh dấu tất cả đã đọc</Button>}
         {total>20&&<div><Button disabled={!skip} onClick={()=>setSkip(Math.max(0,skip-20))}>Trang trước</Button>

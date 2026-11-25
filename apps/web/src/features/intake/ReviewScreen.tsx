@@ -1,3 +1,4 @@
+import { routeUrl } from "../../demo/catalog"
 import { Button } from '@rms/ui/components/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@rms/ui/components/tabs'
 import type { FeatureProps } from '../../demo/types'
@@ -8,7 +9,7 @@ import { reviewerAccess, roundFor, summarize } from './reviews'
 import { Blank, Grid, Heading, LinkRecord, Panel, State } from './ui'
 
 export function ReviewScreen(app: FeatureProps) {
-  const { rows, route, session, go } = app
+  const { rows, route, session } = app
   const officer = session.role === 'officer'
   const councils = rows.filter((r) => r.kind === 'council' && managed(app, r))
   const projects = rows.filter((p) => {
@@ -79,7 +80,7 @@ export function ReviewScreen(app: FeatureProps) {
         title={session.role === 'reviewer' ? 'Hàng chờ chấm của tôi' : 'Xét duyệt hội đồng'}
         detail={officer ? 'Phân công hội đồng, theo dõi phiếu và ghi nhận quyết định.' : undefined}
       >
-        {officer && <Button onClick={() => go('F03', 'new')}>Lập hội đồng</Button>}
+        {officer && <Button asChild><a href={routeUrl('F03', 'new')}>Lập hội đồng</a></Button>}
       </Heading>
       {officer ? (
         <Tabs defaultValue="rounds">

@@ -1,3 +1,6 @@
+import { ValueInput, DateInput } from "@rms/ui/components/date-input"
+import { Checkbox } from "@rms/ui/components/checkbox"
+import { ChoiceOption, ChoiceSelect } from "@rms/ui/components/choice-select"
 import { useCallback,useEffect,useState } from "react"
 import type { operations } from "@rms/api-contracts"
 import { Button } from "@rms/ui/components/button"
@@ -67,16 +70,16 @@ export default function Calls({session,account}:Props) {
     {list?.canManage && <Button className="justify-self-start" disabled={busy} onClick={()=>void run(()=>edit())}>Tạo kỳ nháp</Button>}
     {list && <><p>{list.total?list.total+" kỳ phù hợp":"Chưa có kỳ phù hợp"}</p>
       <ul className="grid gap-2 sm:grid-cols-2">{list.items.map(row=><li key={row.id} className="min-w-0 rounded border">
-        <button className="grid w-full gap-2 break-words p-3 text-left" onClick={()=>void run(()=>open(row.id))}>
-          <span>{row.code} · {status[row.status]}</span><strong>{row.name}</strong><span>Hạn {showDate(row.endDate)}</span></button></li>)}</ul>
+        <Button variant="ghost" size="content" className="grid w-full gap-2 break-words p-3 text-left" onClick={()=>void run(()=>open(row.id))}>
+          <span>{row.code} · {status[row.status]}</span><strong>{row.name}</strong><span>Hạn {showDate(row.endDate)}</span></Button></li>)}</ul>
       {(list.total>20||skip>0)&&<div><Button disabled={!skip} onClick={()=>setSkip(skip-20)}>Trang trước</Button><Button disabled={skip+20>=list.total} onClick={()=>setSkip(skip+20)}>Trang sau</Button></div>}</>}
     {form?<fieldset disabled={busy} className="grid gap-3 rounded border p-4"><legend>{detail?"Sửa kỳ nháp":"Kỳ nháp mới"}</legend>
       {(["code","name","startDate","endDate"] as const).map((k,i)=><label key={k}>{["Mã kỳ","Tên kỳ","Ngày bắt đầu","Hạn nhận"][i]}
-        <Input type={i>1?"date":"text"} value={form[k]} onChange={e=>setForm({...form,[k]:e.target.value})}/></label>)}
-      <fieldset><legend>Lĩnh vực nghiên cứu</legend>{refs.filter(r=>r.kind==="field").map(r=><label key={r.id} className="mr-4"><input type="checkbox" checked={form.fieldIds.includes(r.id)} onChange={e=>setForm({...form,fieldIds:e.target.checked?[...form.fieldIds,r.id]:form.fieldIds.filter(id=>id!==r.id)})}/> {r.name}</label>)}
-      {form.fieldIds.filter(id=>!refs.some(r=>r.id===id)).map(id=><label key={id}><input type="checkbox" checked onChange={()=>setForm({...form,fieldIds:form.fieldIds.filter(x=>x!==id)})}/> Bỏ lĩnh vực đã hết hiệu lực</label>)}</fieldset>
-      {(["templateId","criteriaId"] as const).map(k=><label key={k}>{k==="templateId"?"Biểu mẫu":"Bộ tiêu chí"} <select value={form[k]??""} onChange={e=>setForm({...form,[k]:e.target.value||null})}>
-        <option value="">Chọn từ danh mục</option>{refs.filter(r=>r.kind===(k==="templateId"?"form":"criteria")).map(r=><option key={r.id} value={r.id}>{r.name} · v{r.revision}</option>)}</select></label>)}
+        <ValueInput type={i>1?"date":"text"} value={form[k]} onValueChange={next => setForm({...form,[k]:next})}/></label>)}
+      <fieldset><legend>Lĩnh vực nghiên cứu</legend>{refs.filter(r=>r.kind==="field").map(r=><label key={r.id} className="mr-4"><Checkbox checked={form.fieldIds.includes(r.id)} onCheckedChange={checked => setForm({...form,fieldIds:checked?[...form.fieldIds,r.id]:form.fieldIds.filter(id=>id!==r.id)})}/> {r.name}</label>)}
+      {form.fieldIds.filter(id=>!refs.some(r=>r.id===id)).map(id=><label key={id}><Checkbox checked onCheckedChange={() => setForm({...form,fieldIds:form.fieldIds.filter(x=>x!==id)})}/> Bỏ lĩnh vực đã hết hiệu lực</label>)}</fieldset>
+      {(["templateId","criteriaId"] as const).map(k=><label key={k}>{k==="templateId"?"Biểu mẫu":"Bộ tiêu chí"} <ChoiceSelect value={form[k]??""} onValueChange={choiceValue => setForm({...form,[k]:choiceValue||null})}>
+        <ChoiceOption value="">Chọn từ danh mục</ChoiceOption>{refs.filter(r=>r.kind===(k==="templateId"?"form":"criteria")).map(r=><ChoiceOption key={r.id} value={r.id}>{r.name} · v{r.revision}</ChoiceOption>)}</ChoiceSelect></label>)}
       <div className="flex gap-2"><Button onClick={()=>void run(save)}>Lưu kỳ nháp</Button><Button variant="outline" onClick={()=>setForm(undefined)}>Đóng biểu mẫu</Button></div>
     </fieldset>:detail && <section className="grid gap-2 rounded border p-4"><h3>{detail.name}</h3>
       <p>{detail.code} · {status[detail.status]} · {showDate(detail.startDate)} – {showDate(detail.endDate)}</p>
@@ -87,7 +90,7 @@ export default function Calls({session,account}:Props) {
         {detail.status==="OPEN" && <Button disabled={busy} onClick={()=>void run(()=>change("close"))}>Đóng kỳ</Button>}
         {["DRAFT","OPEN","CLOSED"].includes(detail.status)&&<label>Lý do hủy hoặc gia hạn<Input maxLength={2000} value={reason} onChange={e=>setReason(e.target.value)}/></label>}
         {["OPEN","DRAFT"].includes(detail.status)&&<Button disabled={busy||!reason.trim()} variant="outline" onClick={()=>void run(()=>change("cancel"))}>Hủy kỳ</Button>}
-        {["OPEN","CLOSED"].includes(detail.status)&&<><label>Hạn mới<Input type="date" value={end} onChange={e=>setEnd(e.target.value)}/></label><Button disabled={busy||detail.status==="CLOSED"&&!reason.trim()} onClick={()=>void run(()=>change("extend"))}>Gia hạn kỳ</Button></>}
+        {["OPEN","CLOSED"].includes(detail.status)&&<><label>Hạn mới<DateInput value={end} onValueChange={setEnd}/></label><Button disabled={busy||detail.status==="CLOSED"&&!reason.trim()} onClick={()=>void run(()=>change("extend"))}>Gia hạn kỳ</Button></>}
       </fieldset>}</section>}
     {draftCall && <ProposalEditor key={draftCall.id} session={session} call={draftCall}/>}
     <p role="status">{message}</p></section>

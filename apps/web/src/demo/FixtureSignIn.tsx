@@ -1,3 +1,4 @@
+import { ValidatedForm } from "@rms/ui/components/validated-form"
 import { useState } from "react"
 import { Button } from "@rms/ui/components/button"
 import { Input } from "@rms/ui/components/input"
@@ -16,7 +17,7 @@ export default function FixtureSignIn({
   const [otp, setOtp] = useState("")
   const [error, setError] = useState("")
   return (
-    <form
+    <ValidatedForm
       className="stack"
       onSubmit={(event) => {
         event.preventDefault()
@@ -69,6 +70,6 @@ export default function FixtureSignIn({
       )}
       {error && <p role="alert">{error}</p>}
       <Button type="submit">{challenge ? "Đăng nhập" : "Nhận mã mô phỏng"}</Button>
-    </form>
+    </ValidatedForm>
   )
 }

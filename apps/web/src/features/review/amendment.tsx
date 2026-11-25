@@ -1,3 +1,5 @@
+import { ChoiceOption, ChoiceSelect } from "@rms/ui/components/choice-select"
+import { Textarea } from "@rms/ui/components/textarea"
 import { useEffect, useState } from "react"
 import type { operations } from "@rms/api-contracts"
 import { Button } from "@rms/ui/components/button"
@@ -38,9 +40,9 @@ export function RoundAmendment({session,id,status,onChanged}:{session:SignedInSe
   if(!error && !state?.action && !state?.history.length)return null
   return <section aria-label="Điều chỉnh kết luận" className="grid gap-2 rounded border p-3">
     {state?.action&&<fieldset disabled={busy} className="grid gap-2"><legend>{state.action==="REOPEN"?"Mở lại vòng hội đồng":"Chuyển yêu cầu đính chính"}</legend>
-      {state.action==="REFER"&&<label>Chủ quy trình nhận yêu cầu <select value={recipient} onChange={e=>setRecipient(e.target.value)}>
-        <option value="">Chọn quản trị phụ trách</option>{state.recipients.map(a=><option key={a.id} value={a.id}>{a.label}</option>)}</select></label>}
-      <label>Lý do điều chỉnh kết luận<textarea className="block w-full rounded border p-2" maxLength={2000} value={reason} onChange={e=>setReason(e.target.value)}/></label>
+      {state.action==="REFER"&&<label>Chủ quy trình nhận yêu cầu <ChoiceSelect value={recipient} onValueChange={setRecipient}>
+        <ChoiceOption value="">Chọn quản trị phụ trách</ChoiceOption>{state.recipients.map(a=><ChoiceOption key={a.id} value={a.id}>{a.label}</ChoiceOption>)}</ChoiceSelect></label>}
+      <label>Lý do điều chỉnh kết luận<Textarea className="block w-full rounded border p-2" maxLength={2000} value={reason} onChange={e=>setReason(e.target.value)}/></label>
       <Button disabled={!reason.trim()||(state.action==="REFER"&&!recipient)} onClick={()=>void submit()}>{state.action==="REOPEN"?"Mở lại vòng":"Gửi yêu cầu đính chính"}</Button>
     </fieldset>}
     {!!state?.history.length&&<><h4>Lịch sử điều chỉnh kết luận</h4><ol>{state.history.map(h=><li key={h.revision} className="my-2">

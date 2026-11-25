@@ -1,3 +1,4 @@
+import { choose } from "../../lib/choice.mjs"
 import {test,expect} from "@playwright/test"
 import {fileURLToPath} from "node:url"
 import {retryPolicyReader} from "../../../apps/backend/src/modules/notification/worker"
@@ -25,10 +26,10 @@ test("B04 persists a personal opt-out and applies the school's channel rules to 
     await prefs.getByLabel("Nhận email cá nhân").uncheck()
     await prefs.getByRole("button",{name:"Lưu tùy chọn cá nhân"}).click()
     await expect(prefs.getByText("Đã lưu tùy chọn nhận email.")).toBeVisible()
-    await prefs.getByLabel("Nhóm sự kiện").selectOption("PROGRESS_REPORT_OVERDUE")
+    await choose(prefs.getByLabel("Nhóm sự kiện"), "PROGRESS_REPORT_OVERDUE")
     await expect(prefs.getByLabel("Nhận email cá nhân")).toBeDisabled()
     await expect(prefs.getByText("Email bắt buộc cho nhóm sự kiện này.")).toBeVisible()
-    await rules.getByLabel("Nhóm sự kiện").selectOption("RESEARCH_OUTPUT_REJECTED")
+    await choose(rules.getByLabel("Nhóm sự kiện"), "RESEARCH_OUTPUT_REJECTED")
     const matrix=rules.getByRole("form",{name:"Quy tắc của trường"})
     await matrix.getByLabel("Bật email toàn trường cho nhóm này").uncheck()
     await matrix.getByLabel("Tiêu đề trong ứng dụng").fill("Cần bổ sung hồ sơ sản phẩm")
@@ -38,7 +39,7 @@ test("B04 persists a personal opt-out and applies the school's channel rules to 
     await person.reload()
     await person.getByRole("button",{name:"Tùy chọn nhận thông báo"}).click()
     await expect(prefs.getByLabel("Nhận email cá nhân")).not.toBeChecked()
-    await prefs.getByLabel("Nhóm sự kiện").selectOption("RESEARCH_OUTPUT_REJECTED")
+    await choose(prefs.getByLabel("Nhóm sự kiện"), "RESEARCH_OUTPUT_REJECTED")
     await expect(prefs.getByText("Trường đã tắt email cho sự kiện này.")).toBeVisible()
   }finally{await Promise.all([person.close(),admin.close()])}
 })

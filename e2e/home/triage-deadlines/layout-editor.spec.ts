@@ -1,3 +1,4 @@
+import { choose } from "../../lib/choice.mjs"
 import {expect,test} from "@playwright/test"
 import {fileURLToPath} from "node:url"
 import {catalogUser} from "../../catalog/config-override/fixtures"
@@ -24,7 +25,7 @@ test("HOME-11 saves an officer layout, reports conflicts and shows both sides of
       const open=p.getByRole("button",{name:"Bố cục trang chủ theo vai trò",exact:true})
       await expect(open).toBeVisible()
       await open.click()
-      await p.getByLabel("Vai trò áp dụng").selectOption("staff")
+      await choose(p.getByLabel("Vai trò áp dụng"), "staff")
       await expect(p.getByRole("checkbox",{name:"Việc cần làm",exact:true})).toBeChecked()
     }
     const editor=admin.getByRole("region",{name:"Bố cục trang chủ theo vai trò"})
@@ -59,7 +60,7 @@ test("HOME-11 saves an officer layout, reports conflicts and shows both sides of
       ["Lý lịch cá nhân","Thông báo gần đây","Số liệu nhanh","Lối tắt"])
     expect((await officer.request.get(reader.path+"/home-layouts/staff",{headers:reader.headers})).status()).toBe(403)
     provision("UPDATE rms.account SET user_type='user' WHERE id=:'id'",{id:owner.account.id})
-    await editor.getByLabel("Vai trò áp dụng").selectOption("user")
+    await choose(editor.getByLabel("Vai trò áp dụng"), "user")
     await expect(editor).toHaveCount(0)
     await expect(admin.getByText("Tài khoản thiếu quyền quản lý bố cục của trường.")).toBeVisible()
   } finally {

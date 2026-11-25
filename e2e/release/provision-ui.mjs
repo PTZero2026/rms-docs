@@ -1,3 +1,4 @@
+import { choose } from "../lib/choice.mjs"
 import assert from "node:assert/strict"
 import {spawn,execFileSync} from "node:child_process"
 import {once} from "node:events"
@@ -39,8 +40,8 @@ export async function checkAdminProvision(browser){
     const email="tac-gia-duoc-cap@example.invalid"
     await form.getByLabel("Email tài khoản").fill(email)
     await form.getByLabel("Họ tên người được cấp").fill("Nguyễn Hải An")
-    await form.getByLabel("Đơn vị công tác").selectOption(unit)
-    await form.getByLabel("Vai trò tài khoản").selectOption("author")
+    await choose(form.getByLabel("Đơn vị công tác"), unit)
+    await choose(form.getByLabel("Vai trò tài khoản"), "author")
     const posted=admin.waitForResponse(r=>r.url().endsWith("/admin/users")&&r.request().method()==="POST")
     await form.getByRole("button",{name:"Tạo tài khoản",exact:true}).click()
     const created=await posted

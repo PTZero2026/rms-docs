@@ -1,3 +1,4 @@
+import { choose } from "../../lib/choice.mjs"
 import {checkDraftEvidence} from "../../proposal/ai-proposal-evidence/acceptance"
 import {checkInactivePrincipal} from "../../iam/lock-account/inactive-principal"
 import { execFileSync } from "node:child_process"
@@ -36,25 +37,25 @@ test("RV-05 operator replaces a retired reference before the call becomes visibl
     await admin.getByLabel("Ngày bắt đầu").fill(today)
     await admin.getByLabel("Hạn nhận",{exact:true}).fill(end)
     await admin.getByLabel("Môi trường",{exact:true}).check()
-    await admin.getByRole("combobox",{name:"Biểu mẫu",exact:true}).selectOption(refs.form)
-    await admin.getByRole("combobox",{name:"Bộ tiêu chí",exact:true}).selectOption(refs.old)
+    await choose(admin.getByRole("combobox",{name:"Biểu mẫu",exact:true}), refs.form)
+    await choose(admin.getByRole("combobox",{name:"Bộ tiêu chí",exact:true}), refs.old)
     await admin.getByRole("button",{name:"Lưu kỳ nháp"}).click()
     await expect(admin.getByText("Đã lưu kỳ nháp.",{exact:true})).toBeVisible()
     await author.getByLabel("Tìm tên hoặc mã kỳ").fill("KG-THU")
     await expect(author.getByText("Chưa có kỳ phù hợp",{exact:true})).toBeVisible()
     for(const page of [author,admin]){
-      const group=page.getByRole("group",{name:"Phạm vi tra kỳ"})
+      const group=page.getByRole("radiogroup",{name:"Phạm vi tra kỳ"})
       const refreshed=page.waitForResponse(r=>r.url().includes("/calls?")&&r.url().includes("group=all"))
-      await group.getByRole("button",{name:"Tất cả",exact:true}).click()
+      await group.getByRole("radio",{name:"Tất cả",exact:true}).click()
       await refreshed
       await expect(page.getByRole("button",{name:/KG-THU.*Kỳ nghiên cứu cơ sở/})).toHaveCount(page===admin?1:0)
-      await group.getByRole("button",{name:"Đang nhận",exact:true}).click()
+      await group.getByRole("radio",{name:"Đang nhận",exact:true}).click()
     }
     provision("UPDATE rms.intake_reference SET active=false WHERE id=:'old'::uuid",refs)
     await admin.getByRole("button",{name:"Mở kỳ",exact:true}).click()
     await expect(admin.getByText("Bộ tiêu chí đã hết hiệu lực: Bộ năm trước",{exact:true})).toBeVisible()
     await admin.getByRole("button",{name:"Sửa kỳ nháp"}).click()
-    await admin.getByRole("combobox",{name:"Bộ tiêu chí",exact:true}).selectOption(refs.fresh)
+    await choose(admin.getByRole("combobox",{name:"Bộ tiêu chí",exact:true}), refs.fresh)
     await admin.getByRole("button",{name:"Lưu kỳ nháp"}).click()
     const pending=admin.waitForResponse(r=>r.url().endsWith("/actions"))
     await admin.getByRole("button",{name:"Mở kỳ",exact:true}).click()
@@ -98,7 +99,7 @@ test("RV-05 operator replaces a retired reference before the call becomes visibl
     await expect(author.getByLabel("Tên đề xuất")).toHaveValue("Đánh giá chất lượng nước")
     await author.getByRole("button",{name:"Nộp đề xuất",exact:true}).click()
     await expect(author.getByText(/Còn thiếu .*Phương pháp/)).toBeVisible()
-    await author.getByRole("combobox",{name:"Lĩnh vực đề tài"}).selectOption(refs.f)
+    await choose(author.getByRole("combobox",{name:"Lĩnh vực đề tài"}), refs.f)
     await author.getByLabel("Thời gian thực hiện (tháng)").fill("12")
     await author.getByLabel("Kinh phí đề xuất (VND)").fill("10000000")
     await author.getByLabel("Phương pháp (cần khi nộp)").fill("Lấy mẫu theo tháng.")

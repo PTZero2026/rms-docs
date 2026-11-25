@@ -1,3 +1,6 @@
+import { ToggleGroup, ToggleGroupItem } from "@rms/ui/components/toggle-group"
+import { ValidatedForm } from "@rms/ui/components/validated-form"
+import { ChoiceOption } from "@rms/ui/components/choice-select"
 import { useState } from 'react'
 import { Button } from '@rms/ui/components/button'
 import type { DemoRow, FeatureProps } from '../../demo/types'
@@ -65,25 +68,13 @@ function Snapshot({ app, report }: { app: FeatureProps; report: DemoRow }) {
             ['Trích xuất (giờ Việt Nam)', timeLabel(report.fields.extractedAt)],
           ]}
         />
-        <div className="intake-actions">
-          <Button
-            variant={state ? 'outline' : 'default'}
-            aria-pressed={!state}
-            onClick={() => setFilter('')}
-          >
-            Tất cả ({lines.length})
-          </Button>
+        <ToggleGroup type="single" variant="outline" className="max-w-full flex-wrap" aria-label="Trạng thái đề tài"
+          value={state || '*'} onValueChange={next => { if (next) setFilter(next === '*' ? '' : next) }}>
+          <ToggleGroupItem value="*">Tất cả ({lines.length})</ToggleGroupItem>
           {[...groups].map(([key, count]) => (
-            <Button
-              variant={state === key ? 'default' : 'outline'}
-              key={key}
-              aria-pressed={state === key}
-              onClick={() => setFilter(key)}
-            >
-              {label(key)} ({count})
-            </Button>
+            <ToggleGroupItem key={key} value={key}>{label(key)} ({count})</ToggleGroupItem>
           ))}
-        </div>
+        </ToggleGroup>
       </Panel>
       <Panel title={'Danh sách đối chứng (' + filtered.length + ')'}>
         <Grid
@@ -138,7 +129,7 @@ export function ReportScreen(app: FeatureProps) {
         title="Báo cáo kỳ nhận đề xuất"
         detail="Đối chiếu các đề tài đã cấp mã theo kỳ và đơn vị."
       />
-      <form
+      <ValidatedForm
         className="panel stack"
         onSubmit={(e) => {
           e.preventDefault()
@@ -151,17 +142,17 @@ export function ReportScreen(app: FeatureProps) {
       >
         <h2 className="section-heading">Tạo bản chụp</h2>
         <div className="form-grid">
-          <Choice label="Kỳ báo cáo" value={callId} onChange={(e) => setCall(e.target.value)}>
+          <Choice label="Kỳ báo cáo" value={callId} onValueChange={setCall}>
             {calls.map((c) => (
-              <option key={c.id} value={c.id}>
+              <ChoiceOption key={c.id} value={c.id}>
                 {c.title} ({c.fields.code})
-              </option>
+              </ChoiceOption>
             ))}
           </Choice>
-          <Choice label="Phạm vi đơn vị" value={unit} onChange={(e) => setUnit(e.target.value)}>
-            {!scope && <option value="*">Tất cả đơn vị được giao</option>}
+          <Choice label="Phạm vi đơn vị" value={unit} onValueChange={setUnit}>
+            {!scope && <ChoiceOption value="*">Tất cả đơn vị được giao</ChoiceOption>}
             {reportUnits(app).map((u) => (
-              <option key={u}>{u}</option>
+              <ChoiceOption value={u} key={u}>{u}</ChoiceOption>
             ))}
           </Choice>
         </div>
@@ -171,7 +162,7 @@ export function ReportScreen(app: FeatureProps) {
           </Button>
         </div>
         <Problem text={error} />
-      </form>
+      </ValidatedForm>
       <Panel title="Bản chụp đã tạo">
         <Grid
           heads={['Kỳ báo cáo', 'Thời điểm trích xuất', 'Phạm vi', 'Số đề tài']}

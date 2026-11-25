@@ -1,10 +1,11 @@
+import { choose } from "../lib/choice.mjs"
 import { expect, test, type Page } from "@playwright/test"
 import { readFile } from "node:fs/promises"
 
 async function switchUser(page: Page, name: string, tenant = "tlu") {
   await page.getByRole("button", { name: "Phiên mô phỏng", exact: true }).click()
   const dialog = page.getByRole("dialog")
-  await dialog.getByLabel("Đơn vị", { exact: true }).selectOption(tenant)
+  await choose(dialog.getByLabel("Đơn vị", { exact: true }), tenant)
   await dialog.getByRole("button", { name: new RegExp(name) }).click()
   await expect(dialog).toBeHidden()
 }
@@ -12,7 +13,7 @@ const button = (page: Page, name: string) => page.getByRole("button", { name, ex
 
 test("Chủ nhiệm mở kỳ, lưu nháp và tìm lại đề xuất sau khi tải lại", async ({ page }) => {
   await page.goto("/#/F02/call-01")
-  await button(page, "Lập đề xuất cho kỳ này").click()
+  await page.getByRole("link", {name: "Lập đề xuất cho kỳ này"}).click()
   const title = "Đo cao trình mực nước trong mô hình thủy lực"
   await page.getByLabel("Tên đề tài", { exact: true }).fill(title)
   await button(page, "Lưu nháp").click()
@@ -20,7 +21,7 @@ test("Chủ nhiệm mở kỳ, lưu nháp và tìm lại đề xuất sau khi t�
   await button(page, "Tìm kiếm").click()
   const search = page.getByRole("dialog")
   await search.getByLabel("Từ khóa tìm kiếm").fill(title)
-  await search.getByRole("button", { name: new RegExp(title) }).click()
+  await search.getByRole("link", { name: new RegExp(title) }).click()
   await expect(page.locator("main")).toContainText(title)
   await expect(page).toHaveURL(/#\/F01\//)
 })

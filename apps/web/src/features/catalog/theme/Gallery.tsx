@@ -1,3 +1,4 @@
+import { ChoiceOption, ChoiceSelect } from "@rms/ui/components/choice-select"
 import { useLayoutEffect, useState } from "react"
 import { alternateTheme, defaultTheme } from "@rms/api-contracts/theme"
 import { applyTheme } from "@rms/ui/theme"
@@ -15,14 +16,14 @@ export default function Gallery() {
     <header><h1 className="text-2xl font-semibold">Xem thử giao diện</h1></header>
     <div className="flex flex-wrap gap-4">
       <label className="grid gap-1">Đơn vị
-        <select className="rounded-md border p-2" value={school} onChange={e=>setSchool(e.target.value)}>
-          <option value="a">Trường A</option><option value="b">Trường B</option>
-        </select>
+        <ChoiceSelect value={school} onValueChange={setSchool}>
+          <ChoiceOption value="a">Trường A</ChoiceOption><ChoiceOption value="b">Trường B</ChoiceOption>
+        </ChoiceSelect>
       </label>
       <label className="grid gap-1">Chế độ hiển thị
-        <select className="rounded-md border p-2" value={mode} onChange={e=>setMode(e.target.value==="dark"?"dark":"light")}>
-          <option value="light">Sáng</option><option value="dark">Tối</option>
-        </select>
+        <ChoiceSelect value={mode} onValueChange={choiceValue => setMode(choiceValue==="dark"?"dark":"light")}>
+          <ChoiceOption value="light">Sáng</ChoiceOption><ChoiceOption value="dark">Tối</ChoiceOption>
+        </ChoiceSelect>
       </label>
     </div>
     <section className="grid gap-4 rounded-lg border bg-card p-5 text-card-foreground">

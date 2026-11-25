@@ -1,3 +1,4 @@
+import { choose } from "../../lib/choice.mjs"
 import { test,expect } from "@playwright/test"
 import { fileURLToPath } from "node:url"
 import { provision,signIn } from "../../integration/session-fixture"
@@ -13,7 +14,7 @@ test("tenant process admin activates a version and rejects an incomplete graph",
   const version=(await current.json()).version+1
   await page.getByRole("button",{name:"Kích hoạt phiên bản "+version}).click()
   await expect(page.getByRole("heading",{name:"Mẫu quy trình · Phiên bản "+version})).toBeVisible()
-  await page.getByRole("combobox",{name:"Chọn bước",exact:true}).selectOption({label:"UNDER_REVIEW"})
+  await choose(page.getByRole("combobox",{name:"Chọn bước",exact:true}), {label:"UNDER_REVIEW"})
   await page.getByLabel("Mã bước",{exact:true}).fill("CHO_HOI_DONG")
   await page.getByRole("button",{name:"Kích hoạt phiên bản "+(version+1)}).click()
   await expect(page.getByRole("heading",{name:"Mẫu quy trình · Phiên bản "+(version+1)})).toBeVisible()

@@ -1,3 +1,6 @@
+import { ValidatedForm } from "@rms/ui/components/validated-form"
+import { DateInput } from "@rms/ui/components/date-input"
+import { ChoiceOption, ChoiceSelect } from "@rms/ui/components/choice-select"
 import {useEffect,useState} from "react"
 import type {operations} from "@rms/api-contracts"
 import {Button} from "@rms/ui/components/button"
@@ -22,8 +25,8 @@ export function MeetingMinutes({session,kind}:{session:SignedInSession;kind:Roun
   return <section className="grid gap-2" aria-label="Biên bản cuộc họp">
     <Button variant="outline" aria-expanded={visible} onClick={()=>{show(v=>!v);setRounds(undefined);setSelected("");setFailed(false)}}>Biên bản cuộc họp</Button>
     {visible&&(failed?<p role="alert">Chưa thể đọc phân công hội đồng.</p>:!rounds?<p>Đang tải phân công…</p>:!rounds.length?<p>Bạn chưa có vòng hội đồng trong phạm vi.</p>:
-      <label>Vòng hội đồng<select className="block w-full border p-2" value={selected} onChange={e=>setSelected(e.target.value)}><option value="">Chọn vòng</option>
-        {rounds.map(r=><option key={r.id} value={r.id}>{r.title}</option>)}</select></label>)}
+      <label>Vòng hội đồng<ChoiceSelect className="w-full" value={selected} onValueChange={setSelected}><ChoiceOption value="">Chọn vòng</ChoiceOption>
+        {rounds.map(r=><ChoiceOption key={r.id} value={r.id}>{r.title}</ChoiceOption>)}</ChoiceSelect></label>)}
     {visible&&rounds?.some(r=>r.id===selected)&&<MeetingList key={selected} session={session} round={selected} secretary={rounds.some(r=>r.id===selected&&r.secretary)}/>}
   </section>
 }
@@ -51,10 +54,10 @@ function MeetingList({session,round,secretary}:{session:SignedInSession;round:st
     const link=document.createElement("a");link.href=data.url;link.referrerPolicy="no-referrer";link.click()
   }
   return <div className="grid gap-3">
-    {list&&secretary&&<form className="grid gap-2" onSubmit={e=>{e.preventDefault();void create()}}>
+    {list&&secretary&&<ValidatedForm className="grid gap-2" onSubmit={e=>{e.preventDefault();void create()}}>
       <label>Tên cuộc họp<Input required maxLength={240} value={title} onChange={e=>setTitle(e.target.value)}/></label>
-      <label>Ngày họp<Input required type="date" value={date} onChange={e=>setDate(e.target.value)}/></label>
-      <Button disabled={busy}>Ghi cuộc họp</Button></form>}
+      <label>Ngày họp<DateInput required  value={date} onValueChange={setDate}/></label>
+      <Button type="submit" disabled={busy}>Ghi cuộc họp</Button></ValidatedForm>}
     {list?.length===0&&<p>Vòng này chưa có cuộc họp.</p>}
     {list?.map(m=><section key={m.id} className="grid gap-2 rounded border p-3" aria-label={m.title}>
       <h4>{m.title}</h4><p>{m.date.split("-").reverse().join("/")}</p>

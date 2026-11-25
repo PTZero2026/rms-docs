@@ -1,9 +1,11 @@
+import { ValidatedForm } from "@rms/ui/components/validated-form"
+import { Checkbox } from "@rms/ui/components/checkbox"
 import { useState } from "react"
 import { ArrowRight, GitBranch, Plus } from "lucide-react"
 import { Button } from "@rms/ui/components/button"
 import { FieldGroup, FieldLegend, FieldSet } from "@rms/ui/components/field"
 import { demoRecord } from "../../demo/base-seed"
-import { statusNames } from "../../demo/catalog"
+import { statusNames, routeUrl } from "../../demo/catalog"
 import { roleNames } from "../../demo/identity"
 import type { DemoRow, FeatureProps, Role } from "../../demo/types"
 import { Blank, Heading, Status } from "../../demo/ui"
@@ -40,7 +42,7 @@ function DraftEditor({ draft, close, done }: { draft: Draft; close: () => void; 
     } catch (ex) { setError((ex as Error).message) }
   }
   return <Editor title={"Chỉnh sửa bản nháp " + row.fields.version} hint="Có thể lưu các bước đang soạn và quay lại trước khi kích hoạt." close={close}>
-    <form className="stack" onSubmit={e => { e.preventDefault(); save() }}>
+    <ValidatedForm className="stack" onSubmit={e => { e.preventDefault(); save() }}>
       <TextField label="Tên phiên bản" value={title} change={setTitle} required />
       <FieldSet>
         <FieldLegend>Tên hiển thị của bước</FieldLegend>
@@ -63,11 +65,11 @@ function DraftEditor({ draft, close, done }: { draft: Draft; close: () => void; 
             <FieldLegend>Vai trò được chuyển bước</FieldLegend>
             <FieldGroup className="grid-two">{Object.entries(roleNames).map(([key, label]) => {
               const role = key as Role
-              return <label className="check" key={role}><input type="checkbox" checked={edge.roles.includes(role)}
-                onChange={e => update({ roles: e.target.checked ? [...edge.roles, role] : edge.roles.filter(r => r !== role) })} />{label}</label>
+              return <label className="check" key={role}><Checkbox checked={edge.roles.includes(role)}
+                onCheckedChange={checked => update({ roles: checked ? [...edge.roles, role] : edge.roles.filter(r => r !== role) })} />{label}</label>
             })}</FieldGroup>
           </FieldSet>
-          <label className="check"><input type="checkbox" checked={!!edge.reason} onChange={e => update({ reason: e.target.checked })} />Bắt buộc nhập lý do</label>
+          <label className="check"><Checkbox checked={!!edge.reason} onCheckedChange={checked => update({ reason: checked })} />Bắt buộc nhập lý do</label>
         </>}
         <div className="toolbar">
           <Button type="button" variant="outline" onClick={() => {
@@ -80,7 +82,7 @@ function DraftEditor({ draft, close, done }: { draft: Draft; close: () => void; 
       </FieldSet>
       <ErrorLine message={error} />
       <div><Button type="submit">Lưu bản nháp</Button></div>
-    </form>
+    </ValidatedForm>
   </Editor>
 }
 
@@ -113,9 +115,9 @@ export default function Workflow(p: FeatureProps) {
       action={<Button onClick={() => create(selected)}><Plus data-icon="inline-start" />Tạo phiên bản</Button>} />
     <div className="grid-two workflow-panels">
       <section className="panel"><div className="section-heading"><h2>Phiên bản</h2></div>
-        {versions.map(r => <button className="project-row" key={r.id} aria-current={r.id === selected.id ? "true" : undefined} onClick={() => p.go("P01", r.id)}>
+        {versions.map(r => <Button variant="ghost" size="content" className="project-row" key={r.id} aria-current={r.id === selected.id ? "true" : undefined} asChild><a href={routeUrl("P01", r.id)}>
           <GitBranch size={17} /><span className="task-copy"><b>{r.title}</b><small>{r.fields.version}</small></span><Status value={r.status} />
-        </button>)}
+        </a></Button>)}
       </section>
       <section className="panel pad stack"><h2>{selected.title}</h2>
         {selected.status === "DRAFT" && <div className="toolbar">

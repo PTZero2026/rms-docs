@@ -1,3 +1,5 @@
+import { ToggleGroup, ToggleGroupItem } from "@rms/ui/components/toggle-group"
+import { ChoiceOption, ChoiceSelect } from "@rms/ui/components/choice-select"
 import { useCallback,useEffect,useRef,useState,type MouseEvent } from "react"
 import { Button } from "@rms/ui/components/button"
 import type { operations } from "@rms/api-contracts"
@@ -93,17 +95,21 @@ export default function CallReport({session,canExport,initialUnit=""}:{session:S
     }finally{setBusy(false)}
   }
   return <section ref={panel} aria-label="Báo cáo tiếp nhận" className="grid min-w-0 gap-3 py-4"><h2>Báo cáo tiếp nhận</h2>
-    {filters&&<fieldset disabled={busy} className="flex flex-wrap items-end gap-3"><label>Kỳ báo cáo <select value={call} onChange={e=>{setCall(e.target.value);clearSnapshot()}}>
-      <option value="">Chọn kỳ</option>{filters.calls.map(c=><option value={c.id} key={c.id}>{c.label}</option>)}</select></label>
-      <label>Đơn vị báo cáo <select value={unit??"choose"} onChange={e=>{setUnit(e.target.value);clearSnapshot()}}>
-        {unit===null&&<option disabled value="choose">Chọn phạm vi báo cáo</option>}<option value="">Các đơn vị trong quyền</option>
-        {filters.units.map(u=><option key={u.id} value={u.id}>{u.label}</option>)}</select></label>
+    {filters&&<fieldset disabled={busy} className="flex flex-wrap items-end gap-3"><label>Kỳ báo cáo <ChoiceSelect value={call} onValueChange={choiceValue => {setCall(choiceValue);clearSnapshot()}}>
+      <ChoiceOption value="">Chọn kỳ</ChoiceOption>{filters.calls.map(c=><ChoiceOption value={c.id} key={c.id}>{c.label}</ChoiceOption>)}</ChoiceSelect></label>
+      <label>Đơn vị báo cáo <ChoiceSelect value={unit??"choose"} onValueChange={choiceValue => {setUnit(choiceValue);clearSnapshot()}}>
+        {unit===null&&<ChoiceOption disabled value="choose">Chọn phạm vi báo cáo</ChoiceOption>}<ChoiceOption value="">Các đơn vị trong quyền</ChoiceOption>
+        {filters.units.map(u=><ChoiceOption key={u.id} value={u.id}>{u.label}</ChoiceOption>)}</ChoiceSelect></label>
       <Button disabled={!call||unit===null||busy} onClick={()=>void load("generate")}>Tạo bản chụp</Button></fieldset>}
     {snapshot&&<><p>{snapshot.callCode} · Trích xuất {formatVietnamDate(snapshot.capturedAt, "second")} (giờ Việt Nam)</p>
       <p className="break-all">Mã bản chụp · <a className="underline" href={"?"+reportLocation(snapshot.id,!!unit,group)}>{snapshot.id}</a></p>
       <p>Phạm vi · {snapshot.units.join(", ")}. Tổng cộng {snapshot.total} hồ sơ.</p>
-      <div className="flex flex-wrap gap-2"><Button variant={group==="*"?"default":"outline"} aria-pressed={group==="*"} disabled={busy} onClick={()=>void load("details","*")}>Tất cả mã đã cấp</Button>
-        {Object.entries(snapshot.groups).map(([s,n])=><Button variant={group===s?"default":"outline"} key={s} aria-pressed={group===s} disabled={busy} onClick={()=>void load("details",s)}>{labels[s]??s} ({n})</Button>)}</div>
+      <ToggleGroup type="single" variant="outline" aria-label="Trạng thái đề tài" className="max-w-full flex-wrap"
+        disabled={busy} value={group} onValueChange={next => { if (next) void load("details",next) }}>
+        <ToggleGroupItem value="*">Tất cả mã đã cấp</ToggleGroupItem>
+        {Object.entries(snapshot.groups).map(([status,count]) =>
+          <ToggleGroupItem key={status} value={status}>{labels[status] ?? status} ({count})</ToggleGroupItem>)}
+      </ToggleGroup>
       {group&&<ul aria-label="Mã đối chứng" className="grid gap-2">{snapshot.rows.filter(r=>group==="*"||r.semantic===group).map(r=><li className="break-words rounded border p-2" key={r.id}>
         <a className="underline" href={"?project="+r.id} onClick={openProject}>{r.title}</a><p className="break-all">{r.code}</p><p>{r.unit} · {labels[r.semantic]??r.semantic}</p></li>)}</ul>}
       {canExport&&<Button disabled={busy} onClick={()=>void load("export")}>Xuất CSV đối chứng</Button>}</>}

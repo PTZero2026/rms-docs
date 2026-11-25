@@ -59,7 +59,7 @@ try {
           await new Promise((resolve) =>
             requestAnimationFrame(() => requestAnimationFrame(resolve)),
           )
-          if (!document.querySelector(".search-results button"))
+          if (!document.querySelector(".search-results a"))
             throw Error("Tìm kiếm không có kết quả")
           return performance.now() - start
         }, extra)

@@ -1,3 +1,6 @@
+import { Disclosure } from "@rms/ui/components/disclosure"
+import { ChoiceOption, ChoiceSelect } from "@rms/ui/components/choice-select"
+import { Checkbox } from "@rms/ui/components/checkbox"
 import {ProductCreditApproval,useProductHours} from "./ProductCreditApproval"
 import { useEffect,useState } from "react"
 import { Button } from "@rms/ui/components/button"
@@ -41,24 +44,24 @@ export default function Products({session,id}:{session:SignedInSession;id:string
       {live&&<Button variant="outline" disabled={!choices?.length} onClick={()=>setDraft(initial(me,choices?.[0]?.code??""))}>Kê khai sản phẩm</Button>}
       {draft&&<fieldset disabled={busy} className="grid gap-2"><legend>Bản kê khai</legend>
         <label>Tên sản phẩm<Input value={draft.title} onChange={e=>change("title",e.target.value)}/></label>
-        <label>Loại sản phẩm <select value={draft.kind} onChange={e=>change("kind",e.target.value)}>{!choices?.some(t=>t.code===draft.kind)&&<option value={draft.kind} disabled>{name(draft.kind)} · Đã ngừng dùng</option>}{choices?.map(t=><option key={t.code} value={t.code}>{t.label}</option>)}</select></label>
+        <label>Loại sản phẩm <ChoiceSelect value={draft.kind} onValueChange={choiceValue => change("kind",choiceValue)}>{!choices?.some(t=>t.code===draft.kind)&&<ChoiceOption value={draft.kind} disabled>{name(draft.kind)} · Đã ngừng dùng</ChoiceOption>}{choices?.map(t=><ChoiceOption key={t.code} value={t.code}>{t.label}</ChoiceOption>)}</ChoiceSelect></label>
         <label>Năm công bố<Input type="number" value={draft.year??""} onChange={e=>change("year",e.target.value?Number(e.target.value):null)}/></label>
         <label>Thông tin công bố<Input value={draft.publication} onChange={e=>change("publication",e.target.value)}/></label>
-        <fieldset><legend>Tác giả</legend>{page.authors.map(a=><label className="block" key={a.id}><input type="checkbox" checked={draft.authors.includes(a.id)}
-          onChange={e=>change("authors",e.target.checked?[...draft.authors,a.id]:draft.authors.filter(k=>k!==a.id))}/> {a.label}</label>)}</fieldset>
-        <fieldset><legend>Minh chứng</legend>{page.files.map(f=><label className="block" key={f.id}><input type="checkbox" checked={draft.files.includes(f.id)}
-          onChange={e=>change("files",e.target.checked?[...draft.files,f.id]:draft.files.filter(k=>k!==f.id))}/> {f.label}</label>)}</fieldset>
+        <fieldset><legend>Tác giả</legend>{page.authors.map(a=><label className="block" key={a.id}><Checkbox checked={draft.authors.includes(a.id)}
+          onCheckedChange={checked => change("authors",checked?[...draft.authors,a.id]:draft.authors.filter(k=>k!==a.id))}/> {a.label}</label>)}</fieldset>
+        <fieldset><legend>Minh chứng</legend>{page.files.map(f=><label className="block" key={f.id}><Checkbox checked={draft.files.includes(f.id)}
+          onCheckedChange={checked => change("files",checked?[...draft.files,f.id]:draft.files.filter(k=>k!==f.id))}/> {f.label}</label>)}</fieldset>
         <ProjectFile session={session} project={id} revision={page.revision} onFile={(fileId,label)=>{setPage({...page,files:[...page.files,{id:fileId,label}]});change("files",[...draft.files,fileId])}}/>
         <Button onClick={()=>run(()=>session.api.PUT("/api/tenants/{slug}/projects/{id}/products/{productId}",{params:product(draft.id),body:{title:draft.title,kind:draft.kind,year:draft.year,publication:draft.publication,authors:draft.authors,files:draft.files,revision:draft.revision}}))}>Lưu nháp sản phẩm</Button>
       </fieldset>}
       {live&&<label>Lý do từ chối, mở lại hoặc thu quyền<Input value={reason} onChange={e=>setReason(e.target.value)}/></label>}
-      {live&&page.canReview&&page.files.length>0&&<details><summary>Quyền sử dụng minh chứng sản phẩm</summary>{page.files.map(f=><Button variant="outline" key={f.id} disabled={busy||!reason.trim()}
-        onClick={()=>run(()=>session.api.POST("/api/tenants/{slug}/projects/{id}/products/files/{fileId}/revoke",{params:{path:{...path,fileId:f.id}},body:{reason}}))}>Thu quyền · {f.label}</Button>)}</details>}
+      {live&&page.canReview&&page.files.length>0&&<Disclosure title={<> Quyền sử dụng minh chứng sản phẩm </>}>{page.files.map(f=><Button variant="outline" key={f.id} disabled={busy||!reason.trim()}
+        onClick={()=>run(()=>session.api.POST("/api/tenants/{slug}/projects/{id}/products/files/{fileId}/revoke",{params:{path:{...path,fileId:f.id}},body:{reason}}))}>Thu quyền · {f.label}</Button>)}</Disclosure>}
       {page.items.map(o=><article key={o.id} className="grid gap-2 rounded border p-2"><strong>{o.title}</strong><p>{name(o.kind)} · {o.year??"Chưa nhập năm"} · {status[o.status]}</p>
         {o.publication&&<p>{o.publication}</p>}{o.reason&&<p>Căn cứ xử lý · {o.reason}</p>}
         {live&&["DRAFT","REJECTED"].includes(o.status)&&(page.canReview||page.principal||o.ownerId===me||o.authors.includes(me))&&<>
           <Button variant="outline" onClick={()=>setDraft({...o,files:o.files.filter(k=>page.files.some(f=>f.id===k))})}>Sửa bản kê khai</Button>
-          {o.status==="DRAFT"&&<><label><input type="checkbox" checked={distinct} onChange={e=>setDistinct(e.target.checked)}/> Đã kiểm tra và xác nhận khác sản phẩm trùng thông tin</label>
+          {o.status==="DRAFT"&&<><label><Checkbox checked={distinct} onCheckedChange={setDistinct}/> Đã kiểm tra và xác nhận khác sản phẩm trùng thông tin</label>
             <Button disabled={busy} onClick={()=>run(()=>session.api.POST("/api/tenants/{slug}/projects/{id}/products/{productId}/submit",{params:product(o.id),body:{revision:o.revision,distinct}}))}>Gửi duyệt sản phẩm</Button></>}</>}
         {live&&page.canReview&&!page.principal&&o.ownerId!==me&&!o.authors.includes(me)&&["PENDING_APPROVAL","APPROVED"].includes(o.status)&&<>
           {o.status==="PENDING_APPROVAL"&&<ProductCreditApproval key={o.revision} enabled={hoursEnabled} busy={busy}

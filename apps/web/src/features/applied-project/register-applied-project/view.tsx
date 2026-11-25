@@ -1,3 +1,5 @@
+import { ChoiceOption, ChoiceSelect } from "@rms/ui/components/choice-select"
+import { Textarea } from "@rms/ui/components/textarea"
 import {PartnerPicker} from "./PartnerPicker"
 import {ResultPanel} from "./ResultPanel"
 import {MemberShares} from "../../extension/MemberShares"
@@ -61,12 +63,12 @@ export function AppliedProjects({session}:{session:SignedInSession}){
       <Button variant="outline" onClick={()=>open()}>Kê khai dự án mới</Button>
       {selected&&<p>{labels[selected.status]} · {selected.unit} · {BigInt(selected.amount).toLocaleString("vi-VN")} ₫</p>}
       {(!selected||selected.status==="DRAFT")&&<><label>Tên dự án<Input value={title} onChange={e=>setTitle(e.target.value)}/></label>
-        {page.catalog.types.length>0&&<label>Loại dự án<select className="block border p-2" value={category} onChange={e=>setCategory(e.target.value)}><option value="">Chọn loại dự án</option>
-          {page.catalog.types.map(t=><option key={t.code} value={t.code}>{t.label}</option>)}</select></label>}
-        <label>Đơn vị chủ trì<select className="block border p-2" value={unit} onChange={e=>setUnit(e.target.value)}><option value="">Chọn đơn vị</option>{page.units.map(u=><option key={u.id} value={u.id}>{u.name}</option>)}</select></label>
+        {page.catalog.types.length>0&&<label>Loại dự án<ChoiceSelect value={category} onValueChange={setCategory}><ChoiceOption value="">Chọn loại dự án</ChoiceOption>
+          {page.catalog.types.map(t=><ChoiceOption key={t.code} value={t.code}>{t.label}</ChoiceOption>)}</ChoiceSelect></label>}
+        <label>Đơn vị chủ trì<ChoiceSelect value={unit} onValueChange={setUnit}><ChoiceOption value="">Chọn đơn vị</ChoiceOption>{page.units.map(u=><ChoiceOption key={u.id} value={u.id}>{u.name}</ChoiceOption>)}</ChoiceSelect></label>
         <label>Tổng kinh phí (VND)<Input inputMode="numeric" value={amount} onChange={e=>setAmount(e.target.value)}/></label>
         <PartnerPicker directory={page.partnerDirectory} selected={directoryPartners} onChange={setDirectoryPartners}/>
-        <label>Đối tác ngoài (mỗi dòng một đơn vị)<textarea className="block w-full border p-2" value={partners} onChange={e=>setPartners(e.target.value)}/></label>
+        <label>Đối tác ngoài (mỗi dòng một đơn vị)<Textarea className="block w-full border p-2" value={partners} onChange={e=>setPartners(e.target.value)}/></label>
         <MemberShares members={members} roles onChange={rows=>setMembers(rows.map(m=>({...m,role:m.role??"MEMBER"})))}/>
         <Button disabled={busy} onClick={()=>void act(false)}>Lưu nháp dự án</Button>{selected&&<Button disabled={busy||!!dirty} onClick={()=>void act(true)}>Gửi duyệt dự án</Button>}</>}
       {selected&&<>
@@ -76,8 +78,8 @@ export function AppliedProjects({session}:{session:SignedInSession}){
         {selected.reason&&<p>Lý do quyết định · {selected.reason}</p>}
         <ul>{selected.files.map(f=><li key={f.id}><Button variant="link" onClick={()=>void download(f.id).catch(e=>setMessage(e.message))}>{f.filename}</Button> · {f.code}{f.cycle!==null?" · Kết quả lần duyệt "+f.cycle:""}</li>)}</ul>
         {selected.status==="DRAFT"&&page.actorId===selected.ownerId&&page.catalog.evidence.length>0&&<>
-          <label>Loại minh chứng<select value={evidence} onChange={e=>setEvidence(e.target.value)}><option value="">Chọn loại minh chứng</option>
-            {page.catalog.evidence.map(e=><option key={e.code} value={e.code}>{e.label}</option>)}</select></label>
+          <label>Loại minh chứng<ChoiceSelect value={evidence} onValueChange={setEvidence}><ChoiceOption value="">Chọn loại minh chứng</ChoiceOption>
+            {page.catalog.evidence.map(e=><ChoiceOption key={e.code} value={e.code}>{e.label}</ChoiceOption>)}</ChoiceSelect></label>
           {evidence&&<ProjectFile session={session} project={id} revision={selected.revision} extension={{module:"applied-project",evidenceType:evidence}}
             onFile={()=>void reloadEvidence().catch(e=>setMessage(e.message))}/>}</>}
         {page.canReview&&page.actorId!==selected.ownerId&&selected.status!=="DRAFT"&&<>
