@@ -35,3 +35,13 @@
   .ext-filters [data-slot="field"]:has(input[type="search"]) { grid-column: 1 / -1; }
 }
 
+
+.ext-filter-controls { display: grid; gap: .65rem; }
+.ext-filter-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
+.ext-filter-actions:empty { display: none; }
+@media (min-width: 601px) {
+  .ext-filter-actions { order: 1; }
+}
+@media (max-width: 600px) {
+  .ext-filter-controls button, .ext-filter-controls input { min-height: 44px; }
+}

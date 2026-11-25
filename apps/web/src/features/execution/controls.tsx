@@ -305,7 +305,7 @@ export function Grid({
 }) {
   if (!rows.length) return <NoData title={'Chưa có ' + caption.toLocaleLowerCase('vi')} />
   return (
-    <Table className="data-table">
+    <Table className="data-table mobile-record-table">
       <TableCaption className="sr-only">{caption}</TableCaption>
       <TableHeader>
         <TableRow>
@@ -318,7 +318,7 @@ export function Grid({
         {rows.map((r) => (
           <TableRow key={r.id}>
             {r.cells.map((cell, i) => (
-              <TableCell key={columns[i]}>{cell}</TableCell>
+              <TableCell key={columns[i]} data-label={columns[i]}>{cell}</TableCell>
             ))}
           </TableRow>
         ))}

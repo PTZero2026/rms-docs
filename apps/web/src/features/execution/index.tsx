@@ -1,3 +1,5 @@
+import { UnavailableRecord } from "../../demo/UnavailableRecord"
+import { Button } from "@rms/ui/components/button"
 import { ChoiceOption, ChoiceSelect } from "@rms/ui/components/choice-select"
 import { Checkbox } from "@rms/ui/components/checkbox"
 import { useState } from 'react'
@@ -130,6 +132,7 @@ function ProjectList({ p, projects }: { p: FeatureProps; projects: Row[] }) {
               chưa nộp
             </label>
           )}
+          {(query || status || late) && <Button variant="ghost" onClick={() => { setQuery(''); setStatus(''); setLate(false) }}>Xóa bộ lọc</Button>}
         </div>
         <Grid
           caption="Đề tài trong phạm vi"
@@ -185,7 +188,7 @@ function ProjectFeature(p: FeatureProps) {
   )
   if (!project)
     return (
-      <NoData
+      <UnavailableRecord feature={feature}
         title="Không thể mở đề tài"
         detail="Hồ sơ chưa vào giai đoạn này hoặc nằm ngoài phạm vi được phân."
       />

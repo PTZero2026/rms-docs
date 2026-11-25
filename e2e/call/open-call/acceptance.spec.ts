@@ -27,7 +27,7 @@ test("RV-05 operator replaces a retired reference before the call becomes visibl
     execFileSync(process.execPath,[fileURLToPath(new URL("../../../apps/backend/test/db/seed-intake-case.mjs",import.meta.url)),op.account.id,pi.account.id])
     for(const [page,role] of [[admin,"staff"],[author,"author"]] as const){
       await page.getByRole("button",{name:"Tải lại thông tin"}).click()
-      await expect(page.getByText("Vai trò "+role,{exact:true})).toBeVisible()
+      await expect(page.getByText(role === "staff" ? "Vai trò Chuyên viên" : "Vai trò Tác giả",{exact:true})).toBeVisible()
       await page.getByRole("button",{name:"Kỳ nhận đề xuất",exact:true}).click()
     }
     await admin.getByRole("button",{name:"Tạo kỳ nháp"}).click()

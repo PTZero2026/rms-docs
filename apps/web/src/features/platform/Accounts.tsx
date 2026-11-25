@@ -52,6 +52,7 @@ export default function Accounts(p: FeatureProps) {
     own = accounts.find((r) => r.id === accountId(p.session.userId))!
   const tab = p.route.id,
     reqs = p.rows.filter((r) => r.kind === "upgrade" && (admin || r.owner === p.session.userId))
+  const activeTab = tab === "requests" || tab === "roles" ? tab : undefined
   const selected = admin
     ? accounts.find((r) => r.id === tab)
     : !tab || tab === own.id
@@ -75,14 +76,14 @@ export default function Accounts(p: FeatureProps) {
         description="Vai trò, trạng thái truy cập và yêu cầu nâng quyền."
         action={
           admin && (
-            <Button onClick={() => setEdit("new")}>
+            <Button aria-haspopup="dialog" onClick={() => setEdit("new")}>
               <Plus />
               Tạo tài khoản
             </Button>
           )
         }
       />
-      <div className="tabs-bar">
+      <nav className="tabs-bar" aria-label="Mục tài khoản">
         {[
           [undefined, admin ? "Người dùng" : "Thông tin"],
           ["requests", "Yêu cầu nâng quyền"],
@@ -90,13 +91,13 @@ export default function Accounts(p: FeatureProps) {
         ].map(([id, label]) => (
           <Button
             key={label}
-            variant={tab === id ? "secondary" : "ghost"}
+            variant={id === activeTab ? "secondary" : "ghost"}
             asChild
-          ><a href={routeUrl("B03", id)}>
+          ><a aria-current={id === activeTab ? "page" : undefined} href={routeUrl("B03", id)}>
             {label}
           </a></Button>
         ))}
-      </div>
+      </nav>
       {tab === "roles" ? (
         <section className="panel pad">
           <h2>Quyền mặc định</h2>
@@ -115,12 +116,12 @@ export default function Accounts(p: FeatureProps) {
             {!admin &&
               own.fields.userType === "user" &&
               !reqs.some((r) => r.status === "PENDING") && (
-                <Button onClick={() => setEdit("apply")}>Gửi yêu cầu</Button>
+                <Button aria-haspopup="dialog" onClick={() => setEdit("apply")}>Gửi yêu cầu</Button>
               )}
           </div>
           {reqs.length ? (
             reqs.map((r) => (
-              <Button variant="ghost" size="content" className="project-row" key={r.id} onClick={() => setEdit(r.id)}>
+              <Button variant="ghost" size="content" className="project-row" key={r.id} aria-haspopup="dialog" onClick={() => setEdit(r.id)}>
                 <UserRound />
                 <span className="task-copy">
                   <b>{r.title}</b>
@@ -154,16 +155,16 @@ export default function Accounts(p: FeatureProps) {
           />
           {admin && (
             <div className="toolbar">
-              <Button onClick={() => setEdit(selected.id)}>Chỉnh sửa</Button>
+              <Button aria-haspopup="dialog" onClick={() => setEdit(selected.id)}>Chỉnh sửa</Button>
               <Button
                 variant="outline"
                 disabled={selected.owner === p.session.userId}
-                onClick={() => setEdit("lock")}
+                aria-haspopup="dialog" onClick={() => setEdit("lock")}
               >
                 {selected.status === "ACTIVE" ? "Khóa tài khoản" : "Kích hoạt lại"}
               </Button>
               {selected.owner !== p.session.userId && selected.status !== "DISABLED" && (
-                <Button variant="outline" onClick={() => setEdit("disable")}>
+                <Button variant="outline" aria-haspopup="dialog" onClick={() => setEdit("disable")}>
                   Ngừng hoạt động
                 </Button>
               )}

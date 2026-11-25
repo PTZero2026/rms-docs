@@ -1,3 +1,4 @@
+import { UnavailableRecord } from "../../demo/UnavailableRecord"
 import { ChoiceOption, ChoiceSelect } from "@rms/ui/components/choice-select"
 import { sourceAllowed } from '../../demo/source-rights.ts'
 import { useState } from 'react'
@@ -8,7 +9,6 @@ import {
   Action,
   Grid,
   Heading,
-  NoData,
   Panel,
   RecordLink,
   Search,
@@ -194,7 +194,7 @@ export function ProductPage(p: FeatureProps) {
   const item = records.find((r) => r.id === id)
   const project = p.rows.find((r) => r.id === id && r.kind === 'project' && scoped(p, r))
   if (id && id !== 'new' && !item && !project)
-    return <NoData title="Không thể mở sản phẩm" detail="Bản ghi không thuộc phạm vi truy cập hiện tại." />
+    return <UnavailableRecord feature="F07" title="Không thể mở sản phẩm" detail="Bản ghi không thuộc phạm vi truy cập hiện tại." />
   if (item) {
     const f = item.fields,
       staff = officer(p, item) && !author(p, item)
@@ -358,6 +358,7 @@ export function ProductPage(p: FeatureProps) {
               </ChoiceOption>
             ))}
           </ChoiceSelect>
+          {(query || status || type) && <Button variant="ghost" onClick={() => { setQuery(''); setStatus(''); setType('') }}>Xóa bộ lọc</Button>}
         </div>
         <Grid
           caption="Sản phẩm khoa học"

@@ -1006,3 +1006,77 @@ time {
     max-width: 25ch;
   }
 }
+
+@media (max-width: 600px) {
+  .workspace table.mobile-record-table, .mobile-record-table tbody {
+    display: block;
+    width: 100%;
+  }
+  .mobile-record-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+  .mobile-record-table tbody tr { display: block; padding: .65rem .5rem; }
+  .workspace .mobile-record-table td,
+  .workspace .mobile-record-table td:first-child,
+  .workspace .mobile-record-table td:last-child {
+    display: block;
+    padding: .2rem 0;
+    border: 0;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+  .workspace .mobile-record-table td:not(:first-child) {
+    display: grid;
+    grid-template-columns: minmax(5rem, 36%) minmax(0, 1fr);
+    align-items: baseline;
+    gap: .6rem;
+    justify-items: start;
+  }
+  .mobile-record-table td:not(:first-child)::before {
+    content: attr(data-label);
+    content: attr(data-label) / "";
+    color: var(--muted-foreground);
+    font-size: .8125rem;
+  }
+  .mobile-record-table [data-slot="badge"] {
+    max-width: 100%;
+    white-space: normal;
+    text-align: start;
+  }
+  .workspace .mobile-record-table .record-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    white-space: normal;
+    text-align: start;
+    justify-content: start;
+  }
+}
+
+.account-workspace { max-width: 72rem; }
+.account-workspace > h1 { font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 650; }
+.account-sections { display: grid; gap: 1.25rem; min-width: 0; }
+.account-identity, .account-group, .account-sections > section[aria-label="Trang chủ cá nhân"] {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--background);
+  padding: clamp(.85rem, 2vw, 1.5rem);
+  min-width: 0;
+}
+.account-identity { display: flex; gap: .75rem; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+.account-identity h2 { overflow-wrap: anywhere; font-weight: 600; }
+.account-identity p { color: var(--muted-foreground); font-size: .875rem; }
+.account-group > h2 { margin-bottom: .5rem; font-size: 1.125rem; font-weight: 650; }
+.account-panel { min-width: 0; border-top: 1px solid var(--line); }
+.account-panel > button {
+  width: 100%; min-height: 44px; height: auto;
+  padding: .65rem .4rem; justify-content: space-between;
+  text-align: start; white-space: normal;
+}
+.account-panel > button[aria-expanded=true] { font-weight: 650; color: var(--primary); }
+.account-panel > button[aria-expanded=true] > svg { transform: rotate(180deg); }
+.account-panel-body:not([hidden]) { padding: .6rem 0 1rem; min-width: 0; }

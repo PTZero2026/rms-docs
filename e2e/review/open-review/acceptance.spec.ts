@@ -27,7 +27,7 @@ test("staff opens the review, assigned member submits a weighted ballot, PI read
     }
     const {project}=JSON.parse(execFileSync(process.execPath,[fileURLToPath(new URL("../../../apps/backend/test/db/seed-review-case.mjs",import.meta.url)),staff.account.id,pi.account.id,member.account.id],{encoding:"utf8"}))
     await operator.getByRole("button",{name:"Tải lại thông tin"}).click()
-    await expect(operator.getByText("Vai trò staff",{exact:true})).toBeVisible()
+    await expect(operator.getByText("Vai trò Chuyên viên",{exact:true})).toBeVisible()
     await operator.getByRole("button",{name:"Xét duyệt hội đồng"}).click()
     await operator.getByText("Lập hội đồng xét duyệt",{exact:true}).click()
     await operator.getByLabel("Tên hội đồng",{exact:true}).fill("Hội đồng Thủy văn")

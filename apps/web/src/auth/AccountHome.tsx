@@ -19,6 +19,9 @@ import ProjectHistory from "../features/audit/audit-trail/view"
 import ConfigurationView from "../features/catalog/config-override/view"
 import ThemeEditor from "../features/catalog/theme/Editor"
 
+import { AccountPanel } from "./AccountPanel"
+import { typeNames } from "../demo/identity"
+
 export default function AccountHome({ slug }: {slug: string}) {
   const [account, setAccount] = useState<Account>()
   const [connection, setConnection] = useState<SignedInSession>()
@@ -79,45 +82,58 @@ export default function AccountHome({ slug }: {slug: string}) {
         : <p role="alert">Bạn chưa có quyền xem báo cáo kỳ.</p>}
     </main>
   }
-  return <main className="workspace">
+  return <main className="workspace account-workspace">
     <h1>Tài khoản RMS</h1>
     {error ? <div role="alert"><p>{error}</p><Button onClick={() => location.reload()}>Đăng nhập lại</Button></div> :
-      account ? <section className="panel pad">
-        <h2>{account.email}</h2><p>Đơn vị {slug}</p><p>Vai trò {account.userType}</p>
-        {connection&&<ConnectedModules session={connection} admin={account.userType==="admin"}/>}
-        {connection&&<Inbox session={connection} admin={account.userType==="admin"} canManageDelivery={account.permissions.includes("notifications.send")}/>}
-        {connection&&(workId?<WorkSource key={workId} session={connection} id={workId}/>:
-          <Overview session={connection} onAccessLost={onHomeAccessLost} canReport={account.permissions.includes("reports.view")} open={target=>{
-            if(target==="profile")setCvOpen(true)
-            else if(target==="reports")setReportOpen(true)
+      account && connection ? <section className="account-sections">
+        <header className="account-identity">
+          <div><h2>{account.email}</h2><p>Đơn vị {slug} · <span>Vai trò {typeNames[account.userType]}</span></p></div>
+          <div className="page-actions">
+            <Button variant="outline" onClick={() => { setAccount(undefined); setGeneration(generation+1) }}>Tải lại thông tin</Button>
+            <Button variant="ghost" onClick={() => void logout().catch(() => setError("Không thể đăng xuất. Hãy thử lại."))}>Đăng xuất</Button>
+          </div>
+        </header>
+        {workId ? <WorkSource key={workId} session={connection} id={workId}/> :
+          <Overview session={connection} onAccessLost={onHomeAccessLost} canReport={account.permissions.includes("reports.view")} open={target => {
+            if (target === "profile") setCvOpen(true)
+            else if (target === "reports") setReportOpen(true)
             else setCallsOpen(true)
-          }}/>)}
-        {account.userType==="admin" && connection && <Button variant="outline" aria-expanded={editor} onClick={()=>setEditor(!editor)}>Giao diện đơn vị</Button>}
-        {editor && account.userType==="admin" && connection && <ThemeEditor session={connection} onApply={setTokens} />}
-        {account.userType==="admin" && <Button variant="outline" aria-expanded={flowOpen} onClick={()=>setFlowOpen(!flowOpen)}>Cấu hình quy trình</Button>}
-        {account.userType==="admin" && flowOpen && connection && <WorkflowEditor session={connection}/>}
-        <Button variant="outline" aria-expanded={callsOpen} onClick={()=>setCallsOpen(!callsOpen)}>Kỳ nhận đề xuất</Button>
-        <Button variant="outline" aria-expanded={reviewOpen} onClick={()=>setReviewOpen(!reviewOpen)}>Xét duyệt hội đồng</Button>
-        <Button variant="outline" aria-expanded={acceptance} onClick={()=>setAcceptance(!acceptance)}>Phiếu nghiệm thu</Button>
-        {acceptance&&connection&&<AcceptanceQueue session={connection}/>}
-        {reviewOpen && connection && <Reviews session={connection} staff={account.userType==="staff"}/>}
-        {account.permissions.includes("reports.view")&&<Button variant="outline" aria-expanded={reportOpen} onClick={()=>setReportOpen(!reportOpen)}>Báo cáo theo kỳ</Button>}
-        {reportOpen&&account.permissions.includes("reports.view")&&connection&&<CallReport session={connection} canExport={account.permissions.includes("reports.export")}/>}
-        {callsOpen && connection && <Calls session={connection} account={account}/>}
-        <Button variant="outline" aria-expanded={profileOpen} onClick={()=>setProfileOpen(!profileOpen)}>Hồ sơ cá nhân</Button>
-        <Button variant="outline" aria-expanded={cvOpen} onClick={()=>setCvOpen(!cvOpen)}>Lý lịch khoa học</Button>
-        <Button variant="outline" aria-expanded={independentOpen} onClick={()=>setIndependentOpen(!independentOpen)}>Sản phẩm ngoài đề tài</Button>
-        {independentOpen&&connection&&<IndependentProducts session={connection}/>}
-        {cvOpen&&connection&&<ScientificProfile manager={account.userType==="admin"||account.userType==="staff"} id={new URLSearchParams(location.search).get("profile")||account.id} session={connection}/>}
-        {profileOpen && connection && <OwnProfile session={connection}/>}
-        {account.permissions.includes("users.manage") && <Button variant="outline" aria-expanded={directoryOpen} onClick={()=>setDirectoryOpen(!directoryOpen)}>Quản lý người dùng</Button>}
-        {directoryOpen && account.permissions.includes("users.manage") && connection && <AccountDirectory session={connection} actor={account}/>}
-        <Button variant="outline" aria-expanded={historyOpen} onClick={()=>setHistoryOpen(!historyOpen)}>Hồ sơ nghiên cứu</Button>
-        {historyOpen && connection && <ProjectHistory session={connection}/>}
-        <Button variant="outline" aria-expanded={configOpen} onClick={()=>setConfigOpen(!configOpen)}>Cấu hình hệ thống</Button>
-        {configOpen && connection && <ConfigurationView session={connection}/>}
-        <Button variant="outline" onClick={() => { setAccount(undefined); setGeneration(generation+1) }}>Tải lại thông tin</Button>
-        <Button onClick={() => void logout().catch(() => setError("Không thể đăng xuất. Hãy thử lại."))}>Đăng xuất</Button>
+            document.getElementById(target + "-trigger")?.focus()
+          }}/>}
+        <Inbox session={connection} admin={account.userType==="admin"} canManageDelivery={account.permissions.includes("notifications.send")}/>
+        <section className="account-group"><h2>Quản lý nghiên cứu</h2>
+          <AccountPanel id="calls" label="Kỳ nhận đề xuất" open={callsOpen} toggle={() => setCallsOpen(!callsOpen)}>
+            <Calls session={connection} account={account}/>
+          </AccountPanel>
+          <AccountPanel id="reviews" label="Xét duyệt hội đồng" open={reviewOpen} toggle={() => setReviewOpen(!reviewOpen)}>
+            <Reviews session={connection} staff={account.userType==="staff"}/>
+          </AccountPanel>
+          <AccountPanel id="acceptance" label="Phiếu nghiệm thu" open={acceptance} toggle={() => setAcceptance(!acceptance)}>
+            <AcceptanceQueue session={connection}/>
+          </AccountPanel>
+          <AccountPanel id="history" label="Hồ sơ nghiên cứu" open={historyOpen} toggle={() => setHistoryOpen(!historyOpen)}>
+            <ProjectHistory session={connection}/>
+          </AccountPanel>
+          {account.permissions.includes("reports.view") && <AccountPanel id="reports" label="Báo cáo theo kỳ" open={reportOpen} toggle={() => setReportOpen(!reportOpen)}>
+            <CallReport session={connection} canExport={account.permissions.includes("reports.export")}/>
+          </AccountPanel>}
+        </section>
+        <section className="account-group"><h2>Hồ sơ và sản phẩm</h2>
+          <AccountPanel id="personal" label="Hồ sơ cá nhân" open={profileOpen} toggle={() => setProfileOpen(!profileOpen)}><OwnProfile session={connection}/></AccountPanel>
+          <AccountPanel id="profile" label="Lý lịch khoa học" open={cvOpen} toggle={() => setCvOpen(!cvOpen)}>
+            <ScientificProfile manager={account.userType==="admin"||account.userType==="staff"} id={new URLSearchParams(location.search).get("profile")||account.id} session={connection}/>
+          </AccountPanel>
+          <AccountPanel id="products" label="Sản phẩm ngoài đề tài" open={independentOpen} toggle={() => setIndependentOpen(!independentOpen)}><IndependentProducts session={connection}/></AccountPanel>
+        </section>
+        <ConnectedModules session={connection} admin={account.userType==="admin"}/>
+        <section className="account-group"><h2>Thiết lập đơn vị</h2>
+          {account.userType==="admin" && <>
+            <AccountPanel id="appearance" label="Giao diện đơn vị" open={editor} toggle={() => setEditor(!editor)}><ThemeEditor session={connection} onApply={setTokens}/></AccountPanel>
+            <AccountPanel id="workflow" label="Cấu hình quy trình" open={flowOpen} toggle={() => setFlowOpen(!flowOpen)}><WorkflowEditor session={connection}/></AccountPanel>
+          </>}
+          {account.permissions.includes("users.manage") && <AccountPanel id="directory" label="Quản lý người dùng" open={directoryOpen} toggle={() => setDirectoryOpen(!directoryOpen)}><AccountDirectory session={connection} actor={account}/></AccountPanel>}
+          <AccountPanel id="configuration" label="Cấu hình hệ thống" open={configOpen} toggle={() => setConfigOpen(!configOpen)}><ConfigurationView session={connection}/></AccountPanel>
+        </section>
       </section> : <p role="status">Đang mở phiên đăng nhập…</p>}
   </main>
 }

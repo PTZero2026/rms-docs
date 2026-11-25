@@ -1,3 +1,4 @@
+import { UnavailableRecord } from "../../demo/UnavailableRecord"
 import { routeUrl } from "../../demo/catalog"
 import { ChoiceOption } from "@rms/ui/components/choice-select"
 import { Checkbox } from "@rms/ui/components/checkbox"
@@ -152,6 +153,7 @@ function ProposalList({ app, projects }: { app: FeatureProps; projects: DemoRow[
               </ChoiceOption>
             ))}
           </Choice>
+          {(term || status || callId) && <Button variant="ghost" onClick={() => { setTerm(''); setStatus(''); setCall('') }}>Xóa bộ lọc</Button>}
         </div>
         <Grid
           heads={[...(officer ? ['Chọn'] : []), 'Đề tài', 'Mã theo dõi', 'Trạng thái', 'Hạn nhận']}
@@ -221,7 +223,7 @@ export function ProposalScreen(app: FeatureProps) {
       return <Blank />
     return <ProposalEditor app={app} callId={callId} done={done} />
   }
-  if (!project) return <Blank />
+  if (!project) return <UnavailableRecord feature="F01" />
   const own = author(app, project),
     officer = managed(app, project)
   if (edit && own && project.status === 'DRAFT')

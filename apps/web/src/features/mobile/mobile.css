@@ -32,13 +32,13 @@
   .topbar {
     padding-inline: 8px;
   }
-  .mobile-brand {
-    font-size: 21px;
-    letter-spacing: -0.07em;
-    font-weight: 750;
-  }
-  .mobile-brand span {
-    color: var(--primary);
+  .mobile-location {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: .9375rem;
+    font-weight: 650;
   }
   .crumb {
     display: none;
@@ -225,4 +225,30 @@
   html {
     scroll-padding-bottom: calc(75px + env(safe-area-inset-bottom));
   }
+}
+
+@media (max-width: 600px) {
+  :is(.exec-workspace, .extension-workspace) .metric-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+    padding: .3rem .85rem;
+    border: 1px solid var(--line);
+    background: var(--background);
+    border-radius: var(--radius);
+  }
+  :is(.exec-workspace, .extension-workspace) .metric-grid > .metric {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: .25rem .8rem;
+    min-height: 0;
+    padding: .5rem 0;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  :is(.exec-workspace, .extension-workspace) .metric + .metric { border-top: 1px solid var(--line); }
+  .workspace .page-heading [data-slot="button"], .workspace .toolbar input[type="search"] { min-height: 44px; }
 }

@@ -46,7 +46,7 @@ export function Blank({ title, children }: { title: string; children?: ReactNode
 }
 export function Modal({ title, description, close, children }: { title: string; description: string; close: () => void; children: ReactNode }) {
   return <Dialog open onOpenChange={v => { if (!v) close() }}>
-    <DialogContent className="ext-modal" showCloseButton={false}>
+    <DialogContent restoreOpener className="ext-modal" showCloseButton={false}>
       <DialogHeader><DialogTitle>{title}</DialogTitle><DialogDescription>{description}</DialogDescription></DialogHeader>{children}
     </DialogContent>
   </Dialog>

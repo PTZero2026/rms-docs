@@ -1,3 +1,4 @@
+import { UnavailableRecord } from "../../demo/UnavailableRecord"
 import { routeUrl } from "../../demo/catalog"
 import { Button } from '@rms/ui/components/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@rms/ui/components/tabs'
@@ -6,7 +7,7 @@ import { CouncilScreen } from './CouncilScreen'
 import { ReviewDetail } from './ReviewDetail'
 import { author, ids, managed } from './model'
 import { reviewerAccess, roundFor, summarize } from './reviews'
-import { Blank, Grid, Heading, LinkRecord, Panel, State } from './ui'
+import { Grid, Heading, LinkRecord, Panel, State } from './ui'
 
 export function ReviewScreen(app: FeatureProps) {
   const { rows, route, session } = app
@@ -26,7 +27,7 @@ export function ReviewScreen(app: FeatureProps) {
   if (council) return <CouncilScreen app={app} council={council} />
   if (route.id) {
     const p = projects.find((row) => row.id === route.id || roundFor(rows, row.id)?.id === route.id)
-    if (!p) return <Blank />
+    if (!p) return <UnavailableRecord feature="F03" />
     if (author(app, p))
       return (
         <Panel title="Tiến trình của đề tài">

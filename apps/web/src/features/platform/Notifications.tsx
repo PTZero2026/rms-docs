@@ -42,6 +42,7 @@ export default function Notifications(p: FeatureProps) {
   const preferences = route.id === "preferences",
     delivery = route.id === "delivery" && operator,
     policy = route.id === "policy" && admin
+  const activeTab = preferences || policy || delivery ? route.id : undefined
   const config = rows.find((r) => r.kind === "channel-policy" && r.fields.event === event),
     template = rows.find((r) => r.kind === "message-template" && r.fields.event === event)
   const opts = Object.fromEntries(Object.entries(eventCatalog).map(([k, e]) => [k, e.title]))
@@ -66,7 +67,7 @@ export default function Notifications(p: FeatureProps) {
   return (
     <div className="stack inbox-page">
       <Heading title="Thông báo" description="Cập nhật và nhắc hạn từ các hồ sơ nghiên cứu." />
-      <div className="tabs-bar">
+      <nav className="tabs-bar" aria-label="Mục thông báo">
         {[
           [undefined, "Hộp thư"],
           ["preferences", "Tùy chọn nhận"],
@@ -75,13 +76,13 @@ export default function Notifications(p: FeatureProps) {
         ].map(([id, label]) => (
           <Button
             key={label}
-            variant={route.id === id || (!id && inboxPage) ? "secondary" : "ghost"}
+            variant={id === activeTab ? "secondary" : "ghost"}
             asChild
-          ><a href={routeUrl("B04", id)}>
+          ><a aria-current={id === activeTab ? "page" : undefined} href={routeUrl("B04", id)}>
             {label}
           </a></Button>
         ))}
-      </div>
+      </nav>
       {preferences ? (
         <section className="panel">
           <div className="section-heading">

@@ -1,3 +1,4 @@
+import { UnavailableRecord } from "../../demo/UnavailableRecord"
 import { routeUrl } from "../../demo/catalog"
 import { useState } from 'react'
 import { Button } from '@rms/ui/components/button'
@@ -11,6 +12,7 @@ import { Blank, SelectField, Status, TextField } from './controls'
 import { categoryTitle, Detail } from './detail'
 import { Editor } from './editor'
 import { Calls, PolicyEditor } from './management'
+import { RecordFilters } from "./RecordFilters"
 import { Ledger } from './ledger'
 import './extension.css'
 
@@ -28,6 +30,9 @@ function RecordList({ctx,feature}: {ctx:FeatureProps;feature:Source}) {
   const [filters,setFilters] = useState<Record<string,string>>({})
   const [policy,setPolicy] = useState(false)
   const cols = feature === 'F11' ? ['Loại dự án','Trạng thái','Đơn vị','Năm'] : [info.category,'Trạng thái','Đơn vị']
+  const headers = ['Hồ sơ',(feature === 'F10' ? 'Trưởng nhóm / GVHD' : info.category),feature === 'F11' ? 'Giá trị hợp đồng' : 'Đơn vị','Trạng thái']
+  const activeFilters = Object.values(filters).filter(Boolean).length + Number(Boolean(query))
+  const clearFilters = () => { setFilters({}); setQuery('') }
   const lookup = (r: typeof all[number],k: string) => k === 'Trạng thái' ? r.status : k === 'Đơn vị' ? r.unit : k === 'Năm' ? r.fields.start?.slice(0,4) : categoryTitle(ctx.rows,r)
   const rows = all.filter(r => fold([r.title,r.fields.code,r.fields.partner,r.fields.agency].join(' ')).includes(fold(query.trim())) && cols.every(k => !filters[k] || filters[k] === lookup(r,k)))
   const staff = ctx.session.role === 'officer'
@@ -36,7 +41,7 @@ function RecordList({ctx,feature}: {ctx:FeatureProps;feature:Source}) {
   return <>
     <div className="page-heading"><div><h1>{info.title}</h1><p className="muted">{descriptions[feature]}</p></div>
       {canCreate(ctx.session,feature) && <Button asChild><a href={routeUrl(feature, 'new')}>{info.create}</a></Button>}
-      {ctx.session.role === 'admin' && !student && <Button variant="outline" onClick={() => setPolicy(true)}>Quy tắc minh chứng</Button>}
+      {ctx.session.role === 'admin' && !student && <Button variant="outline" aria-haspopup="dialog" onClick={() => setPolicy(true)}>Quy tắc minh chứng</Button>}
     </div>
     <Tabs defaultValue="list">
       {(student || staff) && <TabsList><TabsTrigger value="list">Hồ sơ ({all.length})</TabsTrigger>
@@ -46,16 +51,16 @@ function RecordList({ctx,feature}: {ctx:FeatureProps;feature:Source}) {
         const shown = mode === 'queue' ? rows.filter(r => pending.includes(r)) : rows
         return <TabsContent key={mode} value={mode}><section className="panel stack">
           <h2>{mode === 'queue' ? 'Hàng đợi phê duyệt' : 'Danh sách hồ sơ'}</h2>
-          <div className="ext-filters"><TextField label={feature === 'F11' ? 'Tìm tên, mã hoặc đối tác' : 'Tìm tên hoặc mã hồ sơ'} type="search" value={query} onChange={setQuery}/>
+          <RecordFilters count={activeFilters} clear={clearFilters} search={<TextField label={feature === 'F11' ? 'Tìm tên, mã hoặc đối tác' : 'Tìm tên hoặc mã hồ sơ'} type="search" value={query} onChange={setQuery}/>}>
             {cols.map(k => <SelectField key={k} label={k} value={filters[k] || ''} onChange={v => setFilters({...filters,[k]:v})}
-              choices={[{value:'',label:'Tất cả'},...Array.from(new Set(all.map(r => lookup(r,k)))).filter(Boolean).sort().map(v => ({value:v,label:statuses[v] || v}))]}/>)}</div>
-          {shown.length ? <Table className="data-table"><TableHeader><TableRow>{['Hồ sơ',student ? 'Trưởng nhóm / GVHD' : info.category,feature === 'F11' ? 'Giá trị hợp đồng' : 'Đơn vị','Trạng thái'].map(h => <TableHead key={h}>{h}</TableHead>)}</TableRow></TableHeader>
+              choices={[{value:'',label:'Tất cả'},...Array.from(new Set(all.map(r => lookup(r,k)))).filter(Boolean).sort().map(v => ({value:v,label:statuses[v] || v}))]}/>)}</RecordFilters>
+          {shown.length ? <Table className="data-table mobile-record-table" aria-label={info.title}><TableHeader><TableRow>{headers.map(h => <TableHead key={h}>{h}</TableHead>)}</TableRow></TableHeader>
             <TableBody>{shown.map(r => <TableRow key={r.id}><TableCell><Button variant="link" size="content" className="record-link" asChild><a href={routeUrl(feature, r.id)}>{r.title}</a></Button>
               <small>{[r.fields.code,feature === 'F11' ? r.fields.partner || 'Chưa có đối tác' : student ? categoryTitle(ctx.rows,r) : r.fields.agency].filter(Boolean).join(' · ')}</small></TableCell>
-              <TableCell>{student ? <>{names[r.owner]}<small>{r.fields.confirmedMentor ? names[r.fields.confirmedMentor] : 'Chưa xác nhận GVHD'}</small></> : categoryTitle(ctx.rows,r)}</TableCell>
-              <TableCell>{feature === 'F11' ? money(r.fields.budget) : r.unit || '—'}</TableCell><TableCell><Status value={r.status}/></TableCell></TableRow>)}</TableBody></Table>
-            : <Blank title={mode === 'queue' ? 'Không có hồ sơ chờ xét phù hợp' : 'Không có hồ sơ phù hợp'}>{query || Object.values(filters).some(Boolean)
-              ? <Button variant="link" onClick={() => { setFilters({}); setQuery('') }}>Xóa bộ lọc</Button> : 'Danh sách hiển thị theo phạm vi của tài khoản.'}</Blank>}
+              <TableCell data-label={headers[1]}>{student ? <div>{names[r.owner]}<small>{r.fields.confirmedMentor ? names[r.fields.confirmedMentor] : 'Chưa xác nhận GVHD'}</small></div> : categoryTitle(ctx.rows,r)}</TableCell>
+              <TableCell data-label={headers[2]}>{feature === 'F11' ? money(r.fields.budget) : r.unit || '—'}</TableCell><TableCell data-label={headers[3]}><Status value={r.status}/></TableCell></TableRow>)}</TableBody></Table>
+            : <Blank title={mode === 'queue' ? 'Không có hồ sơ chờ xét phù hợp' : 'Không có hồ sơ phù hợp'}>{activeFilters > 0
+              ? 'Đổi điều kiện tìm kiếm hoặc xóa bộ lọc để xem lại hồ sơ.' : 'Danh sách hiển thị theo phạm vi của tài khoản.'}</Blank>}
         </section></TabsContent>
       })}
       {student && <TabsContent value="calls"><Calls ctx={ctx}/></TabsContent>}
@@ -71,7 +76,7 @@ function SourcePage({ctx,feature}: {ctx:FeatureProps;feature:Source}) {
   </>
   if (ctx.route.id) {
     const row = ctx.rows.find(r => r.id === ctx.route.id && r.kind === featureInfo[feature].kind && scoped(ctx,r) && canRead(ctx.session,r))
-    return row ? <Detail ctx={ctx} row={row}/> : <Blank title="Không tìm thấy hồ sơ trong phạm vi truy cập"><Button variant="link" asChild><a href={routeUrl(feature)}>Về danh sách</a></Button></Blank>
+    return row ? <Detail ctx={ctx} row={row}/> : <UnavailableRecord feature={feature} title="Không tìm thấy hồ sơ trong phạm vi truy cập" />
   }
   return <RecordList ctx={ctx} feature={feature}/>
 }

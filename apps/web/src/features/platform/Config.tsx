@@ -90,18 +90,18 @@ export default function Config(p: FeatureProps) {
 
   return <div className="stack">
     <Heading title="Cấu hình đơn vị" description={platform ? "Cấu hình dùng chung cho các đơn vị" : tenants[p.session.tenant]}
-      action={<Button onClick={() => setEditor({})}><Plus data-icon="inline-start" />Tạo cấu hình</Button>} />
-    <div className="tabs-bar">
-      <Button variant={home ? "ghost" : "secondary"} asChild><a href={routeUrl("B01")}>Danh mục cấu hình</a></Button>
-      <Button variant={home ? "secondary" : "ghost"} asChild><a href={routeUrl("B01", "home")}>Bố cục trang chủ</a></Button>
-    </div>
+      action={<Button aria-haspopup="dialog" onClick={() => setEditor({})}><Plus data-icon="inline-start" />Tạo cấu hình</Button>} />
+    <nav className="tabs-bar" aria-label="Mục cấu hình">
+      <Button variant={home ? "ghost" : "secondary"} asChild><a aria-current={!home ? "page" : undefined} href={routeUrl("B01")}>Danh mục cấu hình</a></Button>
+      <Button variant={home ? "secondary" : "ghost"} asChild><a aria-current={home ? "page" : undefined} href={routeUrl("B01", "home")}>Bố cục trang chủ</a></Button>
+    </nav>
     {home ? <HomeLayout p={p} platform={platform} /> : target ? <section className="panel pad stack">
       <Back href={routeUrl("B01")} /><h2>{target.title}</h2>
       <ConfigDetail key={JSON.stringify(target.fields)} row={target} effective={effectiveRow(all, target.fields.key)} />
       <div className="toolbar">
         {target.fields.scope === "shared" && !platform && tenantOverride
           ? <Button asChild><a href={routeUrl("B01", tenantOverride.id)}>Mở bản riêng của đơn vị</a></Button>
-          : <Button onClick={() => setEditor({ initial: target })}>{target.fields.scope === "shared" && !platform ? "Ghi đè cho đơn vị" : "Chỉnh sửa"}</Button>}
+          : <Button aria-haspopup="dialog" onClick={() => setEditor({ initial: target })}>{target.fields.scope === "shared" && !platform ? "Ghi đè cho đơn vị" : "Chỉnh sửa"}</Button>}
         {(platform || target.fields.scope === "tenant") && <Button variant="outline" onClick={() => {
           setError(""); setDeletion({ row: target, commit: p.commit })
         }}>Xóa cấu hình</Button>}
@@ -117,7 +117,7 @@ export default function Config(p: FeatureProps) {
       {catalogEntries.length > 0 && <Disclosure className="pad" title={<> Danh mục kỳ nhận đề xuất </>}>
         {catalogEntries.map(ref => {
           const applied = effectiveRow(all, "CATALOG." + ref.id + ".STATUS")
-          return <Button variant="ghost" size="content" className="project-row" key={ref.id} onClick={() => setEditor({ initial: applied, catalogEntry: ref })}>
+          return <Button variant="ghost" size="content" className="project-row" key={ref.id} aria-haspopup="dialog" onClick={() => setEditor({ initial: applied, catalogEntry: ref })}>
             <span className="task-copy"><b>{ref.title}</b></span>
             <span className="pill">{(applied?.fields.value ?? ref.status) === "ACTIVE" ? "Đang dùng" : "Ngừng dùng"}</span>
           </Button>

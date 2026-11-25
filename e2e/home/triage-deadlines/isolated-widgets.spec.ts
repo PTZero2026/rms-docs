@@ -120,7 +120,7 @@ test("home drops private content after a role refresh or an account lock",async(
   await expect(home.getByRole("button",{name:"Xem báo cáo kỳ",exact:true})).toBeVisible()
   provision("UPDATE rms.account SET user_type='user' WHERE id=:'id'",{id:manager.account.id})
   await page.getByRole("button",{name:"Tải lại thông tin"}).click()
-  await expect(page.getByText("Vai trò user",{exact:true})).toBeVisible()
+  await expect(page.getByText("Vai trò Người dùng",{exact:true})).toBeVisible()
   await expect(home.getByRole("region",{name:"Số liệu nhanh"})).toHaveCount(0)
   await expect(home.getByRole("button",{name:"Hoàn thiện lý lịch"})).toBeVisible()
   await expect(home.getByRole("button",{name:"Xem báo cáo kỳ",exact:true})).toHaveCount(0)

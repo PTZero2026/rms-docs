@@ -8,6 +8,7 @@ import type { DemoRow, FeatureProps } from '../../demo/types'
 import { codes, dateLabel, names, officer, scoped, statuses } from './model'
 import { adjustHours, balance, canReadHours, periodLabels, postHours, postOutput, recalculatedHours, rounded, totalBase } from './hours'
 import { Blank, Facts, Footer, messageOf, Modal, pairs, Problem, SelectField, Status, TextField } from './controls'
+import { RecordFilters } from './RecordFilters'
 import { Formulas } from './formulas'
 import { canRead } from './workflow'
 
@@ -85,7 +86,7 @@ function HourDetail({ctx,record}: {ctx: FeatureProps;record:DemoRow}) {
     <div><Button variant="link" asChild><a href={routeUrl('P03')}>← Sổ giờ giảng</a></Button></div>
     <div className="page-heading"><div><Status value={record.status}/><h1>{record.title}</h1><p className="muted">{names[record.owner] || record.owner} · {record.unit}</p></div></div>
     <div className="ext-actions">
-      {canAdjust && <Button onClick={() => setEditing(true)}>Điều chỉnh giờ</Button>}
+      {canAdjust && <Button aria-haspopup="dialog" onClick={() => setEditing(true)}>Điều chỉnh giờ</Button>}
       {sourceVisible && <Button variant="outline" asChild><a href={routeUrl(f.sourceFeature, source.id)}>Mở hồ sơ nguồn {f.sourceFeature}</a></Button>}
       {profile && <Button variant="outline" asChild><a href={routeUrl('F08', profile.id)}>Mở lý lịch F08</a></Button>}
       {source && source.kind !== 'output' && officer(ctx.session,source) && <Button variant="outline" onClick={() => {
@@ -120,21 +121,23 @@ export function Ledger({ctx}: {ctx: FeatureProps}) {
     ['owner','Giảng viên'],['unit','Đơn vị'],['recognitionPeriodType','Loại kỳ'],['recognitionPeriodCode','Kỳ ghi nhận'],['sourceFeature','Nguồn'],['status','Loại dòng'],
   ]
   const value = (r: DemoRow, key:string) => key === 'owner' || key === 'unit' || key === 'status' ? r[key] : r.fields[key]
+  const headers = ['Nguồn ghi nhận','Giảng viên','Kỳ','Phiên bản','Số giờ']
+  const filterCount = Object.values(filters).filter(Boolean).length
   const rows = visible.filter(r => descriptors.every(([k]) => !filters[k] || filters[k] === value(r,k)))
   return <>
     <div className="page-heading"><div><h1>Giờ giảng quy đổi</h1><p className="muted">Tra cứu giờ theo giảng viên, kỳ ghi nhận và hồ sơ nguồn.</p></div>
-      {ctx.session.role === 'officer' && <Button onClick={() => setOutput(true)}>Quy đổi sản phẩm F07</Button>}</div>
+      {ctx.session.role === 'officer' && <Button aria-haspopup="dialog" onClick={() => setOutput(true)}>Quy đổi sản phẩm F07</Button>}</div>
     <Tabs defaultValue="ledger">{ctx.session.role === 'admin' && <TabsList><TabsTrigger value="ledger">Sổ giờ giảng</TabsTrigger><TabsTrigger value="formulas">Công thức và kỳ</TabsTrigger></TabsList>}
       <TabsContent value="ledger" className="stack">
         <div className="metric-grid"><div className="metric"><span>Tổng giờ theo bộ lọc</span><strong>{num(rounded(rows.reduce((a,r) => a + Number(r.fields.hours),0)))}</strong></div>
           <div className="metric"><span>Giảng viên</span><strong>{new Set(rows.map(r => r.owner)).size}</strong></div>
           <div className="metric"><span>Nguồn ghi nhận</span><strong>{new Set(rows.map(r => r.fields.sourceId)).size}</strong></div></div>
-        <section className="panel stack"><h2>Sổ chi tiết</h2><div className="ext-filters">{descriptors.map(([k,label]) =>
-          <SelectField key={k} label={label} value={filters[k] || ''} onChange={v => setFilters({...filters,[k]:v})} choices={[{value:'',label:'Tất cả'},...Array.from(new Set(visible.map(r => value(r,k)))).filter(Boolean).sort().map(v => ({value:v,label:names[v] || statuses[v] || periodLabels[v] || v}))]}/>)}</div>
-          {rows.length ? <Table className="data-table"><TableHeader><TableRow>{['Nguồn ghi nhận','Giảng viên','Kỳ','Phiên bản','Số giờ'].map(h => <TableHead key={h}>{h}</TableHead>)}</TableRow></TableHeader>
+        <section className="panel stack"><h2>Sổ chi tiết</h2><RecordFilters count={filterCount} clear={() => setFilters({})}>{descriptors.map(([k,label]) =>
+          <SelectField key={k} label={label} value={filters[k] || ''} onChange={v => setFilters({...filters,[k]:v})} choices={[{value:'',label:'Tất cả'},...Array.from(new Set(visible.map(r => value(r,k)))).filter(Boolean).sort().map(v => ({value:v,label:names[v] || statuses[v] || periodLabels[v] || v}))]}/>)}</RecordFilters>
+          {rows.length ? <Table className="data-table mobile-record-table" aria-label="Sổ chi tiết giờ giảng"><TableHeader><TableRow>{headers.map(h => <TableHead key={h}>{h}</TableHead>)}</TableRow></TableHeader>
             <TableBody>{rows.map(r => <TableRow key={r.id}><TableCell><Button variant="link" size="content" className="record-link" asChild><a href={routeUrl('P03', r.id)}>{r.title}</a></Button><small>{r.fields.sourceFeature} · {statuses[r.status]}</small></TableCell>
-              <TableCell>{names[r.owner] || r.owner}</TableCell><TableCell>{r.fields.recognitionPeriodCode}</TableCell><TableCell>{r.fields.formulaVersion}</TableCell><TableCell>{num(r.fields.hours)}</TableCell></TableRow>)}</TableBody></Table>
-          : <Blank title="Chưa có dòng giờ phù hợp">Các hồ sơ đủ điều kiện sẽ xuất hiện sau khi quy đổi.</Blank>}
+              <TableCell data-label={headers[1]}>{names[r.owner] || r.owner}</TableCell><TableCell data-label={headers[2]}>{r.fields.recognitionPeriodCode}</TableCell><TableCell data-label={headers[3]}>{r.fields.formulaVersion}</TableCell><TableCell data-label={headers[4]}>{num(r.fields.hours)}</TableCell></TableRow>)}</TableBody></Table>
+          : <Blank title="Chưa có dòng giờ phù hợp">{filterCount ? 'Đổi điều kiện hoặc xóa bộ lọc để xem lại sổ giờ.' : 'Các hồ sơ đủ điều kiện sẽ xuất hiện sau khi quy đổi.'}</Blank>}
         </section>
       </TabsContent>
       {ctx.session.role === 'admin' && <TabsContent value="formulas"><Formulas ctx={ctx}/></TabsContent>}

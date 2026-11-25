@@ -28,3 +28,4 @@ Cập nhật 25/11/2026. Mỗi hàng ghi phần có phép kiểm thực thi và 
 ### Điều kiện bàn giao
 
 QA đính mã TC, ngày, phiên bản, phạm vi khoa/trường, kết quả trước/sau và ảnh hoặc dữ liệu đối chứng. Người có thẩm quyền của trường xác nhận nội dung quyết định, quyền dữ liệu, bằng chứng nghiệp vụ và lịch mở pilot. [Danh sách người và AI review](muc-can-review-nguoi-va-ai.md) · [Phiếu an toàn thông tin](viec-can-sua-bao-mat.md)
+                                        

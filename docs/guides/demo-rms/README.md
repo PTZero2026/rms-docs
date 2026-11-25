@@ -7,12 +7,14 @@ Hai bộ hồ sơ giả lập chạy trong ứng dụng web V0. Mỗi trường 
 Giải nén [gói demo hai trường](rms-demo-tlu-hmu.zip). Mở terminal trong thư mục chứa `BAT-DAU.txt` rồi chạy lệnh sau bằng Python 3.
 
 ```sh
-python3 -m http.server 4173 --bind 127.0.0.1
+python3 demo-server.py
 ```
 
 Mở [sổ tay demo](http://127.0.0.1:4173/demo.html), chọn trường rồi bấm **Mở ca trong RMS**. Liên kết chọn sẵn tài khoản và mở đúng màn hình. Khi một ca cần người thứ hai, dùng **Phiên mô phỏng**, giữ nguyên trường, chọn người tiếp theo rồi mở lại hồ sơ theo tên hoặc mã. Các ca có điều kiện phụ thuộc được ghi ngay trên thẻ.
 
 Gói có bản web chạy cục bộ, hai sổ tay HTML có thể in, hai bộ JSON đầy đủ trong `data/`, hai phiếu Markdown để ghi kết quả thực tế, cùng đặc tả và kế hoạch kiểm thử của 20 phân hệ trong `criteria/`. Có thể chạy buổi demo trên máy có Python 3 và trình duyệt khi ngắt Internet. Ô trạng thái kết nối API phản ánh tình trạng máy chủ. V0 lưu tên hoặc metadata của minh chứng, xuất báo cáo CSV và lý lịch HTML.
+
+Để trình diễn trên điện thoại, mở TLU-28, quay về **Dự án sản xuất** và thử tìm theo đối tác. Tên dự án, giá trị hợp đồng và trạng thái nằm trong cùng một mục. Với TLU-31, mở **Bộ lọc** trong sổ giờ để đối chiếu hai giảng viên. [Ảnh và kết quả rà soát từng phân hệ](../../reviews/ra-soat-trai-nghiem-rms.md)
 
 ## Hai hành trình cho buổi đầu
 

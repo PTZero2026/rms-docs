@@ -8,7 +8,7 @@ export async function catalogUser(page:Page,slug:string,name:string,role:"operat
   if(role==="admin") provision("UPDATE rms.account SET user_type='admin' WHERE id=:'id'::uuid",{id:account.id})
   if(role==="admin"){
     await page.getByRole("button",{name:"Tải lại thông tin"}).click()
-    await page.getByText("Vai trò admin",{exact:true}).waitFor()
+    await page.getByText("Vai trò Quản trị viên",{exact:true}).waitFor()
   }
   return {path,account,headers:{authorization:(await res.request().allHeaders()).authorization}}
 }

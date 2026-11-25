@@ -29,7 +29,7 @@ export function Editor({
         if (!value) close()
       }}
     >
-      <DialogContent className="editor-dialog">
+      <DialogContent restoreOpener className="editor-dialog">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{hint}</DialogDescription>

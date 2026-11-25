@@ -112,7 +112,7 @@ export default function Workflow(p: FeatureProps) {
   }
   return <div className="stack">
     <Heading title="Quy trình đề tài" description="Hồ sơ đang xử lý tiếp tục dùng phiên bản được ghim lúc tạo."
-      action={<Button onClick={() => create(selected)}><Plus data-icon="inline-start" />Tạo phiên bản</Button>} />
+      action={<Button aria-haspopup="dialog" onClick={() => create(selected)}><Plus data-icon="inline-start" />Tạo phiên bản</Button>} />
     <div className="grid-two workflow-panels">
       <section className="panel"><div className="section-heading"><h2>Phiên bản</h2></div>
         {versions.map(r => <Button variant="ghost" size="content" className="project-row" key={r.id} aria-current={r.id === selected.id ? "true" : undefined} asChild><a href={routeUrl("P01", r.id)}>
@@ -121,7 +121,7 @@ export default function Workflow(p: FeatureProps) {
       </section>
       <section className="panel pad stack"><h2>{selected.title}</h2>
         {selected.status === "DRAFT" && <div className="toolbar">
-          <Button variant="outline" onClick={() => { setError(""); setDraft({ row: selected, commit: p.commit }) }}>Chỉnh sửa bản nháp</Button>
+          <Button variant="outline" aria-haspopup="dialog" onClick={() => { setError(""); setDraft({ row: selected, commit: p.commit }) }}>Chỉnh sửa bản nháp</Button>
           <Button onClick={() => activate(selected)}>Kích hoạt phiên bản</Button>
         </div>}
         <ErrorLine message={error} />

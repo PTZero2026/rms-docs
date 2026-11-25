@@ -1,3 +1,4 @@
+import { UnavailableRecord } from "../../demo/UnavailableRecord"
 import { routeUrl } from "../../demo/catalog"
 import { ValidatedForm } from "@rms/ui/components/validated-form"
 import { DateInput } from "@rms/ui/components/date-input"
@@ -21,7 +22,6 @@ import {
 } from './model'
 import {
   ActionDialog,
-  Blank,
   Choice,
   Facts,
   FieldText,
@@ -153,7 +153,7 @@ export function CallScreen(app: FeatureProps) {
         <CallEditor app={app} done={done} />
       </>
     )
-  if (route.id && !call) return <Blank />
+  if (route.id && !call) return <UnavailableRecord feature="F02" />
   if (!call)
     return (
       <>

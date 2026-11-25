@@ -87,7 +87,7 @@ export default function ConfigurationView({session}:{session:SignedInSession}) {
     setDetail(undefined)
     const {data:blob,response}=await session.config.GET(item,{params:{path:{slug,key}},parseAs:"blob",cache:"no-store"})
     if (!blob) throw failure(response)
-    const preview=await inspectConfiguration(blob)
+    const preview=await inspectConfiguration(blob, response.headers.get("content-type") || blob.type)
     if(generation===accessGeneration.current) setDetail({
       key,scope:response.headers.get("x-rms-scope")==="shared"?"Đang dùng bản Chung":"Đang dùng bản của "+slug,
       cache:response.headers.get("x-cache")??"",blob,preview})

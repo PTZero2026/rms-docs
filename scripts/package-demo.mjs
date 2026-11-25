@@ -68,8 +68,9 @@ try {
 <ul><li><a href="tlu.html">Đại học Thủy lợi</a> · Thử từ báo cáo quan trắc, khoản chi và sáng chế đang chờ duyệt đến điều kiện nghiệm thu. Với ca TLU-16, đối soát đủ PC-19 và PC-20 trước khi đóng đề tài.</li>
 <li><a href="hmu.html">Đại học Y Hà Nội</a> · Chạy HMU-07 rồi HMU-08 để phân biệt kết luận khoa học và kết quả đạo đức. Chạy HMU-24 rồi HMU-29 để duyệt hợp đồng và đối chiếu 24 giờ của Mai, 16 giờ của Minh.</li></ul>
 <p>Đổi người giữa chừng bằng nút <b>Phiên mô phỏng</b> trong RMS. Mỗi tab giữ danh tính riêng. Các thay đổi được lưu trên trình duyệt và dùng chung giữa các tab cùng địa chỉ. Đóng mọi cửa sổ riêng tư rồi mở lại để chạy một buổi mới trên dữ liệu gốc.</p>
-<p>Mở liên kết ca khi đang chạy máy chủ cục bộ. Để khởi động từ thư mục đã giải nén, chạy <code>python3 -m http.server 4173 --bind 127.0.0.1</code>, sau đó mở <a href="http://127.0.0.1:4173/demo.html">hướng dẫn và hai bộ ca</a>. Bản mô phỏng lưu thông tin minh chứng và phát sinh tệp xuất báo cáo, lý lịch ở máy người dùng.</p>`))
-  await writeFile(join(stage, 'BAT-DAU.txt'), 'Giải nén gói vào một thư mục. Mở terminal tại đó và chạy\n\npython3 -m http.server 4173 --bind 127.0.0.1\n\nMở http://127.0.0.1:4173/demo.html trong trình duyệt.\n')
+<p>Mở liên kết ca khi đang chạy máy chủ cục bộ. Để khởi động từ thư mục đã giải nén, chạy <code>python3 demo-server.py</code>, sau đó mở <a href="http://127.0.0.1:4173/demo.html">hướng dẫn và hai bộ ca</a>. Bản mô phỏng lưu thông tin minh chứng và phát sinh tệp xuất báo cáo, lý lịch ở máy người dùng.</p>`))
+  await writeFile(join(stage, 'BAT-DAU.txt'), 'Giải nén gói vào một thư mục. Mở terminal tại đó và chạy\n\npython3 demo-server.py\n\nMở http://127.0.0.1:4173/demo.html trong trình duyệt.\n')
+  await cp(join(repo, 'scripts/demo-server.py'), join(stage, 'demo-server.py'))
   const files = await readdir(stage)
   const zip = join(dest, 'rms-demo-tlu-hmu.zip')
   execFileSync('python3', ['-m', 'zipfile', '-c', zip, ...files], { cwd: stage })

@@ -4,6 +4,14 @@ Từ gốc monorepo, chạy `pnpm install --frozen-lockfile` rồi `pnpm dev`. M
 
 Mở [bộ demo và review của hai trường](demo-rms/README.md) để chọn ca có dữ liệu nhập, vai thao tác và số liệu đối chứng.
 
+## Tra một hồ sơ trên điện thoại
+
+Trong **Tiến độ đề tài**, **Kinh phí**, **Nghiệm thu** và **Sản phẩm khoa học**, chạm tên hồ sơ để mở. Ngay bên dưới tên là các giá trị có nhãn như chủ nhiệm, trạng thái hoặc số tiền. Với đề xuất và sản phẩm, nếu tìm sai tên hoặc chọn sai trạng thái, bấm **Xóa bộ lọc** để xem lại danh sách.
+
+Trong **Đề tài cấp trên**, **Đề tài sinh viên**, **Dự án sản xuất** và **Hoạt động khoa học**, có thể tìm theo tên hoặc mã ngay khi mở danh sách. Bấm **Bộ lọc** để chọn thêm điều kiện. Trong **Giờ giảng quy đổi**, mở bộ lọc để chọn giảng viên, kỳ hoặc nguồn. Số cạnh **Bộ lọc** tính cả từ khóa đang dùng. Chạm tên nguồn để đọc căn cứ và các dòng điều chỉnh.
+
+Khi đi thẳng vào hồ sơ từ sổ tay, tên phân hệ xuất hiện trên thanh đầu trang. Nút **Mở điều hướng** đưa tới nhóm đang chứa màn hình đó. Nếu đề xuất đã chuyển khỏi phạm vi được xem, bấm **Về danh sách** để chọn hồ sơ còn truy cập được.
+
 ## Chọn phiên
 
 Nút **Phiên mô phỏng** nằm ở góc trên bên phải. Chọn trường rồi chọn người dùng. Mỗi tab có thể giữ một danh tính riêng, các tab cùng trình duyệt và cùng địa chỉ web chia sẻ thay đổi. Dữ liệu mẫu của hai trường có phạm vi riêng. Với tài khoản tự tạo, chọn **Đăng nhập bằng email mẫu** và nhập địa chỉ thuộc `@example.invalid`. Mã xác nhận hiển thị ngay trong biểu mẫu.

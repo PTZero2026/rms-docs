@@ -2,6 +2,10 @@
 
 Các luồng tích hợp dưới đây đã được chạy với tài khoản và hồ sơ thử. Đường vào là `/app/<mã-trường>`. Hướng dẫn bản mẫu v0 dùng mục **Phiên mô phỏng** và mang nhãn riêng.
 
+Sau đăng nhập, kiểm tra email, mã đơn vị và vai trò ở đầu trang. Tại **Việc cần làm**, chọn việc để mở hồ sơ nguồn. Trong nhóm **Quản lý nghiên cứu**, chọn kỳ nhận, hội đồng, nghiệm thu, lịch sử hoặc báo cáo theo quyền của mình. **Hồ sơ và sản phẩm** chứa hồ sơ cá nhân, lý lịch khoa học và sản phẩm ngoài đề tài. Mỗi nút mở nội dung ngay bên dưới. Nhấn lại nút để thu gọn hoặc dùng Tab để đi vào nội dung vừa mở.
+
+Khi trường bật các chức năng tương ứng, **Nghiệp vụ mở rộng** tập hợp thư viện DOI, nhiệm vụ cấp trên, đề tài sinh viên, dự án ứng dụng, hoạt động khoa học và định mức giờ giảng. Quản trị viên vào **Thiết lập đơn vị** để mở các mục giao diện, quy trình và quản lý người dùng.
+
 | Người sử dụng | Tác vụ đã có hướng dẫn |
 |---|---|
 | Người dùng mới | Đăng nhập qua OTP, mở **Hồ sơ cá nhân** và xem **Hộp thông báo**. [Đọc tin](hop-thong-bao.md) · [Bật hoặc tắt SMS](hop-thong-bao.md#nhận-sms-cho-sự-kiện-ưu-tiên-cao) |

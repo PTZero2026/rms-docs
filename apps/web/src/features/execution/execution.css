@@ -224,9 +224,6 @@
   .exec-workspace .data-table td:first-child {
     padding-left: 0.8rem;
   }
-  .exec-workspace .data-table {
-    min-width: 28rem;
-  }
   .exec-workspace .exec-facts {
     grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
   }

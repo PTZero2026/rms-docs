@@ -1,3 +1,4 @@
+import { UnavailableRecord } from "../../demo/UnavailableRecord"
 import { ToggleGroup, ToggleGroupItem } from "@rms/ui/components/toggle-group"
 import { ValidatedForm } from "@rms/ui/components/validated-form"
 import { ChoiceOption } from "@rms/ui/components/choice-select"
@@ -118,9 +119,7 @@ export function ReportScreen(app: FeatureProps) {
     return report ? (
       <Snapshot app={app} report={report} />
     ) : (
-      <Blank>
-        Chưa có bản chụp trong phạm vi hiện tại. Hãy tạo lại báo cáo theo quyền được giao.
-      </Blank>
+      <UnavailableRecord feature="B02" />
     )
   }
   return (

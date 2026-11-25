@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react"
 
-export async function inspectConfiguration(blob: Blob) {
-  const [mime, ...parameters] = blob.type.toLowerCase().split(";")
+export async function inspectConfiguration(blob: Blob, contentType = blob.type) {
+  const [mime, ...parameters] = contentType.toLowerCase().split(";")
   if (mime.startsWith("image/")) return { kind: "image" } as const
   if (!mime.startsWith("text/") && !/[+/](json|xml|yaml)$/.test(mime)) return { kind: "file" } as const
 

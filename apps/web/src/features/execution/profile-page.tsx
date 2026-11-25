@@ -1,10 +1,11 @@
+import { UnavailableRecord } from "../../demo/UnavailableRecord"
 import { schoolUnits } from '../../demo/datasets.ts'
 import { ChoiceOption, ChoiceSelect } from "@rms/ui/components/choice-select"
 import { useState } from 'react'
 import type { FeatureProps } from '../../demo/types'
 import { Button } from '@rms/ui/components/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@rms/ui/components/tabs'
-import { Action, Grid, Heading, NoData, Panel, RecordLink, choice } from './controls'
+import { Action, Grid, Heading, Panel, RecordLink, choice } from './controls'
 import {
   activateTemplate,
   addCareer,
@@ -158,7 +159,7 @@ export function ProfilePage(p: FeatureProps) {
       : profiles.find((x) => x.owner === p.session.userId)
   if (!r)
     return (
-      <NoData title="Không thể mở hồ sơ cá nhân" detail="Hồ sơ chưa có hoặc nằm ngoài phạm vi được phân." />
+      <UnavailableRecord feature="F08" title="Không thể mở hồ sơ cá nhân" detail="Hồ sơ chưa có hoặc nằm ngoài phạm vi được phân." />
     )
   const cv = buildCV(p, r)
   const switching = profiles.length > 1

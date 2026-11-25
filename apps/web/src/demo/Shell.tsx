@@ -34,7 +34,7 @@ import {
   SheetTitle,
   SheetDescription,
 } from "@rms/ui/components/sheet"
-import { items, canOpen, routeUrl } from "./catalog"
+import { items, canOpen, readRoute, routeUrl } from "./catalog"
 import { featureOf, sourceId, rowVisible } from "./views"
 import { tenants, initials, roleNames, person, roleForAccount } from "./identity"
 import { inbox } from "./notifications"
@@ -53,13 +53,20 @@ export default function Shell(p: Props) {
   const [dialog, setDialog] = useState(""),
     [menu, setMenu] = useState(false),
     [query, setQuery] = useState("")
-  const [expanded, setExpanded] = useState<string[]>([
-    "Không gian làm việc",
-    "Quản lý nghiên cứu",
-    "Kết quả nghiên cứu",
-  ])
   const { session, route, rows } = p
   const current = items.find((x) => x.id === route.feature)
+  const [expanded, setExpanded] = useState(() => new Set([
+    "Không gian làm việc", "Quản lý nghiên cứu", "Kết quả nghiên cứu",
+    ...(current ? [current.group] : []),
+  ]))
+  useEffect(() => {
+    function revealDestination() {
+      const group = items.find(item => item.id === readRoute().feature)?.group
+      if (group) setExpanded(previous => previous.has(group) ? previous : new Set(previous).add(group))
+    }
+    window.addEventListener("hashchange", revealDestination)
+    return () => window.removeEventListener("hashchange", revealDestination)
+  }, [])
   const accessible = items.filter((x) => canOpen(x.id, session.role, p.e4Enabled))
   const [tenant, setTenant] = useState<Tenant>(session.tenant)
   const accounts =
@@ -129,14 +136,19 @@ export default function Shell(p: Props) {
       </Button>
       <nav aria-label="Chức năng" className="sidebar-nav">
         {groups.map((group) => {
-          const show = expanded.includes(group)
+          const show = expanded.has(group)
           return (
             <section key={group}>
               <Button variant="ghost" size="content"
                 className="group-toggle"
                 aria-expanded={show}
                 onClick={() =>
-                  setExpanded((prev) => (show ? prev.filter((g) => g !== group) : [...prev, group]))
+                  setExpanded(previous => {
+                    const next = new Set(previous)
+                    if (show) next.delete(group)
+                    else next.add(group)
+                    return next
+                  })
                 }
               >
                 {group}
@@ -242,9 +254,7 @@ export default function Shell(p: Props) {
             <Menu />
           </Button>
           {phone && (
-            <span className="mobile-brand">
-              RMS<span>.</span>
-            </span>
+            <span className="mobile-location">{route.id ? current?.label ?? "RMS" : "RMS"}</span>
           )}
           <div className="crumb">
             <PanelLeft size={16} />

@@ -25,7 +25,7 @@ export async function verifyReturnedWork(page:Page,foreign:Page,id:string,accoun
   await expect(page.getByText("Công việc không còn trong phạm vi hiện tại.")).toBeVisible()
   await expect(page.getByText(title,{exact:true})).toHaveCount(0)
   await page.getByRole("link",{name:"Về danh sách việc"}).click()
-  await expect(page.getByText("Vai trò user",{exact:true})).toBeVisible()
+  await expect(page.getByText("Vai trò Người dùng",{exact:true})).toBeVisible()
   expect((await foreign.request.get("/api/tenants/school-2/home/work/"+id,{headers:{authorization:otherToken}})).status()).toBe(404)
   expect((await (await foreign.request.get("/api/tenants/school-2/home/work",{headers:{authorization:otherToken}})).json()).total).toBe(0)
   provision("UPDATE rms.account SET user_type='author' WHERE id=:'id'::uuid",{id:account})

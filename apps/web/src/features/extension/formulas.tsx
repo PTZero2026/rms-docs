@@ -55,11 +55,11 @@ export function Formulas({ctx}: {ctx: FeatureProps}) {
   const [editing,setEditing] = useState<DemoRow>()
   const [cal,setCal] = useState(false)
   return <section className="panel stack"><div className="ext-title"><div><h2>Định mức quy đổi</h2><p className="muted">Bộ định mức mô phỏng · Kỳ hiện hành theo {periodLabels[calendar(ctx.rows).periodType]?.toLocaleLowerCase('vi')}.</p></div>
-    <Button variant="outline" onClick={() => setCal(true)}>Cấu hình lịch kỳ</Button></div>
+    <Button variant="outline" aria-haspopup="dialog" onClick={() => setCal(true)}>Cấu hình lịch kỳ</Button></div>
     {rows.map(r => <div className="ext-line" key={r.id}><div><strong>{r.title} · {r.fields.version}</strong><p className="muted">{dateLabel(r.fields.validFrom)} – {dateLabel(r.fields.validTo)} · {periodLabels[r.fields.periodType]}</p>
       <p>{r.fields.bands ? (JSON.parse(r.fields.bands) as [number,number][]).map(([min,h]) => 'Từ ' + (min/1000000).toLocaleString('vi') + ' triệu: ' + h + ' giờ').join(' · ')
         : r.fields.base + ' giờ × ' + r.fields.multiplier}</p></div>
-      {r.status !== 'ACTIVE' && <strong>Chờ PO xác nhận</strong>}<Button variant="outline" onClick={() => setEditing(r)}>Tạo phiên bản</Button></div>)}
+      {r.status !== 'ACTIVE' && <strong>Chờ PO xác nhận</strong>}<Button variant="outline" aria-haspopup="dialog" onClick={() => setEditing(r)}>Tạo phiên bản</Button></div>)}
     {editing && <FormulaEditor ctx={ctx} template={editing} close={() => setEditing(undefined)}/>}
     {cal && <CalendarEditor ctx={ctx} close={() => setCal(false)}/>}
   </section>

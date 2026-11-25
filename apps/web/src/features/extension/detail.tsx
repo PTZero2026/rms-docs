@@ -98,7 +98,7 @@ export function Detail({ctx,row}: {ctx: FeatureProps; row: DemoRow}) {
     <div className="page-heading"><div><Status value={row.status}/><h1>{row.title}</h1></div></div>
     <div className="page-actions ext-actions">
       {canEdit(ctx.session,row) && <Button variant="outline" onClick={() => setEdit(true)}>Chỉnh sửa hồ sơ</Button>}
-      {acts.map((a,i) => <Button key={a} variant={i === 0 ? 'default' : 'outline'} onClick={() => setDecision(a)}>
+      {acts.map((a,i) => <Button key={a} variant={i === 0 ? 'default' : 'outline'} aria-haspopup="dialog" onClick={() => setDecision(a)}>
         {a === 'submit' && feature === 'F10' ? 'Nộp đăng ký' : actionNames[a]}</Button>)}
     </div>
     {f.reason && <div className="panel"><strong>Ghi chú xử lý gần nhất</strong><p>{f.reason}</p></div>}
