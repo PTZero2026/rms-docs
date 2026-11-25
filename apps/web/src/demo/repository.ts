@@ -1,3 +1,4 @@
+import { schoolUnits } from "./datasets.ts"
 import type { DemoRow, Session, Tenant } from "./types"
 import type { Snapshot } from "./workflow"
 import { applyTransaction } from "./workflow"
@@ -128,7 +129,7 @@ export function fixtureSignIn(tenant: Tenant, input: string): Session {
     throw Error("Tài khoản đang bị khóa hoặc ngừng hoạt động.")
   const id = existing?.owner ?? crypto.randomUUID()
   const name = existing?.title ?? "Người dùng " + email.split("@")[0]
-  const unit = existing?.unit ?? "Khoa Công trình"
+  const unit = existing?.unit ?? schoolUnits(tenant, snapshot.rows)[0]
   const session: Session = {
     tenant,
     userId: id,

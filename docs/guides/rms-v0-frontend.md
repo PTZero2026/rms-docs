@@ -2,6 +2,8 @@
 
 Từ gốc monorepo, chạy `pnpm install --frozen-lockfile` rồi `pnpm dev`. Mở địa chỉ Vite hiển thị. Trang đầu là tổng quan của chủ nhiệm Lê Thanh Mai tại Đại học Thủy lợi. Ngày nghiệp vụ mẫu là **21/11/2026**. Có thể mở trực tiếp các đường dẫn sau dấu `#`, dùng nút quay lại của trình duyệt hoặc tìm theo mã hồ sơ.
 
+Mở [bộ demo và review của hai trường](demo-rms/README.md) để chọn ca có dữ liệu nhập, vai thao tác và số liệu đối chứng.
+
 ## Chọn phiên
 
 Nút **Phiên mô phỏng** nằm ở góc trên bên phải. Chọn trường rồi chọn người dùng. Mỗi tab có thể giữ một danh tính riêng, các tab cùng trình duyệt và cùng địa chỉ web chia sẻ thay đổi. Dữ liệu mẫu của hai trường có phạm vi riêng. Với tài khoản tự tạo, chọn **Đăng nhập bằng email mẫu** và nhập địa chỉ thuộc `@example.invalid`. Mã xác nhận hiển thị ngay trong biểu mẫu.

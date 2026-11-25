@@ -1,0 +1,2213 @@
+{
+  "tenant": "hmu",
+  "school": "Đại học Y Hà Nội",
+  "units": [
+    "Khoa Điều dưỡng",
+    "Khoa Y tế công cộng"
+  ],
+  "intake": [
+    {
+      "id": "intake-field-applied",
+      "kind": "intake-reference",
+      "title": "Y học ứng dụng",
+      "status": "ACTIVE",
+      "owner": "an",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "category": "discipline",
+        "version": "2026.2"
+      }
+    },
+    {
+      "id": "intake-field-env",
+      "kind": "intake-reference",
+      "title": "Môi trường và sức khỏe cộng đồng",
+      "status": "ACTIVE",
+      "owner": "an",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "category": "discipline",
+        "version": "2026.2"
+      }
+    },
+    {
+      "id": "intake-form-26",
+      "kind": "intake-reference",
+      "title": "Mẫu thuyết minh đề tài cấp cơ sở",
+      "status": "ACTIVE",
+      "owner": "an",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "category": "template",
+        "version": "2026.2"
+      }
+    },
+    {
+      "id": "intake-rubric-26",
+      "kind": "intake-reference",
+      "title": "Tiêu chí xét đề xuất cấp cơ sở 2026",
+      "status": "ACTIVE",
+      "owner": "an",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "category": "criteria",
+        "version": "2026.2",
+        "type": "PROPOSAL_REVIEW",
+        "min": "1",
+        "passing": "7",
+        "publicComments": "false",
+        "publicScore": "false"
+      }
+    },
+    {
+      "id": "intake-rubric-old",
+      "kind": "intake-reference",
+      "title": "Tiêu chí xét đề xuất năm 2024",
+      "status": "INACTIVE",
+      "owner": "an",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "category": "criteria",
+        "version": "2026.2",
+        "type": "PROPOSAL_REVIEW"
+      }
+    },
+    {
+      "id": "call-01",
+      "kind": "call",
+      "title": "Đề tài cấp cơ sở về đào tạo và sức khỏe cộng đồng năm 2027",
+      "status": "OPEN",
+      "owner": "an",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "start": "2026-11-01",
+        "due": "2026-11-30",
+        "disciplines": "intake-field-applied,intake-field-env",
+        "template": "intake-form-26",
+        "criteria": "intake-rubric-26",
+        "code": "KG-2027-01"
+      }
+    },
+    {
+      "id": "intake-call-autumn",
+      "kind": "call",
+      "title": "Nghiên cứu giáo dục y khoa đợt thu 2026",
+      "status": "CLOSED",
+      "owner": "an",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "start": "2026-09-01",
+        "due": "2026-10-31",
+        "disciplines": "intake-field-applied,intake-field-env",
+        "template": "intake-form-26",
+        "criteria": "intake-rubric-26",
+        "code": "KG-2026-02"
+      }
+    },
+    {
+      "id": "intake-call-draft",
+      "kind": "call",
+      "title": "Sáng kiến liên ngành đợt xuân 2027",
+      "status": "DRAFT",
+      "owner": "an",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "start": "2026-12-01",
+        "due": "2027-01-15",
+        "disciplines": "intake-field-applied,intake-field-env",
+        "template": "intake-form-26",
+        "criteria": "intake-rubric-old",
+        "code": "KG-2027-02"
+      }
+    },
+    {
+      "id": "dt-01",
+      "kind": "project",
+      "title": "Đánh giá độ tin cậy của bảng tự theo dõi phục hồi chức năng",
+      "status": "DRAFT",
+      "owner": "mai",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "code": "",
+        "callId": "call-01",
+        "workflowVersion": "v1",
+        "revision": "1",
+        "aiAllowed": "false",
+        "aiGrantVersion": "1",
+        "due": "2026-11-30",
+        "discipline": "intake-field-applied",
+        "durationMonths": "12",
+        "requestedBudget": "85000000",
+        "objective": "Đo mức nhất quán giữa hai lần điền bảng tự theo dõi.",
+        "method": "So sánh điểm lặp của 40 tình huống phục hồi chức năng dựng sẵn.",
+        "outcome": "Bảng độ nhất quán và bản hướng dẫn điền thử.",
+        "memberIds": "linh",
+        "submittedAt": "",
+        "attachments": "[{\"id\":\"dt-01-plan\",\"title\":\"Đề cương nghiên cứu\",\"format\":\"PDF\",\"size\":24576}]",
+        "assignments": "{\"linh\":{\"role\":\"MEMBER\",\"responsibility\":\"Lập bảng đối chiếu và kiểm tra dữ liệu đầu vào.\"}}"
+      }
+    },
+    {
+      "id": "intake-dt-silt",
+      "kind": "project",
+      "title": "Thử nghiệm bảng kiểm bàn giao tại phòng mô phỏng",
+      "status": "SUBMITTED",
+      "owner": "mai",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "code": "HMU-26-NC02",
+        "callId": "call-01",
+        "workflowVersion": "v1",
+        "revision": "1",
+        "aiAllowed": "false",
+        "aiGrantVersion": "1",
+        "due": "2026-11-30",
+        "discipline": "intake-field-applied",
+        "durationMonths": "12",
+        "requestedBudget": "90000000",
+        "objective": "Giảm mục bỏ sót khi bàn giao ca ở phòng mô phỏng.",
+        "method": "Hai giảng viên chấm độc lập 30 ca đóng vai theo bảng kiểm 12 mục.",
+        "outcome": "Bảng kiểm v2 và báo cáo tỷ lệ hoàn thành từng mục.",
+        "memberIds": "linh",
+        "submittedAt": "2026-11-15T02:20:00Z",
+        "attachments": "[{\"id\":\"intake-dt-silt-plan\",\"title\":\"Đề cương nghiên cứu\",\"format\":\"PDF\",\"size\":25600}]",
+        "assignments": "{\"linh\":{\"role\":\"MEMBER\",\"responsibility\":\"Lập bảng đối chiếu và kiểm tra dữ liệu đầu vào.\"}}"
+      }
+    },
+    {
+      "id": "intake-dt-road",
+      "kind": "project",
+      "title": "Khảo sát thời gian chờ khám ở cơ sở thực hành",
+      "status": "SUBMITTED",
+      "owner": "mai",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "code": "HMU-26-NC03",
+        "callId": "intake-call-autumn",
+        "workflowVersion": "v1",
+        "revision": "1",
+        "aiAllowed": "false",
+        "aiGrantVersion": "1",
+        "due": "2026-10-31",
+        "discipline": "intake-field-applied",
+        "durationMonths": "12",
+        "requestedBudget": "95000000",
+        "objective": "Xác định khâu chờ lâu nhất trong buổi thực hành.",
+        "method": "Phân tích 60 lượt xếp hàng giả lập tại ba bàn tiếp nhận.",
+        "outcome": "Biểu đồ thời gian chờ và lịch phân bàn mẫu.",
+        "memberIds": "linh",
+        "submittedAt": "2026-10-18T02:20:00Z",
+        "checked": "true",
+        "finalized": "true",
+        "attachments": "[{\"id\":\"intake-dt-road-plan\",\"title\":\"Đề cương nghiên cứu\",\"format\":\"PDF\",\"size\":26624}]",
+        "assignments": "{\"linh\":{\"role\":\"MEMBER\",\"responsibility\":\"Lập bảng đối chiếu và kiểm tra dữ liệu đầu vào.\"}}"
+      }
+    },
+    {
+      "id": "intake-dt-flood",
+      "kind": "project",
+      "title": "Đánh giá khả năng tiếp cận tài liệu giáo dục sức khỏe",
+      "status": "UNDER_REVIEW",
+      "owner": "mai",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "code": "HMU-26-NC04",
+        "callId": "intake-call-autumn",
+        "workflowVersion": "v1",
+        "revision": "1",
+        "aiAllowed": "false",
+        "aiGrantVersion": "1",
+        "due": "2026-10-31",
+        "discipline": "intake-field-applied",
+        "durationMonths": "12",
+        "requestedBudget": "100000000",
+        "objective": "Đánh giá khả năng tìm mục cần đọc trong tờ hướng dẫn.",
+        "method": "24 người học đóng vai người đọc và làm sáu nhiệm vụ tra cứu trên hai bố cục.",
+        "outcome": "Hai mẫu tờ hướng dẫn và bảng thời gian tra cứu.",
+        "memberIds": "",
+        "submittedAt": "2026-10-18T02:20:00Z",
+        "checked": "true",
+        "finalized": "true",
+        "attachments": "[{\"id\":\"intake-dt-flood-plan\",\"title\":\"Đề cương nghiên cứu\",\"format\":\"PDF\",\"size\":27648}]",
+        "assignments": "{}"
+      }
+    },
+    {
+      "id": "intake-dt-water",
+      "kind": "project",
+      "title": "Đối chiếu số liệu chất lượng nước tại giảng đường",
+      "status": "SUBMITTED",
+      "owner": "thao",
+      "unit": "Khoa Y tế công cộng",
+      "fields": {
+        "code": "HMU-26-NC05",
+        "callId": "call-01",
+        "workflowVersion": "v1",
+        "revision": "1",
+        "aiAllowed": "false",
+        "aiGrantVersion": "1",
+        "due": "2026-11-30",
+        "discipline": "intake-field-env",
+        "durationMonths": "12",
+        "requestedBudget": "105000000",
+        "objective": "So sánh chỉ số nước uống tại ba khu giảng đường mô phỏng.",
+        "method": "Đối chiếu 18 phiếu kết quả tổng hợp theo địa điểm.",
+        "outcome": "Bảng sai khác và lịch theo dõi chất lượng nước.",
+        "memberIds": "linh",
+        "submittedAt": "2026-11-15T02:20:00Z",
+        "attachments": "[{\"id\":\"intake-dt-water-plan\",\"title\":\"Đề cương nghiên cứu\",\"format\":\"PDF\",\"size\":28672}]",
+        "assignments": "{\"linh\":{\"role\":\"MEMBER\",\"responsibility\":\"Lập bảng đối chiếu và kiểm tra dữ liệu đầu vào.\"}}"
+      }
+    },
+    {
+      "id": "intake-dt-approved",
+      "kind": "project",
+      "title": "Thiết kế bộ học liệu về an toàn phòng thực hành",
+      "status": "APPROVED",
+      "owner": "mai",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "code": "HMU-26-NC06",
+        "callId": "intake-call-autumn",
+        "workflowVersion": "v1",
+        "revision": "1",
+        "aiAllowed": "false",
+        "aiGrantVersion": "1",
+        "due": "2026-10-31",
+        "discipline": "intake-field-applied",
+        "durationMonths": "12",
+        "requestedBudget": "110000000",
+        "objective": "Cải thiện khả năng nhận biết biển báo trước buổi thực hành.",
+        "method": "So sánh bài tập nhận diện trước và sau khi xem 12 thẻ học liệu.",
+        "outcome": "Bộ thẻ kèm đáp án và bản tóm tắt kết quả lớp mô phỏng.",
+        "memberIds": "linh",
+        "submittedAt": "2026-10-18T02:20:00Z",
+        "checked": "true",
+        "finalized": "true",
+        "attachments": "[{\"id\":\"intake-dt-approved-plan\",\"title\":\"Đề cương nghiên cứu\",\"format\":\"PDF\",\"size\":29696}]",
+        "assignments": "{\"linh\":{\"role\":\"MEMBER\",\"responsibility\":\"Lập bảng đối chiếu và kiểm tra dữ liệu đầu vào.\"}}"
+      }
+    },
+    {
+      "id": "intake-dt-returned",
+      "kind": "project",
+      "title": "Khảo sát khả năng sử dụng tài liệu hướng dẫn phục hồi chức năng",
+      "status": "DRAFT",
+      "owner": "mai",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "code": "HMU-26-NC07",
+        "callId": "call-01",
+        "workflowVersion": "v1",
+        "revision": "1",
+        "aiAllowed": "false",
+        "aiGrantVersion": "1",
+        "due": "2026-11-30",
+        "discipline": "intake-field-applied",
+        "durationMonths": "12",
+        "requestedBudget": "115000000",
+        "objective": "Xác định câu khó hiểu trong tài liệu tự học về phục hồi chức năng.",
+        "method": "Hai nhóm người học chú giải tám đoạn văn trong tình huống giả lập.",
+        "outcome": "Bảng từ ngữ cần sửa và bản hướng dẫn phiên bản 2.",
+        "memberIds": "linh",
+        "submittedAt": "2026-11-16T03:15:00Z",
+        "reason": "Bổ sung cách lựa chọn địa điểm khảo sát và số mẫu đối chứng.",
+        "attachments": "[{\"id\":\"intake-dt-returned-plan\",\"title\":\"Đề cương nghiên cứu\",\"format\":\"PDF\",\"size\":30720}]",
+        "assignments": "{\"linh\":{\"role\":\"MEMBER\",\"responsibility\":\"Lập bảng đối chiếu và kiểm tra dữ liệu đầu vào.\"}}"
+      }
+    },
+    {
+      "id": "intake-dt-coi",
+      "kind": "project",
+      "title": "Đánh giá quy trình phân loại vật tư tại phòng thực hành",
+      "status": "UNDER_REVIEW",
+      "owner": "mai",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "code": "HMU-26-NC08",
+        "callId": "intake-call-autumn",
+        "workflowVersion": "v1",
+        "revision": "1",
+        "aiAllowed": "false",
+        "aiGrantVersion": "1",
+        "due": "2026-10-31",
+        "discipline": "intake-field-applied",
+        "durationMonths": "12",
+        "requestedBudget": "120000000",
+        "objective": "Đo mức nhất quán khi phân nhóm vật tư dạy học.",
+        "method": "Đối chiếu hai lượt phân loại độc lập trên 32 thẻ vật tư.",
+        "outcome": "Danh mục nhãn chuẩn hóa và bảng đối chiếu hai lượt.",
+        "memberIds": "minh",
+        "submittedAt": "2026-10-18T02:20:00Z",
+        "checked": "true",
+        "finalized": "true",
+        "attachments": "[{\"id\":\"intake-dt-coi-plan\",\"title\":\"Đề cương nghiên cứu\",\"format\":\"PDF\",\"size\":31744}]",
+        "assignments": "{\"minh\":{\"role\":\"MEMBER\",\"responsibility\":\"Lập bảng đối chiếu và kiểm tra dữ liệu đầu vào.\"}}"
+      }
+    },
+    {
+      "id": "intake-council-26",
+      "kind": "council",
+      "title": "Hội đồng nghiên cứu giáo dục và thực hành y khoa",
+      "status": "ACTIVE",
+      "owner": "an",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "code": "HĐ-XD-06",
+        "type": "PROPOSAL_REVIEW",
+        "memberIds": "minh,hue,son",
+        "seats": "[{\"user\":\"son\",\"role\":\"CHAIR\"},{\"user\":\"minh\",\"role\":\"REVIEWER\"},{\"user\":\"hue\",\"role\":\"SECRETARY\"}]"
+      }
+    },
+    {
+      "id": "intake-round-flood",
+      "kind": "review-round",
+      "title": "Hội đồng nghiên cứu giáo dục và thực hành y khoa",
+      "status": "COLLECTING_SCORES",
+      "owner": "an",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "projectId": "intake-dt-flood",
+        "councilId": "intake-council-26",
+        "memberIds": "minh,hue,son",
+        "criteria": "intake-rubric-26",
+        "reviewerIds": "minh,hue,son",
+        "min": "3",
+        "passing": "7",
+        "publicComments": "false",
+        "publicScore": "false",
+        "ethics": "PENDING",
+        "openedAt": "2026-11-12T02:00:00Z"
+      }
+    },
+    {
+      "id": "intake-round-approved",
+      "kind": "review-round",
+      "title": "Hội đồng nghiên cứu giáo dục và thực hành y khoa",
+      "status": "CONCLUDED",
+      "owner": "an",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "projectId": "intake-dt-approved",
+        "councilId": "intake-council-26",
+        "memberIds": "minh,hue,son",
+        "criteria": "intake-rubric-26",
+        "reviewerIds": "",
+        "min": "1",
+        "passing": "7",
+        "publicComments": "false",
+        "publicScore": "false",
+        "ethics": "EXEMPT",
+        "openedAt": "2026-11-12T02:00:00Z",
+        "conclusion": "PASSED",
+        "aggregate": "8",
+        "concludedAt": "2026-11-16T02:00:00Z"
+      }
+    },
+    {
+      "id": "intake-round-coi",
+      "kind": "review-round",
+      "title": "Hội đồng nghiên cứu giáo dục và thực hành y khoa",
+      "status": "COLLECTING_SCORES",
+      "owner": "an",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "projectId": "intake-dt-coi",
+        "councilId": "intake-council-26",
+        "memberIds": "minh,hue,son",
+        "criteria": "intake-rubric-26",
+        "reviewerIds": "son,hue",
+        "min": "2",
+        "passing": "7",
+        "publicComments": "false",
+        "publicScore": "false",
+        "ethics": "EXEMPT",
+        "openedAt": "2026-11-12T02:00:00Z"
+      }
+    },
+    {
+      "kind": "score",
+      "id": "intake-score-intake-round-coi-son",
+      "title": "Phiếu chấm khoa học",
+      "status": "SUBMITTED",
+      "owner": "son",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "roundId": "intake-round-coi",
+        "projectId": "intake-dt-coi",
+        "points": "[\"6\",\"6\",\"6\"]",
+        "total": "6",
+        "comment": "Phương pháp phù hợp với mục tiêu đã nêu."
+      }
+    },
+    {
+      "kind": "score",
+      "id": "intake-score-intake-round-coi-hue",
+      "title": "Phiếu chấm khoa học",
+      "status": "SUBMITTED",
+      "owner": "hue",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "roundId": "intake-round-coi",
+        "projectId": "intake-dt-coi",
+        "points": "[\"7\",\"7\",\"7\"]",
+        "total": "7",
+        "comment": "Phương pháp phù hợp với mục tiêu đã nêu."
+      }
+    },
+    {
+      "kind": "score",
+      "id": "intake-score-intake-round-flood-son",
+      "title": "Phiếu chấm khoa học",
+      "status": "SUBMITTED",
+      "owner": "son",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "roundId": "intake-round-flood",
+        "projectId": "intake-dt-flood",
+        "points": "[\"8\",\"8\",\"8\"]",
+        "total": "8",
+        "comment": "Phương pháp phù hợp với mục tiêu đã nêu."
+      }
+    },
+    {
+      "kind": "score",
+      "id": "intake-score-intake-round-flood-hue",
+      "title": "Phiếu chấm khoa học",
+      "status": "SUBMITTED",
+      "owner": "hue",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "roundId": "intake-round-flood",
+        "projectId": "intake-dt-flood",
+        "points": "[\"7\",\"7\",\"7\"]",
+        "total": "7",
+        "comment": "Phương pháp phù hợp với mục tiêu đã nêu."
+      }
+    },
+    {
+      "kind": "score",
+      "id": "intake-score-intake-round-approved-son",
+      "title": "Phiếu chấm khoa học",
+      "status": "SUBMITTED",
+      "owner": "son",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "roundId": "intake-round-approved",
+        "projectId": "intake-dt-approved",
+        "points": "[\"8\",\"8\",\"8\"]",
+        "total": "8",
+        "comment": "Phương pháp phù hợp với mục tiêu đã nêu."
+      }
+    },
+    {
+      "id": "call-2025",
+      "kind": "call",
+      "title": "Nghiên cứu giáo dục y khoa triển khai năm 2026",
+      "status": "CLOSED",
+      "owner": "an",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "start": "2025-09-01",
+        "due": "2025-10-31",
+        "disciplines": "intake-field-applied,intake-field-env",
+        "template": "intake-form-26",
+        "criteria": "intake-rubric-26",
+        "code": "KG-2025-02"
+      }
+    },
+    {
+      "id": "report-open-baseline",
+      "kind": "call-report",
+      "title": "Đề tài cấp cơ sở về đào tạo và sức khỏe cộng đồng năm 2027",
+      "status": "FROZEN",
+      "owner": "an",
+      "unit": "Các đơn vị được giao",
+      "fields": {
+        "units": "[\"Khoa Điều dưỡng\", \"Khoa Y tế công cộng\"]",
+        "callId": "call-01",
+        "callCode": "KG-2027-01",
+        "extractedAt": "2026-11-20T03:00:00Z",
+        "lines": "[{\"id\": \"intake-dt-silt\", \"code\": \"HMU-26-NC02\", \"title\": \"Thử nghiệm bảng kiểm bàn giao tại phòng mô phỏng\", \"unit\": \"Khoa Điều dưỡng\", \"status\": \"SUBMITTED\"}, {\"id\": \"intake-dt-water\", \"code\": \"HMU-26-NC05\", \"title\": \"Đối chiếu số liệu chất lượng nước tại giảng đường\", \"unit\": \"Khoa Y tế công cộng\", \"status\": \"SUBMITTED\"}, {\"id\": \"intake-dt-returned\", \"code\": \"HMU-26-NC07\", \"title\": \"Khảo sát khả năng sử dụng tài liệu hướng dẫn phục hồi chức năng\", \"unit\": \"Khoa Điều dưỡng\", \"status\": \"DRAFT\"}]"
+      }
+    }
+  ],
+  "execution": [
+    {
+      "id": "exec-river",
+      "kind": "project",
+      "title": "Đánh giá bảng kiểm bàn giao ca trong đào tạo điều dưỡng",
+      "status": "IN_PROGRESS",
+      "owner": "mai",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "code": "HMU-26-014",
+        "callId": "call-2025",
+        "workflowVersion": "v1",
+        "memberIds": "linh",
+        "commitments": "{\"ARTICLE\":1,\"PATENT\":1}",
+        "requestedBudget": "100000000",
+        "durationMonths": "12",
+        "submittedAt": "2025-10-15T02:30:00Z"
+      }
+    },
+    {
+      "id": "exec-drain",
+      "kind": "project",
+      "title": "Đánh giá hệ thống chỉ dẫn tại cơ sở thực hành",
+      "status": "PENDING_ACCEPTANCE",
+      "owner": "mai",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "code": "HMU-26-009",
+        "callId": "call-2025",
+        "workflowVersion": "v1",
+        "memberIds": "linh",
+        "commitments": "{\"ARTICLE\":1,\"PATENT\":1}",
+        "requestedBudget": "100000000",
+        "durationMonths": "12",
+        "submittedAt": "2025-10-15T02:30:00Z",
+        "finalEvidence": "Ho-so-nghiem-thu-009.pdf"
+      }
+    },
+    {
+      "id": "exec-dam",
+      "kind": "project",
+      "title": "Độ nhất quán khi đánh giá thẻ học liệu theo mã màu",
+      "status": "PASSED",
+      "owner": "mai",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "code": "HMU-26-005",
+        "callId": "call-2025",
+        "workflowVersion": "v1",
+        "memberIds": "linh",
+        "commitments": "{\"ARTICLE\":1,\"PATENT\":1}",
+        "requestedBudget": "100000000",
+        "durationMonths": "12",
+        "roundId": "exec-old-round",
+        "submittedAt": "2025-10-15T02:30:00Z"
+      }
+    },
+    {
+      "id": "exec-reed",
+      "kind": "project",
+      "title": "Khả năng tiếp cận học liệu số của sinh viên y tế công cộng",
+      "status": "IN_PROGRESS",
+      "owner": "thao",
+      "unit": "Khoa Y tế công cộng",
+      "fields": {
+        "code": "HMU-26-021",
+        "callId": "call-2025",
+        "workflowVersion": "v1",
+        "memberIds": "linh",
+        "commitments": "{\"ARTICLE\":1,\"PATENT\":1}",
+        "requestedBudget": "100000000",
+        "durationMonths": "12",
+        "submittedAt": "2025-10-15T02:30:00Z"
+      }
+    },
+    {
+      "id": "exec-bridge",
+      "kind": "project",
+      "title": "Đánh giá trạm mô phỏng giao tiếp trong đào tạo điều dưỡng",
+      "status": "UNDER_ACCEPTANCE",
+      "owner": "mai",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "code": "HMU-26-012",
+        "callId": "call-2025",
+        "workflowVersion": "v1",
+        "memberIds": "linh",
+        "commitments": "{\"REPORT\":1}",
+        "requestedBudget": "100000000",
+        "durationMonths": "12",
+        "roundId": "exec-bridge-round",
+        "finalEvidence": "Ho-so-tram-giao-tiep.pdf",
+        "submittedAt": "2025-10-15T02:30:00Z"
+      }
+    },
+    {
+      "id": "exec-river-assignment",
+      "kind": "assignment",
+      "title": "Quyết định giao thực hiện HMU-26-014",
+      "status": "EFFECTIVE",
+      "owner": "mai",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "decision": "QĐ-HMU-26-014",
+        "signed": "2026-01-05",
+        "effective": "2026-01-06",
+        "start": "2026-01-06",
+        "end": "2027-01-05",
+        "amount": "100000000",
+        "evidence": "Quyet-dinh-giao.pdf",
+        "projectId": "exec-river"
+      }
+    },
+    {
+      "id": "exec-river-r1",
+      "kind": "report",
+      "title": "Kỳ 1 · Đánh giá tại cơ sở thực hành",
+      "status": "PASSED",
+      "owner": "mai",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "period": "1",
+        "dueDate": "2026-06-30",
+        "submittedAt": "2026-06-29T02:00:00Z",
+        "content": "Đã thu 30 phiếu bàn giao ca giả lập, hai giảng viên hoàn thành lượt chấm độc lập.",
+        "evidence": "Bao-cao-HMU-26-014-ky-1.pdf",
+        "projectId": "exec-river"
+      }
+    },
+    {
+      "id": "exec-drain-assignment",
+      "kind": "assignment",
+      "title": "Quyết định giao thực hiện HMU-26-009",
+      "status": "EFFECTIVE",
+      "owner": "mai",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "decision": "QĐ-HMU-26-009",
+        "signed": "2026-01-05",
+        "effective": "2026-01-06",
+        "start": "2026-01-06",
+        "end": "2027-01-05",
+        "amount": "100000000",
+        "evidence": "Quyet-dinh-giao.pdf",
+        "projectId": "exec-drain"
+      }
+    },
+    {
+      "id": "exec-drain-r1",
+      "kind": "report",
+      "title": "Kỳ 1 · Đánh giá tại cơ sở thực hành",
+      "status": "PASSED",
+      "owner": "mai",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "period": "1",
+        "dueDate": "2026-06-30",
+        "submittedAt": "2026-06-29T02:00:00Z",
+        "content": "Đã đo thời gian tìm đường của 24 lượt đóng vai tại ba điểm chỉ dẫn trong cơ sở thực hành.",
+        "evidence": "Bao-cao-HMU-26-009-ky-1.pdf",
+        "projectId": "exec-drain"
+      }
+    },
+    {
+      "id": "exec-dam-assignment",
+      "kind": "assignment",
+      "title": "Quyết định giao thực hiện HMU-26-005",
+      "status": "EFFECTIVE",
+      "owner": "mai",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "decision": "QĐ-HMU-26-005",
+        "signed": "2026-01-05",
+        "effective": "2026-01-06",
+        "start": "2026-01-06",
+        "end": "2027-01-05",
+        "amount": "100000000",
+        "evidence": "Quyet-dinh-giao.pdf",
+        "projectId": "exec-dam"
+      }
+    },
+    {
+      "id": "exec-dam-r1",
+      "kind": "report",
+      "title": "Kỳ 1 · Đánh giá tại cơ sở thực hành",
+      "status": "PASSED",
+      "owner": "mai",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "period": "1",
+        "dueDate": "2026-06-30",
+        "submittedAt": "2026-06-29T02:00:00Z",
+        "content": "Đã chấm 48 bài tập về mã màu thẻ học liệu và lập bảng đối chiếu giữa hai người chấm.",
+        "evidence": "Bao-cao-HMU-26-005-ky-1.pdf",
+        "projectId": "exec-dam"
+      }
+    },
+    {
+      "id": "exec-reed-assignment",
+      "kind": "assignment",
+      "title": "Quyết định giao thực hiện HMU-26-021",
+      "status": "EFFECTIVE",
+      "owner": "thao",
+      "unit": "Khoa Y tế công cộng",
+      "fields": {
+        "decision": "QĐ-HMU-26-021",
+        "signed": "2026-01-05",
+        "effective": "2026-01-06",
+        "start": "2026-01-06",
+        "end": "2027-01-05",
+        "amount": "100000000",
+        "evidence": "Quyet-dinh-giao.pdf",
+        "projectId": "exec-reed"
+      }
+    },
+    {
+      "id": "exec-reed-r1",
+      "kind": "report",
+      "title": "Kỳ 1 · Đánh giá tại cơ sở thực hành",
+      "status": "PASSED",
+      "owner": "thao",
+      "unit": "Khoa Y tế công cộng",
+      "fields": {
+        "period": "1",
+        "dueDate": "2026-06-30",
+        "submittedAt": "2026-06-29T02:00:00Z",
+        "content": "Đã thống kê 60 lượt tiếp cận học liệu theo lớp và tổng hợp phản hồi về cỡ chữ.",
+        "evidence": "Bao-cao-HMU-26-021-ky-1.pdf",
+        "projectId": "exec-reed"
+      }
+    },
+    {
+      "id": "exec-bridge-assignment",
+      "kind": "assignment",
+      "title": "Quyết định giao thực hiện HMU-26-012",
+      "status": "EFFECTIVE",
+      "owner": "mai",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "decision": "QĐ-HMU-26-012",
+        "signed": "2026-01-05",
+        "effective": "2026-01-06",
+        "start": "2026-01-06",
+        "end": "2027-01-05",
+        "amount": "100000000",
+        "evidence": "Quyet-dinh-giao.pdf",
+        "projectId": "exec-bridge"
+      }
+    },
+    {
+      "id": "exec-bridge-r1",
+      "kind": "report",
+      "title": "Kỳ 1 · Đánh giá tại cơ sở thực hành",
+      "status": "PASSED",
+      "owner": "mai",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "period": "1",
+        "dueDate": "2026-06-30",
+        "submittedAt": "2026-06-29T02:00:00Z",
+        "content": "Đã hoàn thành ba lượt kiểm tra trạm kỹ năng bằng kịch bản người bệnh chuẩn hóa.",
+        "evidence": "Bao-cao-HMU-26-012-ky-1.pdf",
+        "projectId": "exec-bridge"
+      }
+    },
+    {
+      "id": "exec-report-late",
+      "kind": "report",
+      "title": "Kỳ 2 · Kiểm tra độ nhất quán giữa hai giảng viên",
+      "status": "PENDING_SUBMISSION",
+      "owner": "mai",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "period": "2",
+        "dueDate": "2026-11-18",
+        "projectId": "exec-river"
+      }
+    },
+    {
+      "id": "exec-report-next",
+      "kind": "report",
+      "title": "Kỳ 3 · Hoàn thiện bảng kiểm bàn giao",
+      "status": "PENDING_SUBMISSION",
+      "owner": "mai",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "period": "3",
+        "dueDate": "2026-11-28",
+        "projectId": "exec-river"
+      }
+    },
+    {
+      "id": "exec-river-allocation",
+      "kind": "allocation",
+      "title": "Quyết định cấp kinh phí",
+      "status": "CONFIRMED",
+      "owner": "mai",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "amount": "100000000",
+        "fee": "5000000",
+        "rate": "5",
+        "cap": "10000000",
+        "research": "95000000",
+        "projectId": "exec-river"
+      }
+    },
+    {
+      "id": "exec-dam-allocation",
+      "kind": "allocation",
+      "title": "Quyết định cấp kinh phí",
+      "status": "CONFIRMED",
+      "owner": "mai",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "amount": "100000000",
+        "fee": "5000000",
+        "rate": "5",
+        "cap": "10000000",
+        "research": "95000000",
+        "projectId": "exec-dam"
+      }
+    },
+    {
+      "id": "exec-drain-allocation",
+      "kind": "allocation",
+      "title": "Quyết định cấp kinh phí",
+      "status": "CONFIRMED",
+      "owner": "mai",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "amount": "100000000",
+        "fee": "5000000",
+        "rate": "5",
+        "cap": "10000000",
+        "research": "95000000",
+        "projectId": "exec-drain"
+      }
+    },
+    {
+      "id": "exec-bridge-allocation",
+      "kind": "allocation",
+      "title": "Quyết định cấp kinh phí",
+      "status": "CONFIRMED",
+      "owner": "mai",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "amount": "100000000",
+        "fee": "5000000",
+        "rate": "5",
+        "cap": "10000000",
+        "research": "95000000",
+        "projectId": "exec-bridge"
+      }
+    },
+    {
+      "id": "exec-exp-river",
+      "kind": "expense",
+      "title": "Thiết kế học liệu và tổ chức 30 ca bàn giao mô phỏng",
+      "status": "UNRECONCILED",
+      "owner": "mai",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "amount": "93000000",
+        "date": "2026-09-15",
+        "code": "PC-12",
+        "evidence": "PC-12.pdf",
+        "projectId": "exec-river"
+      }
+    },
+    {
+      "id": "exec-exp-19",
+      "kind": "expense",
+      "title": "Sản xuất bộ thẻ học liệu thử nghiệm",
+      "status": "UNRECONCILED",
+      "owner": "mai",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "amount": "45000000",
+        "date": "2026-09-20",
+        "code": "PC-19",
+        "evidence": "PC-19.pdf",
+        "projectId": "exec-dam"
+      }
+    },
+    {
+      "id": "exec-exp-20",
+      "kind": "expense",
+      "title": "Tổng hợp bảng chấm và biên tập báo cáo",
+      "status": "UNRECONCILED",
+      "owner": "mai",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "amount": "12000000",
+        "date": "2026-09-20",
+        "code": "PC-20",
+        "evidence": "PC-20.pdf",
+        "projectId": "exec-dam"
+      }
+    },
+    {
+      "id": "exec-paper",
+      "kind": "output",
+      "title": "Độ nhất quán giữa hai người chấm bảng kiểm bàn giao ca",
+      "status": "APPROVED",
+      "owner": "mai",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "type": "ARTICLE",
+        "year": "2026",
+        "authors": "mai,linh",
+        "publication": "Tập san giáo dục y khoa mô phỏng, tập 3, số 2",
+        "evidence": "paper.pdf",
+        "access": "FULL",
+        "doi": "10.0000/demo.paper",
+        "aiAllowed": "false",
+        "aiGrantVersion": "1",
+        "sourceVersion": "1",
+        "method": "Hai giảng viên chấm độc lập 30 lượt bàn giao giả lập bằng cùng bảng kiểm.",
+        "methodPage": "3, đoạn 2",
+        "result": "Hai người chấm đồng thuận ở 26 trong 30 lượt.",
+        "resultPage": "5, bảng 1",
+        "projectId": "exec-river"
+      }
+    },
+    {
+      "id": "exec-patent",
+      "kind": "output",
+      "title": "Bảng nhắc bàn giao có ô đánh dấu luân phiên",
+      "status": "PENDING_APPROVAL",
+      "owner": "mai",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "type": "PATENT",
+        "year": "2026",
+        "authors": "mai,linh",
+        "publication": "Hồ sơ giải pháp kỹ thuật (mô phỏng)",
+        "evidence": "patent.pdf",
+        "access": "FULL",
+        "projectId": "exec-river"
+      }
+    },
+    {
+      "id": "exec-drain-paper",
+      "kind": "output",
+      "title": "Thời gian tìm đường qua ba điểm chỉ dẫn mô phỏng",
+      "status": "APPROVED",
+      "owner": "mai",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "type": "ARTICLE",
+        "year": "2026",
+        "authors": "mai,linh",
+        "publication": "Tập san giáo dục y khoa mô phỏng, tập 3, số 2",
+        "evidence": "drain-paper.pdf",
+        "access": "METADATA",
+        "doi": "10.0000/demo.drain-paper",
+        "aiAllowed": "false",
+        "aiGrantVersion": "1",
+        "sourceVersion": "1",
+        "projectId": "exec-drain"
+      }
+    },
+    {
+      "id": "exec-drain-patent",
+      "kind": "output",
+      "title": "Cụm biển chỉ dẫn có thể thay thẻ theo trạm",
+      "status": "APPROVED",
+      "owner": "mai",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "type": "PATENT",
+        "year": "2026",
+        "authors": "mai,linh",
+        "publication": "Hồ sơ giải pháp kỹ thuật (mô phỏng)",
+        "evidence": "drain-patent.pdf",
+        "access": "FULL",
+        "projectId": "exec-drain"
+      }
+    },
+    {
+      "id": "exec-dam-paper",
+      "kind": "output",
+      "title": "Đánh giá mức đồng thuận khi chấm thẻ học liệu",
+      "status": "APPROVED",
+      "owner": "mai",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "type": "ARTICLE",
+        "year": "2026",
+        "authors": "mai,linh",
+        "publication": "Tập san giáo dục y khoa mô phỏng, tập 3, số 2",
+        "evidence": "dam-paper.pdf",
+        "access": "FULL",
+        "doi": "10.0000/demo.dam-paper",
+        "aiAllowed": "false",
+        "aiGrantVersion": "2",
+        "expires": "2026-11-01",
+        "sourceVersion": "2",
+        "projectId": "exec-dam"
+      }
+    },
+    {
+      "id": "exec-dam-patent",
+      "kind": "output",
+      "title": "Bộ khay đối chiếu mã màu dùng trong giảng dạy",
+      "status": "APPROVED",
+      "owner": "mai",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "type": "PATENT",
+        "year": "2026",
+        "authors": "mai,linh",
+        "publication": "Hồ sơ giải pháp kỹ thuật (mô phỏng)",
+        "evidence": "dam-patent.pdf",
+        "access": "FULL",
+        "projectId": "exec-dam"
+      }
+    },
+    {
+      "id": "exec-drain-committee",
+      "kind": "committee",
+      "title": "Hội đồng nghiệm thu giáo dục y khoa",
+      "status": "ACTIVE",
+      "owner": "an",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "members": "minh",
+        "type": "ACCEPTANCE",
+        "decision": "QĐ-HĐ-26",
+        "projectId": "exec-drain"
+      }
+    },
+    {
+      "id": "exec-dam-committee",
+      "kind": "committee",
+      "title": "Hội đồng nghiệm thu giáo dục y khoa",
+      "status": "ACTIVE",
+      "owner": "an",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "members": "minh",
+        "type": "ACCEPTANCE",
+        "decision": "QĐ-HĐ-26",
+        "projectId": "exec-dam"
+      }
+    },
+    {
+      "id": "exec-bridge-committee",
+      "kind": "committee",
+      "title": "Hội đồng nghiệm thu giáo dục y khoa",
+      "status": "ACTIVE",
+      "owner": "an",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "members": "minh",
+        "type": "ACCEPTANCE",
+        "decision": "QĐ-HĐ-26",
+        "projectId": "exec-bridge"
+      }
+    },
+    {
+      "id": "exec-bridge-report",
+      "kind": "output",
+      "title": "Báo cáo đánh giá ba lượt thi trạm giao tiếp",
+      "status": "APPROVED",
+      "owner": "mai",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "type": "REPORT",
+        "year": "2026",
+        "authors": "mai",
+        "publication": "Trung tâm thực hành kỹ năng mô phỏng",
+        "evidence": "Bao-cao-tram-giao-tiep.pdf",
+        "access": "FULL",
+        "projectId": "exec-bridge"
+      }
+    },
+    {
+      "id": "exec-bridge-round",
+      "kind": "round",
+      "title": "Đợt nghiệm thu trạm thực hành giao tiếp",
+      "status": "COLLECTING_SCORES",
+      "owner": "an",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "type": "ACCEPTANCE",
+        "members": "minh",
+        "criteria": "NT-2026-v1",
+        "date": "2026-11-24",
+        "minimum": "1",
+        "threshold": "70",
+        "projectId": "exec-bridge"
+      }
+    },
+    {
+      "id": "exec-bridge-round-minh",
+      "kind": "ballot",
+      "title": "Phiếu nhận xét trạm giao tiếp",
+      "status": "DRAFT",
+      "owner": "minh",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "roundId": "exec-bridge-round",
+        "type": "ACCEPTANCE",
+        "science": "82",
+        "impact": "",
+        "comment": "Đã đối chiếu số lượt đánh giá và cách tổng hợp điểm.",
+        "projectId": "exec-bridge"
+      }
+    },
+    {
+      "id": "exec-old-round",
+      "kind": "round",
+      "title": "Đợt nghiệm thu tháng 10",
+      "status": "CONCLUDED",
+      "owner": "an",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "type": "ACCEPTANCE",
+        "members": "minh",
+        "date": "2026-10-21",
+        "minimum": "1",
+        "threshold": "70",
+        "aggregate": "84",
+        "conclusion": "PASSED",
+        "projectId": "exec-dam"
+      }
+    },
+    {
+      "id": "exec-old-ballot",
+      "kind": "ballot",
+      "title": "Phiếu đánh giá bộ thẻ học liệu",
+      "status": "SUBMITTED",
+      "owner": "minh",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "roundId": "exec-old-round",
+        "type": "ACCEPTANCE",
+        "science": "80",
+        "impact": "90",
+        "total": "84",
+        "projectId": "exec-dam"
+      }
+    },
+    {
+      "id": "exec-admission-ballot",
+      "kind": "ballot",
+      "title": "Phiếu xét duyệt đầu vào",
+      "status": "SUBMITTED",
+      "owner": "minh",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "roundId": "exec-drain-admission",
+        "type": "PROPOSAL",
+        "total": "99",
+        "projectId": "exec-drain"
+      }
+    },
+    {
+      "id": "exec-profile-mai",
+      "kind": "profile",
+      "title": "Lê Thanh Mai",
+      "status": "ACTIVE",
+      "owner": "mai",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "position": "Giảng viên",
+        "email": "mai@example.invalid",
+        "gender": "",
+        "discipline": "Giáo dục điều dưỡng"
+      }
+    },
+    {
+      "id": "exec-profile-linh",
+      "kind": "profile",
+      "title": "Nguyễn Khánh Linh",
+      "status": "ACTIVE",
+      "owner": "linh",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "position": "Sinh viên",
+        "email": "linh@example.invalid",
+        "gender": "",
+        "discipline": ""
+      }
+    },
+    {
+      "id": "exec-profile-an",
+      "kind": "profile",
+      "title": "Nguyễn Hoài An",
+      "status": "ACTIVE",
+      "owner": "an",
+      "unit": "Phòng Khoa học và Công nghệ",
+      "fields": {
+        "position": "Cán bộ",
+        "email": "an@example.invalid",
+        "gender": "",
+        "discipline": ""
+      }
+    },
+    {
+      "id": "exec-profile-minh",
+      "kind": "profile",
+      "title": "Phạm Quang Minh",
+      "status": "ACTIVE",
+      "owner": "minh",
+      "unit": "Khoa Y tế công cộng",
+      "fields": {
+        "position": "Cán bộ",
+        "email": "minh@example.invalid",
+        "gender": "",
+        "discipline": ""
+      }
+    },
+    {
+      "id": "exec-profile-ha",
+      "kind": "profile",
+      "title": "Trần Thu Hà",
+      "status": "ACTIVE",
+      "owner": "ha",
+      "unit": "Phòng Quản trị",
+      "fields": {
+        "position": "Cán bộ",
+        "email": "ha@example.invalid",
+        "gender": "",
+        "discipline": ""
+      }
+    },
+    {
+      "id": "exec-profile-thao",
+      "kind": "profile",
+      "title": "Vũ Phương Thảo",
+      "status": "ACTIVE",
+      "owner": "thao",
+      "unit": "Khoa Y tế công cộng",
+      "fields": {
+        "position": "Cán bộ",
+        "email": "thao@example.invalid",
+        "gender": "",
+        "discipline": ""
+      }
+    },
+    {
+      "id": "exec-degree",
+      "kind": "qualification",
+      "title": "Tiến sĩ",
+      "status": "ACTIVE",
+      "owner": "mai",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "type": "DEGREE",
+        "year": "2015"
+      }
+    },
+    {
+      "id": "exec-job",
+      "kind": "employment",
+      "title": "Bộ môn Giáo dục điều dưỡng",
+      "status": "ACTIVE",
+      "owner": "mai",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "position": "Giảng viên",
+        "start": "2018-09-01",
+        "end": ""
+      }
+    },
+    {
+      "id": "exec-template-1",
+      "kind": "cvTemplate",
+      "title": "Lý lịch khoa học",
+      "status": "ACTIVE",
+      "owner": "ha",
+      "unit": "",
+      "fields": {
+        "code": "CV-01",
+        "tenant": "hmu",
+        "version": "1"
+      }
+    },
+    {
+      "id": "exec-template-2",
+      "kind": "cvTemplate",
+      "title": "Lý lịch nghiên cứu và giảng dạy",
+      "status": "INACTIVE",
+      "owner": "ha",
+      "unit": "",
+      "fields": {
+        "code": "CV-01",
+        "tenant": "hmu",
+        "version": "2"
+      }
+    },
+    {
+      "id": "exec-policy",
+      "kind": "executionPolicy",
+      "title": "Cấu hình kinh phí",
+      "status": "ACTIVE",
+      "owner": "ha",
+      "unit": "",
+      "fields": {
+        "rate": "5",
+        "cap": "10000000",
+        "reconcile": "false"
+      }
+    },
+    {
+      "id": "exec-drain-admission",
+      "kind": "round",
+      "title": "Đợt xét hồ sơ năm 2025",
+      "status": "CONCLUDED",
+      "owner": "an",
+      "unit": "Khoa Điều dưỡng",
+      "fields": {
+        "type": "PROPOSAL",
+        "members": "minh",
+        "date": "2025-11-20",
+        "minimum": "1",
+        "threshold": "70",
+        "aggregate": "99",
+        "conclusion": "PASSED",
+        "projectId": "exec-drain"
+      }
+    },
+    {
+      "id": "exec-software",
+      "kind": "output",
+      "owner": "mai",
+      "unit": "Khoa Điều dưỡng",
+      "title": "Công cụ xếp lịch trạm kỹ năng",
+      "status": "DRAFT",
+      "fields": {
+        "type": "SOFTWARE",
+        "year": "2026",
+        "authors": "mai",
+        "publication": "Tủ sách giảng dạy nội bộ (mô phỏng)",
+        "evidence": "software-v1.pdf",
+        "access": "FULL",
+        "reason": ""
+      }
+    },
+    {
+      "id": "exec-book",
+      "kind": "output",
+      "owner": "mai",
+      "unit": "Khoa Điều dưỡng",
+      "title": "Tổ chức dạy học tại phòng kỹ năng",
+      "status": "APPROVED",
+      "fields": {
+        "type": "BOOK",
+        "year": "2026",
+        "authors": "mai",
+        "publication": "Tủ sách giảng dạy nội bộ (mô phỏng)",
+        "evidence": "book-v1.pdf",
+        "access": "FULL",
+        "reason": ""
+      }
+    },
+    {
+      "id": "exec-returned-output",
+      "kind": "output",
+      "owner": "mai",
+      "unit": "Khoa Điều dưỡng",
+      "title": "Báo cáo đánh giá học liệu",
+      "status": "REJECTED",
+      "fields": {
+        "type": "REPORT",
+        "year": "2026",
+        "authors": "mai",
+        "publication": "Tủ sách giảng dạy nội bộ (mô phỏng)",
+        "evidence": "returned-output-v1.pdf",
+        "access": "FULL",
+        "reason": "Bổ sung phụ lục đối chiếu và trang xác nhận của nhóm."
+      }
+    }
+  ],
+  "extension": [
+    {
+      "id": "ext-call-autumn",
+      "kind": "ext-student-call",
+      "title": "NCKH sinh viên 2026–2027",
+      "status": "OPEN",
+      "unit": "Khoa Điều dưỡng",
+      "owner": "an",
+      "fields": {
+        "start": "2026-10-01",
+        "end": "2026-12-15",
+        "finalDue": "2027-05-15",
+        "min": "1",
+        "max": "5",
+        "declaration": "",
+        "result": "FINAL_REPORT,PRODUCT"
+      }
+    },
+    {
+      "id": "ext-call-spring",
+      "kind": "ext-student-call",
+      "title": "NCKH sinh viên học kỳ II 2025–2026",
+      "status": "CLOSED",
+      "unit": "Khoa Điều dưỡng",
+      "owner": "an",
+      "fields": {
+        "start": "2026-01-04",
+        "end": "2026-03-20",
+        "finalDue": "2026-12-01",
+        "min": "1",
+        "max": "5",
+        "declaration": "",
+        "result": "FINAL_REPORT,PRODUCT"
+      }
+    },
+    {
+      "id": "ext-call-environment",
+      "kind": "ext-student-call",
+      "title": "NCKH sinh viên y tế công cộng 2026–2027",
+      "status": "OPEN",
+      "unit": "Khoa Y tế công cộng",
+      "owner": "an",
+      "fields": {
+        "start": "2026-10-01",
+        "end": "2026-12-15",
+        "finalDue": "2027-05-15",
+        "min": "1",
+        "max": "5",
+        "declaration": "",
+        "result": "FINAL_REPORT,PRODUCT"
+      }
+    },
+    {
+      "id": "ext-upper-pending",
+      "kind": "upper-project",
+      "title": "Đánh giá khả năng tiếp cận học liệu của sinh viên điều dưỡng",
+      "status": "PENDING_APPROVAL",
+      "unit": "Khoa Điều dưỡng",
+      "owner": "mai",
+      "fields": {
+        "scopeUnit": "Khoa Điều dưỡng",
+        "cycle": "1",
+        "start": "2026-03-01",
+        "end": "2026-11-30",
+        "contributors": "[{\"id\":\"mai\",\"role\":\"Chủ nhiệm\",\"share\":60},{\"id\":\"minh\",\"role\":\"Thành viên\",\"share\":40}]",
+        "evidence": "{\"DECISION\":\"QD-Y-08.pdf\"}",
+        "category": "MINISTRY",
+        "code": "B2026-Y-08",
+        "agency": "Bộ Y tế",
+        "budget": "850000000",
+        "memberIds": "mai,minh",
+        "statusSemantic": "SUBMITTED"
+      }
+    },
+    {
+      "id": "ext-upper-draft",
+      "kind": "upper-project",
+      "title": "Khảo sát khả năng đọc hiểu thông tin sức khỏe tại lớp học cộng đồng",
+      "status": "DRAFT",
+      "unit": "Khoa Điều dưỡng",
+      "owner": "mai",
+      "fields": {
+        "scopeUnit": "Khoa Điều dưỡng",
+        "cycle": "1",
+        "start": "2026-03-01",
+        "end": "2026-11-30",
+        "contributors": "[{\"id\":\"mai\",\"role\":\"Chủ nhiệm\",\"share\":100}]",
+        "evidence": "{}",
+        "category": "PROVINCE",
+        "code": "HN-Y-26-14",
+        "agency": "UBND thành phố Hà Nội",
+        "budget": "320000000",
+        "memberIds": "mai",
+        "statusSemantic": "DRAFT"
+      }
+    },
+    {
+      "id": "ext-applied-draft",
+      "kind": "applied-project",
+      "title": "Chuyển giao bộ thẻ giao tiếp cho trung tâm thực hành",
+      "status": "DRAFT",
+      "unit": "Khoa Điều dưỡng",
+      "owner": "mai",
+      "fields": {
+        "scopeUnit": "Khoa Điều dưỡng",
+        "cycle": "1",
+        "start": "2026-03-01",
+        "end": "2026-11-30",
+        "contributors": "[{\"id\":\"mai\",\"role\":\"Chủ nhiệm\",\"share\":60},{\"id\":\"minh\",\"role\":\"Thành viên\",\"share\":40}]",
+        "evidence": "{\"CONTRACT\":\"HD-CG-Y-17.pdf\"}",
+        "category": "TRANSFER",
+        "code": "CG-Y-26-17",
+        "partner": "",
+        "budget": "180000000",
+        "memberIds": "mai,minh",
+        "statusSemantic": "DRAFT"
+      }
+    },
+    {
+      "id": "ext-applied-complete",
+      "kind": "applied-project",
+      "title": "Bàn giao công cụ lập lịch trạm thực hành",
+      "status": "RESULT_PENDING",
+      "unit": "Khoa Điều dưỡng",
+      "owner": "mai",
+      "fields": {
+        "scopeUnit": "Khoa Điều dưỡng",
+        "cycle": "1",
+        "start": "2026-03-01",
+        "end": "2026-11-06",
+        "contributors": "[{\"id\":\"mai\",\"role\":\"Chủ nhiệm\",\"share\":60},{\"id\":\"minh\",\"role\":\"Thành viên\",\"share\":40}]",
+        "evidence": "{\"CONTRACT\":\"HD-Y-09.pdf\",\"ACCEPTANCE_MINUTES\":\"BB-ban-giao-lich.pdf\"}",
+        "category": "TECHNICAL",
+        "code": "DV-Y-26-09",
+        "partner": "Trung tâm Thực hành An Bình (mô phỏng)",
+        "budget": "180000000",
+        "sourceOccurredAt": "",
+        "resultSummary": "Bàn giao lịch phân trạm và hướng dẫn đổi ca cho ba lớp.",
+        "memberIds": "mai,minh",
+        "statusSemantic": "APPROVED"
+      }
+    },
+    {
+      "id": "ext-student-invite",
+      "kind": "student-project",
+      "title": "Thiết kế bộ thẻ hướng dẫn bàn giao ca cho sinh viên",
+      "status": "MENTOR_PENDING",
+      "unit": "Khoa Điều dưỡng",
+      "owner": "linh",
+      "fields": {
+        "scopeUnit": "Khoa Điều dưỡng",
+        "cycle": "1",
+        "start": "2026-11-15",
+        "end": "2027-05-10",
+        "contributors": "[{\"id\":\"mai\",\"role\":\"GV hướng dẫn\",\"share\":100}]",
+        "evidence": "{}",
+        "category": "STUDENT",
+        "callId": "ext-call-autumn",
+        "group": "linh,phuc,yen",
+        "product": "Bộ 12 thẻ và phiếu phản hồi của nhóm học thử.",
+        "objective": "Thử khả năng tra cứu của bộ thẻ trong sáu tình huống bàn giao.",
+        "code": "SV-Y-26-12",
+        "memberIds": "linh,phuc,yen,mai",
+        "statusSemantic": "DRAFT"
+      }
+    },
+    {
+      "id": "ext-student-field",
+      "kind": "student-project",
+      "title": "Khảo sát trải nghiệm tìm phòng thực hành của tân sinh viên",
+      "status": "IN_PROGRESS",
+      "unit": "Khoa Điều dưỡng",
+      "owner": "linh",
+      "fields": {
+        "scopeUnit": "Khoa Điều dưỡng",
+        "cycle": "1",
+        "start": "2026-03-01",
+        "end": "2026-11-30",
+        "contributors": "[{\"id\":\"mai\",\"role\":\"GV hướng dẫn\",\"share\":100}]",
+        "evidence": "{}",
+        "category": "STUDENT",
+        "callId": "ext-call-spring",
+        "group": "linh,yen",
+        "product": "Sơ đồ chỉ dẫn và bảng thời gian tìm phòng.",
+        "objective": "Đo số lần hỏi đường khi tìm ba phòng thực hành mô phỏng.",
+        "code": "SV-Y-26-03",
+        "mentorConfirmation": "ext-student-field",
+        "confirmedMentor": "mai",
+        "memberIds": "linh,yen,mai",
+        "statusSemantic": "IN_PROGRESS"
+      }
+    },
+    {
+      "id": "ext-activity-conference",
+      "kind": "activity",
+      "title": "Báo cáo về phản hồi đồng đẳng trong phòng kỹ năng",
+      "status": "PENDING_APPROVAL",
+      "unit": "Khoa Điều dưỡng",
+      "owner": "mai",
+      "fields": {
+        "scopeUnit": "Khoa Điều dưỡng",
+        "cycle": "1",
+        "start": "2026-09-23",
+        "end": "2026-11-30",
+        "contributors": "[{\"id\":\"mai\",\"role\":\"Chủ nhiệm\",\"share\":100}]",
+        "evidence": "{\"PARTICIPATION\":\"GXN-hoi-nghi-y-khoa.pdf\"}",
+        "category": "CONFERENCE",
+        "sourceOccurredAt": "",
+        "description": "Trình bày kết quả chấm chéo của hai lớp thực hành.",
+        "support": "1800000",
+        "memberIds": "mai",
+        "statusSemantic": "SUBMITTED"
+      }
+    },
+    {
+      "id": "ext-activity-community",
+      "kind": "activity",
+      "title": "Hướng dẫn đọc nhãn thông tin sức khỏe tại ngày hội sinh viên",
+      "status": "PENDING_APPROVAL",
+      "unit": "Khoa Điều dưỡng",
+      "owner": "mai",
+      "fields": {
+        "scopeUnit": "Khoa Điều dưỡng",
+        "cycle": "1",
+        "start": "2026-11-14",
+        "end": "2026-11-30",
+        "contributors": "[{\"id\":\"mai\",\"role\":\"Chủ nhiệm\",\"share\":100}]",
+        "evidence": "{\"PARTICIPATION\":\"GXN-ngay-hoi.pdf\"}",
+        "category": "COMMUNITY",
+        "description": "Hướng dẫn 40 sinh viên tra cứu mục thành phần trên các nhãn minh họa.",
+        "memberIds": "mai",
+        "statusSemantic": "SUBMITTED"
+      }
+    },
+    {
+      "id": "ext-activity-patent",
+      "kind": "activity",
+      "title": "Khung giữ bộ thẻ tình huống tại trạm mô phỏng",
+      "status": "DRAFT",
+      "unit": "Khoa Y tế công cộng",
+      "owner": "minh",
+      "fields": {
+        "scopeUnit": "Khoa Y tế công cộng",
+        "cycle": "1",
+        "start": "2026-11-05",
+        "end": "2026-11-30",
+        "contributors": "[{\"id\":\"minh\",\"role\":\"Chủ nhiệm\",\"share\":100}]",
+        "evidence": "{}",
+        "category": "IP",
+        "description": "Khai báo giải pháp thay thẻ tình huống theo từng lượt thi.",
+        "memberIds": "minh",
+        "statusSemantic": "DRAFT"
+      }
+    }
+  ],
+  "audit": [
+    {
+      "id": "history-1",
+      "actor": "Nguyễn Hoài An",
+      "actorId": "an",
+      "unit": "Khoa Điều dưỡng",
+      "at": "2026-01-06T01:00:00Z",
+      "action": "Giao đề tài",
+      "recordId": "exec-river",
+      "title": "Đánh giá bảng kiểm bàn giao ca trong đào tạo điều dưỡng",
+      "from": "APPROVED",
+      "to": "IN_PROGRESS",
+      "reason": "Quyết định giao thực hiện HMU-26-014",
+      "workflowVersion": "v1"
+    },
+    {
+      "id": "history-2",
+      "actor": "Nguyễn Hoài An",
+      "actorId": "an",
+      "unit": "Khoa Điều dưỡng",
+      "at": "2026-10-21T03:30:00Z",
+      "action": "Chốt kết luận nghiệm thu",
+      "recordId": "exec-dam",
+      "title": "Độ nhất quán khi đánh giá thẻ học liệu theo mã màu",
+      "from": "UNDER_ACCEPTANCE",
+      "to": "PASSED",
+      "reason": "Phiếu đã gửi đạt 84/100 điểm.",
+      "workflowVersion": "v1"
+    },
+    {
+      "id": "history-3",
+      "actor": "Nguyễn Hoài An",
+      "actorId": "an",
+      "unit": "Khoa Điều dưỡng",
+      "at": "2026-11-01T01:00:00Z",
+      "action": "Mở kỳ nhận đề xuất",
+      "recordId": "call-01",
+      "title": "Đề tài cấp cơ sở về đào tạo và sức khỏe cộng đồng năm 2027",
+      "from": "DRAFT",
+      "to": "OPEN",
+      "reason": "Tiếp nhận đến 30/11/2026."
+    },
+    {
+      "id": "history-4",
+      "actor": "Lê Thanh Mai",
+      "actorId": "mai",
+      "unit": "Khoa Điều dưỡng",
+      "at": "2026-11-16T03:15:00Z",
+      "action": "Nộp đề xuất",
+      "recordId": "intake-dt-returned",
+      "title": "Khảo sát khả năng sử dụng tài liệu hướng dẫn phục hồi chức năng",
+      "from": "DRAFT",
+      "to": "SUBMITTED",
+      "reason": "",
+      "workflowVersion": "v1"
+    },
+    {
+      "id": "history-5",
+      "actor": "Nguyễn Hoài An",
+      "actorId": "an",
+      "unit": "Khoa Điều dưỡng",
+      "at": "2026-11-17T02:00:00Z",
+      "action": "Trả bổ sung",
+      "recordId": "intake-dt-returned",
+      "title": "Khảo sát khả năng sử dụng tài liệu hướng dẫn phục hồi chức năng",
+      "from": "SUBMITTED",
+      "to": "DRAFT",
+      "reason": "Bổ sung cách lựa chọn địa điểm khảo sát và số mẫu đối chứng.",
+      "workflowVersion": "v1"
+    }
+  ],
+  "cases": [
+    {
+      "id": "HMU-01",
+      "feature": "B06",
+      "route": "#/B06",
+      "actor": "mai",
+      "goal": "Tôi muốn biết việc nào cần xử lý đầu tiên.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Mở Tổng quan, chọn việc của “Đánh giá độ tin cậy của bảng tự theo dõi phục hồi chức năng” rồi quay lại bằng nút Back. Trên điện thoại mở bộ lọc hạn.",
+      "expected": "Liên kết mở đúng bản nháp F01 của Mai. Phiên của Linh có danh sách việc theo vai sinh viên.",
+      "recordId": "dt-01"
+    },
+    {
+      "id": "HMU-02",
+      "feature": "F02",
+      "route": "#/F02/call-01",
+      "actor": "mai",
+      "goal": "Tôi cần biết kỳ nào còn nhận đề xuất.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Mở “Đề tài cấp cơ sở về đào tạo và sức khỏe cộng đồng năm 2027” (KG-2027-01), đọc ngày và danh mục rồi chọn lập đề xuất.",
+      "expected": "Kỳ đang mở từ 01/11 đến 30/11/2026. Biểu mẫu F01 mới gắn đúng kỳ. Quay lại kỳ KG-2026-02 thấy trạng thái đã đóng.",
+      "recordId": "call-01"
+    },
+    {
+      "id": "HMU-03",
+      "feature": "F02",
+      "route": "#/F02/intake-call-draft",
+      "actor": "an",
+      "goal": "Tôi cần phát hiện tiêu chí cũ trước khi mở kỳ.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Thử mở kỳ KG-2027-02 đang dùng tiêu chí năm 2024. Vào chỉnh sửa, chọn bộ tiêu chí xét đề xuất cấp cơ sở 2026 rồi mở lại.",
+      "expected": "Lần đầu hệ thống báo tiêu chí hết hiệu lực. Sau khi sửa, kỳ mở với ngày bắt đầu 01/12/2026. Tại ngày demo, chủ nhiệm vẫn chưa đến thời gian nộp.",
+      "recordId": "intake-call-draft"
+    },
+    {
+      "id": "HMU-04",
+      "feature": "F01",
+      "route": "#/F01/dt-01",
+      "actor": "mai",
+      "goal": "Tôi muốn nộp thuyết minh và giữ được mã theo dõi.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Mở “Đánh giá độ tin cậy của bảng tự theo dõi phục hồi chức năng”. Kiểm tra mục tiêu “Đo mức nhất quán giữa hai lần điền bảng tự theo dõi.”, 12 tháng, 85.000.000 đồng và nhiệm vụ của Linh. Lưu rồi nộp.",
+      "expected": "Hồ sơ chuyển từ nháp sang đã nộp, được cấp mã HMU-26-DT-01. Mở lại thấy nội dung và loại tài liệu đã lưu.",
+      "recordId": "dt-01"
+    },
+    {
+      "id": "HMU-05",
+      "feature": "F01",
+      "route": "#/F01/intake-dt-returned",
+      "actor": "mai",
+      "goal": "Tôi muốn biết mình phải bổ sung gì và nộp lại đúng hồ sơ.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Đọc lý do trả bổ sung tại HMU-26-NC07. Thêm vào phương pháp “Chọn hai nhóm học thử và đối chiếu tám đoạn văn.”. Lưu, nộp lại.",
+      "expected": "Mã HMU-26-NC07 giữ nguyên. Nhật ký có lần nộp đầu, lần trả của An và lần nộp mới.",
+      "recordId": "intake-dt-returned"
+    },
+    {
+      "id": "HMU-06",
+      "feature": "P02",
+      "route": "#/P02/intake-dt-returned",
+      "actor": "an",
+      "goal": "Tôi cần giải thích vì sao hồ sơ từng về nháp.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Mở nhật ký riêng hồ sơ HMU-26-NC07. Chọn sự kiện Trả bổ sung và đọc người xử lý, thời điểm, lý do, trạng thái.",
+      "expected": "An trả hồ sơ lúc 09:00 ngày 17/11/2026 giờ Việt Nam. Trạng thái đi từ SUBMITTED về DRAFT theo v1. Lần nộp 16/11 vẫn tra được.",
+      "recordId": "intake-dt-returned"
+    },
+    {
+      "id": "HMU-07",
+      "feature": "F03",
+      "route": "#/F03/intake-dt-flood",
+      "actor": "minh",
+      "goal": "Tôi muốn gửi phiếu khoa học độc lập.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Hai phiếu của Sơn và Huệ đang có tổng lần lượt 8 và 7. Minh nhập 9, 9, 9 cho ba tiêu chí, nhận xét “Đủ căn cứ để thử nghiệm trong phạm vi đề xuất”, gửi phiếu.",
+      "expected": "Phiếu của Minh là 9/10 và khóa sau khi gửi. An thấy đủ ba phiếu, trung bình 8/10.",
+      "recordId": "intake-dt-flood"
+    },
+    {
+      "id": "HMU-08",
+      "feature": "F03",
+      "route": "#/F03/intake-dt-flood",
+      "actor": "an",
+      "goal": "Tôi cần tách quyết định khoa học khỏi thẩm định đạo đức.",
+      "precondition": "Đã hoàn thành HMU-07 trong cùng phiên dữ liệu.",
+      "steps": "Chốt kết luận khoa học. Ghi kết quả đạo đức đạt và căn cứ “BB-HMU-DD-08, chấp thuận phạm vi mô phỏng”.",
+      "expected": "Sau chốt khoa học dự án vẫn đang xét duyệt vì còn chờ đạo đức. Sau khi ghi căn cứ chấp thuận, đề tài chuyển APPROVED.",
+      "recordId": "intake-dt-flood"
+    },
+    {
+      "id": "HMU-09",
+      "feature": "F03",
+      "route": "#/F03/intake-dt-coi",
+      "actor": "minh",
+      "goal": "Tôi cần biết hồ sơ nào mình phải tránh chấm.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Mở liên kết trực tiếp HMU-26-NC08. Đổi sang An, mở hồ sơ và đối chiếu thành viên với danh sách người chấm.",
+      "expected": "Minh là thành viên đề tài nên không có phiếu hợp lệ cho mình. An có thể kiểm hai phiếu của Sơn và Huệ.",
+      "recordId": "intake-dt-coi"
+    },
+    {
+      "id": "HMU-10",
+      "feature": "B02",
+      "route": "#/B02/report-open-baseline",
+      "actor": "an",
+      "goal": "Tôi muốn bảo vệ số liệu báo cáo khi hồ sơ nguồn thay đổi.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Mở bản chụp KG-2027-01 lúc 10:00 ngày 20/11. Lọc từng trạng thái và xuất đối chứng CSV. Đổi sang Nam, tạo báo cáo mới cho cùng kỳ.",
+      "expected": "Bản chụp của An có ba mã NC02, NC05, NC07, gồm hai đã nộp và một nháp đã có mã. Báo cáo của Nam chỉ gồm mã thuộc Khoa Điều dưỡng. Bản chụp cũ giữ số liệu gốc.",
+      "recordId": "report-open-baseline"
+    },
+    {
+      "id": "HMU-11",
+      "feature": "F04",
+      "route": "#/F04/intake-dt-approved",
+      "actor": "an",
+      "goal": "Tôi muốn giao nhiệm vụ đã duyệt và lập kỳ theo dõi.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Giao “Thiết kế bộ học liệu về an toàn phòng thực hành” theo QĐ-HMU-18, bắt đầu 21/11/2026, kết thúc 20/11/2027, một báo cáo kỹ thuật, chọn tệp mẫu. Lập kỳ báo cáo hạn 15/12/2026.",
+      "expected": "Mã HMU-26-NC06 và v1 giữ nguyên. Đề tài đang thực hiện, có quyết định giao và một kỳ chờ chủ nhiệm nộp.",
+      "recordId": "intake-dt-approved"
+    },
+    {
+      "id": "HMU-12",
+      "feature": "F04",
+      "route": "#/F04/exec-river",
+      "actor": "mai",
+      "goal": "Tôi cần nộp báo cáo quá hạn và nhận phản hồi.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Chọn kỳ 2 hạn 18/11. Điền “Đã đối chiếu 30 cặp phiếu, có bốn lượt cần chấm lại.”, chọn tệp mẫu, nộp. An mở cùng kỳ và duyệt đạt.",
+      "expected": "Báo cáo lưu đúng kỳ và được duyệt. Kỳ 3 hạn 28/11 vẫn chờ nộp. Kiểm hồ sơ nguồn bằng mã HMU-26-014.",
+      "recordId": "exec-river"
+    },
+    {
+      "id": "HMU-13",
+      "feature": "B04",
+      "route": "#/B04/home-notice-call-01",
+      "actor": "mai",
+      "goal": "Tôi muốn đọc nhắc việc và đi thẳng tới kỳ nhận hồ sơ.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Mở thông báo kỳ đã mở, quay về hộp thư, tải lại và mở lại thông báo. Dùng liên kết hồ sơ nguồn.",
+      "expected": "Chỉ một lần chuyển từ chưa đọc sang đã đọc. Trong phiên sạch, bộ đếm từ 2 còn 1. Hồ sơ nguồn là KG-2027-01 của trường đang chọn.",
+      "recordId": "home-notice-call-01"
+    },
+    {
+      "id": "HMU-14",
+      "feature": "B04",
+      "route": "#/B04/delivery",
+      "actor": "an",
+      "goal": "Tôi cần gửi lại một email nhắc hạn bị lỗi.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Tìm “Nhắc hạn báo cáo định kỳ” trong nhật ký gửi. Kiểm kênh EMAIL, người nhận mai, số lần 3 rồi bấm Gửi lại.",
+      "expected": "Cùng dòng chuyển từ lỗi sang đã gửi, số lần là 4 trong mô phỏng.",
+      "recordId": "delivery-initial"
+    },
+    {
+      "id": "HMU-15",
+      "feature": "F05",
+      "route": "#/F05/exec-river",
+      "actor": "mai",
+      "goal": "Tôi muốn biết một khoản chi mới có làm vượt kinh phí thực hiện.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Xem cấp 100.000.000, phí 5.000.000 và PC-12 là 93.000.000 đồng. Ghi thêm 3.000.000 ngày 21/11, nội dung “Biên tập phiếu chấm”, kèm chứng từ mẫu.",
+      "expected": "Kinh phí thực hiện 95.000.000 đồng. Đã chi tăng lên 96.000.000, vượt 1.000.000 đồng. Giao dịch vẫn được lưu và có cảnh báo.",
+      "recordId": "exec-river"
+    },
+    {
+      "id": "HMU-16",
+      "feature": "F05",
+      "route": "#/F05/exec-dam",
+      "actor": "an",
+      "goal": "Tôi cần quyết toán sau khi rà soát chứng từ thủ công.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Mở PC-19 (45.000.000) và PC-20 (12.000.000). Thử chốt khi chưa xác nhận rà thủ công rồi xác nhận theo biên bản HMU-QT-05.",
+      "expected": "Chỉ sau khi đủ điều kiện, đề tài HMU-26-005 chuyển từ PASSED sang COMPLETED. Sổ chi được khóa, quyết định có trong nhật ký.",
+      "recordId": "exec-dam"
+    },
+    {
+      "id": "HMU-17",
+      "feature": "F07",
+      "route": "#/F07/exec-patent",
+      "actor": "an",
+      "goal": "Tôi muốn sản phẩm chỉ được tính sau khi duyệt minh chứng.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Mở “Bảng nhắc bàn giao có ô đánh dấu luân phiên”, kiểm tra tác giả Mai và Linh, năm 2026, minh chứng patent.pdf. Phê duyệt rồi mở F06 của HMU-26-014.",
+      "expected": "Sáng chế từ chờ duyệt thành đã duyệt. Cam kết sáng chế từ 0/1 thành 1/1. Kỳ báo cáo cuối chưa đạt vẫn chặn nghiệm thu.",
+      "recordId": "exec-patent"
+    },
+    {
+      "id": "HMU-18",
+      "feature": "F07",
+      "route": "#/F07/exec-software",
+      "actor": "mai",
+      "goal": "Tôi cần kê khai phần mềm độc lập và theo dõi hồ sơ bị trả.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Mở nháp “Công cụ xếp lịch trạm kỹ năng”, kiểm thông tin công bố và gửi duyệt. Mở báo cáo độc lập “Báo cáo đánh giá học liệu” để đọc lý do rồi bổ sung minh chứng.",
+      "expected": "Phần mềm đi tới hàng chờ duyệt và chưa xuất hiện trong danh sách công trình đã duyệt. Báo cáo bị từ chối sửa được. Sách chuyên khảo “Tổ chức dạy học tại phòng kỹ năng” đã duyệt xuất hiện trong lý lịch.",
+      "recordId": "exec-software"
+    },
+    {
+      "id": "HMU-19",
+      "feature": "F06",
+      "route": "#/F06/exec-drain",
+      "actor": "an",
+      "goal": "Tôi cần mở hội đồng nghiệm thu đúng hồ sơ.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Kiểm “Đánh giá hệ thống chỉ dẫn tại cơ sở thực hành” đang chờ nghiệm thu, báo cáo kỳ cuối đạt, bài báo và sáng chế đã duyệt. Mở đợt nghiệm thu với hội đồng có Minh, chọn ngày 24/11/2026.",
+      "expected": "Đề tài sang UNDER_ACCEPTANCE. Phiếu PROPOSAL 99 điểm trong lịch sử không được cộng vào đợt nghiệm thu mới.",
+      "recordId": "exec-drain"
+    },
+    {
+      "id": "HMU-20",
+      "feature": "F06",
+      "route": "#/F06/exec-bridge",
+      "actor": "minh",
+      "goal": "Tôi muốn chốt điểm của mình và xem kết luận có đúng trọng số.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Phiếu hiện còn nháp. Nhập khoa học 82, tác động 90 và gửi. Đổi sang An để chốt kết luận. Có thể chạy lại trên dữ liệu sạch với 50 và 60.",
+      "expected": "Nhánh đạt được 85,20/100 theo trọng số 60/40, vượt ngưỡng 70. Nhánh còn lại được 54/100 và trả kết quả không đạt. Mỗi lần chỉ tính phiếu đã gửi của đợt.",
+      "recordId": "exec-bridge"
+    },
+    {
+      "id": "HMU-21",
+      "feature": "F08",
+      "route": "#/F08/exec-profile-mai",
+      "actor": "mai",
+      "goal": "Tôi muốn xuất lý lịch cho hội đồng và kiểm tra từng nguồn.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Mở lý lịch, kiểm học vị Tiến sĩ 2015 và công tác tại “Bộ môn Giáo dục điều dưỡng” từ 09/2018. Trích xuất lý lịch, mở tệp HTML và kiểm danh sách công trình.",
+      "expected": "Bản xuất ghi đúng trường, có sách chuyên khảo đã duyệt và bài “Độ nhất quán giữa hai người chấm bảng kiểm bàn giao ca”. Phần mềm nháp và báo cáo bị từ chối không vào danh sách sản phẩm đã duyệt.",
+      "recordId": "exec-profile-mai"
+    },
+    {
+      "id": "HMU-22",
+      "feature": "B03",
+      "route": "#/B03",
+      "actor": "ngoc",
+      "goal": "Tôi cần xin quyền tác giả để nộp đề tài.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Gửi yêu cầu với học vị Thạc sĩ, chuyên ngành Giáo dục sức khỏe, hướng nghiên cứu “Khả năng đọc hiểu học liệu”, chọn minh chứng mẫu. Hà mở Yêu cầu nâng quyền và duyệt.",
+      "expected": "Trước duyệt Ngọc có vai người dùng. Sau duyệt tài khoản lên tác giả, có thể mở F01 trong cùng trường.",
+      "recordId": "account-ngoc"
+    },
+    {
+      "id": "HMU-23",
+      "feature": "B03",
+      "route": "#/B03/account-ngoc",
+      "actor": "ha",
+      "goal": "Tôi cần kiểm quyền khi khóa và mở lại tài khoản.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Dùng hai tab cùng trình duyệt. Ngọc mở F08 ở tab 1. Hà khóa Ngọc ở tab 2 rồi kích hoạt lại.",
+      "expected": "Tab 1 nhận trạng thái khóa, ngừng hiển thị hồ sơ. Khi kích hoạt lại Ngọc mở được lý lịch của mình.",
+      "recordId": "account-ngoc"
+    },
+    {
+      "id": "HMU-24",
+      "feature": "B01",
+      "route": "#/B01/cfg-base-FEATURE.E4",
+      "actor": "ha",
+      "goal": "Tôi muốn kiểm tra phạm vi cấu hình hoạt động mở rộng.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Đọc giá trị dùng chung false. Chọn Ghi đè cho đơn vị, giữ khóa FEATURE.E4, nhập văn bản true và lưu. Đổi sang Mai để mở F09.",
+      "expected": "Chỉ cấu hình riêng của trường quyết định việc hiện F09–F12 và P03. AI có khóa cấp quyền riêng. Giữ E4 bật cho các ca tiếp theo.",
+      "recordId": "cfg-base-FEATURE.E4"
+    },
+    {
+      "id": "HMU-25",
+      "feature": "F09",
+      "route": "#/F09/ext-upper-pending",
+      "actor": "an",
+      "goal": "Tôi cần ghi nhận nhiệm vụ cấp Bộ và tỷ lệ tham gia.",
+      "precondition": "Đã bật riêng FEATURE.E4 tại HMU-24.",
+      "steps": "Mở “Đánh giá khả năng tiếp cận học liệu của sinh viên điều dưỡng”, mã B2026-Y-08. Kiểm quyết định giao, cơ quan Bộ Y tế và kinh phí. Duyệt nhiệm vụ.",
+      "expected": "Nguồn F09 được duyệt. Định mức cấp Bộ 80 giờ phân bổ Mai 48 và Minh 32 theo tỷ lệ 60/40.",
+      "recordId": "ext-upper-pending"
+    },
+    {
+      "id": "HMU-26",
+      "feature": "F10",
+      "route": "#/F10/ext-student-invite",
+      "actor": "mai",
+      "goal": "Tôi cần xác nhận hướng dẫn đúng nhóm sinh viên.",
+      "precondition": "Đã bật riêng FEATURE.E4 tại HMU-24.",
+      "steps": "Mở lời mời “Thiết kế bộ thẻ hướng dẫn bàn giao ca cho sinh viên”, kiểm nhóm Linh, Phúc, Yến và mục tiêu. Đồng ý hướng dẫn. Đổi sang Linh, mở cùng hồ sơ rồi gửi đăng ký.",
+      "expected": "Sau xác nhận, hồ sơ về nháp có xác nhận của Mai. Linh gửi trong đợt đang mở để chuyển sang chờ sơ duyệt.",
+      "recordId": "ext-student-invite"
+    },
+    {
+      "id": "HMU-27",
+      "feature": "F10",
+      "route": "#/F10/ext-student-field",
+      "actor": "linh",
+      "goal": "Tôi cần nộp kết quả để giảng viên hướng dẫn và chuyên viên xác nhận.",
+      "precondition": "Đã bật riêng FEATURE.E4 tại HMU-24.",
+      "steps": "Nộp kết quả “Sơ đồ chỉ dẫn và bảng thời gian tìm phòng.”. Thử thiếu báo cáo, sau đó nhập minh chứng FINAL_REPORT và PRODUCT. Mai xác nhận kết quả, An đánh giá đạt rồi đóng hồ sơ.",
+      "expected": "Thiếu minh chứng bị chặn. Chỉ lúc đóng đề tài sau khi đạt, Mai được ghi 24 giờ hướng dẫn.",
+      "recordId": "ext-student-field"
+    },
+    {
+      "id": "HMU-28",
+      "feature": "F11",
+      "route": "#/F11/ext-applied-draft",
+      "actor": "mai",
+      "goal": "Tôi muốn thử hồ sơ còn thiếu đối tác trước khi chuyển giao.",
+      "precondition": "Đã bật riêng FEATURE.E4 tại HMU-24.",
+      "steps": "Gửi bản nháp “Chuyển giao bộ thẻ giao tiếp cho trung tâm thực hành” còn trống đối tác. Bổ sung “Trung tâm Thực hành An Bình (mô phỏng)”, giữ hợp đồng và tỷ lệ 60/40, lưu rồi gửi.",
+      "expected": "Lần gửi đầu nêu thiếu đối tác. Lần sau chuyển PENDING_APPROVAL. Hợp đồng ghi giờ ở bước duyệt kết quả.",
+      "recordId": "ext-applied-draft"
+    },
+    {
+      "id": "HMU-29",
+      "feature": "F11",
+      "route": "#/F11/ext-applied-complete",
+      "actor": "an",
+      "goal": "Tôi cần giải thích số giờ từ một hợp đồng bàn giao.",
+      "precondition": "Đã bật riêng FEATURE.E4 tại HMU-24.",
+      "steps": "Kiểm biên bản BB-ban-giao-lich.pdf và hợp đồng 180.000.000 đồng. Duyệt kết quả.",
+      "expected": "Hợp đồng thuộc bậc 40 giờ. Mai nhận 24 giờ và Minh 16 giờ.",
+      "recordId": "ext-applied-complete"
+    },
+    {
+      "id": "HMU-30",
+      "feature": "F12",
+      "route": "#/F12/ext-activity-conference",
+      "actor": "an",
+      "goal": "Tôi cần kiểm minh chứng và định mức theo ngày ghi nhận.",
+      "precondition": "Đã bật riêng FEATURE.E4 tại HMU-24.",
+      "steps": "Kiểm GXN-hoi-nghi-y-khoa.pdf. Duyệt hỗ trợ 1.800.000 đồng vào ngày demo 21/11.",
+      "expected": "Hoạt động được duyệt, có hỗ trợ và 8 giờ cho Mai theo v2 hiệu lực từ 01/10.",
+      "recordId": "ext-activity-conference"
+    },
+    {
+      "id": "HMU-31",
+      "feature": "P03",
+      "route": "#/P03",
+      "actor": "an",
+      "goal": "Tôi muốn rà số giờ gốc và đối chiếu một bút toán điều chỉnh.",
+      "precondition": "Đã hoàn thành HMU-29.",
+      "steps": "Lọc giảng viên Mai, nguồn F11, kỳ 2026–2027. Mở dòng của “Bàn giao công cụ lập lịch trạm thực hành”. Điều chỉnh −2 giờ, lý do “Loại phần thời lượng trùng trong biên bản bàn giao”. Đối chiếu lại F08.",
+      "expected": "Dòng gốc 24 giờ được giữ nguyên. Có dòng −2 riêng, tổng theo bộ lọc còn 22 giờ.",
+      "recordId": "ext-applied-complete"
+    },
+    {
+      "id": "HMU-32",
+      "feature": "P01",
+      "route": "#/P01/wf-v1",
+      "actor": "ha",
+      "goal": "Tôi cần thử phiên bản quy trình mới trên hồ sơ lập sau.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Sao từ v1, lưu nháp v2 rồi kích hoạt. Đổi sang Mai, lập đề xuất mới từ KG-2027-01, lưu nháp và so với HMU-26-NC07.",
+      "expected": "v2 có hiệu lực cho hồ sơ mới. Hồ sơ có mã NC07 vẫn gắn v1. Nhật ký ghi người kích hoạt.",
+      "recordId": "wf-v1"
+    },
+    {
+      "id": "HMU-33",
+      "feature": "F01",
+      "route": "#/F01/dt-01",
+      "actor": "mai",
+      "goal": "Tôi muốn kiểm tra nguồn trước khi dùng trợ lý rà phương pháp.",
+      "precondition": "Dùng phiên sạch để dt-01 còn nháp.",
+      "steps": "Kiểm trạng thái khi FEATURE.AI tắt. Tiếp tục chỉnh mục phương pháp và lưu bằng biểu mẫu.",
+      "expected": "Việc soạn và lưu thủ công hoạt động. Cấu hình E4 độc lập với quyền dùng AI.",
+      "recordId": "dt-01"
+    },
+    {
+      "id": "HMU-34",
+      "feature": "F07",
+      "route": "#/F07/exec-paper",
+      "actor": "mai",
+      "goal": "Tôi cần biết thẻ đọc được phép trích phần nào.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Đối chiếu bài có DOI với quyền dùng AI đang tắt. Mở chi tiết, kiểm tác giả và thông tin công bố bằng tay.",
+      "expected": "Đọc được siêu dữ liệu của bài theo vai tác giả. Không có thao tác lập thẻ từ nguồn chưa được cấp quyền.",
+      "recordId": "exec-paper"
+    },
+    {
+      "id": "HMU-35",
+      "feature": "B06",
+      "route": "#/B06",
+      "actor": "nam",
+      "goal": "Tôi cần đảm bảo báo cáo và tìm kiếm chỉ hiện hồ sơ trong khoa được giao.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Tìm mã HMU-26-014, sau đó tìm HMU-26-021. Mở B02, xem các đơn vị có thể trích xuất.",
+      "expected": "Nam thấy Khoa Điều dưỡng và đề tài 014. Hồ sơ 021 của Thảo thuộc Khoa Y tế công cộng nằm ngoài phạm vi, kể cả khi mở liên kết chi tiết.",
+      "recordId": "account-nam"
+    },
+    {
+      "id": "HMU-36",
+      "feature": "F03",
+      "recordId": "intake-dt-road",
+      "actor": "an",
+      "route": "#/F03/intake-dt-road",
+      "goal": "Tôi muốn mở đúng một đợt xét duyệt cho hồ sơ đã chốt.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Kiểm tra NC03 thuộc kỳ KG-2026-02 đã đóng. Chọn hội đồng HĐ-XD-06, mở đợt đánh giá rồi tải lại.",
+      "expected": "Hồ sơ chuyển từ SUBMITTED sang UNDER_REVIEW. Đợt ghim bộ tiêu chí đang áp dụng và danh sách thành viên độc lập."
+    },
+    {
+      "id": "HMU-37",
+      "feature": "F05",
+      "recordId": "exec-reed",
+      "actor": "an",
+      "route": "#/F05/exec-reed",
+      "goal": "Tôi cần cấp kinh phí sau khi có quyết định giao.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Điền 110.000.000 đồng để thử vượt số được duyệt. Sau đó cấp 80.000.000 đồng theo quyết định giao 100.000.000 đồng, giữ mức phí 5%.",
+      "expected": "Số vượt bị chặn. Với 80.000.000 đồng, phí 4.000.000, kinh phí thực hiện 76.000.000 đồng. Tài khoản Thảo là chủ nhiệm dự án."
+    },
+    {
+      "id": "HMU-38",
+      "feature": "F04",
+      "recordId": "exec-river",
+      "actor": "an",
+      "route": "#/F04/exec-river",
+      "goal": "Tôi muốn tạm dừng rồi cho nhóm tiếp tục thực hiện.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Tạm dừng với lý do “Chờ lịch sử dụng phòng thực hành”. Đổi sang Mai để xem kỳ 2. An cho tiếp tục và ghi căn cứ “Đã xác nhận lịch mới”.",
+      "expected": "Trong thời gian tạm dừng, chủ nhiệm không nộp báo cáo tiến độ. Khi tiếp tục, đề tài trở lại IN_PROGRESS và giữ nguyên các kỳ."
+    },
+    {
+      "id": "HMU-39",
+      "feature": "B01",
+      "recordId": "cfg-base-FEATURE.AI",
+      "actor": "ha",
+      "route": "#/B01/cfg-base-FEATURE.AI",
+      "goal": "Tôi cần kiểm việc thu hồi nguồn AI ngay trong buổi review.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Mở B01, ghi đè FEATURE.AI thành true cho HMU. Tạo khóa riêng AI.SOURCE.exec-paper với nội dung văn bản 1. Mai lập thẻ đọc. Hà đổi quyền nguồn thành off, Mai thử mở lại.",
+      "expected": "Quyền phiên bản 1 cho phép dùng căn cứ tại trang 3 và 5. Sau thu hồi, trợ lý không cho dùng lại trích đoạn. Thông tin sản phẩm vẫn xem được theo quyền F07."
+    },
+    {
+      "id": "HMU-40",
+      "feature": "F12",
+      "recordId": "ext-activity-community",
+      "actor": "an",
+      "route": "#/F12/ext-activity-community",
+      "goal": "Tôi cần xử lý hỗ trợ cho hoạt động phục vụ cộng đồng.",
+      "precondition": "FEATURE.E4 đang bật.",
+      "steps": "Kiểm giấy xác nhận tham gia trong hồ sơ. Nhập mức hỗ trợ 1.200.000 đồng và duyệt. Mở P03 đối chiếu chủ nhiệm. Trong phiên sạch thử từ chối và ghi “Chưa có xác nhận của nơi tổ chức”.",
+      "expected": "Nhánh duyệt ghi số hỗ trợ và 12 giờ theo định mức COMMUNITY. Nhánh từ chối ghi lý do, không phát sinh giờ."
+    },
+    {
+      "id": "HMU-41",
+      "feature": "F11",
+      "recordId": "ext-applied-complete",
+      "actor": "an",
+      "route": "#/F11/ext-applied-complete",
+      "goal": "Tôi cần thu hồi ghi nhận khi biên bản bàn giao phải đính chính.",
+      "precondition": "Đã làm HMU-29, chưa làm ca điều chỉnh −2 giờ.",
+      "steps": "Mở hồ sơ hoàn thành và thu hồi với lý do “Đính chính danh sách tác giả trên biên bản”. Kiểm sổ P03 theo nguồn F11.",
+      "expected": "Bút toán ban đầu còn nguyên, có các dòng giảm bù đúng phần của từng người. Tổng theo nguồn về 0 khi chưa có điều chỉnh khác."
+    },
+    {
+      "id": "HMU-42",
+      "feature": "F02",
+      "recordId": "call-01",
+      "actor": "linh",
+      "route": "#/F02/call-01",
+      "goal": "Tôi muốn tìm kỳ đang nhận đề xuất bằng điện thoại.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Trong /v0-mobile/ mở Kỳ đề xuất. Lọc đang nhận, mở KG-2027-01 rồi quay lại danh sách. So sánh với kỳ KG-2026-02 đã đóng.",
+      "expected": "Kỳ phù hợp hiện đúng hạn 30/11/2026. Chi tiết và danh sách thuộc cùng trường, vai sinh viên xem được kỳ mở."
+    },
+    {
+      "id": "HMU-43",
+      "feature": "B04",
+      "recordId": "home-notice-call-01",
+      "actor": "an",
+      "route": "#/B04/home-notice-call-01",
+      "goal": "Tôi muốn kiểm tra liên kết thông báo khi đổi người nhận.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Dùng cùng liên kết B04 của Mai trong phiên An ở màn hình điện thoại. Đổi lại đúng Mai rồi mở từ hộp thư.",
+      "expected": "An không xem được nội dung riêng của Mai. Mai thấy tên kỳ của trường mình và mở đúng F02."
+    }
+  ]
+}

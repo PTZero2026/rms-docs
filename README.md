@@ -13,6 +13,8 @@ pnpm dev
 
 Mở địa chỉ Vite in trong terminal. V0 mở tổng quan của chủ nhiệm Lê Thanh Mai. Chọn **Phiên mô phỏng** để đổi vai trò hoặc trường và thử các thao tác trên dữ liệu giả lập. [Hướng dẫn 20 màn hình và 32 lát nghiệp vụ](docs/guides/rms-v0-frontend.md).
 
+Hai trường có 86 ca demo theo vai, dữ liệu chuyên ngành và gói web mang đi chạy cục bộ. [Mở bộ demo Thủy lợi và Y Hà Nội](docs/guides/demo-rms/README.md).
+
 Mở thêm đường dẫn `/v0-mobile/` trên cùng máy chủ để thử ba luồng điện thoại. Trên desktop, trang mở khung tương tác rộng 390 px. [Backlog INVEST](docs/product/mobile-invest.md) · [Báo cáo và ảnh v0-mobile](docs/reviews/rms-v0-mobile.md).
 
 - `pnpm ui:add input` thêm component từ registry shadcn vào `packages/ui/src/components/`, dùng được ngay trong `apps/web`.

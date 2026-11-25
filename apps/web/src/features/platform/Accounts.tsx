@@ -1,4 +1,5 @@
 import { routeUrl } from "../../demo/catalog"
+import { schoolUnits } from "../../demo/datasets"
 import { ValidatedForm } from "@rms/ui/components/validated-form"
 import { Disclosure } from "@rms/ui/components/disclosure"
 import { ChoiceOption, ChoiceSelect } from "@rms/ui/components/choice-select"
@@ -330,7 +331,7 @@ function AccountForm({
 }) {
   const [name, setName] = useState(initial?.title ?? ""),
     [email, setEmail] = useState(initial?.fields.email ?? ""),
-    [unit, setUnit] = useState(initial?.unit ?? "Khoa Công trình"),
+    [unit, setUnit] = useState(initial?.unit ?? schoolUnits(p.session.tenant, p.rows)[0]),
     [type, setType] = useState(initial?.fields.userType ?? "user"),
     [scope, setScope] = useState(initial?.fields.scopeUnit ?? ""),
     [error, setError] = useState("")
@@ -404,8 +405,7 @@ function AccountForm({
               change={setScope}
               options={{
                 "": "Toàn trường",
-                "Khoa Công trình": "Khoa Công trình",
-                "Khoa Môi trường": "Khoa Môi trường",
+                ...Object.fromEntries(schoolUnits(p.session.tenant, p.rows).map(unit => [unit, unit])),
               }}
             />
           )}

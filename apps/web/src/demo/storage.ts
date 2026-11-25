@@ -1,10 +1,11 @@
+import { schoolAudit } from "./datasets.ts"
 import type { DemoRow, Session, Tenant } from "./types"
 import type { Snapshot } from "./workflow"
-import { baseSeed } from "./base-seed"
-import { seed as intakeSeed } from "../features/intake/seed"
-import { seed as executionSeed } from "../features/execution/seed"
-import { seed as extensionSeed } from "../features/extension/seed"
-import { person } from "./identity"
+import { baseSeed } from "./base-seed.ts"
+import { seed as intakeSeed } from "../features/intake/seed.ts"
+import { seed as executionSeed } from "../features/execution/seed.ts"
+import { seed as extensionSeed } from "../features/extension/seed.ts"
+import { person } from "./identity.ts"
 export function initialSnapshot(tenant: Tenant): Snapshot {
   const rows = [
     ...baseSeed(tenant),
@@ -33,16 +34,7 @@ export function initialSnapshot(tenant: Tenant): Snapshot {
   }))
   return {
     rows: [...rows, ...notices],
-    audit: sources.map((r, i) => ({
-      id: "event-" + r.id,
-      at: "2026-11-" + (20 - i) + "T02:15:00Z",
-      actor: "Nguyễn Hoài An",
-      unit: r.unit,
-      action: r.kind === "call" ? "Mở kỳ nhận đề xuất" : "Giao đề tài",
-      recordId: r.id,
-      title: r.title,
-      to: r.status,
-    })),
+    audit: schoolAudit(tenant),
   }
 }
 export function readSession(): Session {

@@ -1,3 +1,4 @@
+import { schoolUnits } from '../../demo/datasets.ts'
 import {
   change,
   check,
@@ -103,7 +104,7 @@ export function updateProfile(c: Context, r: Row, d: Data) {
   check(d.name?.trim(), 'Họ tên là trường bắt buộc.')
   if (c.session.tenant === 'tlu') check(d.position?.trim(), 'Trường yêu cầu nhập chức vụ.')
   check(
-    !d.department || ['Khoa Công trình', 'Khoa Môi trường'].includes(d.department),
+    !d.department || d.department === r.unit || schoolUnits(c.session.tenant, c.rows).includes(d.department),
     'Đơn vị công tác ngoài danh mục.',
   )
   if (d.birth) {

@@ -1,11 +1,10 @@
+import { schoolUnits } from '../../demo/datasets.ts'
 import { formatVietnamDate } from '../../format-date.ts'
 import type { DemoRow, FeatureProps } from '../../demo/types.ts'
 import { defaultEdges, type Edge } from '../../demo/workflow.ts'
 
 export type Context = Pick<FeatureProps, 'rows' | 'session' | 'aiEnabled'>
 export const today = '2026-11-21'
-export const construction = 'Khoa Công trình'
-export const environment = 'Khoa Môi trường'
 export const names: Record<string, string> = {
   mai: 'Lê Thanh Mai',
   linh: 'Nguyễn Khánh Linh',
@@ -14,6 +13,7 @@ export const names: Record<string, string> = {
   ha: 'Trần Thu Hà',
   hue: 'Phan Thu Huệ',
   son: 'Đỗ Minh Sơn',
+  thao: 'Vũ Phương Thảo',
 }
 export const states: Record<string, string> = {
   DRAFT: 'Nháp',
@@ -61,7 +61,7 @@ export const timeLabel = (iso: string) =>
 export function scopeUnit(ctx: Context) {
   const account = ctx.rows.find((r) => r.kind === 'account' && r.owner === ctx.session.userId)
   if (account) return account.fields.scopeUnit || ''
-  return [construction, environment].includes(ctx.session.unit) ? ctx.session.unit : ''
+  return schoolUnits(ctx.session.tenant, ctx.rows).includes(ctx.session.unit) ? ctx.session.unit : ''
 }
 export const inScope = (ctx: Context, row: DemoRow) => !scopeUnit(ctx) || row.unit === scopeUnit(ctx)
 export const managed = (ctx: Context, row: DemoRow) => ctx.session.role === 'officer' && inScope(ctx, row)

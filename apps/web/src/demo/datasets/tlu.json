@@ -1,0 +1,2217 @@
+{
+  "tenant": "tlu",
+  "school": "Đại học Thủy lợi",
+  "units": [
+    "Khoa Công trình",
+    "Khoa Môi trường"
+  ],
+  "intake": [
+    {
+      "id": "intake-field-applied",
+      "kind": "intake-reference",
+      "title": "Công trình thủy",
+      "status": "ACTIVE",
+      "owner": "an",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "category": "discipline",
+        "version": "2026.2"
+      }
+    },
+    {
+      "id": "intake-field-env",
+      "kind": "intake-reference",
+      "title": "Môi trường và sức khỏe cộng đồng",
+      "status": "ACTIVE",
+      "owner": "an",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "category": "discipline",
+        "version": "2026.2"
+      }
+    },
+    {
+      "id": "intake-form-26",
+      "kind": "intake-reference",
+      "title": "Mẫu thuyết minh đề tài cấp cơ sở",
+      "status": "ACTIVE",
+      "owner": "an",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "category": "template",
+        "version": "2026.2"
+      }
+    },
+    {
+      "id": "intake-rubric-26",
+      "kind": "intake-reference",
+      "title": "Tiêu chí xét đề xuất cấp cơ sở 2026",
+      "status": "ACTIVE",
+      "owner": "an",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "category": "criteria",
+        "version": "2026.2",
+        "type": "PROPOSAL_REVIEW",
+        "min": "1",
+        "passing": "7",
+        "publicComments": "false",
+        "publicScore": "false"
+      }
+    },
+    {
+      "id": "intake-rubric-old",
+      "kind": "intake-reference",
+      "title": "Tiêu chí xét đề xuất năm 2024",
+      "status": "INACTIVE",
+      "owner": "an",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "category": "criteria",
+        "version": "2026.2",
+        "type": "PROPOSAL_REVIEW"
+      }
+    },
+    {
+      "id": "call-01",
+      "kind": "call",
+      "title": "Đề tài cấp cơ sở năm 2027",
+      "status": "OPEN",
+      "owner": "an",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "start": "2026-11-01",
+        "due": "2026-11-30",
+        "disciplines": "intake-field-applied,intake-field-env",
+        "template": "intake-form-26",
+        "criteria": "intake-rubric-26",
+        "code": "KG-2027-01"
+      }
+    },
+    {
+      "id": "intake-call-autumn",
+      "kind": "call",
+      "title": "Nghiên cứu ứng dụng đợt thu 2026",
+      "status": "CLOSED",
+      "owner": "an",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "start": "2026-09-01",
+        "due": "2026-10-31",
+        "disciplines": "intake-field-applied,intake-field-env",
+        "template": "intake-form-26",
+        "criteria": "intake-rubric-26",
+        "code": "KG-2026-02"
+      }
+    },
+    {
+      "id": "intake-call-draft",
+      "kind": "call",
+      "title": "Sáng kiến liên ngành đợt xuân 2027",
+      "status": "DRAFT",
+      "owner": "an",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "start": "2026-12-01",
+        "due": "2027-01-15",
+        "disciplines": "intake-field-applied,intake-field-env",
+        "template": "intake-form-26",
+        "criteria": "intake-rubric-old",
+        "code": "KG-2027-02"
+      }
+    },
+    {
+      "id": "dt-01",
+      "kind": "project",
+      "title": "Quan trắc thấm qua thân đập đất bằng cảm biến áp lực",
+      "status": "DRAFT",
+      "owner": "mai",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "code": "",
+        "callId": "call-01",
+        "workflowVersion": "v1",
+        "revision": "1",
+        "aiAllowed": "true",
+        "aiGrantVersion": "1",
+        "due": "2026-11-30",
+        "discipline": "intake-field-applied",
+        "durationMonths": "12",
+        "requestedBudget": "85000000",
+        "objective": "Ước lượng sai số áp lực nước tại ba mặt cắt đập mô hình.",
+        "method": "So sánh 36 cặp số đo cảm biến và ống đo theo cao trình.",
+        "outcome": "Bảng hệ số hiệu chỉnh và sơ đồ ba vị trí đo.",
+        "memberIds": "linh",
+        "submittedAt": "",
+        "attachments": "[{\"id\":\"dt-01-plan\",\"title\":\"Đề cương nghiên cứu\",\"format\":\"PDF\",\"size\":24576}]",
+        "assignments": "{\"linh\":{\"role\":\"MEMBER\",\"responsibility\":\"Lập bảng đối chiếu và kiểm tra dữ liệu đầu vào.\"}}"
+      }
+    },
+    {
+      "id": "intake-dt-silt",
+      "kind": "project",
+      "title": "Đánh giá bồi lắng tại cửa lấy nước hệ thống Bắc Hưng Hải",
+      "status": "SUBMITTED",
+      "owner": "mai",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "code": "TLU-26-NC02",
+        "callId": "call-01",
+        "workflowVersion": "v1",
+        "revision": "1",
+        "aiAllowed": "true",
+        "aiGrantVersion": "1",
+        "due": "2026-11-30",
+        "discipline": "intake-field-applied",
+        "durationMonths": "12",
+        "requestedBudget": "90000000",
+        "objective": "Xác định mùa bồi mạnh nhất tại hai cửa lấy nước.",
+        "method": "So sánh 12 mặt cắt giả lập đầu và cuối mùa lũ.",
+        "outcome": "Bản đồ bồi lắng và lịch nạo vét đề xuất.",
+        "memberIds": "linh",
+        "submittedAt": "2026-11-15T02:20:00Z",
+        "attachments": "[{\"id\":\"intake-dt-silt-plan\",\"title\":\"Đề cương nghiên cứu\",\"format\":\"PDF\",\"size\":25600}]",
+        "assignments": "{\"linh\":{\"role\":\"MEMBER\",\"responsibility\":\"Lập bảng đối chiếu và kiểm tra dữ liệu đầu vào.\"}}"
+      }
+    },
+    {
+      "id": "intake-dt-road",
+      "kind": "project",
+      "title": "Dự báo lún nền đường ven đê từ số liệu quan trắc",
+      "status": "SUBMITTED",
+      "owner": "mai",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "code": "TLU-26-NC03",
+        "callId": "intake-call-autumn",
+        "workflowVersion": "v1",
+        "revision": "1",
+        "aiAllowed": "true",
+        "aiGrantVersion": "1",
+        "due": "2026-10-31",
+        "discipline": "intake-field-applied",
+        "durationMonths": "12",
+        "requestedBudget": "95000000",
+        "objective": "Ước lượng tốc độ lún của đoạn đường ven đê.",
+        "method": "Đối chiếu 24 chu kỳ đo cao độ với tải trọng thiết kế.",
+        "outcome": "Đường cong lún và bảng sai số theo mốc.",
+        "memberIds": "linh",
+        "submittedAt": "2026-10-18T02:20:00Z",
+        "checked": "true",
+        "finalized": "true",
+        "attachments": "[{\"id\":\"intake-dt-road-plan\",\"title\":\"Đề cương nghiên cứu\",\"format\":\"PDF\",\"size\":26624}]",
+        "assignments": "{\"linh\":{\"role\":\"MEMBER\",\"responsibility\":\"Lập bảng đối chiếu và kiểm tra dữ liệu đầu vào.\"}}"
+      }
+    },
+    {
+      "id": "intake-dt-flood",
+      "kind": "project",
+      "title": "Khảo sát khả năng tiếp nhận cảnh báo ngập của hộ ven sông",
+      "status": "UNDER_REVIEW",
+      "owner": "mai",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "code": "TLU-26-NC04",
+        "callId": "intake-call-autumn",
+        "workflowVersion": "v1",
+        "revision": "1",
+        "aiAllowed": "true",
+        "aiGrantVersion": "1",
+        "due": "2026-10-31",
+        "discipline": "intake-field-applied",
+        "durationMonths": "12",
+        "requestedBudget": "100000000",
+        "objective": "Đo tỷ lệ hộ đọc đúng mức cảnh báo trong bản tin ngập.",
+        "method": "Cho 60 hộ giả lập đọc hai mẫu bản tin rồi so sánh câu trả lời.",
+        "outcome": "Mẫu bản tin dễ đọc và bảng tổng hợp theo nhóm tuổi.",
+        "memberIds": "",
+        "submittedAt": "2026-10-18T02:20:00Z",
+        "checked": "true",
+        "finalized": "true",
+        "attachments": "[{\"id\":\"intake-dt-flood-plan\",\"title\":\"Đề cương nghiên cứu\",\"format\":\"PDF\",\"size\":27648}]",
+        "assignments": "{}"
+      }
+    },
+    {
+      "id": "intake-dt-water",
+      "kind": "project",
+      "title": "Đo tải lượng chất rắn lơ lửng trên kênh nội đồng",
+      "status": "SUBMITTED",
+      "owner": "thao",
+      "unit": "Khoa Môi trường",
+      "fields": {
+        "code": "TLU-26-NC05",
+        "callId": "call-01",
+        "workflowVersion": "v1",
+        "revision": "1",
+        "aiAllowed": "true",
+        "aiGrantVersion": "1",
+        "due": "2026-11-30",
+        "discipline": "intake-field-env",
+        "durationMonths": "12",
+        "requestedBudget": "105000000",
+        "objective": "Ước tính tải lượng chất rắn qua kênh trong một chu kỳ tưới.",
+        "method": "Ghép chuỗi lưu lượng với 18 chỉ số chất rắn mô phỏng.",
+        "outcome": "Biểu đồ tải lượng theo ca tưới.",
+        "memberIds": "linh",
+        "submittedAt": "2026-11-15T02:20:00Z",
+        "attachments": "[{\"id\":\"intake-dt-water-plan\",\"title\":\"Đề cương nghiên cứu\",\"format\":\"PDF\",\"size\":28672}]",
+        "assignments": "{\"linh\":{\"role\":\"MEMBER\",\"responsibility\":\"Lập bảng đối chiếu và kiểm tra dữ liệu đầu vào.\"}}"
+      }
+    },
+    {
+      "id": "intake-dt-approved",
+      "kind": "project",
+      "title": "Hiệu chỉnh đường quan hệ mực nước và lưu lượng sông Đáy",
+      "status": "APPROVED",
+      "owner": "mai",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "code": "TLU-26-NC06",
+        "callId": "intake-call-autumn",
+        "workflowVersion": "v1",
+        "revision": "1",
+        "aiAllowed": "true",
+        "aiGrantVersion": "1",
+        "due": "2026-10-31",
+        "discipline": "intake-field-applied",
+        "durationMonths": "12",
+        "requestedBudget": "110000000",
+        "objective": "Hiệu chỉnh quan hệ mực nước và lưu lượng tại hai trạm.",
+        "method": "Ước lượng đường cong từ 40 cặp đo và giữ lại 10 cặp để kiểm tra.",
+        "outcome": "Bộ đường đặc tính và hướng dẫn nội suy.",
+        "memberIds": "linh",
+        "submittedAt": "2026-10-18T02:20:00Z",
+        "checked": "true",
+        "finalized": "true",
+        "attachments": "[{\"id\":\"intake-dt-approved-plan\",\"title\":\"Đề cương nghiên cứu\",\"format\":\"PDF\",\"size\":29696}]",
+        "assignments": "{\"linh\":{\"role\":\"MEMBER\",\"responsibility\":\"Lập bảng đối chiếu và kiểm tra dữ liệu đầu vào.\"}}"
+      }
+    },
+    {
+      "id": "intake-dt-returned",
+      "kind": "project",
+      "title": "Đánh giá hiệu quả thu gom nước mưa tại khu giảng đường",
+      "status": "DRAFT",
+      "owner": "mai",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "code": "TLU-26-NC07",
+        "callId": "call-01",
+        "workflowVersion": "v1",
+        "revision": "1",
+        "aiAllowed": "true",
+        "aiGrantVersion": "1",
+        "due": "2026-11-30",
+        "discipline": "intake-field-applied",
+        "durationMonths": "12",
+        "requestedBudget": "115000000",
+        "objective": "Xác định dung tích bể thu nước mưa cho hai mái nhà.",
+        "method": "Đối chiếu diện tích thu với chuỗi mưa giả lập trong 12 tháng.",
+        "outcome": "Bảng cân bằng nước và phương án bố trí bể.",
+        "memberIds": "linh",
+        "submittedAt": "2026-11-16T03:15:00Z",
+        "reason": "Bổ sung cách lựa chọn địa điểm khảo sát và số mẫu đối chứng.",
+        "attachments": "[{\"id\":\"intake-dt-returned-plan\",\"title\":\"Đề cương nghiên cứu\",\"format\":\"PDF\",\"size\":30720}]",
+        "assignments": "{\"linh\":{\"role\":\"MEMBER\",\"responsibility\":\"Lập bảng đối chiếu và kiểm tra dữ liệu đầu vào.\"}}"
+      }
+    },
+    {
+      "id": "intake-dt-coi",
+      "kind": "project",
+      "title": "Kiểm định độ ổn định mái kè từ chuỗi ảnh quan trắc",
+      "status": "UNDER_REVIEW",
+      "owner": "mai",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "code": "TLU-26-NC08",
+        "callId": "intake-call-autumn",
+        "workflowVersion": "v1",
+        "revision": "1",
+        "aiAllowed": "true",
+        "aiGrantVersion": "1",
+        "due": "2026-10-31",
+        "discipline": "intake-field-applied",
+        "durationMonths": "12",
+        "requestedBudget": "120000000",
+        "objective": "Theo dõi dịch chuyển đỉnh mái kè từ ảnh chụp lặp.",
+        "method": "Đo độ lệch của sáu mốc ảnh trên mô hình bờ kè.",
+        "outcome": "Bảng ngưỡng theo dõi và bộ ảnh có chú giải.",
+        "memberIds": "minh",
+        "submittedAt": "2026-10-18T02:20:00Z",
+        "checked": "true",
+        "finalized": "true",
+        "attachments": "[{\"id\":\"intake-dt-coi-plan\",\"title\":\"Đề cương nghiên cứu\",\"format\":\"PDF\",\"size\":31744}]",
+        "assignments": "{\"minh\":{\"role\":\"MEMBER\",\"responsibility\":\"Lập bảng đối chiếu và kiểm tra dữ liệu đầu vào.\"}}"
+      }
+    },
+    {
+      "id": "intake-council-26",
+      "kind": "council",
+      "title": "Hội đồng xét duyệt nghiên cứu ứng dụng",
+      "status": "ACTIVE",
+      "owner": "an",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "code": "HĐ-XD-06",
+        "type": "PROPOSAL_REVIEW",
+        "memberIds": "minh,hue,son",
+        "seats": "[{\"user\":\"son\",\"role\":\"CHAIR\"},{\"user\":\"minh\",\"role\":\"REVIEWER\"},{\"user\":\"hue\",\"role\":\"SECRETARY\"}]"
+      }
+    },
+    {
+      "id": "intake-round-flood",
+      "kind": "review-round",
+      "title": "Hội đồng xét duyệt nghiên cứu ứng dụng",
+      "status": "COLLECTING_SCORES",
+      "owner": "an",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "projectId": "intake-dt-flood",
+        "councilId": "intake-council-26",
+        "memberIds": "minh,hue,son",
+        "criteria": "intake-rubric-26",
+        "reviewerIds": "minh,hue,son",
+        "min": "3",
+        "passing": "7",
+        "publicComments": "false",
+        "publicScore": "false",
+        "ethics": "PENDING",
+        "openedAt": "2026-11-12T02:00:00Z"
+      }
+    },
+    {
+      "id": "intake-round-approved",
+      "kind": "review-round",
+      "title": "Hội đồng xét duyệt nghiên cứu ứng dụng",
+      "status": "CONCLUDED",
+      "owner": "an",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "projectId": "intake-dt-approved",
+        "councilId": "intake-council-26",
+        "memberIds": "minh,hue,son",
+        "criteria": "intake-rubric-26",
+        "reviewerIds": "",
+        "min": "1",
+        "passing": "7",
+        "publicComments": "false",
+        "publicScore": "false",
+        "ethics": "EXEMPT",
+        "openedAt": "2026-11-12T02:00:00Z",
+        "conclusion": "PASSED",
+        "aggregate": "8",
+        "concludedAt": "2026-11-16T02:00:00Z"
+      }
+    },
+    {
+      "id": "intake-round-coi",
+      "kind": "review-round",
+      "title": "Hội đồng xét duyệt nghiên cứu ứng dụng",
+      "status": "COLLECTING_SCORES",
+      "owner": "an",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "projectId": "intake-dt-coi",
+        "councilId": "intake-council-26",
+        "memberIds": "minh,hue,son",
+        "criteria": "intake-rubric-26",
+        "reviewerIds": "son,hue",
+        "min": "2",
+        "passing": "7",
+        "publicComments": "false",
+        "publicScore": "false",
+        "ethics": "EXEMPT",
+        "openedAt": "2026-11-12T02:00:00Z"
+      }
+    },
+    {
+      "kind": "score",
+      "id": "intake-score-intake-round-coi-son",
+      "title": "Phiếu chấm khoa học",
+      "status": "SUBMITTED",
+      "owner": "son",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "roundId": "intake-round-coi",
+        "projectId": "intake-dt-coi",
+        "points": "[\"6\",\"6\",\"6\"]",
+        "total": "6",
+        "comment": "Phương pháp phù hợp với mục tiêu đã nêu."
+      }
+    },
+    {
+      "kind": "score",
+      "id": "intake-score-intake-round-coi-hue",
+      "title": "Phiếu chấm khoa học",
+      "status": "SUBMITTED",
+      "owner": "hue",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "roundId": "intake-round-coi",
+        "projectId": "intake-dt-coi",
+        "points": "[\"7\",\"7\",\"7\"]",
+        "total": "7",
+        "comment": "Phương pháp phù hợp với mục tiêu đã nêu."
+      }
+    },
+    {
+      "kind": "score",
+      "id": "intake-score-intake-round-flood-son",
+      "title": "Phiếu chấm khoa học",
+      "status": "SUBMITTED",
+      "owner": "son",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "roundId": "intake-round-flood",
+        "projectId": "intake-dt-flood",
+        "points": "[\"8\",\"8\",\"8\"]",
+        "total": "8",
+        "comment": "Phương pháp phù hợp với mục tiêu đã nêu."
+      }
+    },
+    {
+      "kind": "score",
+      "id": "intake-score-intake-round-flood-hue",
+      "title": "Phiếu chấm khoa học",
+      "status": "SUBMITTED",
+      "owner": "hue",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "roundId": "intake-round-flood",
+        "projectId": "intake-dt-flood",
+        "points": "[\"7\",\"7\",\"7\"]",
+        "total": "7",
+        "comment": "Phương pháp phù hợp với mục tiêu đã nêu."
+      }
+    },
+    {
+      "kind": "score",
+      "id": "intake-score-intake-round-approved-son",
+      "title": "Phiếu chấm khoa học",
+      "status": "SUBMITTED",
+      "owner": "son",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "roundId": "intake-round-approved",
+        "projectId": "intake-dt-approved",
+        "points": "[\"8\",\"8\",\"8\"]",
+        "total": "8",
+        "comment": "Phương pháp phù hợp với mục tiêu đã nêu."
+      }
+    },
+    {
+      "id": "call-2025",
+      "kind": "call",
+      "title": "Nghiên cứu kỹ thuật thủy lợi triển khai năm 2026",
+      "status": "CLOSED",
+      "owner": "an",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "start": "2025-09-01",
+        "due": "2025-10-31",
+        "disciplines": "intake-field-applied,intake-field-env",
+        "template": "intake-form-26",
+        "criteria": "intake-rubric-26",
+        "code": "KG-2025-02"
+      }
+    },
+    {
+      "id": "report-open-baseline",
+      "kind": "call-report",
+      "title": "Đề tài cấp cơ sở năm 2027",
+      "status": "FROZEN",
+      "owner": "an",
+      "unit": "Các đơn vị được giao",
+      "fields": {
+        "units": "[\"Khoa Công trình\", \"Khoa Môi trường\"]",
+        "callId": "call-01",
+        "callCode": "KG-2027-01",
+        "extractedAt": "2026-11-20T03:00:00Z",
+        "lines": "[{\"id\": \"intake-dt-silt\", \"code\": \"TLU-26-NC02\", \"title\": \"Đánh giá bồi lắng tại cửa lấy nước hệ thống Bắc Hưng Hải\", \"unit\": \"Khoa Công trình\", \"status\": \"SUBMITTED\"}, {\"id\": \"intake-dt-water\", \"code\": \"TLU-26-NC05\", \"title\": \"Đo tải lượng chất rắn lơ lửng trên kênh nội đồng\", \"unit\": \"Khoa Môi trường\", \"status\": \"SUBMITTED\"}, {\"id\": \"intake-dt-returned\", \"code\": \"TLU-26-NC07\", \"title\": \"Đánh giá hiệu quả thu gom nước mưa tại khu giảng đường\", \"unit\": \"Khoa Công trình\", \"status\": \"DRAFT\"}]"
+      }
+    }
+  ],
+  "execution": [
+    {
+      "id": "exec-river",
+      "kind": "project",
+      "title": "Quan trắc xói lở bờ sông bằng cảm biến mực nước",
+      "status": "IN_PROGRESS",
+      "owner": "mai",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "code": "TLU-26-014",
+        "callId": "call-2025",
+        "workflowVersion": "v1",
+        "memberIds": "linh",
+        "commitments": "{\"ARTICLE\":1,\"PATENT\":1}",
+        "requestedBudget": "100000000",
+        "durationMonths": "12",
+        "submittedAt": "2025-10-15T02:30:00Z"
+      }
+    },
+    {
+      "id": "exec-drain",
+      "kind": "project",
+      "title": "Mô hình tiêu thoát nước cho lưu vực đô thị",
+      "status": "PENDING_ACCEPTANCE",
+      "owner": "mai",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "code": "TLU-26-009",
+        "callId": "call-2025",
+        "workflowVersion": "v1",
+        "memberIds": "linh",
+        "commitments": "{\"ARTICLE\":1,\"PATENT\":1}",
+        "requestedBudget": "100000000",
+        "durationMonths": "12",
+        "submittedAt": "2025-10-15T02:30:00Z",
+        "finalEvidence": "Ho-so-nghiem-thu-009.pdf"
+      }
+    },
+    {
+      "id": "exec-dam",
+      "kind": "project",
+      "title": "Đánh giá thấm qua thân đập đất bằng điện trở suất",
+      "status": "PASSED",
+      "owner": "mai",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "code": "TLU-26-005",
+        "callId": "call-2025",
+        "workflowVersion": "v1",
+        "memberIds": "linh",
+        "commitments": "{\"ARTICLE\":1,\"PATENT\":1}",
+        "requestedBudget": "100000000",
+        "durationMonths": "12",
+        "roundId": "exec-old-round",
+        "submittedAt": "2025-10-15T02:30:00Z"
+      }
+    },
+    {
+      "id": "exec-reed",
+      "kind": "project",
+      "title": "Lọc nước thải phân tán bằng bãi lọc trồng sậy",
+      "status": "IN_PROGRESS",
+      "owner": "thao",
+      "unit": "Khoa Môi trường",
+      "fields": {
+        "code": "TLU-26-021",
+        "callId": "call-2025",
+        "workflowVersion": "v1",
+        "memberIds": "linh",
+        "commitments": "{\"ARTICLE\":1,\"PATENT\":1}",
+        "requestedBudget": "100000000",
+        "durationMonths": "12",
+        "submittedAt": "2025-10-15T02:30:00Z"
+      }
+    },
+    {
+      "id": "exec-bridge",
+      "kind": "project",
+      "title": "Thử tải dầm cầu bê tông cốt sợi bằng cảm biến quang",
+      "status": "UNDER_ACCEPTANCE",
+      "owner": "mai",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "code": "TLU-26-012",
+        "callId": "call-2025",
+        "workflowVersion": "v1",
+        "memberIds": "linh",
+        "commitments": "{\"REPORT\":1}",
+        "requestedBudget": "100000000",
+        "durationMonths": "12",
+        "roundId": "exec-bridge-round",
+        "finalEvidence": "Ho-so-thu-tai.pdf",
+        "submittedAt": "2025-10-15T02:30:00Z"
+      }
+    },
+    {
+      "id": "exec-river-assignment",
+      "kind": "assignment",
+      "title": "Quyết định giao thực hiện TLU-26-014",
+      "status": "EFFECTIVE",
+      "owner": "mai",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "decision": "QĐ-TLU-26-014",
+        "signed": "2026-01-05",
+        "effective": "2026-01-06",
+        "start": "2026-01-06",
+        "end": "2027-01-05",
+        "amount": "100000000",
+        "evidence": "Quyet-dinh-giao.pdf",
+        "projectId": "exec-river"
+      }
+    },
+    {
+      "id": "exec-river-r1",
+      "kind": "report",
+      "title": "Kỳ 1 · Khảo sát hiện trường",
+      "status": "PASSED",
+      "owner": "mai",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "period": "1",
+        "dueDate": "2026-06-30",
+        "submittedAt": "2026-06-29T02:00:00Z",
+        "content": "Đối chiếu 36 cặp số đo tại ba mặt cắt. Hai đầu đo cần hiệu chuẩn lại trước kỳ 2.",
+        "evidence": "Bao-cao-TLU-26-014-ky-1.pdf",
+        "projectId": "exec-river"
+      }
+    },
+    {
+      "id": "exec-drain-assignment",
+      "kind": "assignment",
+      "title": "Quyết định giao thực hiện TLU-26-009",
+      "status": "EFFECTIVE",
+      "owner": "mai",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "decision": "QĐ-TLU-26-009",
+        "signed": "2026-01-05",
+        "effective": "2026-01-06",
+        "start": "2026-01-06",
+        "end": "2027-01-05",
+        "amount": "100000000",
+        "evidence": "Quyet-dinh-giao.pdf",
+        "projectId": "exec-drain"
+      }
+    },
+    {
+      "id": "exec-drain-r1",
+      "kind": "report",
+      "title": "Kỳ 1 · Khảo sát hiện trường",
+      "status": "PASSED",
+      "owner": "mai",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "period": "1",
+        "dueDate": "2026-06-30",
+        "submittedAt": "2026-06-29T02:00:00Z",
+        "content": "Đã dựng đường quá trình cho sáu trận mưa mô phỏng và đối chiếu lưu lượng đỉnh tại cửa ra.",
+        "evidence": "Bao-cao-TLU-26-009-ky-1.pdf",
+        "projectId": "exec-drain"
+      }
+    },
+    {
+      "id": "exec-dam-assignment",
+      "kind": "assignment",
+      "title": "Quyết định giao thực hiện TLU-26-005",
+      "status": "EFFECTIVE",
+      "owner": "mai",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "decision": "QĐ-TLU-26-005",
+        "signed": "2026-01-05",
+        "effective": "2026-01-06",
+        "start": "2026-01-06",
+        "end": "2027-01-05",
+        "amount": "100000000",
+        "evidence": "Quyet-dinh-giao.pdf",
+        "projectId": "exec-dam"
+      }
+    },
+    {
+      "id": "exec-dam-r1",
+      "kind": "report",
+      "title": "Kỳ 1 · Khảo sát hiện trường",
+      "status": "PASSED",
+      "owner": "mai",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "period": "1",
+        "dueDate": "2026-06-30",
+        "submittedAt": "2026-06-29T02:00:00Z",
+        "content": "Đã khoanh ba vùng dị thường trên mô hình đập, lưu bảng điện trở suất theo mặt cắt.",
+        "evidence": "Bao-cao-TLU-26-005-ky-1.pdf",
+        "projectId": "exec-dam"
+      }
+    },
+    {
+      "id": "exec-reed-assignment",
+      "kind": "assignment",
+      "title": "Quyết định giao thực hiện TLU-26-021",
+      "status": "EFFECTIVE",
+      "owner": "thao",
+      "unit": "Khoa Môi trường",
+      "fields": {
+        "decision": "QĐ-TLU-26-021",
+        "signed": "2026-01-05",
+        "effective": "2026-01-06",
+        "start": "2026-01-06",
+        "end": "2027-01-05",
+        "amount": "100000000",
+        "evidence": "Quyet-dinh-giao.pdf",
+        "projectId": "exec-reed"
+      }
+    },
+    {
+      "id": "exec-reed-r1",
+      "kind": "report",
+      "title": "Kỳ 1 · Khảo sát hiện trường",
+      "status": "PASSED",
+      "owner": "thao",
+      "unit": "Khoa Môi trường",
+      "fields": {
+        "period": "1",
+        "dueDate": "2026-06-30",
+        "submittedAt": "2026-06-29T02:00:00Z",
+        "content": "Đã lập bảng cân bằng lưu lượng của hai ô lọc và ghi nhận 12 lượt quan sát.",
+        "evidence": "Bao-cao-TLU-26-021-ky-1.pdf",
+        "projectId": "exec-reed"
+      }
+    },
+    {
+      "id": "exec-bridge-assignment",
+      "kind": "assignment",
+      "title": "Quyết định giao thực hiện TLU-26-012",
+      "status": "EFFECTIVE",
+      "owner": "mai",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "decision": "QĐ-TLU-26-012",
+        "signed": "2026-01-05",
+        "effective": "2026-01-06",
+        "start": "2026-01-06",
+        "end": "2027-01-05",
+        "amount": "100000000",
+        "evidence": "Quyet-dinh-giao.pdf",
+        "projectId": "exec-bridge"
+      }
+    },
+    {
+      "id": "exec-bridge-r1",
+      "kind": "report",
+      "title": "Kỳ 1 · Khảo sát hiện trường",
+      "status": "PASSED",
+      "owner": "mai",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "period": "1",
+        "dueDate": "2026-06-30",
+        "submittedAt": "2026-06-29T02:00:00Z",
+        "content": "Đã ghi độ võng ở bốn cấp tải, đối chiếu giá trị đo với mô hình tính.",
+        "evidence": "Bao-cao-TLU-26-012-ky-1.pdf",
+        "projectId": "exec-bridge"
+      }
+    },
+    {
+      "id": "exec-report-late",
+      "kind": "report",
+      "title": "Kỳ 2 · Đo kiểm thiết bị",
+      "status": "PENDING_SUBMISSION",
+      "owner": "mai",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "period": "2",
+        "dueDate": "2026-11-18",
+        "projectId": "exec-river"
+      }
+    },
+    {
+      "id": "exec-report-next",
+      "kind": "report",
+      "title": "Kỳ 3 · Đối chiếu số liệu",
+      "status": "PENDING_SUBMISSION",
+      "owner": "mai",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "period": "3",
+        "dueDate": "2026-11-28",
+        "projectId": "exec-river"
+      }
+    },
+    {
+      "id": "exec-river-allocation",
+      "kind": "allocation",
+      "title": "Quyết định cấp kinh phí",
+      "status": "CONFIRMED",
+      "owner": "mai",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "amount": "100000000",
+        "fee": "5000000",
+        "rate": "5",
+        "cap": "10000000",
+        "research": "95000000",
+        "projectId": "exec-river"
+      }
+    },
+    {
+      "id": "exec-dam-allocation",
+      "kind": "allocation",
+      "title": "Quyết định cấp kinh phí",
+      "status": "CONFIRMED",
+      "owner": "mai",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "amount": "100000000",
+        "fee": "5000000",
+        "rate": "5",
+        "cap": "10000000",
+        "research": "95000000",
+        "projectId": "exec-dam"
+      }
+    },
+    {
+      "id": "exec-drain-allocation",
+      "kind": "allocation",
+      "title": "Quyết định cấp kinh phí",
+      "status": "CONFIRMED",
+      "owner": "mai",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "amount": "100000000",
+        "fee": "5000000",
+        "rate": "5",
+        "cap": "10000000",
+        "research": "95000000",
+        "projectId": "exec-drain"
+      }
+    },
+    {
+      "id": "exec-bridge-allocation",
+      "kind": "allocation",
+      "title": "Quyết định cấp kinh phí",
+      "status": "CONFIRMED",
+      "owner": "mai",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "amount": "100000000",
+        "fee": "5000000",
+        "rate": "5",
+        "cap": "10000000",
+        "research": "95000000",
+        "projectId": "exec-bridge"
+      }
+    },
+    {
+      "id": "exec-exp-river",
+      "kind": "expense",
+      "title": "Lắp đặt cụm quan trắc và hiệu chuẩn thiết bị",
+      "status": "MATCHED",
+      "owner": "mai",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "amount": "93000000",
+        "date": "2026-09-15",
+        "code": "PC-12",
+        "evidence": "PC-12.pdf",
+        "projectId": "exec-river",
+        "reference": "GD-12",
+        "transferAmount": "93000000"
+      }
+    },
+    {
+      "id": "exec-exp-19",
+      "kind": "expense",
+      "title": "Đo điện trở suất tuyến đập",
+      "status": "UNRECONCILED",
+      "owner": "mai",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "amount": "45000000",
+        "date": "2026-09-20",
+        "code": "PC-19",
+        "evidence": "PC-19.pdf",
+        "projectId": "exec-dam"
+      }
+    },
+    {
+      "id": "exec-exp-20",
+      "kind": "expense",
+      "title": "Xử lý số liệu địa vật lý",
+      "status": "MISMATCHED",
+      "owner": "mai",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "amount": "12000000",
+        "date": "2026-09-20",
+        "code": "PC-20",
+        "evidence": "PC-20.pdf",
+        "projectId": "exec-dam",
+        "reference": "GD-20",
+        "transferAmount": "11800000"
+      }
+    },
+    {
+      "id": "exec-paper",
+      "kind": "output",
+      "title": "Hiệu chỉnh tín hiệu cảm biến mực nước vùng bãi bồi",
+      "status": "APPROVED",
+      "owner": "mai",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "type": "ARTICLE",
+        "year": "2026",
+        "authors": "mai,linh",
+        "publication": "Tập san nghiên cứu thủy công, số 3 (mô phỏng)",
+        "evidence": "paper.pdf",
+        "access": "FULL",
+        "doi": "10.0000/demo.paper",
+        "aiAllowed": "true",
+        "aiGrantVersion": "1",
+        "sourceVersion": "1",
+        "method": "Hiệu chuẩn cảm biến tại ba mặt cắt ở cùng cao trình.",
+        "methodPage": "3, đoạn 2",
+        "result": "Sai số tuyệt đối giảm sau hiệu chuẩn.",
+        "resultPage": "5, bảng 1",
+        "projectId": "exec-river"
+      }
+    },
+    {
+      "id": "exec-patent",
+      "kind": "output",
+      "title": "Cụm gá cảm biến chống bồi lắng",
+      "status": "PENDING_APPROVAL",
+      "owner": "mai",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "type": "PATENT",
+        "year": "2026",
+        "authors": "mai,linh",
+        "publication": "Hồ sơ giải pháp kỹ thuật (mô phỏng)",
+        "evidence": "patent.pdf",
+        "access": "FULL",
+        "projectId": "exec-river"
+      }
+    },
+    {
+      "id": "exec-drain-paper",
+      "kind": "output",
+      "title": "Đường quá trình dòng chảy tại lưu vực thử nghiệm",
+      "status": "APPROVED",
+      "owner": "mai",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "type": "ARTICLE",
+        "year": "2026",
+        "authors": "mai,linh",
+        "publication": "Tập san nghiên cứu thủy công, số 3 (mô phỏng)",
+        "evidence": "drain-paper.pdf",
+        "access": "METADATA",
+        "doi": "10.0000/demo.drain-paper",
+        "aiAllowed": "true",
+        "aiGrantVersion": "1",
+        "sourceVersion": "1",
+        "projectId": "exec-drain"
+      }
+    },
+    {
+      "id": "exec-drain-patent",
+      "kind": "output",
+      "title": "Cửa thu nước tự điều tiết",
+      "status": "APPROVED",
+      "owner": "mai",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "type": "PATENT",
+        "year": "2026",
+        "authors": "mai,linh",
+        "publication": "Hồ sơ giải pháp kỹ thuật (mô phỏng)",
+        "evidence": "drain-patent.pdf",
+        "access": "FULL",
+        "projectId": "exec-drain"
+      }
+    },
+    {
+      "id": "exec-dam-paper",
+      "kind": "output",
+      "title": "Phân vùng dị thường thấm trong đập đất",
+      "status": "APPROVED",
+      "owner": "mai",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "type": "ARTICLE",
+        "year": "2026",
+        "authors": "mai,linh",
+        "publication": "Tập san nghiên cứu thủy công, số 3 (mô phỏng)",
+        "evidence": "dam-paper.pdf",
+        "access": "FULL",
+        "doi": "10.0000/demo.dam-paper",
+        "aiAllowed": "true",
+        "aiGrantVersion": "2",
+        "expires": "2026-11-01",
+        "sourceVersion": "2",
+        "projectId": "exec-dam"
+      }
+    },
+    {
+      "id": "exec-dam-patent",
+      "kind": "output",
+      "title": "Điện cực đo thấm đa hướng",
+      "status": "APPROVED",
+      "owner": "mai",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "type": "PATENT",
+        "year": "2026",
+        "authors": "mai,linh",
+        "publication": "Hồ sơ giải pháp kỹ thuật (mô phỏng)",
+        "evidence": "dam-patent.pdf",
+        "access": "FULL",
+        "projectId": "exec-dam"
+      }
+    },
+    {
+      "id": "exec-drain-committee",
+      "kind": "committee",
+      "title": "Hội đồng thủy công",
+      "status": "ACTIVE",
+      "owner": "an",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "members": "minh",
+        "type": "ACCEPTANCE",
+        "decision": "QĐ-HĐ-26",
+        "projectId": "exec-drain"
+      }
+    },
+    {
+      "id": "exec-dam-committee",
+      "kind": "committee",
+      "title": "Hội đồng thủy công",
+      "status": "ACTIVE",
+      "owner": "an",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "members": "minh",
+        "type": "ACCEPTANCE",
+        "decision": "QĐ-HĐ-26",
+        "projectId": "exec-dam"
+      }
+    },
+    {
+      "id": "exec-bridge-committee",
+      "kind": "committee",
+      "title": "Hội đồng thủy công",
+      "status": "ACTIVE",
+      "owner": "an",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "members": "minh",
+        "type": "ACCEPTANCE",
+        "decision": "QĐ-HĐ-26",
+        "projectId": "exec-bridge"
+      }
+    },
+    {
+      "id": "exec-bridge-report",
+      "kind": "output",
+      "title": "Báo cáo thử tải tĩnh dầm cầu nhịp 12 m",
+      "status": "APPROVED",
+      "owner": "mai",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "type": "REPORT",
+        "year": "2026",
+        "authors": "mai",
+        "publication": "Phòng thí nghiệm kết cấu công trình",
+        "evidence": "Thi-nghiem-dam.pdf",
+        "access": "FULL",
+        "projectId": "exec-bridge"
+      }
+    },
+    {
+      "id": "exec-bridge-round",
+      "kind": "round",
+      "title": "Đánh giá kết quả thử tải",
+      "status": "COLLECTING_SCORES",
+      "owner": "an",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "type": "ACCEPTANCE",
+        "members": "minh",
+        "criteria": "NT-2026-v1",
+        "date": "2026-11-24",
+        "minimum": "1",
+        "threshold": "70",
+        "projectId": "exec-bridge"
+      }
+    },
+    {
+      "id": "exec-bridge-round-minh",
+      "kind": "ballot",
+      "title": "Phiếu nhận xét thử tải",
+      "status": "DRAFT",
+      "owner": "minh",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "roundId": "exec-bridge-round",
+        "type": "ACCEPTANCE",
+        "science": "82",
+        "impact": "",
+        "comment": "Đã kiểm tra số liệu tải trọng.",
+        "projectId": "exec-bridge"
+      }
+    },
+    {
+      "id": "exec-old-round",
+      "kind": "round",
+      "title": "Đợt nghiệm thu tháng 10",
+      "status": "CONCLUDED",
+      "owner": "an",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "type": "ACCEPTANCE",
+        "members": "minh",
+        "date": "2026-10-21",
+        "minimum": "1",
+        "threshold": "70",
+        "aggregate": "84",
+        "conclusion": "PASSED",
+        "projectId": "exec-dam"
+      }
+    },
+    {
+      "id": "exec-old-ballot",
+      "kind": "ballot",
+      "title": "Phiếu đánh giá kết quả đo thấm",
+      "status": "SUBMITTED",
+      "owner": "minh",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "roundId": "exec-old-round",
+        "type": "ACCEPTANCE",
+        "science": "80",
+        "impact": "90",
+        "total": "84",
+        "projectId": "exec-dam"
+      }
+    },
+    {
+      "id": "exec-admission-ballot",
+      "kind": "ballot",
+      "title": "Phiếu xét duyệt đầu vào",
+      "status": "SUBMITTED",
+      "owner": "minh",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "roundId": "exec-drain-admission",
+        "type": "PROPOSAL",
+        "total": "99",
+        "projectId": "exec-drain"
+      }
+    },
+    {
+      "id": "exec-profile-mai",
+      "kind": "profile",
+      "title": "Lê Thanh Mai",
+      "status": "ACTIVE",
+      "owner": "mai",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "position": "Giảng viên",
+        "email": "mai@example.invalid",
+        "gender": "",
+        "discipline": "Kỹ thuật tài nguyên nước"
+      }
+    },
+    {
+      "id": "exec-profile-linh",
+      "kind": "profile",
+      "title": "Nguyễn Khánh Linh",
+      "status": "ACTIVE",
+      "owner": "linh",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "position": "Sinh viên",
+        "email": "linh@example.invalid",
+        "gender": "",
+        "discipline": ""
+      }
+    },
+    {
+      "id": "exec-profile-an",
+      "kind": "profile",
+      "title": "Nguyễn Hoài An",
+      "status": "ACTIVE",
+      "owner": "an",
+      "unit": "Phòng Khoa học và Công nghệ",
+      "fields": {
+        "position": "Cán bộ",
+        "email": "an@example.invalid",
+        "gender": "",
+        "discipline": ""
+      }
+    },
+    {
+      "id": "exec-profile-minh",
+      "kind": "profile",
+      "title": "Phạm Quang Minh",
+      "status": "ACTIVE",
+      "owner": "minh",
+      "unit": "Khoa Môi trường",
+      "fields": {
+        "position": "Cán bộ",
+        "email": "minh@example.invalid",
+        "gender": "",
+        "discipline": ""
+      }
+    },
+    {
+      "id": "exec-profile-ha",
+      "kind": "profile",
+      "title": "Trần Thu Hà",
+      "status": "ACTIVE",
+      "owner": "ha",
+      "unit": "Phòng Quản trị",
+      "fields": {
+        "position": "Cán bộ",
+        "email": "ha@example.invalid",
+        "gender": "",
+        "discipline": ""
+      }
+    },
+    {
+      "id": "exec-profile-thao",
+      "kind": "profile",
+      "title": "Vũ Phương Thảo",
+      "status": "ACTIVE",
+      "owner": "thao",
+      "unit": "Khoa Môi trường",
+      "fields": {
+        "position": "Cán bộ",
+        "email": "thao@example.invalid",
+        "gender": "",
+        "discipline": ""
+      }
+    },
+    {
+      "id": "exec-degree",
+      "kind": "qualification",
+      "title": "Tiến sĩ",
+      "status": "ACTIVE",
+      "owner": "mai",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "type": "DEGREE",
+        "year": "2015"
+      }
+    },
+    {
+      "id": "exec-job",
+      "kind": "employment",
+      "title": "Bộ môn Thủy công",
+      "status": "ACTIVE",
+      "owner": "mai",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "position": "Giảng viên",
+        "start": "2018-09-01",
+        "end": ""
+      }
+    },
+    {
+      "id": "exec-template-1",
+      "kind": "cvTemplate",
+      "title": "Lý lịch khoa học",
+      "status": "ACTIVE",
+      "owner": "ha",
+      "unit": "",
+      "fields": {
+        "code": "CV-01",
+        "tenant": "tlu",
+        "version": "1"
+      }
+    },
+    {
+      "id": "exec-template-2",
+      "kind": "cvTemplate",
+      "title": "Lý lịch nghiên cứu và giảng dạy",
+      "status": "INACTIVE",
+      "owner": "ha",
+      "unit": "",
+      "fields": {
+        "code": "CV-01",
+        "tenant": "tlu",
+        "version": "2"
+      }
+    },
+    {
+      "id": "exec-policy",
+      "kind": "executionPolicy",
+      "title": "Cấu hình kinh phí",
+      "status": "ACTIVE",
+      "owner": "ha",
+      "unit": "",
+      "fields": {
+        "rate": "5",
+        "cap": "10000000",
+        "reconcile": "true"
+      }
+    },
+    {
+      "id": "exec-drain-admission",
+      "kind": "round",
+      "title": "Đợt xét hồ sơ năm 2025",
+      "status": "CONCLUDED",
+      "owner": "an",
+      "unit": "Khoa Công trình",
+      "fields": {
+        "type": "PROPOSAL",
+        "members": "minh",
+        "date": "2025-11-20",
+        "minimum": "1",
+        "threshold": "70",
+        "aggregate": "99",
+        "conclusion": "PASSED",
+        "projectId": "exec-drain"
+      }
+    },
+    {
+      "id": "exec-software",
+      "kind": "output",
+      "owner": "mai",
+      "unit": "Khoa Công trình",
+      "title": "Công cụ nội suy mực nước",
+      "status": "DRAFT",
+      "fields": {
+        "type": "SOFTWARE",
+        "year": "2026",
+        "authors": "mai",
+        "publication": "Tủ sách giảng dạy nội bộ (mô phỏng)",
+        "evidence": "software-v1.pdf",
+        "access": "FULL",
+        "reason": ""
+      }
+    },
+    {
+      "id": "exec-book",
+      "kind": "output",
+      "owner": "mai",
+      "unit": "Khoa Công trình",
+      "title": "Đọc đường quá trình mực nước",
+      "status": "APPROVED",
+      "fields": {
+        "type": "BOOK",
+        "year": "2026",
+        "authors": "mai",
+        "publication": "Tủ sách giảng dạy nội bộ (mô phỏng)",
+        "evidence": "book-v1.pdf",
+        "access": "FULL",
+        "reason": ""
+      }
+    },
+    {
+      "id": "exec-returned-output",
+      "kind": "output",
+      "owner": "mai",
+      "unit": "Khoa Công trình",
+      "title": "Báo cáo đối chiếu mốc cao độ",
+      "status": "REJECTED",
+      "fields": {
+        "type": "REPORT",
+        "year": "2026",
+        "authors": "mai",
+        "publication": "Tủ sách giảng dạy nội bộ (mô phỏng)",
+        "evidence": "returned-output-v1.pdf",
+        "access": "FULL",
+        "reason": "Bổ sung phụ lục đối chiếu và trang xác nhận của nhóm."
+      }
+    }
+  ],
+  "extension": [
+    {
+      "id": "ext-call-autumn",
+      "kind": "ext-student-call",
+      "title": "NCKH sinh viên 2026–2027",
+      "status": "OPEN",
+      "unit": "Khoa Công trình",
+      "owner": "an",
+      "fields": {
+        "start": "2026-10-01",
+        "end": "2026-12-15",
+        "finalDue": "2027-05-15",
+        "min": "1",
+        "max": "5",
+        "declaration": "",
+        "result": "FINAL_REPORT,PRODUCT"
+      }
+    },
+    {
+      "id": "ext-call-spring",
+      "kind": "ext-student-call",
+      "title": "NCKH sinh viên học kỳ II 2025–2026",
+      "status": "CLOSED",
+      "unit": "Khoa Công trình",
+      "owner": "an",
+      "fields": {
+        "start": "2026-01-04",
+        "end": "2026-03-20",
+        "finalDue": "2026-12-01",
+        "min": "1",
+        "max": "5",
+        "declaration": "",
+        "result": "FINAL_REPORT,PRODUCT"
+      }
+    },
+    {
+      "id": "ext-call-environment",
+      "kind": "ext-student-call",
+      "title": "NCKH sinh viên môi trường 2026–2027",
+      "status": "OPEN",
+      "unit": "Khoa Môi trường",
+      "owner": "an",
+      "fields": {
+        "start": "2026-10-01",
+        "end": "2026-12-15",
+        "finalDue": "2027-05-15",
+        "min": "1",
+        "max": "5",
+        "declaration": "",
+        "result": "FINAL_REPORT,PRODUCT"
+      }
+    },
+    {
+      "id": "ext-upper-pending",
+      "kind": "upper-project",
+      "title": "Dự báo bồi lắng hồ chứa vùng trung du Bắc Bộ",
+      "status": "PENDING_APPROVAL",
+      "unit": "Khoa Công trình",
+      "owner": "mai",
+      "fields": {
+        "scopeUnit": "Khoa Công trình",
+        "cycle": "1",
+        "start": "2026-03-01",
+        "end": "2026-11-30",
+        "contributors": "[{\"id\":\"mai\",\"role\":\"Chủ nhiệm\",\"share\":60},{\"id\":\"minh\",\"role\":\"Thành viên\",\"share\":40}]",
+        "evidence": "{\"DECISION\":\"QĐ-128-giao-nhiệm-vụ.pdf\"}",
+        "category": "MINISTRY",
+        "code": "B2026-TL-08",
+        "agency": "Bộ Nông nghiệp và Môi trường",
+        "budget": "1250000000",
+        "memberIds": "mai,minh",
+        "statusSemantic": "SUBMITTED"
+      }
+    },
+    {
+      "id": "ext-upper-draft",
+      "kind": "upper-project",
+      "title": "Đánh giá xói lở bờ sông trên địa bàn Hưng Yên",
+      "status": "DRAFT",
+      "unit": "Khoa Công trình",
+      "owner": "mai",
+      "fields": {
+        "scopeUnit": "Khoa Công trình",
+        "cycle": "1",
+        "start": "2026-03-01",
+        "end": "2026-11-30",
+        "contributors": "[{\"id\":\"mai\",\"role\":\"Chủ nhiệm\",\"share\":100}]",
+        "evidence": "{}",
+        "category": "PROVINCE",
+        "code": "HY-26-14",
+        "agency": "UBND tỉnh Hưng Yên",
+        "budget": "480000000",
+        "memberIds": "mai",
+        "statusSemantic": "DRAFT"
+      }
+    },
+    {
+      "id": "ext-applied-draft",
+      "kind": "applied-project",
+      "title": "Chuyển giao bộ cảm biến rò rỉ cho tuyến đê thử nghiệm",
+      "status": "DRAFT",
+      "unit": "Khoa Công trình",
+      "owner": "mai",
+      "fields": {
+        "scopeUnit": "Khoa Công trình",
+        "cycle": "1",
+        "start": "2026-03-01",
+        "end": "2026-11-30",
+        "contributors": "[{\"id\":\"mai\",\"role\":\"Chủ nhiệm\",\"share\":60},{\"id\":\"minh\",\"role\":\"Thành viên\",\"share\":40}]",
+        "evidence": "{\"CONTRACT\":\"HĐ-17-bản-ghi.pdf\"}",
+        "category": "TRANSFER",
+        "code": "CG-26-17",
+        "partner": "",
+        "budget": "350000000",
+        "memberIds": "mai,minh",
+        "statusSemantic": "DRAFT"
+      }
+    },
+    {
+      "id": "ext-applied-complete",
+      "kind": "applied-project",
+      "title": "Kiểm định trạm bơm tiêu cụm Yên Sở",
+      "status": "COMPLETED",
+      "unit": "Khoa Công trình",
+      "owner": "mai",
+      "fields": {
+        "scopeUnit": "Khoa Công trình",
+        "cycle": "1",
+        "start": "2026-03-01",
+        "end": "2026-11-06",
+        "contributors": "[{\"id\":\"mai\",\"role\":\"Chủ nhiệm\",\"share\":60},{\"id\":\"minh\",\"role\":\"Thành viên\",\"share\":40}]",
+        "evidence": "{\"CONTRACT\":\"HĐ-DVKT-09.pdf\",\"ACCEPTANCE_MINUTES\":\"BB-nghiệm-thu-12-11.pdf\"}",
+        "category": "TECHNICAL",
+        "code": "DVKT-2026-09",
+        "partner": "Công ty Khai thác công trình thủy lợi Sông Nhuệ",
+        "budget": "350000000",
+        "sourceOccurredAt": "2026-11-12",
+        "resultSummary": "Bàn giao bộ đường đặc tính và báo cáo chạy tải ba tổ máy.",
+        "memberIds": "mai,minh",
+        "statusSemantic": "COMPLETED"
+      }
+    },
+    {
+      "id": "ext-student-invite",
+      "kind": "student-project",
+      "title": "Lập bản đồ điểm ngập quanh khuôn viên trường",
+      "status": "MENTOR_PENDING",
+      "unit": "Khoa Công trình",
+      "owner": "linh",
+      "fields": {
+        "scopeUnit": "Khoa Công trình",
+        "cycle": "1",
+        "start": "2026-11-15",
+        "end": "2027-05-10",
+        "contributors": "[{\"id\":\"mai\",\"role\":\"GV hướng dẫn\",\"share\":100}]",
+        "evidence": "{}",
+        "category": "STUDENT",
+        "callId": "ext-call-autumn",
+        "group": "linh,phuc,yen",
+        "product": "Bản đồ các vị trí có nguy cơ ngập",
+        "objective": "Đối chiếu cao độ thực địa với mực nước sau mưa để xác định điểm ngập.",
+        "code": "SV-CT-26-12",
+        "memberIds": "linh,phuc,yen,mai",
+        "statusSemantic": "DRAFT"
+      }
+    },
+    {
+      "id": "ext-student-field",
+      "kind": "student-project",
+      "title": "Khảo sát thấm qua lớp lọc bằng cát tái chế",
+      "status": "IN_PROGRESS",
+      "unit": "Khoa Công trình",
+      "owner": "linh",
+      "fields": {
+        "scopeUnit": "Khoa Công trình",
+        "cycle": "1",
+        "start": "2026-03-01",
+        "end": "2026-11-30",
+        "contributors": "[{\"id\":\"mai\",\"role\":\"GV hướng dẫn\",\"share\":100}]",
+        "evidence": "{}",
+        "category": "STUDENT",
+        "callId": "ext-call-spring",
+        "group": "linh,yen",
+        "product": "Mô hình cột thấm và bộ số liệu thực nghiệm",
+        "objective": "Đo hệ số thấm dưới ba cấp tải trọng.",
+        "code": "SV-CT-26-03",
+        "mentorConfirmation": "ext-student-field",
+        "confirmedMentor": "mai",
+        "memberIds": "linh,yen,mai",
+        "statusSemantic": "IN_PROGRESS"
+      }
+    },
+    {
+      "id": "ext-activity-conference",
+      "kind": "activity",
+      "title": "Báo cáo về quan trắc biến dạng đập đất tại hội nghị thủy lợi",
+      "status": "APPROVED",
+      "unit": "Khoa Công trình",
+      "owner": "mai",
+      "fields": {
+        "scopeUnit": "Khoa Công trình",
+        "cycle": "1",
+        "start": "2026-09-23",
+        "end": "2026-11-30",
+        "contributors": "[{\"id\":\"mai\",\"role\":\"Chủ nhiệm\",\"share\":100}]",
+        "evidence": "{\"ASSIGNMENT\":\"Tờ-trình-cử-đi.pdf\",\"PROGRAM\":\"Chương-trình-phiên-B.pdf\"}",
+        "category": "CONFERENCE",
+        "sourceOccurredAt": "2026-09-30",
+        "description": "Báo cáo chuyên đề tại phiên an toàn hồ đập.",
+        "support": "1800000",
+        "memberIds": "mai",
+        "statusSemantic": "APPROVED"
+      }
+    },
+    {
+      "id": "ext-activity-community",
+      "kind": "activity",
+      "title": "Tập huấn đọc bản đồ ngập cho tổ phòng chống thiên tai",
+      "status": "PENDING_APPROVAL",
+      "unit": "Khoa Công trình",
+      "owner": "mai",
+      "fields": {
+        "scopeUnit": "Khoa Công trình",
+        "cycle": "1",
+        "start": "2026-11-14",
+        "end": "2026-11-30",
+        "contributors": "[{\"id\":\"mai\",\"role\":\"Chủ nhiệm\",\"share\":100}]",
+        "evidence": "{\"PARTICIPATION\":\"Xác-nhận-của-xã.pdf\"}",
+        "category": "COMMUNITY",
+        "description": "Hướng dẫn sử dụng bản đồ ngập trong diễn tập tại xã ven sông.",
+        "memberIds": "mai",
+        "statusSemantic": "SUBMITTED"
+      }
+    },
+    {
+      "id": "ext-activity-patent",
+      "kind": "activity",
+      "title": "Cụm lấy mẫu nước tự động tại cửa xả",
+      "status": "DRAFT",
+      "unit": "Khoa Môi trường",
+      "owner": "minh",
+      "fields": {
+        "scopeUnit": "Khoa Môi trường",
+        "cycle": "1",
+        "start": "2026-11-05",
+        "end": "2026-11-30",
+        "contributors": "[{\"id\":\"minh\",\"role\":\"Chủ nhiệm\",\"share\":100}]",
+        "evidence": "{}",
+        "category": "IP",
+        "description": "Văn bằng cho cụm van lấy mẫu theo chu kỳ.",
+        "memberIds": "minh",
+        "statusSemantic": "DRAFT"
+      }
+    }
+  ],
+  "audit": [
+    {
+      "id": "history-1",
+      "actor": "Nguyễn Hoài An",
+      "actorId": "an",
+      "unit": "Khoa Công trình",
+      "at": "2026-01-06T01:00:00Z",
+      "action": "Giao đề tài",
+      "recordId": "exec-river",
+      "title": "Quan trắc xói lở bờ sông bằng cảm biến mực nước",
+      "from": "APPROVED",
+      "to": "IN_PROGRESS",
+      "reason": "Quyết định giao thực hiện TLU-26-014",
+      "workflowVersion": "v1"
+    },
+    {
+      "id": "history-2",
+      "actor": "Nguyễn Hoài An",
+      "actorId": "an",
+      "unit": "Khoa Công trình",
+      "at": "2026-10-21T03:30:00Z",
+      "action": "Chốt kết luận nghiệm thu",
+      "recordId": "exec-dam",
+      "title": "Đánh giá thấm qua thân đập đất bằng điện trở suất",
+      "from": "UNDER_ACCEPTANCE",
+      "to": "PASSED",
+      "reason": "Phiếu đã gửi đạt 84/100 điểm.",
+      "workflowVersion": "v1"
+    },
+    {
+      "id": "history-3",
+      "actor": "Nguyễn Hoài An",
+      "actorId": "an",
+      "unit": "Khoa Công trình",
+      "at": "2026-11-01T01:00:00Z",
+      "action": "Mở kỳ nhận đề xuất",
+      "recordId": "call-01",
+      "title": "Đề tài cấp cơ sở năm 2027",
+      "from": "DRAFT",
+      "to": "OPEN",
+      "reason": "Tiếp nhận đến 30/11/2026."
+    },
+    {
+      "id": "history-4",
+      "actor": "Lê Thanh Mai",
+      "actorId": "mai",
+      "unit": "Khoa Công trình",
+      "at": "2026-11-16T03:15:00Z",
+      "action": "Nộp đề xuất",
+      "recordId": "intake-dt-returned",
+      "title": "Đánh giá hiệu quả thu gom nước mưa tại khu giảng đường",
+      "from": "DRAFT",
+      "to": "SUBMITTED",
+      "reason": "",
+      "workflowVersion": "v1"
+    },
+    {
+      "id": "history-5",
+      "actor": "Nguyễn Hoài An",
+      "actorId": "an",
+      "unit": "Khoa Công trình",
+      "at": "2026-11-17T02:00:00Z",
+      "action": "Trả bổ sung",
+      "recordId": "intake-dt-returned",
+      "title": "Đánh giá hiệu quả thu gom nước mưa tại khu giảng đường",
+      "from": "SUBMITTED",
+      "to": "DRAFT",
+      "reason": "Bổ sung cách lựa chọn địa điểm khảo sát và số mẫu đối chứng.",
+      "workflowVersion": "v1"
+    }
+  ],
+  "cases": [
+    {
+      "id": "TLU-01",
+      "feature": "B06",
+      "route": "#/B06",
+      "actor": "mai",
+      "goal": "Tôi muốn biết việc nào cần xử lý đầu tiên.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Mở Tổng quan, chọn việc của “Quan trắc thấm qua thân đập đất bằng cảm biến áp lực” rồi quay lại bằng nút Back. Trên điện thoại mở bộ lọc hạn.",
+      "expected": "Liên kết mở đúng bản nháp F01 của Mai. Phiên của Linh có danh sách việc theo vai sinh viên.",
+      "recordId": "dt-01"
+    },
+    {
+      "id": "TLU-02",
+      "feature": "F02",
+      "route": "#/F02/call-01",
+      "actor": "mai",
+      "goal": "Tôi cần biết kỳ nào còn nhận đề xuất.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Mở “Đề tài cấp cơ sở năm 2027” (KG-2027-01), đọc ngày và danh mục rồi chọn lập đề xuất.",
+      "expected": "Kỳ đang mở từ 01/11 đến 30/11/2026. Biểu mẫu F01 mới gắn đúng kỳ. Quay lại kỳ KG-2026-02 thấy trạng thái đã đóng.",
+      "recordId": "call-01"
+    },
+    {
+      "id": "TLU-03",
+      "feature": "F02",
+      "route": "#/F02/intake-call-draft",
+      "actor": "an",
+      "goal": "Tôi cần phát hiện tiêu chí cũ trước khi mở kỳ.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Thử mở kỳ KG-2027-02 đang dùng tiêu chí năm 2024. Vào chỉnh sửa, chọn bộ tiêu chí xét đề xuất cấp cơ sở 2026 rồi mở lại.",
+      "expected": "Lần đầu hệ thống báo tiêu chí hết hiệu lực. Sau khi sửa, kỳ mở với ngày bắt đầu 01/12/2026. Tại ngày demo, chủ nhiệm vẫn chưa đến thời gian nộp.",
+      "recordId": "intake-call-draft"
+    },
+    {
+      "id": "TLU-04",
+      "feature": "F01",
+      "route": "#/F01/dt-01",
+      "actor": "mai",
+      "goal": "Tôi muốn nộp thuyết minh và giữ được mã theo dõi.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Mở “Quan trắc thấm qua thân đập đất bằng cảm biến áp lực”. Kiểm tra mục tiêu “Ước lượng sai số áp lực nước tại ba mặt cắt đập mô hình.”, 12 tháng, 85.000.000 đồng và nhiệm vụ của Linh. Lưu rồi nộp.",
+      "expected": "Hồ sơ chuyển từ nháp sang đã nộp, được cấp mã TLU-26-DT-01. Mở lại thấy nội dung và loại tài liệu đã lưu.",
+      "recordId": "dt-01"
+    },
+    {
+      "id": "TLU-05",
+      "feature": "F01",
+      "route": "#/F01/intake-dt-returned",
+      "actor": "mai",
+      "goal": "Tôi muốn biết mình phải bổ sung gì và nộp lại đúng hồ sơ.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Đọc lý do trả bổ sung tại TLU-26-NC07. Thêm vào phương pháp “Chọn hai mái nhà có diện tích thu khác nhau để đối chứng.”. Lưu, nộp lại.",
+      "expected": "Mã TLU-26-NC07 giữ nguyên. Nhật ký có lần nộp đầu, lần trả của An và lần nộp mới.",
+      "recordId": "intake-dt-returned"
+    },
+    {
+      "id": "TLU-06",
+      "feature": "P02",
+      "route": "#/P02/intake-dt-returned",
+      "actor": "an",
+      "goal": "Tôi cần giải thích vì sao hồ sơ từng về nháp.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Mở nhật ký riêng hồ sơ TLU-26-NC07. Chọn sự kiện Trả bổ sung và đọc người xử lý, thời điểm, lý do, trạng thái.",
+      "expected": "An trả hồ sơ lúc 09:00 ngày 17/11/2026 giờ Việt Nam. Trạng thái đi từ SUBMITTED về DRAFT theo v1. Lần nộp 16/11 vẫn tra được.",
+      "recordId": "intake-dt-returned"
+    },
+    {
+      "id": "TLU-07",
+      "feature": "F03",
+      "route": "#/F03/intake-dt-flood",
+      "actor": "minh",
+      "goal": "Tôi muốn gửi phiếu khoa học độc lập.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Hai phiếu của Sơn và Huệ đang có tổng lần lượt 8 và 7. Minh nhập 9, 9, 9 cho ba tiêu chí, nhận xét “Đủ căn cứ để thử nghiệm trong phạm vi đề xuất”, gửi phiếu.",
+      "expected": "Phiếu của Minh là 9/10 và khóa sau khi gửi. An thấy đủ ba phiếu, trung bình 8/10.",
+      "recordId": "intake-dt-flood"
+    },
+    {
+      "id": "TLU-08",
+      "feature": "F03",
+      "route": "#/F03/intake-dt-flood",
+      "actor": "an",
+      "goal": "Tôi cần tách quyết định khoa học khỏi thẩm định đạo đức.",
+      "precondition": "Đã hoàn thành TLU-07 trong cùng phiên dữ liệu.",
+      "steps": "Chốt kết luận khoa học. Ghi kết quả đạo đức đạt và căn cứ “BB-TLU-DD-08, chấp thuận phạm vi mô phỏng”.",
+      "expected": "Sau chốt khoa học dự án vẫn đang xét duyệt vì còn chờ đạo đức. Sau khi ghi căn cứ chấp thuận, đề tài chuyển APPROVED.",
+      "recordId": "intake-dt-flood"
+    },
+    {
+      "id": "TLU-09",
+      "feature": "F03",
+      "route": "#/F03/intake-dt-coi",
+      "actor": "minh",
+      "goal": "Tôi cần biết hồ sơ nào mình phải tránh chấm.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Mở liên kết trực tiếp TLU-26-NC08. Đổi sang An, mở hồ sơ và đối chiếu thành viên với danh sách người chấm.",
+      "expected": "Minh là thành viên đề tài nên không có phiếu hợp lệ cho mình. An có thể kiểm hai phiếu của Sơn và Huệ.",
+      "recordId": "intake-dt-coi"
+    },
+    {
+      "id": "TLU-10",
+      "feature": "B02",
+      "route": "#/B02/report-open-baseline",
+      "actor": "an",
+      "goal": "Tôi muốn bảo vệ số liệu báo cáo khi hồ sơ nguồn thay đổi.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Mở bản chụp KG-2027-01 lúc 10:00 ngày 20/11. Lọc từng trạng thái và xuất đối chứng CSV. Đổi sang Nam, tạo báo cáo mới cho cùng kỳ.",
+      "expected": "Bản chụp của An có ba mã NC02, NC05, NC07, gồm hai đã nộp và một nháp đã có mã. Báo cáo của Nam chỉ gồm mã thuộc Khoa Công trình. Bản chụp cũ giữ số liệu gốc.",
+      "recordId": "report-open-baseline"
+    },
+    {
+      "id": "TLU-11",
+      "feature": "F04",
+      "route": "#/F04/intake-dt-approved",
+      "actor": "an",
+      "goal": "Tôi muốn giao nhiệm vụ đã duyệt và lập kỳ theo dõi.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Giao “Hiệu chỉnh đường quan hệ mực nước và lưu lượng sông Đáy” theo QĐ-TLU-18, bắt đầu 21/11/2026, kết thúc 20/11/2027, một báo cáo kỹ thuật, chọn tệp mẫu. Lập kỳ báo cáo hạn 15/12/2026.",
+      "expected": "Mã TLU-26-NC06 và v1 giữ nguyên. Đề tài đang thực hiện, có quyết định giao và một kỳ chờ chủ nhiệm nộp.",
+      "recordId": "intake-dt-approved"
+    },
+    {
+      "id": "TLU-12",
+      "feature": "F04",
+      "route": "#/F04/exec-river",
+      "actor": "mai",
+      "goal": "Tôi cần nộp báo cáo quá hạn và nhận phản hồi.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Chọn kỳ 2 hạn 18/11. Điền “Hai đầu đo đã được hiệu chuẩn lại tại mặt cắt số 3.”, chọn tệp mẫu, nộp. An mở cùng kỳ và duyệt đạt.",
+      "expected": "Báo cáo lưu đúng kỳ và được duyệt. Kỳ 3 hạn 28/11 vẫn chờ nộp. Kiểm hồ sơ nguồn bằng mã TLU-26-014.",
+      "recordId": "exec-river"
+    },
+    {
+      "id": "TLU-13",
+      "feature": "B04",
+      "route": "#/B04/home-notice-call-01",
+      "actor": "mai",
+      "goal": "Tôi muốn đọc nhắc việc và đi thẳng tới kỳ nhận hồ sơ.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Mở thông báo kỳ đã mở, quay về hộp thư, tải lại và mở lại thông báo. Dùng liên kết hồ sơ nguồn.",
+      "expected": "Chỉ một lần chuyển từ chưa đọc sang đã đọc. Trong phiên sạch, bộ đếm từ 2 còn 1. Hồ sơ nguồn là KG-2027-01 của trường đang chọn.",
+      "recordId": "home-notice-call-01"
+    },
+    {
+      "id": "TLU-14",
+      "feature": "B04",
+      "route": "#/B04/delivery",
+      "actor": "an",
+      "goal": "Tôi cần gửi lại một email nhắc hạn bị lỗi.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Tìm “Nhắc hạn báo cáo định kỳ” trong nhật ký gửi. Kiểm kênh EMAIL, người nhận mai, số lần 3 rồi bấm Gửi lại.",
+      "expected": "Cùng dòng chuyển từ lỗi sang đã gửi, số lần là 4 trong mô phỏng.",
+      "recordId": "delivery-initial"
+    },
+    {
+      "id": "TLU-15",
+      "feature": "F05",
+      "route": "#/F05/exec-river",
+      "actor": "mai",
+      "goal": "Tôi muốn biết một khoản chi mới có làm vượt kinh phí thực hiện.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Xem cấp 100.000.000, phí 5.000.000 và PC-12 là 93.000.000 đồng. Ghi thêm 3.000.000 ngày 21/11, nội dung “Hiệu chuẩn bổ sung”, kèm chứng từ mẫu.",
+      "expected": "Kinh phí thực hiện 95.000.000 đồng. Đã chi tăng lên 96.000.000, vượt 1.000.000 đồng. Giao dịch vẫn được lưu và có cảnh báo.",
+      "recordId": "exec-river"
+    },
+    {
+      "id": "TLU-16",
+      "feature": "F05",
+      "route": "#/F05/exec-dam",
+      "actor": "an",
+      "goal": "Tôi cần quyết toán sau khi đối soát hai giao dịch.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Thử chốt khi PC-19 chưa đối soát, PC-20 lệch 200.000. Đối soát 45.000.000 với GD-19 và 12.000.000 với GD-20, sau đó chốt.",
+      "expected": "Chỉ sau khi đủ điều kiện, đề tài TLU-26-005 chuyển từ PASSED sang COMPLETED. Sổ chi được khóa, quyết định có trong nhật ký.",
+      "recordId": "exec-dam"
+    },
+    {
+      "id": "TLU-17",
+      "feature": "F07",
+      "route": "#/F07/exec-patent",
+      "actor": "an",
+      "goal": "Tôi muốn sản phẩm chỉ được tính sau khi duyệt minh chứng.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Mở “Cụm gá cảm biến chống bồi lắng”, kiểm tra tác giả Mai và Linh, năm 2026, minh chứng patent.pdf. Phê duyệt rồi mở F06 của TLU-26-014.",
+      "expected": "Sáng chế từ chờ duyệt thành đã duyệt. Cam kết sáng chế từ 0/1 thành 1/1. Kỳ báo cáo cuối chưa đạt vẫn chặn nghiệm thu.",
+      "recordId": "exec-patent"
+    },
+    {
+      "id": "TLU-18",
+      "feature": "F07",
+      "route": "#/F07/exec-software",
+      "actor": "mai",
+      "goal": "Tôi cần kê khai phần mềm độc lập và theo dõi hồ sơ bị trả.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Mở nháp “Công cụ nội suy mực nước”, kiểm thông tin công bố và gửi duyệt. Mở báo cáo độc lập “Báo cáo đối chiếu mốc cao độ” để đọc lý do rồi bổ sung minh chứng.",
+      "expected": "Phần mềm đi tới hàng chờ duyệt và chưa xuất hiện trong danh sách công trình đã duyệt. Báo cáo bị từ chối sửa được. Sách chuyên khảo “Đọc đường quá trình mực nước” đã duyệt xuất hiện trong lý lịch.",
+      "recordId": "exec-software"
+    },
+    {
+      "id": "TLU-19",
+      "feature": "F06",
+      "route": "#/F06/exec-drain",
+      "actor": "an",
+      "goal": "Tôi cần mở hội đồng nghiệm thu đúng hồ sơ.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Kiểm “Mô hình tiêu thoát nước cho lưu vực đô thị” đang chờ nghiệm thu, báo cáo kỳ cuối đạt, bài báo và sáng chế đã duyệt. Mở đợt nghiệm thu với hội đồng có Minh, chọn ngày 24/11/2026.",
+      "expected": "Đề tài sang UNDER_ACCEPTANCE. Phiếu PROPOSAL 99 điểm trong lịch sử không được cộng vào đợt nghiệm thu mới.",
+      "recordId": "exec-drain"
+    },
+    {
+      "id": "TLU-20",
+      "feature": "F06",
+      "route": "#/F06/exec-bridge",
+      "actor": "minh",
+      "goal": "Tôi muốn chốt điểm của mình và xem kết luận có đúng trọng số.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Phiếu hiện còn nháp. Nhập khoa học 82, tác động 90 và gửi. Đổi sang An để chốt kết luận. Có thể chạy lại trên dữ liệu sạch với 50 và 60.",
+      "expected": "Nhánh đạt được 85,20/100 theo trọng số 60/40, vượt ngưỡng 70. Nhánh còn lại được 54/100 và trả kết quả không đạt. Mỗi lần chỉ tính phiếu đã gửi của đợt.",
+      "recordId": "exec-bridge"
+    },
+    {
+      "id": "TLU-21",
+      "feature": "F08",
+      "route": "#/F08/exec-profile-mai",
+      "actor": "mai",
+      "goal": "Tôi muốn xuất lý lịch cho hội đồng và kiểm tra từng nguồn.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Mở lý lịch, kiểm học vị Tiến sĩ 2015 và công tác tại “Bộ môn Thủy công” từ 09/2018. Trích xuất lý lịch, mở tệp HTML và kiểm danh sách công trình.",
+      "expected": "Bản xuất ghi đúng trường, có sách chuyên khảo đã duyệt và bài “Hiệu chỉnh tín hiệu cảm biến mực nước vùng bãi bồi”. Phần mềm nháp và báo cáo bị từ chối không vào danh sách sản phẩm đã duyệt.",
+      "recordId": "exec-profile-mai"
+    },
+    {
+      "id": "TLU-22",
+      "feature": "B03",
+      "route": "#/B03",
+      "actor": "ngoc",
+      "goal": "Tôi cần xin quyền tác giả để nộp đề tài.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Gửi yêu cầu với học vị Thạc sĩ, chuyên ngành Kỹ thuật môi trường, hướng nghiên cứu “Quan trắc chất lượng nước”, chọn minh chứng mẫu. Hà mở Yêu cầu nâng quyền và duyệt.",
+      "expected": "Trước duyệt Ngọc có vai người dùng. Sau duyệt tài khoản lên tác giả, có thể mở F01 trong cùng trường.",
+      "recordId": "account-ngoc"
+    },
+    {
+      "id": "TLU-23",
+      "feature": "B03",
+      "route": "#/B03/account-ngoc",
+      "actor": "ha",
+      "goal": "Tôi cần kiểm quyền khi khóa và mở lại tài khoản.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Dùng hai tab cùng trình duyệt. Ngọc mở F08 ở tab 1. Hà khóa Ngọc ở tab 2 rồi kích hoạt lại.",
+      "expected": "Tab 1 nhận trạng thái khóa, ngừng hiển thị hồ sơ. Khi kích hoạt lại Ngọc mở được lý lịch của mình.",
+      "recordId": "account-ngoc"
+    },
+    {
+      "id": "TLU-24",
+      "feature": "B01",
+      "route": "#/B01/cfg-base-FEATURE.E4",
+      "actor": "ha",
+      "goal": "Tôi muốn kiểm tra phạm vi cấu hình hoạt động mở rộng.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Đọc giá trị dùng chung false, mở bản riêng của đơn vị. So sánh giá trị true với khả năng mở F09 của Mai.",
+      "expected": "Chỉ cấu hình riêng của trường quyết định việc hiện F09–F12 và P03. AI có khóa cấp quyền riêng. Các hoạt động và sổ giờ của trường hiện trên phiên được phép.",
+      "recordId": "cfg-base-FEATURE.E4"
+    },
+    {
+      "id": "TLU-25",
+      "feature": "F09",
+      "route": "#/F09/ext-upper-pending",
+      "actor": "an",
+      "goal": "Tôi cần ghi nhận nhiệm vụ cấp Bộ và tỷ lệ tham gia.",
+      "precondition": "FEATURE.E4 của Thủy lợi đang bật.",
+      "steps": "Mở “Dự báo bồi lắng hồ chứa vùng trung du Bắc Bộ”, mã B2026-TL-08. Kiểm quyết định giao, cơ quan Bộ Nông nghiệp và Môi trường và kinh phí. Duyệt nhiệm vụ.",
+      "expected": "Nguồn F09 được duyệt. Định mức cấp Bộ 80 giờ phân bổ Mai 48 và Minh 32 theo tỷ lệ 60/40.",
+      "recordId": "ext-upper-pending"
+    },
+    {
+      "id": "TLU-26",
+      "feature": "F10",
+      "route": "#/F10/ext-student-invite",
+      "actor": "mai",
+      "goal": "Tôi cần xác nhận hướng dẫn đúng nhóm sinh viên.",
+      "precondition": "FEATURE.E4 của Thủy lợi đang bật.",
+      "steps": "Mở lời mời “Lập bản đồ điểm ngập quanh khuôn viên trường”, kiểm nhóm Linh, Phúc, Yến và mục tiêu. Đồng ý hướng dẫn. Đổi sang Linh, mở cùng hồ sơ rồi gửi đăng ký.",
+      "expected": "Sau xác nhận, hồ sơ về nháp có xác nhận của Mai. Linh gửi trong đợt đang mở để chuyển sang chờ sơ duyệt.",
+      "recordId": "ext-student-invite"
+    },
+    {
+      "id": "TLU-27",
+      "feature": "F10",
+      "route": "#/F10/ext-student-field",
+      "actor": "linh",
+      "goal": "Tôi cần nộp kết quả để giảng viên hướng dẫn và chuyên viên xác nhận.",
+      "precondition": "FEATURE.E4 của Thủy lợi đang bật.",
+      "steps": "Nộp kết quả “Mô hình cột thấm và bộ số liệu thực nghiệm”. Thử thiếu báo cáo, sau đó nhập minh chứng FINAL_REPORT và PRODUCT. Mai xác nhận kết quả, An đánh giá đạt rồi đóng hồ sơ.",
+      "expected": "Thiếu minh chứng bị chặn. Chỉ lúc đóng đề tài sau khi đạt, Mai được ghi 24 giờ hướng dẫn.",
+      "recordId": "ext-student-field"
+    },
+    {
+      "id": "TLU-28",
+      "feature": "F11",
+      "route": "#/F11/ext-applied-draft",
+      "actor": "mai",
+      "goal": "Tôi muốn thử hồ sơ còn thiếu đối tác trước khi chuyển giao.",
+      "precondition": "FEATURE.E4 của Thủy lợi đang bật.",
+      "steps": "Gửi bản nháp “Chuyển giao bộ cảm biến rò rỉ cho tuyến đê thử nghiệm” còn trống đối tác. Bổ sung “Đơn vị vận hành đê An Phú (mô phỏng)”, giữ hợp đồng và tỷ lệ 60/40, lưu rồi gửi.",
+      "expected": "Lần gửi đầu nêu thiếu đối tác. Lần sau chuyển PENDING_APPROVAL. Hợp đồng ghi giờ ở bước duyệt kết quả.",
+      "recordId": "ext-applied-draft"
+    },
+    {
+      "id": "TLU-29",
+      "feature": "F11",
+      "route": "#/F11/ext-applied-complete",
+      "actor": "an",
+      "goal": "Tôi cần giải thích số giờ từ một hợp đồng bàn giao.",
+      "precondition": "FEATURE.E4 của Thủy lợi đang bật.",
+      "steps": "Mở hồ sơ hoàn thành 350.000.000 đồng, đọc biên bản nghiệm thu 12/11 và đối chiếu P03.",
+      "expected": "Hợp đồng thuộc bậc 60 giờ. Mai nhận 36 giờ và Minh 24 giờ trong năm học 2026–2027.",
+      "recordId": "ext-applied-complete"
+    },
+    {
+      "id": "TLU-30",
+      "feature": "F12",
+      "route": "#/F12/ext-activity-conference",
+      "actor": "an",
+      "goal": "Tôi cần kiểm minh chứng và định mức theo ngày ghi nhận.",
+      "precondition": "FEATURE.E4 của Thủy lợi đang bật.",
+      "steps": "Mở hoạt động đã duyệt, kiểm tờ trình cử đi và chương trình phiên B. Tra bút toán nguồn trong P03 theo ngày 30/09.",
+      "expected": "Bút toán của Mai là 6 giờ theo v1 có hiệu lực ngày 30/09. Định mức v2 là 8 giờ từ 01/10.",
+      "recordId": "ext-activity-conference"
+    },
+    {
+      "id": "TLU-31",
+      "feature": "P03",
+      "route": "#/P03",
+      "actor": "an",
+      "goal": "Tôi muốn rà số giờ gốc và đối chiếu một bút toán điều chỉnh.",
+      "precondition": "FEATURE.E4 của Thủy lợi đang bật.",
+      "steps": "Lọc giảng viên Mai, nguồn F11, kỳ 2026–2027. Mở dòng của “Kiểm định trạm bơm tiêu cụm Yên Sở”. Điều chỉnh −2 giờ, lý do “Loại phần thời lượng trùng trong biên bản bàn giao”. Đối chiếu lại F08.",
+      "expected": "Dòng gốc 36 giờ được giữ nguyên. Có dòng −2 riêng, tổng theo bộ lọc còn 34 giờ.",
+      "recordId": "ext-applied-complete"
+    },
+    {
+      "id": "TLU-32",
+      "feature": "P01",
+      "route": "#/P01/wf-v1",
+      "actor": "ha",
+      "goal": "Tôi cần thử phiên bản quy trình mới trên hồ sơ lập sau.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Sao từ v1, lưu nháp v2 rồi kích hoạt. Đổi sang Mai, lập đề xuất mới từ KG-2027-01, lưu nháp và so với TLU-26-NC07.",
+      "expected": "v2 có hiệu lực cho hồ sơ mới. Hồ sơ có mã NC07 vẫn gắn v1. Nhật ký ghi người kích hoạt.",
+      "recordId": "wf-v1"
+    },
+    {
+      "id": "TLU-33",
+      "feature": "F01",
+      "route": "#/F01/dt-01",
+      "actor": "mai",
+      "goal": "Tôi muốn kiểm tra nguồn trước khi dùng trợ lý rà phương pháp.",
+      "precondition": "Dùng phiên sạch để dt-01 còn nháp.",
+      "steps": "Cho phép đối chiếu mục phương pháp của bản nháp đã lưu, bấm Rà mục phương pháp, mở căn cứ, rồi chọn dùng hoặc bỏ gợi ý.",
+      "expected": "Gợi ý bám đoạn phương pháp và phiên bản nguồn. Quyết định dùng hoặc bỏ thuộc Mai, trạng thái đề tài vẫn nháp.",
+      "recordId": "dt-01"
+    },
+    {
+      "id": "TLU-34",
+      "feature": "F07",
+      "route": "#/F07/exec-paper",
+      "actor": "mai",
+      "goal": "Tôi cần biết thẻ đọc được phép trích phần nào.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Lập thẻ từ DOI của bài đang có toàn văn. Mở tiếp exec-drain-paper chỉ có metadata, rồi exec-dam-paper đã hết hạn ngày 01/11.",
+      "expected": "Thẻ đầu có phương pháp ở trang 3 đoạn 2, kết quả trang 5 bảng 1. Hai bài còn lại chỉ dùng thông tin thư mục trong phạm vi được phép.",
+      "recordId": "exec-paper"
+    },
+    {
+      "id": "TLU-35",
+      "feature": "B06",
+      "route": "#/B06",
+      "actor": "nam",
+      "goal": "Tôi cần đảm bảo báo cáo và tìm kiếm chỉ hiện hồ sơ trong khoa được giao.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Tìm mã TLU-26-014, sau đó tìm TLU-26-021. Mở B02, xem các đơn vị có thể trích xuất.",
+      "expected": "Nam thấy Khoa Công trình và đề tài 014. Hồ sơ 021 của Thảo thuộc Khoa Môi trường nằm ngoài phạm vi, kể cả khi mở liên kết chi tiết.",
+      "recordId": "account-nam"
+    },
+    {
+      "id": "TLU-36",
+      "feature": "F03",
+      "recordId": "intake-dt-road",
+      "actor": "an",
+      "route": "#/F03/intake-dt-road",
+      "goal": "Tôi muốn mở đúng một đợt xét duyệt cho hồ sơ đã chốt.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Kiểm tra NC03 thuộc kỳ KG-2026-02 đã đóng. Chọn hội đồng HĐ-XD-06, mở đợt đánh giá rồi tải lại.",
+      "expected": "Hồ sơ chuyển từ SUBMITTED sang UNDER_REVIEW. Đợt ghim bộ tiêu chí đang áp dụng và danh sách thành viên độc lập."
+    },
+    {
+      "id": "TLU-37",
+      "feature": "F05",
+      "recordId": "exec-reed",
+      "actor": "an",
+      "route": "#/F05/exec-reed",
+      "goal": "Tôi cần cấp kinh phí sau khi có quyết định giao.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Điền 110.000.000 đồng để thử vượt số được duyệt. Sau đó cấp 80.000.000 đồng theo quyết định giao 100.000.000 đồng, giữ mức phí 5%.",
+      "expected": "Số vượt bị chặn. Với 80.000.000 đồng, phí 4.000.000, kinh phí thực hiện 76.000.000 đồng. Tài khoản Thảo là chủ nhiệm dự án."
+    },
+    {
+      "id": "TLU-38",
+      "feature": "F04",
+      "recordId": "exec-river",
+      "actor": "an",
+      "route": "#/F04/exec-river",
+      "goal": "Tôi muốn tạm dừng rồi cho nhóm tiếp tục thực hiện.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Tạm dừng với lý do “Chờ lịch sử dụng phòng thực hành”. Đổi sang Mai để xem kỳ 2. An cho tiếp tục và ghi căn cứ “Đã xác nhận lịch mới”.",
+      "expected": "Trong thời gian tạm dừng, chủ nhiệm không nộp báo cáo tiến độ. Khi tiếp tục, đề tài trở lại IN_PROGRESS và giữ nguyên các kỳ."
+    },
+    {
+      "id": "TLU-39",
+      "feature": "B01",
+      "recordId": "cfg-base-FEATURE.AI",
+      "actor": "ha",
+      "route": "#/B01/cfg-base-FEATURE.AI",
+      "goal": "Tôi cần kiểm việc thu hồi nguồn AI ngay trong buổi review.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Mai lập thẻ từ bài có DOI và toàn văn. Hà tạo khóa riêng AI.SOURCE.exec-paper với nội dung off. Mai mở lại thẻ hoặc yêu cầu lập thẻ lần nữa.",
+      "expected": "Quyền phiên bản 1 cho phép dùng căn cứ tại trang 3 và 5. Sau thu hồi, trợ lý không cho dùng lại trích đoạn. Thông tin sản phẩm vẫn xem được theo quyền F07."
+    },
+    {
+      "id": "TLU-40",
+      "feature": "F12",
+      "recordId": "ext-activity-community",
+      "actor": "an",
+      "route": "#/F12/ext-activity-community",
+      "goal": "Tôi cần xử lý hỗ trợ cho hoạt động phục vụ cộng đồng.",
+      "precondition": "FEATURE.E4 đang bật.",
+      "steps": "Kiểm giấy xác nhận tham gia trong hồ sơ. Nhập mức hỗ trợ 1.200.000 đồng và duyệt. Mở P03 đối chiếu chủ nhiệm. Trong phiên sạch thử từ chối và ghi “Chưa có xác nhận của nơi tổ chức”.",
+      "expected": "Nhánh duyệt ghi số hỗ trợ và 12 giờ theo định mức COMMUNITY. Nhánh từ chối ghi lý do, không phát sinh giờ."
+    },
+    {
+      "id": "TLU-41",
+      "feature": "F11",
+      "recordId": "ext-applied-complete",
+      "actor": "an",
+      "route": "#/F11/ext-applied-complete",
+      "goal": "Tôi cần thu hồi ghi nhận khi biên bản bàn giao phải đính chính.",
+      "precondition": "Dùng dữ liệu ban đầu trước khi điều chỉnh giờ.",
+      "steps": "Mở hồ sơ hoàn thành và thu hồi với lý do “Đính chính danh sách tác giả trên biên bản”. Kiểm sổ P03 theo nguồn F11.",
+      "expected": "Bút toán ban đầu còn nguyên, có các dòng giảm bù đúng phần của từng người. Tổng theo nguồn về 0 khi chưa có điều chỉnh khác."
+    },
+    {
+      "id": "TLU-42",
+      "feature": "F02",
+      "recordId": "call-01",
+      "actor": "linh",
+      "route": "#/F02/call-01",
+      "goal": "Tôi muốn tìm kỳ đang nhận đề xuất bằng điện thoại.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Trong /v0-mobile/ mở Kỳ đề xuất. Lọc đang nhận, mở KG-2027-01 rồi quay lại danh sách. So sánh với kỳ KG-2026-02 đã đóng.",
+      "expected": "Kỳ phù hợp hiện đúng hạn 30/11/2026. Chi tiết và danh sách thuộc cùng trường, vai sinh viên xem được kỳ mở."
+    },
+    {
+      "id": "TLU-43",
+      "feature": "B04",
+      "recordId": "home-notice-call-01",
+      "actor": "an",
+      "route": "#/B04/home-notice-call-01",
+      "goal": "Tôi muốn kiểm tra liên kết thông báo khi đổi người nhận.",
+      "precondition": "Phiên mới của trường.",
+      "steps": "Dùng cùng liên kết B04 của Mai trong phiên An ở màn hình điện thoại. Đổi lại đúng Mai rồi mở từ hộp thư.",
+      "expected": "An không xem được nội dung riêng của Mai. Mai thấy tên kỳ của trường mình và mở đúng F02."
+    }
+  ]
+}

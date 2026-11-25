@@ -69,6 +69,7 @@ test('transfer correction is scoped to its own project and pilot settlement need
   assert.throws(() => reconcile(c, p, get('exec-exp-20'), '12000000', 'MB-111'))
   assert.throws(() => reconcile(c, get('exec-river'), get(item.id), '1', 'MB-112'))
   const h = setup('hmu')
+  h.c.session.unit = h.get('exec-dam').unit
   assert.throws(() => settle(h.c, h.get('exec-dam'), false))
   assert.equal(settle(h.c, h.get('exec-dam'), true)[0].status, 'COMPLETED')
 })

@@ -7,6 +7,7 @@
     "node": ">=24.13.0 <25"
   },
   "scripts": {
+    "demo:pack": "pnpm --filter @rms/web build && node scripts/package-demo.mjs",
     "dev": "pnpm --parallel --filter @rms/backend --filter @rms/web dev",
     "build": "pnpm typecheck && pnpm -r --if-present build",
     "typecheck": "pnpm -r --if-present typecheck",

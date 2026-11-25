@@ -1,3 +1,4 @@
+import { schoolUnits } from '../../demo/datasets.ts'
 import { ValidatedForm } from "@rms/ui/components/validated-form"
 import { Checkbox } from "@rms/ui/components/checkbox"
 import { useId, useState } from 'react'
@@ -6,12 +7,10 @@ import { Field, FieldLabel, FieldDescription } from "@rms/ui/components/field"
 import { Button } from '@rms/ui/components/button'
 import type { DemoRow, FeatureProps } from '../../demo/types'
 import { managingBodies } from './catalogue'
-import { catalog, codes, contributors, dateLabel, entries, featureInfo, names, openCall, requiredEvidence, scoped, sourceOf, studentsIn, teachers, units } from './model'
+import { catalog, codes, contributors, dateLabel, entries, featureInfo, names, openCall, requiredEvidence, scoped, sourceOf, studentsIn, teachers } from './model'
 import type { Contributor } from './model'
 import { EvidenceFields, Footer, options, pairs, Problem, SelectField, TextField, messageOf } from './controls'
-import { saveDraft } from './workflow'
-
-const partners = ["Công ty Khai thác công trình thủy lợi Sông Nhuệ", "Công ty CP Kỹ thuật nước Việt"]
+import { canRead, saveDraft } from './workflow'
 
 function TeamEditor({ team, change, mentoring, eligible }: { team: Contributor[]; change: (v: Contributor[]) => void; mentoring: boolean; eligible: Record<string,string> }) {
   const update = (i: number, patch: Partial<Contributor>) => change(team.map((p,n) => i === n ? { ...p,...patch } : p))
@@ -42,7 +41,8 @@ export function Editor({ ctx, initial, finish, close }: { ctx: FeatureProps; ini
   const required = hasPolicy ? requiredEvidence(ctx.rows,row,'declaration') : []
   const call = calls.find(r => r.id === f.callId)
   const creatingStudent = student && ctx.session.role === 'officer' && !ctx.rows.some(record => record.id === row.id)
-  const unitsAllowed = ctx.session.role === 'officer' ? units.filter(u => scoped(ctx,{...row,unit:u})) : [ctx.session.unit]
+  const partners = [...new Set(ctx.rows.filter(r => r.kind === 'applied-project' && scoped(ctx, r) && canRead(ctx.session, r) && r.fields.partner).map(r => r.fields.partner))]
+  const unitsAllowed = ctx.session.role === 'officer' ? schoolUnits(ctx.session.tenant, ctx.rows).filter(u => scoped(ctx,{...row,unit:u})) : [ctx.session.unit]
   const setUnit = (unit: string) => setRow(r => ({...r, unit,
     owner: creatingStudent ? Object.keys(studentsIn(unit))[0] : r.owner, fields: {...r.fields, scopeUnit: unit || ctx.session.unit, group: creatingStudent ? Object.keys(studentsIn(unit))[0] : r.fields.group,
     callId: student ? ctx.rows.find(c => c.kind === 'ext-student-call' && c.unit === unit && openCall(c))?.id || '' : r.fields.callId }}))

@@ -1,5 +1,6 @@
-import { baseTypes, personas } from "./identity"
-import { defaultEdges } from "./workflow"
+import { schoolUnits } from "./datasets.ts"
+import { baseTypes, personas, person } from "./identity.ts"
+import { defaultEdges } from "./workflow.ts"
 import type { DemoRow, Role, Tenant } from "./types"
 export function demoRecord(
   id: string,
@@ -37,7 +38,7 @@ export function baseSeed(tenant: Tenant): DemoRow[] {
       },
       "ACTIVE",
       p.userId,
-      p.unit,
+      person(tenant, role as Role).unit,
     ),
   )
   accounts.push(
@@ -48,13 +49,13 @@ export function baseSeed(tenant: Tenant): DemoRow[] {
       {
         email: "nam@example.invalid",
         userType: "staff",
-        scopeUnit: "Khoa Công trình",
+        scopeUnit: schoolUnits(tenant)[0],
         persona: "officer",
         source: "ADMIN",
       },
       "ACTIVE",
       "nam",
-      "Khoa Công trình",
+      schoolUnits(tenant)[0],
     ),
 
     demoRecord(
@@ -73,6 +74,18 @@ export function baseSeed(tenant: Tenant): DemoRow[] {
       "Quản trị nền tảng",
     ),
   )
+  const [primary, secondary] = schoolUnits(tenant)
+  for (const [id, name, role, unit] of [
+    ["son", "Đỗ Minh Sơn", "reviewer", primary],
+    ["hue", "Phan Thu Huệ", "reviewer", secondary],
+    ["thao", "Vũ Phương Thảo", "researcher", secondary],
+    ["phuc", "SV Phúc", "student", primary],
+    ["yen", "SV Yến", "student", primary],
+  ] as const) {
+    accounts.push(demoRecord("account-" + id, "account", name, {
+      email: id + "@example.invalid", userType: baseTypes[role], source: "ADMIN", persona: role,
+    }, "ACTIVE", id, unit))
+  }
   const config = Object.entries(configDefaults).map(([key, s]) =>
     demoRecord("cfg-base-" + key, "config", s.label, {
       key,

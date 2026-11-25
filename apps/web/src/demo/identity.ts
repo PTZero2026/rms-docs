@@ -1,3 +1,4 @@
+import { schoolUnits } from "./datasets.ts"
 import type { DemoRow, Role, Session, Tenant } from "./types"
 export const tenants: Record<Tenant, string> = { tlu: "Đại học Thủy lợi", hmu: "Đại học Y Hà Nội" }
 export const roleNames: Record<Role, string> = {
@@ -17,7 +18,9 @@ export const personas: Record<Role, Omit<Session, "tenant" | "role">> = {
   student: { userId: "linh", name: "Nguyễn Khánh Linh", unit: "Khoa Công trình" },
 }
 export function person(tenant: Tenant, role: Role): Session {
-  return { tenant, role, ...personas[role] }
+  const persona = personas[role]
+  const index = schoolUnits("tlu").indexOf(persona.unit)
+  return { tenant, role, ...persona, unit: schoolUnits(tenant)[index] ?? persona.unit }
 }
 export function initials(name: string) {
   return name

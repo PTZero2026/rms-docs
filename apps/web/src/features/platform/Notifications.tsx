@@ -298,7 +298,7 @@ export default function Notifications(p: FeatureProps) {
           close={() => setEditing("")}
         >
           <TextField label="Nội dung" value={draft} change={setDraft} multiline />
-          <p>Xem trước · {draft.replaceAll("{ho_so}", "Đề tài quan trắc thủy văn")}</p>
+          <p>Xem trước · {draft.replaceAll("{ho_so}", p.rows.find(r => r.id === "dt-01")?.title ?? "Đề tài nghiên cứu")}</p>
           <Button
             disabled={!draft.trim()}
             onClick={() => {

@@ -1,16 +1,18 @@
 import type { DemoRow, FeatureProps, Session } from '../../demo/types'
 
+import { schoolUnits } from '../../demo/datasets.ts'
 import { categories } from './catalogue.ts'
 import { personas, unitAllowed } from '../../demo/identity.ts'
 
 export type Context = Pick<FeatureProps, 'session' | 'rows' | 'e4Enabled'>
 export const today = '2026-11-21'
-export const units = ['Khoa Công trình', 'Khoa Môi trường']
+
 export const teachers: Record<string, string> = { mai: personas.researcher.name, minh: personas.reviewer.name, thao: 'Vũ Phương Thảo' }
 export const students: Record<string, string> = { linh: personas.student.name, phuc: 'SV Phúc', yen: 'SV Yến', 'sv-nam': 'SV Nam', 'sv-lan': 'SV Lan', vu: 'SV Vũ', ngoc: 'Đỗ Bảo Ngọc', 'sv-an': 'SV An' }
 export function studentsIn(unit: string) {
   const environment = ['ngoc','sv-an']
-  return Object.fromEntries(Object.entries(students).filter(([id]) => unit === units[1] ? environment.includes(id) : !environment.includes(id)))
+  const secondary = unit === schoolUnits('tlu')[1] || unit === schoolUnits('hmu')[1]
+  return Object.fromEntries(Object.entries(students).filter(([id]) => secondary ? environment.includes(id) : !environment.includes(id)))
 }
 export const names: Record<string, string> = { ...teachers, ...students, an: personas.officer.name, ha: personas.admin.name }
 export const featureInfo = {
@@ -62,7 +64,7 @@ export function checkEvidence(rows: DemoRow[], row: DemoRow, stage: 'declaration
   if (missing.length) throw new Error('Cần bổ sung minh chứng: ' + missing.map(c => (evidenceLabels[c] || c) + ' (' + c + ')').join(', ') + '.')
 }
 export function ensureEnabled(ctx: Context) { if (!ctx.e4Enabled) throw new Error('Trường chưa bật nhóm chức năng mở rộng.') }
-export function unitScope(s: Session, row: DemoRow) { return !units.includes(s.unit) || s.unit === row.unit || (!row.unit && row.fields.scopeUnit === s.unit) }
+export function unitScope(s: Session, row: DemoRow) { return (!schoolUnits('tlu').includes(s.unit) && !schoolUnits('hmu').includes(s.unit)) || s.unit === row.unit || (!row.unit && row.fields.scopeUnit === s.unit) }
 export function scoped(ctx: Context, row: DemoRow) { return unitAllowed(row,ctx.session,ctx.rows) }
 export function officer(s: Session, row: DemoRow) { return s.role === 'officer' && unitScope(s, row) }
 export function dateLabel(iso?: string) { return iso ? iso.slice(0, 10).split('-').reverse().join('/') : '—' }

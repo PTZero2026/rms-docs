@@ -87,7 +87,7 @@ test('tenant-specific F12 evidence at submission and approval, zero support on r
   const a = scenario(), b = scenario('hmu')
   const from = a.get('ext-activity-conference')
   const draft = {...from,id:'ext-other-conference',status:'DRAFT',fields:{...from.fields,support:'',evidence:JSON.stringify({PARTICIPATION:'GXN-08'})}}
-  a.put(draft); b.put(draft)
+  a.put(draft); b.put({...draft, unit:b.ctx('researcher').session.unit})
   assert.throws(() => a.run('researcher',draft.id,'submit'),/ASSIGNMENT.*PROGRAM/)
   b.run('researcher',draft.id,'submit')
   b.run('officer',draft.id,'reject',{reason:'Không thuộc chương trình được cử đi'})

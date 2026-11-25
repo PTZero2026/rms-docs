@@ -1,3 +1,4 @@
+import { schoolUnits } from '../../demo/datasets.ts'
 import { ChoiceOption, ChoiceSelect } from "@rms/ui/components/choice-select"
 import { useState } from 'react'
 import type { FeatureProps } from '../../demo/types'
@@ -31,7 +32,7 @@ function ProfileEdit({ p, r }: { p: FeatureProps; r: Row }) {
         choice(
           'department',
           'Đơn vị công tác',
-          { 'Khoa Công trình': 'Khoa Công trình', 'Khoa Môi trường': 'Khoa Môi trường' },
+          Object.fromEntries([...schoolUnits(p.session.tenant, p.rows), r.unit].map(unit => [unit, unit])),
           f.department || r.unit,
         ),
         { name: 'position', label: 'Chức vụ', value: f.position, required: p.session.tenant === 'tlu' },

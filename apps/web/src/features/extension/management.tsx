@@ -1,10 +1,11 @@
+import { schoolUnits } from '../../demo/datasets.ts'
 import { ValidatedForm } from "@rms/ui/components/validated-form"
 import { Checkbox } from "@rms/ui/components/checkbox"
 import { useState } from 'react'
 import { Button } from '@rms/ui/components/button'
 import type { DemoRow, FeatureProps } from '../../demo/types'
 import { encodePolicy } from './catalogue'
-import { catalog, codes, dateLabel, evidenceLabels, officer, openCall, scoped, today, uid, units, validDate } from './model'
+import { catalog, codes, dateLabel, evidenceLabels, officer, openCall, scoped, today, uid, validDate } from './model'
 import type { Source } from './model'
 import { Blank, Footer, messageOf, Modal, options, Problem, SelectField, TextField } from './controls'
 
@@ -31,7 +32,7 @@ function CallEditor({ctx,initial,close}: {ctx: FeatureProps; initial: DemoRow; c
     }}>
       <Problem message={error}/><TextField label="Tên đợt" required value={r.title} onChange={title => set({...r,title})}/>
       <div className="ext-grid">
-        <SelectField label="Khoa" choices={options(units.filter(unit => scoped(ctx,{...r,unit})))} value={r.unit} onChange={unit => set({...r,unit})}/>
+        <SelectField label="Khoa" choices={options(schoolUnits(ctx.session.tenant, ctx.rows).filter(unit => scoped(ctx,{...r,unit})))} value={r.unit} onChange={unit => set({...r,unit})}/>
         <SelectField label="Quy trình của đề tài nộp mới" value={r.fields.mode || 'SIMPLIFIED'} onChange={v => field('mode',v)}
           choices={[{value:'SIMPLIFIED',label:'Rút gọn có nghiệm thu'},{value:'FULL_LIFECYCLE',label:'Hội đồng xét đề cương và nghiệm thu'}]}/>
         <SelectField label="Trạng thái đợt"  value={r.status} choices={[{value:'OPEN',label:'Mở đăng ký'},{value:'CLOSED',label:'Đóng đăng ký'}]} onChange={status => set({...r,status})}/>
@@ -48,7 +49,7 @@ export function Calls({ctx}: {ctx: FeatureProps}) {
   const [editing,setEditing] = useState<DemoRow>()
   const staff = ctx.session.role === 'officer'
   const rows = ctx.rows.filter(r => r.kind === 'ext-student-call' && scoped(ctx,r) && (staff ? officer(ctx.session,r) : r.unit === ctx.session.unit))
-  const create = () => setEditing({ id:uid('call'),kind:'ext-student-call',title:'',owner:ctx.session.userId,unit:units.includes(ctx.session.unit) ? ctx.session.unit : units[0],status:'OPEN',
+  const create = () => setEditing({ id:uid('call'),kind:'ext-student-call',title:'',owner:ctx.session.userId,unit:schoolUnits(ctx.session.tenant, ctx.rows).includes(ctx.session.unit) ? ctx.session.unit : schoolUnits(ctx.session.tenant, ctx.rows)[0],status:'OPEN',
     fields:{start:today,end:'',finalDue:'',min:'1',max:'5',declaration:'',result:'FINAL_REPORT,PRODUCT'} })
   return <section className="panel stack"><div className="ext-title"><h2>Đợt đăng ký</h2>{staff && <Button onClick={create}>Mở đợt mới</Button>}</div>
     {rows.length === 0 && <Blank title="Chưa có đợt của khoa"/>}

@@ -1,7 +1,8 @@
+import { schoolUnits } from '../../demo/datasets.ts'
 import type { DemoRow, Session } from '../../demo/types'
 import { unitAllowed } from '../../demo/identity.ts'
 import { managingBodies } from './catalogue.ts'
-import { catalog, category, checkEvidence, codes, contributors, ensureEnabled, featureInfo, officer, openCall, sourceOf, studentsIn, today, units, validDate, validateContributors } from './model.ts'
+import { catalog, category, checkEvidence, codes, contributors, ensureEnabled, featureInfo, officer, openCall, sourceOf, studentsIn, today, validDate, validateContributors } from './model.ts'
 import type { Context, Source } from './model.ts'
 import { postHours, reverseHours } from './hours.ts'
 
@@ -21,6 +22,7 @@ export function canEdit(s: Session, r: DemoRow) {
 export function newRecord(ctx: Context, feature: Source, id: string): DemoRow {
   const isStudent = feature === 'F10'
   const s = ctx.session
+  const units = schoolUnits(s.tenant, ctx.rows)
   const owner = isStudent ? (s.role === 'student' ? s.userId : (s.unit === units[1] ? 'ngoc' : 'linh')) : (s.role === 'researcher' ? s.userId : 'mai')
   const unit = units.includes(s.unit) ? s.unit : units[0]
   const call = ctx.rows.find(r => r.kind === 'ext-student-call' && r.unit === unit && openCall(r))
@@ -41,7 +43,9 @@ function checkGroup(rows: DemoRow[], row: DemoRow) {
     throw new Error('Đợt yêu cầu từ ' + call.fields.min + ' đến ' + call.fields.max + ' sinh viên mỗi nhóm.')
   return call
 }
-function validate(rows: DemoRow[], row: DemoRow) {
+function validate(ctx: Context, row: DemoRow) {
+  const { rows } = ctx
+  const units = schoolUnits(ctx.session.tenant, ctx.rows)
   const feature = sourceOf(row)
   if (!row.title.trim()) throw new Error('Nhập tên hồ sơ.')
   if (!(feature === 'F09' && !row.unit) && !units.includes(row.unit)) throw new Error('Chọn đơn vị chủ trì.')
@@ -68,7 +72,7 @@ export function saveDraft(ctx: Context, proposed: DemoRow, reason = '') {
       !canCreate(s,feature) || (s.role !== 'officer' && proposed.owner !== s.userId))) throw new Error('Thiếu quyền sửa hồ sơ này.')
   if (s.role !== 'officer' && proposed.unit && proposed.unit !== s.unit) throw new Error('Chọn đơn vị trong phạm vi của bạn.')
   const row = { ...proposed, title: proposed.title.trim(), status: old?.status || 'DRAFT', fields: { ...proposed.fields } }
-  validate(ctx.rows,row)
+  validate(ctx,row)
   if (feature === 'F10') {
     const changed = !old || ['callId','group','objective','product','contributors'].some(k => old.fields[k] !== row.fields[k]) ||
       old.title !== row.title || old.unit !== row.unit
@@ -154,7 +158,7 @@ export function transition(ctx: Context, record: DemoRow, action: Action, input:
     case 'invite':
     case 'submit':
     case 'approve':
-      validate(ctx.rows,row)
+      validate(ctx,row)
       if (student && action !== 'approve') {
         if (!f.resumeStatus && !openCall(checkGroup(ctx.rows,row))) throw new Error('Đợt đăng ký đã đóng hoặc ngoài thời hạn.')
         if (action === 'submit' && (f.mentorConfirmation !== row.id || !contributors(row).some(p => p.id === f.confirmedMentor)))
