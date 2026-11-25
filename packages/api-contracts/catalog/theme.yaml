@@ -1,0 +1,39 @@
+Active:
+  type: object
+  required: [revision, tokens]
+  properties:
+    revision: {type: integer, minimum: 1}
+    tokens: {$ref: './theme-tokens.yaml'}
+Editor:
+  type: object
+  required: [active, draft, history]
+  properties:
+    active: {$ref: '#/Active'}
+    history: {type: array, items: {type: integer}}
+    draft:
+      type: object
+      nullable: true
+      required: [serial, basedOn, tokens]
+      properties:
+        serial: {type: integer}
+        basedOn: {type: integer}
+        tokens: {$ref: './theme-tokens.yaml'}
+Save:
+  type: object
+  required: [expectedRevision, expectedDraft, tokens]
+  properties:
+    expectedRevision: {type: integer}
+    expectedDraft: {type: integer}
+    tokens: {$ref: './theme-tokens.yaml'}
+Apply:
+  type: object
+  required: [expectedRevision, expectedDraft]
+  properties:
+    expectedRevision: {type: integer}
+    expectedDraft: {type: integer}
+Rollback:
+  type: object
+  required: [expectedRevision, sourceRevision]
+  properties:
+    expectedRevision: {type: integer}
+    sourceRevision: {type: integer}

@@ -3,13 +3,17 @@
   "private": true,
   "type": "module",
   "packageManager": "pnpm@10.34.5",
-  "engines": { "node": ">=24.13.0 <25" },
+  "engines": {
+    "node": ">=24.13.0 <25"
+  },
   "scripts": {
-    "dev": "pnpm --filter @rms/web dev",
-    "build": "pnpm typecheck && pnpm --filter @rms/web build",
+    "dev": "pnpm --parallel --filter @rms/backend --filter @rms/web dev",
+    "build": "pnpm typecheck && pnpm -r --if-present build",
     "typecheck": "pnpm -r --if-present typecheck",
-    "test": "node --test apps/web/src/demo/*.test.mjs apps/web/src/features/*/*.test.mjs",
-    "lint": "eslint apps/web packages/ui",
+    "test": "node --test apps/web/src/demo/*.test.mjs apps/web/src/features/*/*.test.mjs e2e/proposal/ai-proposal-evidence/score.test.mjs && pnpm --filter @rms/backend test && pnpm --filter @rms/sys-config-service test",
+    "test:db": "pnpm --filter @rms/sys-config-service... build && bash apps/backend/test/db/run.sh",
+    "lint": "eslint apps/web packages/ui apps/backend packages/api-contracts apps/sys-config-service apps/worker",
+    "ui:gallery": "pnpm --filter @rms/web exec vite --open /theme-gallery/",
     "ui:add": "pnpm --dir packages/ui exec shadcn add --cwd ../../apps/web",
     "ui:mcp": "pnpm --dir apps/web exec ../../packages/ui/node_modules/.bin/shadcn mcp"
   },

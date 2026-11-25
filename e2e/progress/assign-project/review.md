@@ -1,0 +1,3 @@
+# RV-14 · Xác nhận giao thực hiện
+
+Chuyên viên xử lý hồ sơ vừa được duyệt qua F03 trên Chrome. Hệ thống nêu mục thiếu khi đã nhập số quyết định nhưng thiếu tệp. Cấp phiếu tải thật, tải PDF thử trực tiếp vào bucket riêng, kiểm SHA-256 rồi gắn; xác nhận giao thành công. Dữ liệu PostgreSQL đối chứng riêng từng trường số quyết định, kinh phí, file chưa xác nhận hoặc file đề tài khác, lý do đổi số tiền và quyền chủ nhiệm/trường khác. Thất bại giữ APPROVED; thành công trả IN_PROGRESS. Bản giao gắn file bất biến và số lượng sản phẩm để F05/F07 đối chiếu. [Chrome](acceptance.ts) · [DB](../../../apps/backend/test/db/progress.test.mjs)

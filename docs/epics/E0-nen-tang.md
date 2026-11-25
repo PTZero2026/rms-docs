@@ -2,7 +2,7 @@
 title: "E0 — Nền tảng (Platform)"
 id: "E0"
 status: Draft
-updated: 2026-06-12
+updated: 2026-11-24
 ---
 
 # E0 — Nền tảng (Platform)
@@ -41,10 +41,9 @@ P01 & P02 là **spec nền do Kiến trúc/DEV sở hữu** (không phải featu
   [0007 Workflow engine](../architecture/decisions/0007-workflow-engine-dong-per-tenant.md) ·
   [0010 Chuẩn dữ liệu cho AI](../architecture/decisions/0010-chuan-du-lieu-cho-ai-tham-gia.md).
 
-## Open questions
-- Phạm vi B04 tối thiểu cho E1 (những sự kiện nào cần thông báo trước).
-- Danh mục guard/effect khởi điểm & tập `statusSemantic` chuẩn cho P01 (chốt cùng PO/BA F01–F06).
-- *(Đã chốt: workflow engine & audit tách thành spec riêng [P01](../features/P01-workflow-engine/) / [P02](../features/P02-audit/).)*
+## Căn cứ giao việc
+
+B04 nhận sự kiện nộp, trả và kết luận ở đợt A qua outbox N09, thêm nhắc hạn ở US-16. P01 lấy semantic từ mô hình chung và guard/effect từ ADR-0007. [Kế hoạch](../guides/ke-hoach-implement-rms.md)
 
 ## Định nghĩa hoàn thành (Exit criteria)
 - [ ] Đăng nhập email-OTP + RBAC kiểm tra ở backend cho mọi API (B03).

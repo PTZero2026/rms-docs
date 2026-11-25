@@ -1,0 +1,11 @@
+type: object
+additionalProperties: false
+required: [background, foreground, primary, primaryForeground, muted, mutedForeground, ring]
+properties:
+  background: &color {type: string, pattern: '^#[0-9A-Fa-f]{6}$'}
+  foreground: *color
+  primary: *color
+  primaryForeground: *color
+  muted: *color
+  mutedForeground: *color
+  ring: *color

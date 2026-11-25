@@ -3,9 +3,9 @@ title: "Quản lý người dùng"
 id: "B03"
 epic: "E0"
 owner: "PO/BA"
-status: Draft
+status: Review
 version: 0.4
-updated: 2026-11-21
+updated: 2026-11-24
 ---
 
 # Quản lý người dùng
@@ -90,7 +90,7 @@ flowchart TD
     B --> V{OTP đúng?}
     V -->|Sai / hết hạn / quá số lần| X[Keycloak từ chối - chặn theo email]
     V -->|Đúng| K[Xác thực thành công, có JWT với keycloakId]
-    K --> C{RMS đã có user khớp keycloakId?}
+    K --> C{RMS đã có user khớp issuer và keycloakId?}
     C -->|Có & isActive=true| H[Vào theo userType hiện có, isNew=false]
     C -->|Có & isActive=false| L[403 - từ chối truy cập, ghi log]
     C -->|Chưa có| F[Tự tạo user RMS: userType=user, isActive=true, isProfileComplete=false]
@@ -169,9 +169,9 @@ flowchart LR
 | BR-01 | Email unique per tenant | Trong một tenant, email không được trùng (không phân biệt hoa/thường). Unique constraint `(tenantId, email)`. | `schema.prisma` User. |
 | BR-02 | Không tự khóa chính mình | Admin đang đăng nhập không được khóa/ngừng chính tài khoản của mình. Kiểm tra ở service. | 400 BadRequest. |
 | BR-04 | Không xóa cứng tài khoản có dữ liệu | `DELETE /admin/users/:id` chỉ set `isActive=false` + `deletedAt=now()`. Không xóa hàng khỏi DB. | Giữ toàn vẹn lịch sử. |
-| BR-05 | Mỗi user chỉ **một** vai trò | `User.userType` là enum đơn trị (`author \| admin \| user \| staff`). Không có bảng many-to-many. Tập quyền hiệu lực = `ROLE_PERMISSIONS[userType]` + quyền custom (nếu có, hiện audit-only). | Khác BRD sơ khai. |
+| BR-05 | Mỗi user chỉ **một** vai trò | `User.userType` là enum đơn trị (`author \| admin \| user \| staff`). Không có bảng many-to-many. Tập quyền hiệu lực = `ROLE_PERMISSIONS[userType]` (thao tác custom chỉ ghi nhật ký). | Khác BRD sơ khai. |
 | BR-07 | Catalog quyền cố định | 17 quyền chức năng hardcode trong `FEATURE_PERMISSIONS`. Mã duy nhất, ngôn ngữ nghiệp vụ mô tả ở `PERMISSION_DESCRIPTIONS`. Không thêm/sửa qua UI. | Thêm quyền = release code. |
-| BR-08 | Quyền kiểm ở server | Mọi endpoint áp `RolesGuard` — merge `realm_access.roles` (Keycloak) và `userType` (RMS DB), so với `@Roles(...)` decorator. Giao diện chỉ ẩn/hiện, **không** thay thế guard. | ADR-0005. |
+| BR-08 | Quyền kiểm ở server | Mọi endpoint áp `RolesGuard` — đọc trạng thái, userType và phạm vi hiện hành từ RMS theo issuer + sub đã xác minh, kiểm quyền cho thao tác và đối tượng. Giao diện chỉ ẩn/hiện, **không** thay thế guard. | ADR-0005. |
 | BR-09 | Email do Keycloak quản | Email + danh tính đăng nhập do Keycloak sở hữu. RMS không cho sửa email trực tiếp; muốn đổi thì đổi ở Keycloak rồi đồng bộ về qua `/auth/me`. | Tránh lệch định danh. |
 | BR-10 | User tự tạo → vai trò `user` | Login Keycloak lần đầu → RMS tạo record `userType=user` (thấp nhất, chỉ có `meetings.view`). Mọi quyền nghiệp vụ phải do admin nâng (§3.4) hoặc qua author-request (§3.6). | Rủi ro người lạ bù bằng BR-11 (Keycloak). |
 | BR-11 | Chính sách OTP ở Keycloak realm | Thời hạn OTP, số lần thử, chặn brute-force theo email — cấu hình ở **Keycloak realm**, không thuộc RMS. RMS chỉ tin JWT. | *Out-of-scope B03*. |
@@ -186,7 +186,7 @@ Chi tiết ánh xạ bảng/cột ở [`design.md §2`](./design.md) và
 ### 5.1 Người dùng (`User`)
 
 Trường nghiệp vụ chính:
-- **Định danh**: `id` (UUID RMS), `keycloakId` (unique, do Keycloak sở hữu), `tenantId`, `email`.
+- **Định danh**: `id` (UUID RMS), cặp `issuer` + `keycloakId` (subject do Keycloak sở hữu), `tenantId`, `email`.
 - **Hồ sơ**: `fullName`, `phone`, `departmentId` (→ B01), `positionId` (→ B01), `academicTitle`,
   `graduationYear`, `licenseNo`, `researchDirection`, `specialty`, `isProfileComplete`.
 - **Vai trò & trạng thái**: `userType` (enum), `isActive` (khóa/mở), `deletedAt` (soft delete).
@@ -221,6 +221,8 @@ Trường nghiệp vụ chính:
 - **Báo cáo**: `reports.view`, `reports.export`.
 - **Quản trị**: `users.manage`, `catalog.manage`, `notifications.send`.
 
+Quyền chức năng mở menu. Tại endpoint quản trị user, staff có users.manage chỉ được tra cứu trong phạm vi, thao tác tạo/khóa/đổi vai trò cần admin. Đối với hội đồng, quyền bỏ phiếu và lập biên bản gắn với tư cách thành viên hoặc thư ký của đúng vòng theo F03/F06. Dịch vụ kiểm tài khoản hoạt động, phân công hiện tại và xung đột lợi ích, kể cả khi truy cập thẳng. Tên quyền theo nghiệp vụ trong các UI là tên thao tác, không làm phát sinh userType mới.
+
 Mỗi mã có mô tả tiếng Việt (BR-07). FE dùng để ẩn/hiện menu; BE dùng `RolesGuard` để enforce.
 
 ### 5.4 Yêu cầu nâng cấp author (`AuthorUpgradeRequest`)
@@ -235,8 +237,7 @@ Endpoint `PATCH /admin/permissions/:userId` **không** persist vào bảng dedic
 `ActivityLog.metadata` với `permissions[]`. Tập quyền hiệu lực khi RolesGuard chạy vẫn dựa trên
 `ROLE_PERMISSIONS[userType]`.
 
-> **Điểm cần PO chốt**: có triển khai bảng `UserPermission` để override per-user không, hay giữ nguyên
-> mô hình "1 role = 1 tập quyền cố định"?
+> BA/PO giữ chế độ audit-only cho đợt A–C. Giao diện phân biệt yêu cầu được ghi và quyền đang có hiệu lực.
 
 ### 5.6 Nhật ký (`ActivityLog`)
 
@@ -286,7 +287,7 @@ Viết theo Given / When / Then bằng ngôn ngữ nghiệp vụ; enum/mã actio
 ## 7. Phụ thuộc & rủi ro
 
 **Phụ thuộc:**
-- **Keycloak** (đăng nhập email-OTP + realm role) —
+- **Keycloak** (đăng nhập email-OTP) —
   [ADR-0008](../../architecture/decisions/0008-keycloak-idp-dang-nhap-email-otp.md);
   **Phân quyền RolesGuard** — [ADR-0005](../../architecture/decisions/0005-sso-va-rbac.md);
   [`integrations.md §2`](../../architecture/integrations.md).
@@ -304,14 +305,11 @@ Viết theo Given / When / Then bằng ngôn ngữ nghiệp vụ; enum/mã actio
 | Phân quyền sai gây lộ/lệch dữ liệu | Cao | Quyền kiểm ở server (BR-08); review ma trận `ROLE_PERMISSIONS`; test guard theo endpoint. |
 | Keycloak sự cố, không đăng nhập được | Cao | Lối khẩn cấp qua Keycloak admin console; giám sát; RMS log riêng khi verify JWT lỗi. |
 | Người lạ tự tạo tài khoản (mọi email nhận được OTP đều vào được) | Trung bình | Chặn thử OTP ở Keycloak (BR-11); `userType=user` chỉ có 1 quyền `meetings.view`; cân nhắc giới hạn tên miền email nếu cần siết. |
-| Đổi email gây lệch danh tính | Thấp | Khóa theo `keycloakId` (unique) thay vì email; email chỉ là thuộc tính đồng bộ. |
+| Đổi email gây lệch danh tính | Thấp | Khóa theo issuer + sub thay vì email; email chỉ là thuộc tính đồng bộ. |
 | Admin tự khóa toàn bộ | Cao | BR-02 (chặn tự khóa) + BR-12 (min 1 admin active) đã enforce ở service. |
-| Custom permissions không persist DB | Trung bình | Hiện chỉ audit; **PO cần chốt** có làm bảng `UserPermission` để override per-user không. |
+| Custom permissions không persist DB | Trung bình | Hiện chỉ audit; Thao tác chỉ ghi nhận yêu cầu. Quyền có hiệu lực theo userType. |
 
-**Điểm nghiệp vụ cần PO chốt (mở):**
-- Có giới hạn tên miền email được phép tự tạo tài khoản không?
-- Có triển khai persist quyền custom per-user (§5.5) không, hay giữ mô hình "1 role = 1 tập quyền cố định"?
-- Có cần cảnh báo UI "còn ≤1 admin đang hoạt động" trước khi khóa/change-role (bổ sung UX cho BR-12)?
+**Quyết định BA/PO cho triển khai (24/11/2026).** OTP ở realm của tenant, tài khoản mới nhận userType=user. Thử nghiệm dùng địa chỉ của realm thử. Chính sách giới hạn miền của trường do chủ IAM cấu hình trước vận hành. UI giải thích điều kiện còn một admin ngay tại thao tác khóa, hạ vai trò hoặc ngừng tài khoản. Máy chủ kiểm lại trong giao dịch.
 
 ## 8. Divergent from v0.3
 
@@ -334,4 +332,4 @@ Spec v0.4 rewrite bám sát code hiện tại. Khác v0.3:
 - **THÊM §5.4** (AuthorUpgradeRequest schema), **§5.5** (custom permissions audit-only), **§5.6**
   (ActivityLog action list).
 - **§3.5 rewrite**: "gán quyền" hiện chỉ là audit ActivityLog, không persist bảng riêng — spec ghi rõ
-  hạn chế này và đánh dấu điểm cần PO chốt.
+  phạm vi này.

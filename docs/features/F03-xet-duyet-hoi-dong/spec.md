@@ -3,9 +3,9 @@ title: "Xét duyệt hội đồng"
 id: "F03"
 epic: "E1"
 owner: "PO/BA"
-status: Draft        # Draft | Review | Approved
+status: Review
 version: 0.1
-updated: 2026-11-21
+updated: 2026-11-24
 ---
 
 # Xét duyệt hội đồng
@@ -175,10 +175,16 @@ Bảng dưới mô tả đợt chấm khoa học `type=PROPOSAL_REVIEW`. Với h
 - **F06** — chia sẻ mô hình hội đồng/phiếu chấm ([ADR-0003](../../architecture/decisions/0003-mo-hinh-hoi-dong-dung-chung.md));
   thay đổi model phải cân nhắc cả hai feature.
 
-**Rủi ro & điểm cần làm rõ:**
-- **Số phiếu hợp lệ khi có xung đột lợi ích:** nếu nhiều thành viên bị loại do BR-03, mẫu số tính
-  `aggregateScore` và `MIN_SUBMITTED_SCORE_SHEETS` cần loại trừ họ — cần PO xác nhận công thức.
-- **Mở lại đợt sau kết luận (BR-10):** quy trình và quyền mở lại cần làm rõ (có cần phê duyệt cấp trên?).
-- **Đồng nhất với F06:** tránh nhồi luật riêng của xét duyệt vào model dùng chung.
-- **Thay đổi ngưỡng giữa chừng:** nếu B01 đổi `PASSING_SCORE` khi đợt đang chấm — chốt là kết luận dùng
-  ngưỡng tại thời điểm ra kết luận (giả định hiện tại), cần PO duyệt.
+**Quyết định cho hội đồng.** Chốt số lượng và điểm trung bình chỉ trên phiếu SUBMITTED đúng vòng của người còn đủ điều kiện. Giữ mức phiếu tối thiểu cấu hình, thiếu thì bổ sung người chấm hợp lệ. Ghi ngưỡng có hiệu lực và số phiếu vào kết luận tại thời điểm chốt. Chuyên viên có quyền mở lại theo BR-10 phải nhập lý do, lưu lịch sử quyết định trước. Nếu đề tài đã chuyển sang thực hiện, chuyển yêu cầu đính chính cho chủ quy trình. F06 dùng chung cấu trúc cuộc họp, thành phần, biên bản và minh chứng của vòng, phân biệt loại vòng. Nhánh đạo đức theo RV-11.
+
+## Phạm vi BA/PO đã chốt cho task
+
+| Quyết định | AC nguồn | Hành vi ở ca biên |
+|---|---|---|
+| [RV-09](../../../specs/review-decisions.md#rv-09) | AC-01 | Chỉ mở một đợt đang thu phiếu cho cùng hồ sơ và lần xét, trả thông tin đợt đã mở cho lần sau. |
+| [RV-10](../../../specs/review-decisions.md#rv-10) | AC-06 | Kiểm lại phân công và quan hệ với đề tài ngay lúc gửi. |
+
+## Công bố nhận xét và truy vết biên bản
+
+- **AC-11** (BR-11) — Chủ nhiệm mở kết quả khi PUBLIC_COMMENTS tắt chỉ thấy kết luận. Khi bật, chủ nhiệm thấy nội dung nhận xét đã công bố, danh tính người chấm được ẩn.
+- **AC-12** (BR-01, BR-09) — Thư ký được phân công lưu biên bản cho cuộc họp của hội đồng đang xét. Khi mở lại cùng vòng thấy đúng cuộc họp, phiên bản tệp, người ghi và thời điểm. Một người thuộc hội đồng khác không đọc được biên bản qua liên kết đó.

@@ -5,7 +5,7 @@ epic: E1
 channel: web
 wave: A
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-24
 ---
 
 # Mở đợt chấm cho một đề tài
@@ -16,7 +16,7 @@ updated: 2026-11-18
 
 ### Session 2026-11-18
 
-- Q: Hai chuyên viên cùng mở đợt cho một đề tài thì sao? → A: Chỉ mở một đợt đang thu phiếu cho cùng hồ sơ và lần xét, trả thông tin đợt đã mở cho lần sau. [RV-09](../review-decisions.md#rv-09). Khuyến nghị dùng để lập kế hoạch, chờ Thư ký hội đồng và BA xác nhận.
+- Q: Hai chuyên viên cùng mở đợt cho một đề tài thì sao? → A: Chỉ mở một đợt đang thu phiếu cho cùng hồ sơ và lần xét, trả thông tin đợt đã mở cho lần sau. [RV-09](../review-decisions.md#rv-09). BA/PO chốt cho triển khai ngày 24/11/2026.
 
 ## User Scenarios & Testing
 
@@ -29,7 +29,7 @@ Chuyên viên gắn đề tài đã chốt vào hội đồng và bộ tiêu ch�
 - **AC-01** (US-09.1) — Given đủ điều kiện. When chuyên viên mở đợt. Then đề tài chuyển UNDER_REVIEW và đợt thu phiếu bắt đầu.
 - **AC-02** (US-09.2) — Given thành viên chỉ có quyền chấm. When yêu cầu mở đợt. Then từ chối, không tạo đợt.
 
-- **AC-03** (US-09.3, khuyến nghị) — Given Hai chuyên viên cùng chọn một hồ sơ đủ điều kiện. When xác nhận mở đợt đồng thời. Then chỉ một đợt thu phiếu, một lần chuyển trạng thái.
+- **AC-03** (US-09.3) — Given Hai chuyên viên cùng chọn một hồ sơ đủ điều kiện. When xác nhận mở đợt đồng thời. Then chỉ một đợt thu phiếu, một lần chuyển trạng thái.
 
 ### Edge Cases
 
@@ -42,7 +42,7 @@ Thành viên chỉ có quyền chấm → từ chối, không tạo đợt.
 - **BR-01 / FR-001.** Khi đủ điều kiện, người có quyền có thể chuyên viên mở đợt. Kết quả phải quan sát được: đề tài chuyển UNDER_REVIEW và đợt thu phiếu bắt đầu (AC-01).
 - **BR-02 / FR-002.** Với tình huống thành viên chỉ có quyền chấm, thao tác yêu cầu mở đợt phải cho kết quả từ chối, không tạo đợt (AC-02).
 
-- **BR-03 / FR-003 (đề xuất).** Chỉ mở một đợt đang thu phiếu cho cùng hồ sơ và lần xét, trả thông tin đợt đã mở cho lần sau. Kiểm bằng AC-03.
+- **BR-03 / FR-003.** Chỉ mở một đợt đang thu phiếu cho cùng hồ sơ và lần xét, trả thông tin đợt đã mở cho lần sau. Kiểm bằng AC-03.
 
 ### Key Entities
 

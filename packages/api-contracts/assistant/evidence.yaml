@@ -1,0 +1,44 @@
+FieldDecision:
+  type: object
+  required: [field,choice]
+  properties: {field: {type: string}, choice: {type: string, enum: [use,discard]}}
+Metadata:
+  type: object
+  required: [doi,title,authors,year,url]
+  properties: {doi: {type: string}, title: {type: string}, authors: {type: string}, year: {type: integer}, url: {type: string}}
+Library:
+  type: array
+  items:
+    type: object
+    required: [id,doi,title]
+    properties: {id: {type: string, format: uuid}, title: {type: string}, doi: {type: string}}
+History:
+  type: array
+  items:
+    type: object
+    required: [id,at]
+    properties: {id: {type: string, format: uuid}, at: {type: string, format: date-time}}
+Suggestion:
+  type: object
+  required: [id,tenantId,sourceKind,sourceId,model,prompt,sourceVersion,templateVersion,metadata,fields]
+  properties:
+    id: {type: string, format: uuid}
+    tenantId: {type: string, format: uuid}
+    sourceKind: {type: string, enum: [proposal,product]}
+    sourceId: {type: string, format: uuid}
+    model: {type: string}
+    prompt: {type: string}
+    sourceVersion: {type: string}
+    templateVersion: {type: string}
+    metadata: {anyOf: [{$ref: '#/Metadata'},{type: 'null'}]}
+    fields:
+      type: array
+      items:
+        type: object
+        required: [key,label,text,location,choice]
+        properties:
+          key: {type: string}
+          label: {type: string}
+          text: {type: [string,'null']}
+          location: {type: [string,'null']}
+          choice: {type: [string,'null'], enum: [use,discard,null]}

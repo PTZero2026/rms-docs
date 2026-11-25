@@ -2,8 +2,8 @@
 title: "Kỳ nhận đề xuất — Giao diện (một web app, phân quyền)"
 spec: "./spec.md"
 owner: "PO/BA"
-status: Draft
-updated: 2026-11-21
+status: Review
+updated: 2026-11-24
 ---
 
 # Kỳ nhận đề xuất — Giao diện
@@ -162,3 +162,9 @@ Người xem nhật ký: chuyên viên QL KHCN và quản trị hệ thống (th
 | BO-01 | AC-01 (kỳ mới xuất hiện danh sách), AC-08 (chặn truy cập trái quyền) |
 | BO-02 | AC-01 (tạo `DRAFT`), AC-05 (validate thời gian/mã), AC-06 (khóa cấu hình) |
 | BO-03 | AC-02 (mở kỳ), AC-04 (đóng kỳ), AC-06 (gia hạn), AC-07 (chặn hủy), AC-08 (quyền) |
+
+## Tra kỳ trên điện thoại
+
+| Truy vết | Hành vi |
+|---|---|
+| BR-09, AC-09 | Màn danh sách mobile có nhóm Đang nhận/Tất cả, tìm theo mã hoặc tên và xóa từ khóa khi rỗng. |

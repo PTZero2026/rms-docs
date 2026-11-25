@@ -2,8 +2,8 @@
 title: "Đề xuất đề tài — Giao diện (một web app, phân quyền)"
 spec: "./spec.md"
 owner: "PO/BA"
-status: Draft
-updated: 2026-06-09
+status: Review
+updated: 2026-11-24
 ---
 
 # Đề xuất đề tài — Giao diện
@@ -199,3 +199,9 @@ Ghi `AuditLog` (append-only, data-model §4.7) cho mọi hành động đổi tr
 | MH-13 | AC-02 |
 | MH-14 | AC-07, AC-08 |
 | MH-15 | AC-10 |
+
+## Trợ lý rà thuyết minh
+
+| Truy vết | Hành vi |
+|---|---|
+| BR-12, AC-12 | Ở biểu mẫu nháp, hiển thị nguồn, phiên bản, vị trí và nút dùng/bỏ. Giữ nút lưu nháp hoạt động khi AI gián đoạn. |

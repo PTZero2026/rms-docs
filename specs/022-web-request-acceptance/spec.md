@@ -5,7 +5,7 @@ epic: E2
 channel: web
 wave: B
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-24
 ---
 
 # Đăng ký nghiệm thu khi đủ điều kiện
@@ -16,7 +16,7 @@ updated: 2026-11-18
 
 ### Session 2026-11-18
 
-- Q: Cùng đủ số lượng tổng nhưng thiếu một loại sản phẩm thì có được nghiệm thu? → A: Kiểm từng loại cam kết tại lúc nộp cùng kết quả kỳ cuối. [RV-22](../review-decisions.md#rv-22). Khuyến nghị dùng để lập kế hoạch, chờ Chuyên viên nghiệm thu và chủ nhiệm xác nhận.
+- Q: Cùng đủ số lượng tổng nhưng thiếu một loại sản phẩm thì có được nghiệm thu? → A: Kiểm từng loại cam kết tại lúc nộp cùng kết quả kỳ cuối. [RV-22](../review-decisions.md#rv-22). BA/PO chốt cho triển khai ngày 24/11/2026.
 
 ## User Scenarios & Testing
 
@@ -29,7 +29,7 @@ Chủ nhiệm nộp hồ sơ cuối khi kỳ cuối đã đạt và đủ sản 
 - **AC-01** (US-22.1) — Given kỳ cuối đạt, đủ sản phẩm. When nộp hồ sơ cuối. Then chuyển PENDING_ACCEPTANCE, chuyên viên nhận thông báo.
 - **AC-02** (US-22.2) — Given thiếu một sản phẩm cam kết. When đăng ký. Then nêu mục thiếu và giữ IN_PROGRESS.
 
-- **AC-03** (US-22.3, khuyến nghị) — Given Cam kết một bài và một sáng chế, đã duyệt hai bài. When đăng ký nghiệm thu. Then nêu thiếu sáng chế và giữ IN_PROGRESS.
+- **AC-03** (US-22.3) — Given Cam kết một bài và một sáng chế, đã duyệt hai bài. When đăng ký nghiệm thu. Then nêu thiếu sáng chế và giữ IN_PROGRESS.
 
 ### Edge Cases
 
@@ -42,7 +42,7 @@ Thiếu một sản phẩm cam kết → nêu mục thiếu và giữ IN_PROGRES
 - **BR-01 / FR-001.** Khi kỳ cuối đạt, đủ sản phẩm, người có quyền có thể nộp hồ sơ cuối. Kết quả phải quan sát được: chuyển PENDING_ACCEPTANCE, chuyên viên nhận thông báo (AC-01).
 - **BR-02 / FR-002.** Với tình huống thiếu một sản phẩm cam kết, thao tác đăng ký phải cho kết quả nêu mục thiếu và giữ IN_PROGRESS (AC-02).
 
-- **BR-03 / FR-003 (đề xuất).** Kiểm từng loại cam kết tại lúc nộp cùng kết quả kỳ cuối. Kiểm bằng AC-03.
+- **BR-03 / FR-003.** Kiểm từng loại cam kết tại lúc nộp cùng kết quả kỳ cuối. Kiểm bằng AC-03.
 
 ### Key Entities
 

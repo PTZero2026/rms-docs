@@ -5,7 +5,7 @@ epic: "E3"
 owner: "PO/BA"
 status: Review       # Draft | Review | Approved
 version: 0.2
-updated: 2026-11-21
+updated: 2026-11-24
 ---
 
 # Lý lịch khoa học
@@ -201,7 +201,7 @@ Viết theo Given / When / Then bằng ngôn ngữ nghiệp vụ; khẳng địn
   gắn hồ sơ 1-1 với `User`.
 - [B01](../B01-danh-muc-cau-hinh/) — danh mục `POSITION` (chức vụ), `ACADEMIC_RANK` (học hàm),
   `ACADEMIC_DEGREE` (học vị), `ADMINISTRATIVE_DIVISION` (địa chỉ); cây **đơn vị** (phòng ban).
-- [F07](../F07-san-pham-khoa-hoc/) — sản phẩm khoa học; [F01](../F01-de-xuat-de-tai/)/[F04](../F04-thuc-hien-de-tai/)
+- [F07](../F07-san-pham-khoa-hoc/) — sản phẩm khoa học; [F01](../F01-de-xuat-de-tai/)/[F04](../F04-quan-ly-tien-do/)
   — vai trò trong đề tài; [P03](../P03-quy-doi-gio-giang/) — giờ giảng quy đổi (optional per-tenant).
 - **Sổ biến thiên** — VP-PROFILE (trường hồ sơ per-tenant), VP-CV-TPL (mẫu trích xuất), VP-CAT (danh mục):
   [variation-points.md](../../architecture/variation-points.md); [ADR-0012](../../architecture/decisions/0012-ranh-gioi-loi-vs-cau-hinh-tenant.md).

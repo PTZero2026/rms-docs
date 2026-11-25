@@ -1,0 +1,832 @@
+{
+  "at": "2026-11-24T15:29:10.069Z",
+  "connections": 8,
+  "clients": 12,
+  "requestsPerCase": 120,
+  "baseline": {
+    "list": {
+      "ms": {
+        "n": 80,
+        "p50": 4.406,
+        "p95": 10.504,
+        "p99": 14.069
+      },
+      "poolWaitMs": {
+        "n": 80,
+        "p50": 1.918,
+        "p95": 5.653,
+        "p99": 10.507
+      },
+      "domainQueries": {
+        "n": 80,
+        "p50": 2,
+        "p95": 2,
+        "p99": 2
+      },
+      "rows": 20
+    },
+    "export": {
+      "ms": {
+        "n": 40,
+        "p50": 5.203,
+        "p95": 14.229,
+        "p99": 19.582
+      },
+      "poolWaitMs": {
+        "n": 40,
+        "p50": 0.448,
+        "p95": 4.349,
+        "p99": 8.866
+      },
+      "domainQueries": {
+        "n": 40,
+        "p50": 6,
+        "p95": 6,
+        "p99": 6
+      }
+    },
+    "plans": [
+      {
+        "statement": "20eed253124b",
+        "sql": "INSERT INTO rms.call_report_snapshot(tenant_id,account_id,call_id,call_code,unit_ids,unit_labels,entries)\n    SELECT c.tenant_id,$1,c.id,c.code,$3::uuid[],$4::text[],COALESCE((SELECT jsonb_agg(jsonb_build_object('id',p.id,'code',p.project_code,\n      'title',p.title,'unitId',u.id,'unit',u.name,'semantic',p.status_semantic) ORDER BY p.project_code,p.id)\n      FROM rms.research_project p JOIN rms.unit u ON (u.tenant_id,u.id)=(p.tenant_id,p.unit_id)\n      WHERE (p.tenant_id,p.call_id)=(c.tenant_id,c.id) AND p.project_code IS NOT NULL AND p.unit_id=ANY($3::uuid[])),'[]'::jsonb)\n    FROM rms.proposal_call c WHERE c.id=$2 RETURNING id",
+        "measuredMs": {
+          "n": 40,
+          "p50": 1.285,
+          "p95": 2.67,
+          "p99": 3.152
+        },
+        "executionMs": 0.533,
+        "plan": {
+          "node": "ModifyTable",
+          "relation": "call_report_snapshot",
+          "rows": 1,
+          "loops": 1,
+          "sharedHits": 37,
+          "reads": 0,
+          "children": [
+            {
+              "node": "Index Scan",
+              "relation": "proposal_call",
+              "index": "proposal_call_pkey",
+              "rows": 1,
+              "loops": 1,
+              "sharedHits": 26,
+              "reads": 0,
+              "children": [
+                {
+                  "node": "Aggregate",
+                  "rows": 1,
+                  "loops": 1,
+                  "sharedHits": 24,
+                  "reads": 0,
+                  "children": [
+                    {
+                      "node": "Sort",
+                      "rows": 100,
+                      "loops": 1,
+                      "sharedHits": 24,
+                      "reads": 0,
+                      "children": [
+                        {
+                          "node": "Result",
+                          "rows": 100,
+                          "loops": 1,
+                          "sharedHits": 24,
+                          "reads": 0,
+                          "children": [
+                            {
+                              "node": "Nested Loop",
+                              "rows": 100,
+                              "loops": 1,
+                              "sharedHits": 24,
+                              "reads": 0,
+                              "children": [
+                                {
+                                  "node": "Bitmap Heap Scan",
+                                  "relation": "unit",
+                                  "rows": 2,
+                                  "loops": 1,
+                                  "sharedHits": 2,
+                                  "reads": 0,
+                                  "children": [
+                                    {
+                                      "node": "Bitmap Index Scan",
+                                      "index": "unit_pkey",
+                                      "rows": 2,
+                                      "loops": 1,
+                                      "sharedHits": 1,
+                                      "reads": 0,
+                                      "children": []
+                                    }
+                                  ]
+                                },
+                                {
+                                  "node": "Materialize",
+                                  "rows": 100,
+                                  "loops": 2,
+                                  "sharedHits": 22,
+                                  "reads": 0,
+                                  "children": [
+                                    {
+                                      "node": "Index Scan",
+                                      "relation": "research_project",
+                                      "index": "project_by_call",
+                                      "rows": 100,
+                                      "loops": 1,
+                                      "sharedHits": 22,
+                                      "reads": 0,
+                                      "children": []
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "statement": "70cd3ffa474f",
+        "sql": "SELECT s.id,s.call_code,s.captured_at,s.unit_labels,s.entries,s.unit_ids<@$3::uuid[] AND NOT EXISTS\n    (SELECT 1 FROM jsonb_array_elements(s.entries) row LEFT JOIN rms.research_project p ON p.tenant_id=s.tenant_id AND p.id=(row->>'id')::uuid\n     WHERE p.id IS NULL OR NOT(p.unit_id=ANY($3::uuid[]))) AS permitted\n    FROM rms.call_report_snapshot s WHERE s.id=$1 AND s.account_id=$2",
+        "measuredMs": {
+          "n": 80,
+          "p50": 1.002,
+          "p95": 2.111,
+          "p99": 3.977
+        },
+        "executionMs": 0.31,
+        "plan": {
+          "node": "Index Scan",
+          "relation": "call_report_snapshot",
+          "index": "call_report_snapshot_pkey",
+          "rows": 1,
+          "loops": 1,
+          "sharedHits": 44,
+          "reads": 0,
+          "children": [
+            {
+              "node": "Hash Join",
+              "rows": 0,
+              "loops": 1,
+              "sharedHits": 42,
+              "reads": 0,
+              "children": [
+                {
+                  "node": "Result",
+                  "rows": 1000,
+                  "loops": 1,
+                  "sharedHits": 40,
+                  "reads": 0,
+                  "children": [
+                    {
+                      "node": "Seq Scan",
+                      "relation": "research_project",
+                      "rows": 1000,
+                      "loops": 1,
+                      "sharedHits": 40,
+                      "reads": 0,
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "node": "Hash",
+                  "rows": 100,
+                  "loops": 1,
+                  "sharedHits": 2,
+                  "reads": 0,
+                  "children": [
+                    {
+                      "node": "Function Scan",
+                      "rows": 100,
+                      "loops": 1,
+                      "sharedHits": 2,
+                      "reads": 0,
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "statement": "627871d586f3",
+        "sql": "SELECT p.id,p.title,p.status,p.row_version AS version,(p.call_id IS NOT NULL) AS \"hasProposal\" FROM rms.research_project p WHERE ($1='admin' OR ($1='staff' AND p.unit_id=$2::uuid) OR ($1='author' AND p.owner_id=$3::uuid) OR EXISTS(SELECT 1 FROM rms.project_member m WHERE (m.tenant_id,m.project_id)=(p.tenant_id,p.id) AND m.account_id=$3::uuid)) AND strpos(lower(p.title),lower($4))>0 ORDER BY p.title,p.id LIMIT 20 OFFSET $5",
+        "measuredMs": {
+          "n": 80,
+          "p50": 0.991,
+          "p95": 1.908,
+          "p99": 2.487
+        },
+        "executionMs": 0.274,
+        "plan": {
+          "node": "Limit",
+          "rows": 20,
+          "loops": 1,
+          "sharedHits": 205,
+          "reads": 0,
+          "children": [
+            {
+              "node": "Sort",
+              "rows": 20,
+              "loops": 1,
+              "sharedHits": 205,
+              "reads": 0,
+              "children": [
+                {
+                  "node": "Index Scan",
+                  "relation": "research_project",
+                  "index": "project_by_call",
+                  "rows": 800,
+                  "loops": 1,
+                  "sharedHits": 205,
+                  "reads": 0,
+                  "children": [
+                    {
+                      "node": "Index Only Scan",
+                      "relation": "project_member",
+                      "index": "project_member_lookup",
+                      "rows": 0,
+                      "loops": 1,
+                      "sharedHits": 1,
+                      "reads": 0,
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "grown": {
+    "list": {
+      "ms": {
+        "n": 80,
+        "p50": 4.256,
+        "p95": 5.967,
+        "p99": 7.603
+      },
+      "poolWaitMs": {
+        "n": 80,
+        "p50": 1.906,
+        "p95": 3.634,
+        "p99": 4.021
+      },
+      "domainQueries": {
+        "n": 80,
+        "p50": 2,
+        "p95": 2,
+        "p99": 2
+      },
+      "rows": 20
+    },
+    "export": {
+      "ms": {
+        "n": 40,
+        "p50": 18.49,
+        "p95": 27.301,
+        "p99": 33.4
+      },
+      "poolWaitMs": {
+        "n": 40,
+        "p50": 0.012,
+        "p95": 2.793,
+        "p99": 3.489
+      },
+      "domainQueries": {
+        "n": 40,
+        "p50": 6,
+        "p95": 6,
+        "p99": 6
+      }
+    },
+    "plans": [
+      {
+        "statement": "70cd3ffa474f",
+        "sql": "SELECT s.id,s.call_code,s.captured_at,s.unit_labels,s.entries,s.unit_ids<@$3::uuid[] AND NOT EXISTS\n    (SELECT 1 FROM jsonb_array_elements(s.entries) row LEFT JOIN rms.research_project p ON p.tenant_id=s.tenant_id AND p.id=(row->>'id')::uuid\n     WHERE p.id IS NULL OR NOT(p.unit_id=ANY($3::uuid[]))) AS permitted\n    FROM rms.call_report_snapshot s WHERE s.id=$1 AND s.account_id=$2",
+        "measuredMs": {
+          "n": 80,
+          "p50": 4.95,
+          "p95": 8.273,
+          "p99": 12.03
+        },
+        "executionMs": 2.656,
+        "plan": {
+          "node": "Index Scan",
+          "relation": "call_report_snapshot",
+          "index": "call_report_snapshot_pkey",
+          "rows": 1,
+          "loops": 1,
+          "sharedHits": 224,
+          "reads": 0,
+          "children": [
+            {
+              "node": "Hash Join",
+              "rows": 0,
+              "loops": 1,
+              "sharedHits": 222,
+              "reads": 0,
+              "children": [
+                {
+                  "node": "Result",
+                  "rows": 10000,
+                  "loops": 1,
+                  "sharedHits": 213,
+                  "reads": 0,
+                  "children": [
+                    {
+                      "node": "Seq Scan",
+                      "relation": "research_project",
+                      "rows": 10000,
+                      "loops": 1,
+                      "sharedHits": 213,
+                      "reads": 0,
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "node": "Hash",
+                  "rows": 1000,
+                  "loops": 1,
+                  "sharedHits": 9,
+                  "reads": 0,
+                  "children": [
+                    {
+                      "node": "Function Scan",
+                      "rows": 1000,
+                      "loops": 1,
+                      "sharedHits": 9,
+                      "reads": 0,
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "statement": "20eed253124b",
+        "sql": "INSERT INTO rms.call_report_snapshot(tenant_id,account_id,call_id,call_code,unit_ids,unit_labels,entries)\n    SELECT c.tenant_id,$1,c.id,c.code,$3::uuid[],$4::text[],COALESCE((SELECT jsonb_agg(jsonb_build_object('id',p.id,'code',p.project_code,\n      'title',p.title,'unitId',u.id,'unit',u.name,'semantic',p.status_semantic) ORDER BY p.project_code,p.id)\n      FROM rms.research_project p JOIN rms.unit u ON (u.tenant_id,u.id)=(p.tenant_id,p.unit_id)\n      WHERE (p.tenant_id,p.call_id)=(c.tenant_id,c.id) AND p.project_code IS NOT NULL AND p.unit_id=ANY($3::uuid[])),'[]'::jsonb)\n    FROM rms.proposal_call c WHERE c.id=$2 RETURNING id",
+        "measuredMs": {
+          "n": 40,
+          "p50": 5.221,
+          "p95": 8.045,
+          "p99": 11.074
+        },
+        "executionMs": 4.395,
+        "plan": {
+          "node": "ModifyTable",
+          "relation": "call_report_snapshot",
+          "rows": 1,
+          "loops": 1,
+          "sharedHits": 293,
+          "reads": 0,
+          "children": [
+            {
+              "node": "Index Scan",
+              "relation": "proposal_call",
+              "index": "proposal_call_pkey",
+              "rows": 1,
+              "loops": 1,
+              "sharedHits": 200,
+              "reads": 0,
+              "children": [
+                {
+                  "node": "Aggregate",
+                  "rows": 1,
+                  "loops": 1,
+                  "sharedHits": 198,
+                  "reads": 0,
+                  "children": [
+                    {
+                      "node": "Sort",
+                      "rows": 1000,
+                      "loops": 1,
+                      "sharedHits": 198,
+                      "reads": 0,
+                      "children": [
+                        {
+                          "node": "Result",
+                          "rows": 1000,
+                          "loops": 1,
+                          "sharedHits": 198,
+                          "reads": 0,
+                          "children": [
+                            {
+                              "node": "Hash Join",
+                              "rows": 1000,
+                              "loops": 1,
+                              "sharedHits": 198,
+                              "reads": 0,
+                              "children": [
+                                {
+                                  "node": "Bitmap Heap Scan",
+                                  "relation": "research_project",
+                                  "rows": 1000,
+                                  "loops": 1,
+                                  "sharedHits": 196,
+                                  "reads": 0,
+                                  "children": [
+                                    {
+                                      "node": "Bitmap Index Scan",
+                                      "index": "project_by_call",
+                                      "rows": 1000,
+                                      "loops": 1,
+                                      "sharedHits": 2,
+                                      "reads": 0,
+                                      "children": []
+                                    }
+                                  ]
+                                },
+                                {
+                                  "node": "Hash",
+                                  "rows": 2,
+                                  "loops": 1,
+                                  "sharedHits": 2,
+                                  "reads": 0,
+                                  "children": [
+                                    {
+                                      "node": "Bitmap Heap Scan",
+                                      "relation": "unit",
+                                      "rows": 2,
+                                      "loops": 1,
+                                      "sharedHits": 2,
+                                      "reads": 0,
+                                      "children": [
+                                        {
+                                          "node": "Bitmap Index Scan",
+                                          "index": "unit_pkey",
+                                          "rows": 2,
+                                          "loops": 1,
+                                          "sharedHits": 1,
+                                          "reads": 0,
+                                          "children": []
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "statement": "9b95d532e7b6",
+        "sql": "SELECT count(*)::int AS total FROM rms.research_project p WHERE ($1='admin' OR ($1='staff' AND p.unit_id=$2::uuid) OR ($1='author' AND p.owner_id=$3::uuid) OR EXISTS(SELECT 1 FROM rms.project_member m WHERE (m.tenant_id,m.project_id)=(p.tenant_id,p.id) AND m.account_id=$3::uuid)) AND strpos(lower(p.title),lower($4))>0",
+        "measuredMs": {
+          "n": 80,
+          "p50": 0.619,
+          "p95": 1.967,
+          "p99": 2.986
+        },
+        "executionMs": 0.188,
+        "plan": {
+          "node": "Aggregate",
+          "rows": 1,
+          "loops": 1,
+          "sharedHits": 24,
+          "reads": 0,
+          "children": [
+            {
+              "node": "Bitmap Heap Scan",
+              "relation": "research_project",
+              "rows": 800,
+              "loops": 1,
+              "sharedHits": 24,
+              "reads": 0,
+              "children": [
+                {
+                  "node": "Bitmap Index Scan",
+                  "index": "project_by_call",
+                  "rows": 1000,
+                  "loops": 1,
+                  "sharedHits": 2,
+                  "reads": 0,
+                  "children": []
+                },
+                {
+                  "node": "Index Only Scan",
+                  "relation": "project_member",
+                  "index": "project_member_lookup",
+                  "rows": 0,
+                  "loops": 1,
+                  "sharedHits": 1,
+                  "reads": 0,
+                  "children": []
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "trial": {
+    "list": {
+      "ms": {
+        "n": 80,
+        "p50": 5.185,
+        "p95": 7.227,
+        "p99": 9.811
+      },
+      "poolWaitMs": {
+        "n": 80,
+        "p50": 2.309,
+        "p95": 3.378,
+        "p99": 5.738
+      },
+      "domainQueries": {
+        "n": 80,
+        "p50": 2,
+        "p95": 2,
+        "p99": 2
+      },
+      "rows": 20
+    },
+    "export": {
+      "ms": {
+        "n": 40,
+        "p50": 19.133,
+        "p95": 29.283,
+        "p99": 30.338
+      },
+      "poolWaitMs": {
+        "n": 40,
+        "p50": 0.012,
+        "p95": 2.484,
+        "p99": 3.991
+      },
+      "domainQueries": {
+        "n": 40,
+        "p50": 6,
+        "p95": 6,
+        "p99": 6
+      }
+    },
+    "plans": [
+      {
+        "statement": "70cd3ffa474f",
+        "sql": "SELECT s.id,s.call_code,s.captured_at,s.unit_labels,s.entries,s.unit_ids<@$3::uuid[] AND NOT EXISTS\n    (SELECT 1 FROM jsonb_array_elements(s.entries) row LEFT JOIN rms.research_project p ON p.tenant_id=s.tenant_id AND p.id=(row->>'id')::uuid\n     WHERE p.id IS NULL OR NOT(p.unit_id=ANY($3::uuid[]))) AS permitted\n    FROM rms.call_report_snapshot s WHERE s.id=$1 AND s.account_id=$2",
+        "measuredMs": {
+          "n": 80,
+          "p50": 5.431,
+          "p95": 10.528,
+          "p99": 14.768
+        },
+        "executionMs": 2.622,
+        "plan": {
+          "node": "Index Scan",
+          "relation": "call_report_snapshot",
+          "index": "call_report_snapshot_pkey",
+          "rows": 1,
+          "loops": 1,
+          "sharedHits": 224,
+          "reads": 0,
+          "children": [
+            {
+              "node": "Hash Join",
+              "rows": 0,
+              "loops": 1,
+              "sharedHits": 222,
+              "reads": 0,
+              "children": [
+                {
+                  "node": "Result",
+                  "rows": 10000,
+                  "loops": 1,
+                  "sharedHits": 213,
+                  "reads": 0,
+                  "children": [
+                    {
+                      "node": "Seq Scan",
+                      "relation": "research_project",
+                      "rows": 10000,
+                      "loops": 1,
+                      "sharedHits": 213,
+                      "reads": 0,
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "node": "Hash",
+                  "rows": 1000,
+                  "loops": 1,
+                  "sharedHits": 9,
+                  "reads": 0,
+                  "children": [
+                    {
+                      "node": "Function Scan",
+                      "rows": 1000,
+                      "loops": 1,
+                      "sharedHits": 9,
+                      "reads": 0,
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "statement": "20eed253124b",
+        "sql": "INSERT INTO rms.call_report_snapshot(tenant_id,account_id,call_id,call_code,unit_ids,unit_labels,entries)\n    SELECT c.tenant_id,$1,c.id,c.code,$3::uuid[],$4::text[],COALESCE((SELECT jsonb_agg(jsonb_build_object('id',p.id,'code',p.project_code,\n      'title',p.title,'unitId',u.id,'unit',u.name,'semantic',p.status_semantic) ORDER BY p.project_code,p.id)\n      FROM rms.research_project p JOIN rms.unit u ON (u.tenant_id,u.id)=(p.tenant_id,p.unit_id)\n      WHERE (p.tenant_id,p.call_id)=(c.tenant_id,c.id) AND p.project_code IS NOT NULL AND p.unit_id=ANY($3::uuid[])),'[]'::jsonb)\n    FROM rms.proposal_call c WHERE c.id=$2 RETURNING id",
+        "measuredMs": {
+          "n": 40,
+          "p50": 5.043,
+          "p95": 6.813,
+          "p99": 7.288
+        },
+        "executionMs": 4.321,
+        "plan": {
+          "node": "ModifyTable",
+          "relation": "call_report_snapshot",
+          "rows": 1,
+          "loops": 1,
+          "sharedHits": 293,
+          "reads": 0,
+          "children": [
+            {
+              "node": "Index Scan",
+              "relation": "proposal_call",
+              "index": "proposal_call_pkey",
+              "rows": 1,
+              "loops": 1,
+              "sharedHits": 200,
+              "reads": 0,
+              "children": [
+                {
+                  "node": "Aggregate",
+                  "rows": 1,
+                  "loops": 1,
+                  "sharedHits": 198,
+                  "reads": 0,
+                  "children": [
+                    {
+                      "node": "Sort",
+                      "rows": 1000,
+                      "loops": 1,
+                      "sharedHits": 198,
+                      "reads": 0,
+                      "children": [
+                        {
+                          "node": "Result",
+                          "rows": 1000,
+                          "loops": 1,
+                          "sharedHits": 198,
+                          "reads": 0,
+                          "children": [
+                            {
+                              "node": "Hash Join",
+                              "rows": 1000,
+                              "loops": 1,
+                              "sharedHits": 198,
+                              "reads": 0,
+                              "children": [
+                                {
+                                  "node": "Bitmap Heap Scan",
+                                  "relation": "research_project",
+                                  "rows": 1000,
+                                  "loops": 1,
+                                  "sharedHits": 196,
+                                  "reads": 0,
+                                  "children": [
+                                    {
+                                      "node": "Bitmap Index Scan",
+                                      "index": "project_by_call",
+                                      "rows": 1000,
+                                      "loops": 1,
+                                      "sharedHits": 2,
+                                      "reads": 0,
+                                      "children": []
+                                    }
+                                  ]
+                                },
+                                {
+                                  "node": "Hash",
+                                  "rows": 2,
+                                  "loops": 1,
+                                  "sharedHits": 2,
+                                  "reads": 0,
+                                  "children": [
+                                    {
+                                      "node": "Bitmap Heap Scan",
+                                      "relation": "unit",
+                                      "rows": 2,
+                                      "loops": 1,
+                                      "sharedHits": 2,
+                                      "reads": 0,
+                                      "children": [
+                                        {
+                                          "node": "Bitmap Index Scan",
+                                          "index": "unit_pkey",
+                                          "rows": 2,
+                                          "loops": 1,
+                                          "sharedHits": 1,
+                                          "reads": 0,
+                                          "children": []
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "statement": "627871d586f3",
+        "sql": "SELECT p.id,p.title,p.status,p.row_version AS version,(p.call_id IS NOT NULL) AS \"hasProposal\" FROM rms.research_project p WHERE ($1='admin' OR ($1='staff' AND p.unit_id=$2::uuid) OR ($1='author' AND p.owner_id=$3::uuid) OR EXISTS(SELECT 1 FROM rms.project_member m WHERE (m.tenant_id,m.project_id)=(p.tenant_id,p.id) AND m.account_id=$3::uuid)) AND strpos(lower(p.title),lower($4))>0 ORDER BY p.title,p.id LIMIT 20 OFFSET $5",
+        "measuredMs": {
+          "n": 80,
+          "p50": 1.176,
+          "p95": 1.858,
+          "p99": 2.009
+        },
+        "executionMs": 0.272,
+        "plan": {
+          "node": "Limit",
+          "rows": 20,
+          "loops": 1,
+          "sharedHits": 24,
+          "reads": 0,
+          "children": [
+            {
+              "node": "Sort",
+              "rows": 20,
+              "loops": 1,
+              "sharedHits": 24,
+              "reads": 0,
+              "children": [
+                {
+                  "node": "Bitmap Heap Scan",
+                  "relation": "research_project",
+                  "rows": 800,
+                  "loops": 1,
+                  "sharedHits": 24,
+                  "reads": 0,
+                  "children": [
+                    {
+                      "node": "Bitmap Index Scan",
+                      "index": "project_by_call",
+                      "rows": 1000,
+                      "loops": 1,
+                      "sharedHits": 2,
+                      "reads": 0,
+                      "children": []
+                    },
+                    {
+                      "node": "Index Only Scan",
+                      "relation": "project_member",
+                      "index": "project_member_lookup",
+                      "rows": 0,
+                      "loops": 1,
+                      "sharedHits": 1,
+                      "reads": 0,
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

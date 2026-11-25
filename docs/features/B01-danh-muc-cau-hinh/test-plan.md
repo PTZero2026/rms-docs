@@ -2,9 +2,9 @@
 title: "Danh mục & cấu hình (sys-config-service) — Test plan"
 spec: "./spec.md"
 owner: "PO/BA"
-status: Draft
+status: Review
 version: 0.3
-updated: 2026-11-21
+updated: 2026-11-25
 ---
 
 # Danh mục & cấu hình (sys-config-service) — Kế hoạch kiểm thử
@@ -21,10 +21,9 @@ updated: 2026-11-21
   Màn hình quản trị (xem [`ui.md`](./ui.md)) chỉ là lớp mỏng gọi các API này; test UI = smoke.
 - **Môi trường staging:**
   - **PostgreSQL** database riêng `sys_config_db` (bảng duy nhất `sys_configuration`).
-  - **Redis** cụm chung, namespace `sys-config:admin:<tenantId hoặc __shared__>:<key>` (BR-04, spec §7).
-  - **Keycloak** realm chung với `nckh-backend` (ADR-0008), phát token RS256 cho 4 vai trò mẫu:
-    `super_admin`, `admin`/`tenant_admin` (của tenant X), `admin`/`tenant_admin` (của tenant Y),
-    và một `user` thường (không quyền ghi).
+  - **Redis** cụm chung, namespace `rms:catalog:<tenantId hoặc __shared__>:<key lowercase>` của B01 (BR-04, spec §7).
+  - Hai realm độc lập cho X/Y, hai admin RMS, một người đọc và một danh tính vận hành được IAM cấp scope shared.
+
 - **Tenant mẫu:** hai tenant **X** và **Y** để kiểm fallback và cách ly.
 - **Dữ liệu mẫu:**
   - Bản shared (`tenantId = NULL`): `key = "CONFIG.FE"` (JSON), `key = "ROLES"` (JSON).
@@ -49,6 +48,10 @@ updated: 2026-11-21
 | TC-11 | AC-11 | File > 20 MB | POST file vượt `MAX_CONTENT_BYTES` (20 MB) | Bị từ chối **413** (hoặc 400 tùy multer); không lưu | Biên/Lỗi |
 | TC-12 | AC-12 | Có bản shared `"ROLES"` **và** bản `(X, "ROLES")` | `tenant_admin` X DELETE `"ROLES"`; sau đó X GET `"ROLES"` | Row của X bị **xóa cứng** khỏi DB; bản shared còn nguyên; GET của X sau đó trả **bản shared** (fallback) | Happy |
 | TC-13 | AC-13 | Có bản `(X, k1)`, `(Y, k2)`, và shared `(NULL, k3)` | `tenant_admin` X GET `/sys-configurations` (list) | Danh sách chỉ gồm `tenantId = X` **và** `tenantId = NULL`; **không** thấy `(Y, k2)` | Quyền |
+| TC-14 | AC-03, AC-06 | Có CONFIG.FE tại X, Y đang dùng fallback | POST config.fe ở X, sau đó thay shared | X nhận 409 và giữ override, Y đọc ngay shared mới | Biên |
+| TC-15 | AC-07 | Hạ admin X xuống user trong RMS, token vẫn còn hạn | Thử lại lệnh ghi và thử GET sau khi khóa | 403, cả cache hit cũng kiểm IAM | Quyền |
+| TC-16 | AC-01, AC-10 | Danh tính vận hành ghi shared | Ghi nội dung hợp lệ, thử lỗi audit, rồi dry-run | Chỉ lần thành công thay bản ghi và tăng audit đúng một | Audit |
+| TC-17 | AC-08 | CONFIG.FE đã đăng ký schema và có bản hợp lệ | PUT JSON sai kiểu trường | 400, đọc lại vẫn đúng nội dung trước | Validate |
 
 ## 3. Trường hợp biên & negative
 
@@ -75,6 +78,8 @@ updated: 2026-11-21
 
 ## 4. Checklist hồi quy
 
+Đã chạy TC-09/10 trên Chrome với PNG 3 KiB gửi multipart. Sau dry-run, GET trả 404. Sau lưu, trình duyệt nhận đúng MIME, bytes và giải mã được ảnh. Với TC-13, DB kiểm mốc đầu ngày, microgiây cuối và hai mốc nằm ngoài ngày ở UTC+7 cho ngày tạo lẫn ngày sửa. ISO timestamp có độ lệch múi giờ vẫn so đến đúng thời điểm. [Ca trình duyệt](../../../e2e/catalog/config-override/formats.spec.ts) · [Ca PostgreSQL](../../../apps/sys-config-service/test/store.test.mjs)
+
 Khi `sys-config-service` thay đổi, kiểm tra lại các **consumer** đọc cấu hình (spec §7):
 
 - [ ] `nckh-backend`: các key nghiệp vụ chung (`ROLES`, `ACADEMIC_TITLES`, `SPECIALTIES`…) vẫn đọc
@@ -82,7 +87,6 @@ Khi `sys-config-service` thay đổi, kiểm tra lại các **consumer** đọc 
 - [ ] FE (isofh-admin, portal): config JSON runtime (theme, feature flag, endpoint map…) parse đúng
       định dạng theo `refer` (rủi ro spec §7.1 — convention content-format).
 - [ ] `mail-service` / `templates-service`: template lưu base64 tải & decode đúng.
-- [ ] Cache: PUT/DELETE một key chỉ invalidate **đúng** key đó (không xóa toàn cache), multi-pod
-      không stale (rủi ro spec §7.2).
-- [ ] Fallback: tenant chưa cấu hình riêng vẫn nhận bản shared; tenant đã ghi đè nhận đúng bản mình.
+- [x] Hai tiến trình B01 cục bộ dùng chung DB và Redis. Sau từng POST/PUT/DELETE, đọc ngay ở tiến trình kia. Khóa độc lập vẫn HIT. Ops đối chiếu lại topology pod ở pilot. [Ca hai tiến trình](../../../e2e/catalog/config-override/replicas.ts)
+- [x] Fallback tại hai tenant thử. Trường đã ghi đè đọc đúng bản riêng. Xóa bản riêng đưa trường về bản shared hiện hành.
 - [ ] Auth: đổi realm/issuer Keycloak không phá verify RS256; `tenant_id` claim vẫn map đúng tenant.

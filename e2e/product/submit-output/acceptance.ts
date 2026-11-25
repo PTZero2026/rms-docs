@@ -1,0 +1,40 @@
+import { expect,type Page } from "@playwright/test"
+import { fileURLToPath } from "node:url"
+
+export async function verifyProducts(officer:Page,author:Page,project:string){
+  const open=async(p:Page)=>{
+    await p.goto("/app/school-1?project="+project)
+    await p.getByRole("button",{name:"Sản phẩm khoa học",exact:true}).click()
+    return p.getByRole("region",{name:"Sản phẩm đề tài"})
+  }
+  const pi=await open(author)
+  await pi.getByRole("button",{name:"Kê khai sản phẩm"}).click()
+  await pi.getByLabel("Tên sản phẩm",{exact:true}).fill("Mô hình dòng chảy lưu vực")
+  await pi.getByLabel("Thông tin công bố").fill("Tạp chí khoa học thủy lợi, số 11")
+  await pi.getByRole("button",{name:"Lưu nháp sản phẩm"}).click()
+  await pi.getByRole("button",{name:"Gửi duyệt sản phẩm"}).click()
+  await expect(pi.getByRole("alert")).toContainText("minh chứng")
+  await pi.getByRole("button",{name:"Sửa bản kê khai"}).click()
+  await pi.getByRole("checkbox",{name:"Bao-cao-ky-1.pdf"}).check()
+  await pi.getByRole("button",{name:"Lưu nháp sản phẩm"}).click()
+  const staff=await open(officer)
+  await staff.getByLabel("Lý do từ chối, mở lại hoặc thu quyền").fill("Giới hạn sử dụng tài liệu cho báo cáo tiến độ.")
+  await staff.getByText("Quyền sử dụng minh chứng sản phẩm",{exact:true}).click()
+  await staff.getByRole("button",{name:"Thu quyền · Bao-cao-ky-1.pdf"}).click()
+  await expect(staff.getByRole("button",{name:"Thu quyền · Bao-cao-ky-1.pdf"})).toHaveCount(0)
+  await pi.getByRole("button",{name:"Gửi duyệt sản phẩm"}).click()
+  await expect(pi.getByRole("alert")).toContainText("hết quyền")
+  await open(author)
+  await pi.getByRole("button",{name:"Sửa bản kê khai"}).click()
+  await pi.getByLabel("Tải tệp căn cứ").setInputFiles({name:"Bai-bao.pdf",mimeType:"application/pdf",buffer:Buffer.from("%PDF-1.4\n1 0 obj\n<< /Type /Catalog >>\nendobj\n%%EOF\n")})
+  await pi.getByRole("button",{name:"Tải và xác nhận tệp"}).click()
+  await expect(pi.getByText("Đã xác nhận tệp Bai-bao.pdf")).toBeVisible()
+  await pi.getByRole("button",{name:"Lưu nháp sản phẩm"}).click()
+  await pi.getByRole("button",{name:"Gửi duyệt sản phẩm"}).click()
+  await expect(pi.getByText(/Bài báo · .* · Chờ duyệt/)).toBeVisible()
+  await expect(pi.getByRole("button",{name:"Duyệt sản phẩm",exact:true})).toHaveCount(0)
+  const queue=await open(officer)
+  await queue.getByRole("button",{name:"Duyệt sản phẩm",exact:true}).click()
+  await expect(queue.getByText("Bài báo · Đã duyệt 1/1 · Còn thiếu 0")).toBeVisible()
+  await queue.screenshot({path:fileURLToPath(new URL("../../../docs/reviews/screenshots/product/chuyen-vien-duyet-san-pham.png",import.meta.url))})
+}

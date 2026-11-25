@@ -13,6 +13,8 @@ pnpm dev
 
 Mở địa chỉ Vite in trong terminal. V0 mở tổng quan của chủ nhiệm Lê Thanh Mai. Chọn **Phiên mô phỏng** để đổi vai trò hoặc trường và thử các thao tác trên dữ liệu giả lập. [Hướng dẫn 20 màn hình và 32 lát nghiệp vụ](docs/guides/rms-v0-frontend.md).
 
+Mở thêm đường dẫn `/v0-mobile/` trên cùng máy chủ để thử ba luồng điện thoại. Trên desktop, trang mở khung tương tác rộng 390 px. [Backlog INVEST](docs/product/mobile-invest.md) · [Báo cáo và ảnh v0-mobile](docs/reviews/rms-v0-mobile.md).
+
 - `pnpm ui:add input` thêm component từ registry shadcn vào `packages/ui/src/components/`, dùng được ngay trong `apps/web`.
 - MCP `shadcn` đã được cấu hình cho Codex, Claude Code và Cursor. Sau khi cài dependency, mở repo trong client và kết nối server `shadcn` để tra cứu component từ registry. Server dùng phiên bản CLI của monorepo và đọc cấu hình ở `apps/web/components.json`.
 - Skill `ui-ux-pro-max` có sẵn cho Codex, Claude Code và Cursor để thiết kế, rà soát biểu mẫu và khả năng tiếp cận. [Hướng dẫn skill](.agents/skills/ui-ux-pro-max/SKILL.md).
@@ -21,9 +23,9 @@ Mở địa chỉ Vite in trong terminal. V0 mở tổng quan của chủ nhiệ
 
 > **AI agent** (Claude Code) đọc [AGENTS.md](AGENTS.md) trước mọi tác vụ — đó là nguồn ngữ cảnh chính.
 
-Bộ hồ sơ kế hoạch tháng 11/2026 gồm [32 lát Spec Kit](specs/README.md), [các quyết định cần review](specs/review-decisions.md) và [lộ trình sản phẩm](docs/product/roadmap.md).
+Bộ hồ sơ kế hoạch tháng 11/2026 gồm [35 lát Spec Kit](specs/README.md), [sổ quyết định triển khai](specs/review-decisions.md) và [lộ trình sản phẩm](docs/product/roadmap.md).
 
-Để duyệt và triển khai v0, đọc [hồ sơ kiến trúc cho SA](docs/architecture/rms-v0-sa-review.md), [thứ tự và phiếu giao việc cho AI](docs/guides/ke-hoach-implement-rms.md) và [kế hoạch kiểm thử feature, bảo mật và tải](docs/guides/kiem-thu-rms.md).
+Tiến độ N01–N14 và bằng chứng chạy thực tế nằm trong [nhật ký triển khai](docs/reviews/trien-khai-rms.md). Để tra căn cứ giao việc, đọc [báo cáo rà soát SA và BA/PO](docs/reviews/san-sang-implement.md), [hồ sơ kiến trúc cho SA](docs/architecture/rms-v0-sa-review.md), [thứ tự và phiếu giao việc cho AI](docs/guides/ke-hoach-implement-rms.md) và [kế hoạch kiểm thử feature, bảo mật và tải](docs/guides/kiem-thu-rms.md).
 
 Kết quả kiểm thử, đo tải trên trình duyệt và các yêu cầu chỉnh sửa trước pilot nằm trong [báo cáo rà soát độc lập V0](docs/reviews/rms-v0-frontend.md).
 

@@ -3,7 +3,7 @@ title: "Kiểm thử B03 theo mô hình tài khoản v0.4"
 owner: "QA nghiệp vụ / PO"
 spec: "./spec.md"
 status: Review
-updated: 2026-11-21
+updated: 2026-11-25
 ---
 
 # B03 · Quản lý người dùng
@@ -16,7 +16,7 @@ Dùng hai realm A/B. Ở A seed hai admin hoạt động, một staff, một use
 | TC-02 | AC-02 | Email mới qua OTP, gọi /auth/me lần đầu rồi gọi lại | Lần đầu trả isNew=true, userType=user, isActive=true, isProfileComplete=false và log tự tạo. Cùng issuer/sub chỉ có một user |
 | TC-03 | AC-03 | A đã có a@bv.vn. Admin A tạo A@bv.vn, sau đó kiểm user cùng email ở realm B | A nhận 409 và số tài khoản A giữ nguyên. Danh tính B độc lập |
 | TC-04 | AC-04 | Admin A tự khóa trong khi còn admin thứ hai | 400 và thông báo không thể tự khóa mình. Admin vẫn hoạt động |
-| TC-05 | AC-07 | U có đề tài đang tham chiếu. Admin ngừng hoạt động U | U có isActive=false, deletedAt được ghi, đề tài và liên kết tác giả còn nguyên |
+| TC-05 | AC-07 | U đã nộp lại một đề xuất. Admin ngừng hoạt động U. Chuyên viên mở lại đề xuất cùng nhật ký | U có isActive=false, deletedAt được ghi, phiên U nhận 403. Hồ sơ, mã đề tài, liên kết chủ nhiệm và các sự kiện trước/sau khớp từng trường. [Ca Chrome](../../../e2e/iam/lock-account/inactive-principal.ts) |
 | TC-06 | AC-08 | U bị khóa nhưng giữ phiên còn hạn. Thử riêng tải lại và bấm Lưu hồ sơ đang mở, mỗi lần là yêu cầu đầu tiên sau khi khóa. Thử thêm với U vừa nhập đúng OTP | Mỗi yêu cầu trả 403 và ghi log từ chối. Người có quyền tra cứu thấy nội dung đã lưu và các bản ghi lịch sử trước khi khóa |
 | TC-07 | AC-09 | User chỉ có meetings.view gọi POST /admin/users | 403 ở backend, số user và log tạo thành công giữ nguyên |
 | TC-08 | AC-11 | Admin đổi user thành staff, user gọi lại API | Quyền hiệu lực là 11 quyền staff theo spec. ADMIN_CHANGE_USER_ROLE ghi giá trị trước và sau |
@@ -24,5 +24,6 @@ Dùng hai realm A/B. Ở A seed hai admin hoạt động, một staff, một use
 | TC-10 | AC-13 | User nộp hồ sơ nâng cấp hợp lệ, admin duyệt | Request PENDING trước duyệt. Sau duyệt request APPROVED, userType=author, đúng 3 quyền và có log |
 | TC-11 | AC-14 | Ở tầng service, cho chủ thể quản trị được ủy quyền thử khóa, đổi role và ngừng hoạt động admin cuối của A. Khôi phục fixture giữa các lượt | Mỗi lần nhận 409 vì phải còn admin hoạt động. Số admin A vẫn là 1. Admin B không được thao tác A |
 | TC-12 | AC-14 | Khi A còn hai admin, gửi đồng thời hai thao tác hợp lệ có thể làm mất cả hai quyền admin | Sau commit A vẫn còn ít nhất một admin hoạt động. Lệnh làm mất admin cuối bị chặn |
+| TC-13 | AC-09, AC-11 | Staff có users.manage đọc danh sách đúng đơn vị rồi gửi lệnh đổi vai trò người khác | Đọc được danh sách đã lọc. Lệnh đổi trả 403, vai trò và nhật ký đổi quyền thành công giữ nguyên |
 
-Chạy bộ thử OTP hết hạn, replay, giới hạn thử ở realm trong N03. Đối chiếu tên sự kiện ActivityLog của B03 với bản ghi append-only P02 trong cùng thay đổi nghiệp vụ. PO/SA chốt ánh xạ quyền và action trước khi ký IAM. [Phiếu SA-02](../../architecture/rms-v0-sa-review.md) · [Lát khóa tài khoản](../../../specs/001-shared-lock-account/quickstart.md)
+Chạy bộ thử OTP hết hạn, replay, giới hạn thử ở realm trong N03. Đối chiếu tên sự kiện ActivityLog của B03 với bản ghi append-only P02 trong cùng thay đổi nghiệp vụ. Đối chiếu ánh xạ đã chốt ở SA-02 và spec B03. [Phiếu SA-02](../../architecture/rms-v0-sa-review.md) · [Lát khóa tài khoản](../../../specs/001-shared-lock-account/quickstart.md)

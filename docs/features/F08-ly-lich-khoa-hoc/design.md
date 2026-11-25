@@ -4,7 +4,7 @@ spec: "./spec.md"
 owner: "BE DEV"
 status: Review        # Draft | Review | Approved
 version: 0.1
-updated: 2026-11-21
+updated: 2026-11-24
 ---
 
 # Lý lịch khoa học — Thiết kế kỹ thuật
@@ -118,11 +118,6 @@ thực thể; chỉ liệt kê trường dùng và ràng buộc đặc thù.
 > nhận `email`. Response `GET /cv` gồm `personal`, `academicRanks[]`, `academicDegrees[]`, `workHistory[]`,
 > `outputs[]`, `projects[]`, `teachingHours?` (vắng nếu tenant tắt P03).
 
-## 5. Điểm kỹ thuật cần chốt
+## 5. Quyết định cho US-25
 
-- **Lưu HH/HV & quá trình công tác:** replace-set toàn khối khi `PATCH` hay sub-resource riêng
-  (`POST/DELETE /profiles/me/qualifications`)? Ảnh hưởng audit diff & concurrency.
-- **Hiệu năng aggregation lý lịch:** cache theo `userId` + invalidation khi `ResearchOutput`/`ProjectMember`/P03
-  đổi; hay query trực tiếp (đơn giản, đủ nhanh ở quy mô hiện tại).
-- **Định dạng trích xuất:** PDF/DOCX, engine render template (VP-CV-TPL) — chốt ở pha thực thi.
-- **`fieldCode` chuẩn hóa cho VP-PROFILE:** danh sách field cấu hình được + seed mặc định per-tenant.
+PATCH hồ sơ nhận tập học hàm/học vị và quá trình công tác cùng expected revision. Ghi thay đổi và audit trong một transaction, trả 409 nếu revision đã thay. Đọc tổng hợp trực tiếp theo scope và các fieldCode thuộc VP-PROFILE ở §2. Xuất bản in PDF theo template có hiệu lực của tenant tại thời điểm xuất. Ghi id/version của mẫu và kiểm quyền lại khi tải. QA đối chiếu hai lần xuất trước và sau khi đổi mẫu theo RV-25.

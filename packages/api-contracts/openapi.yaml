@@ -1,0 +1,3011 @@
+openapi: 3.0.3
+info:
+  title: RMS API
+  version: 0.1.0
+paths:
+  /api/health:
+    get:
+      operationId: getHealth
+      security: []
+      responses:
+        '200':
+          description: The API process can serve requests.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required: [status]
+                properties:
+                  status:
+                    type: string
+                    enum: [ok]
+  /api/tenants/{slug}/auth/config:
+    parameters:
+      - {$ref: '#/components/parameters/tenantSlug'}
+    get:
+      operationId: getLoginConfiguration
+      security: []
+      responses:
+        '200':
+          description: Public identity provider settings for an active tenant.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [issuer, clientId]
+                properties:
+                  issuer: {type: string, format: uri}
+                  clientId: {type: string}
+        '404': {description: Tenant unavailable}
+  /api/tenants/{slug}/auth/me:
+    parameters:
+      - {$ref: '#/components/parameters/tenantSlug'}
+    get:
+      operationId: getCurrentAccount
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Account and effective permissions in this tenant.
+          content:
+            application/json:
+              schema: {$ref: './iam/session.yaml'}
+        '401': {description: Invalid or expired access token}
+        '403': {description: Access denied}
+        '404': {description: Tenant unavailable}
+        '409': {description: Email belongs to another identity}
+  /api/tenants/{slug}/catalog/theme:
+    parameters:
+      - {$ref: '#/components/parameters/tenantSlug'}
+    get:
+      operationId: getActiveTheme
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Theme in requested tenant.
+          content:
+            application/json:
+              schema: {$ref: "./catalog/theme.yaml#/Active"}
+        '400': {description: Invalid theme fields}
+        '401': {description: Invalid token}
+        '403': {description: Access denied}
+        '409': {description: Revision has changed}
+  /api/tenants/{slug}/catalog/theme/editor:
+    parameters:
+      - {$ref: '#/components/parameters/tenantSlug'}
+    get:
+      operationId: getThemeEditor
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Theme in requested tenant.
+          content:
+            application/json:
+              schema: {$ref: "./catalog/theme.yaml#/Editor"}
+        '400': {description: Invalid theme fields}
+        '401': {description: Invalid token}
+        '403': {description: Access denied}
+        '409': {description: Revision has changed}
+  /api/tenants/{slug}/catalog/theme/draft:
+    parameters:
+      - {$ref: '#/components/parameters/tenantSlug'}
+    put:
+      operationId: saveThemeDraft
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "./catalog/theme.yaml#/Save"}
+      responses:
+        '200':
+          description: Theme in requested tenant.
+          content:
+            application/json:
+              schema: {$ref: "./catalog/theme.yaml#/Editor"}
+        '400': {description: Invalid theme fields}
+        '401': {description: Invalid token}
+        '403': {description: Access denied}
+        '409': {description: Revision has changed}
+  /api/tenants/{slug}/catalog/theme/apply:
+    parameters:
+      - {$ref: '#/components/parameters/tenantSlug'}
+    post:
+      operationId: publishTheme
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "./catalog/theme.yaml#/Apply"}
+      responses:
+        '200':
+          description: Theme in requested tenant.
+          content:
+            application/json:
+              schema: {$ref: "./catalog/theme.yaml#/Active"}
+        '400': {description: Invalid theme fields}
+        '401': {description: Invalid token}
+        '403': {description: Access denied}
+        '409': {description: Revision has changed}
+  /api/tenants/{slug}/catalog/theme/rollback:
+    parameters:
+      - {$ref: '#/components/parameters/tenantSlug'}
+    post:
+      operationId: rollbackTheme
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "./catalog/theme.yaml#/Rollback"}
+      responses:
+        '200':
+          description: Theme in requested tenant.
+          content:
+            application/json:
+              schema: {$ref: "./catalog/theme.yaml#/Active"}
+        '400': {description: Invalid theme fields}
+        '401': {description: Invalid token}
+        '403': {description: Access denied}
+        '409': {description: Revision has changed}
+  /api/tenants/{slug}/projects/{projectId}/files/intents:
+    parameters:
+      - {$ref: '#/components/parameters/tenantSlug'}
+      - {name: projectId, in: path, required: true, schema: {type: string, format: uuid}}
+    post:
+      operationId: createFileIntent
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "./attachments/project-file.yaml#/Request"}
+      responses:
+        '200':
+          description: File operation completed.
+          content:
+            application/json:
+              schema: {$ref: "./attachments/project-file.yaml#/Intent"}
+        '400': {description: Invalid file}
+        '401': {description: Invalid token}
+        '403': {description: Permission denied}
+        '404': {description: File or project unavailable}
+        '409': {description: Expired intent or changed project}
+  /api/tenants/{slug}/projects/{projectId}/files/{id}/finalize:
+    parameters:
+      - {$ref: '#/components/parameters/tenantSlug'}
+      - {name: projectId, in: path, required: true, schema: {type: string, format: uuid}}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+    post:
+      operationId: finalizeFile
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: File operation completed.
+          content:
+            application/json:
+              schema: {$ref: "./attachments/project-file.yaml#/File"}
+        '400': {description: Invalid file}
+        '401': {description: Invalid token}
+        '403': {description: Permission denied}
+        '404': {description: File or project unavailable}
+        '409': {description: Expired intent or changed project}
+  /api/tenants/{slug}/projects/{projectId}/files/{id}/download:
+    parameters:
+      - {$ref: '#/components/parameters/tenantSlug'}
+      - {name: projectId, in: path, required: true, schema: {type: string, format: uuid}}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+    get:
+      operationId: getFileDownload
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: File operation completed.
+          content:
+            application/json:
+              schema: {$ref: "./attachments/project-file.yaml#/Download"}
+        '400': {description: Invalid file}
+        '401': {description: Invalid token}
+        '403': {description: Permission denied}
+        '404': {description: File or project unavailable}
+        '409': {description: Expired intent or changed project}
+  /api/tenants/{slug}/internal/catalog/authorize:
+    parameters:
+      - {$ref: '#/components/parameters/tenantSlug'}
+    post:
+      operationId: authorizeCatalog
+      security: [{bearer: [], catalogService: []}]
+      parameters:
+        - {name: action, in: query, required: true, schema: {type: string, enum: [read, write]}}
+      responses:
+        '200':
+          description: Live scope from IAM.
+          content:
+            application/json:
+              schema: {$ref: './catalog/config-override.yaml#/Decision'}
+        '401': {description: Invalid service or identity}
+        '403': {description: Inactive account or insufficient permission}
+  /api/tenants/{slug}/catalog/configurations:
+    parameters:
+      - {$ref: '#/components/parameters/tenantSlug'}
+    get:
+      operationId: listConfigurations
+      security: [{bearer: []}]
+      parameters:
+        - {name: keyword, in: query, schema: {type: string}}
+        - {name: refer, in: query, schema: {type: string}}
+        - {name: group, in: query, schema: {type: string}}
+        - {name: createdFrom, in: query, description: Inclusive creation time or first day in Asia/Ho_Chi_Minh., schema: {type: string}}
+        - {name: createdTo, in: query, description: Inclusive creation time or entire last day in Asia/Ho_Chi_Minh., schema: {type: string}}
+        - {name: modifiedFrom, in: query, description: Inclusive modification time or first day in Asia/Ho_Chi_Minh., schema: {type: string}}
+        - {name: modifiedTo, in: query, description: Inclusive modification time or entire last day in Asia/Ho_Chi_Minh., schema: {type: string}}
+        - {name: active, in: query, schema: {type: boolean}}
+        - {name: public, in: query, schema: {type: boolean}}
+        - {name: skip, in: query, schema: {type: integer}}
+        - {name: limit, in: query, schema: {type: integer}}
+
+      responses:
+        '200':
+          description: Scoped metadata, total count and edit permission.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [items,total,scope,canWrite]
+                properties:
+                  items: {type: array, items: {$ref: './catalog/config-override.yaml#/Meta'}}
+                  total: {type: integer}
+                  scope: {type: string, enum: [tenant, shared]}
+                  canWrite: {type: boolean}
+    post:
+      operationId: createConfiguration
+      security: [{bearer: []}]
+      parameters:
+        - {name: detect, in: query, schema: {type: boolean}}
+      requestBody: {$ref: '#/components/requestBodies/configuration'}
+      responses:
+        '200': {$ref: '#/components/responses/configuration'}
+        '409': {description: Duplicate scope and canonical key}
+  /api/tenants/{slug}/catalog/configurations/home-layouts/{role}:
+    parameters:
+      - {$ref: '#/components/parameters/tenantSlug'}
+      - {name: role, in: path, required: true, schema: {$ref: './catalog/home-layout.yaml#/Role'}}
+    get:
+      operationId: getHomeLayoutSettings
+      security: [{bearer: []}]
+      parameters:
+        - {name: skip, in: query, schema: {type: integer, minimum: 0}}
+      responses:
+        '200':
+          description: Effective role layout and this school's audit history, newest first.
+          content:
+            application/json: {schema: {$ref: './catalog/home-layout.yaml#/LayoutSettings'}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+    put:
+      operationId: saveHomeLayoutSettings
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: './catalog/home-layout.yaml#/Update'}}
+      responses:
+        '200':
+          description: Saved role layout and first page of history, in the same transaction.
+          content:
+            application/json: {schema: {$ref: './catalog/home-layout.yaml#/LayoutSettings'}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+  /api/tenants/{slug}/catalog/configurations/{key}:
+    parameters:
+      - {$ref: '#/components/parameters/tenantSlug'}
+      - {name: key, in: path, required: true, schema: {type: string}}
+    get:
+      operationId: getConfiguration
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Original bytes, with effective scope and cache status.
+          headers:
+            X-Cache: {schema: {type: string, enum: [HIT, MISS]}}
+            X-RMS-Scope: {schema: {type: string, enum: [tenant, shared]}}
+          content:
+            '*/*': {schema: {type: string, format: binary}}
+        '404': {description: Missing effective key}
+    put:
+      operationId: updateConfiguration
+      security: [{bearer: []}]
+      requestBody: {$ref: '#/components/requestBodies/configuration'}
+      responses:
+        '200': {$ref: '#/components/responses/configuration'}
+        '404': {description: Key missing in writable scope}
+    delete:
+      operationId: deleteConfiguration
+      security: [{bearer: []}]
+      responses:
+        '204': {description: Deleted in writable scope}
+        '404': {description: Key missing in writable scope}
+
+  /api/tenants/{slug}/catalog/values/{key}:
+    parameters:
+      - {$ref: '#/components/parameters/tenantSlug'}
+      - {name: key, in: path, required: true, schema: {type: string}}
+    get:
+      operationId: getCatalogValue
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Effective configuration up to 64 KiB for business modules.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [content,scope,cache,mime]
+                properties:
+                  content: {type: string, format: byte}
+                  scope: {type: string, enum: [tenant,shared]}
+                  cache: {type: string, enum: [HIT,MISS]}
+                  mime: {type: string}
+        '413': {description: Use the dedicated B01 download route}
+    post:
+      operationId: createCatalogValue
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: './catalog/config-override.yaml#/Input'}
+      responses:
+        '200': {$ref: '#/components/responses/configuration'}
+        '413': {description: Use the dedicated B01 upload route}
+    put:
+      operationId: updateCatalogValue
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: './catalog/config-override.yaml#/Input'}
+      responses:
+        '200': {$ref: '#/components/responses/configuration'}
+        '413': {description: Use the dedicated B01 upload route}
+
+  /api/tenants/{slug}/projects:
+    parameters:
+      - {$ref: '#/components/parameters/tenantSlug'}
+    get:
+      operationId: listAccessibleProjects
+      security: [{bearer: []}]
+      parameters:
+        - {name: search, in: query, schema: {type: string}}
+        - {name: skip, in: query, schema: {type: integer}}
+      responses:
+        '200':
+          description: Projects visible to the active account.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [items,total]
+                properties:
+                  total: {type: integer}
+                  items: {type: array, items: {$ref: './audit/audit-trail.yaml#/Source'}}
+  /api/tenants/{slug}/projects/{projectId}/audit:
+    parameters:
+      - {$ref: '#/components/parameters/tenantSlug'}
+      - {name: projectId, in: path, required: true, schema: {type: string, format: uuid}}
+    get:
+      operationId: getProjectTrail
+      security: [{bearer: []}]
+      parameters:
+        - {name: from, in: query, schema: {type: string, format: date-time}}
+        - {name: to, in: query, schema: {type: string, format: date-time}}
+        - {name: skip, in: query, schema: {type: integer}}
+      responses:
+        '200':
+          description: Project and its authorized audit events.
+          content:
+            application/json:
+              schema: {$ref: './audit/audit-trail.yaml#/Trail'}
+        '404': {description: Project unavailable}
+  /api/tenants/{slug}/users/me:
+    parameters:
+      - {$ref: '#/components/parameters/tenantSlug'}
+    get:
+      operationId: getOwnProfile
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Account operation completed within current scope.
+          content:
+            application/json:
+              schema: {$ref: './iam/lock-account.yaml#/Profile'}
+        '403': {description: Inactive or insufficient permissions}
+        '404': {description: Account unavailable}
+    patch:
+      operationId: saveOwnProfile
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: './iam/lock-account.yaml#/ProfileChange'}
+      responses:
+        '200':
+          description: Account operation completed within current scope.
+          content:
+            application/json:
+              schema: {$ref: './iam/lock-account.yaml#/Profile'}
+        '403': {description: Inactive or insufficient permissions}
+        '404': {description: Account unavailable}
+
+  /api/tenants/{slug}/admin/users:
+    parameters:
+      - {$ref: '#/components/parameters/tenantSlug'}
+    get:
+      operationId: listManagedAccounts
+      security: [{bearer: []}]
+      parameters:
+        - {name: search, in: query, schema: {type: string}}
+        - {name: skip, in: query, schema: {type: integer}}
+      responses:
+        '200':
+          description: Account operation completed within current scope.
+          content:
+            application/json:
+              schema: {type: object, required: [items,total], properties: {items: {type: array, items: {$ref: './iam/lock-account.yaml#/Profile'}}, total: {type: integer}}}
+        '403': {description: Inactive or insufficient permissions}
+        '404': {description: Account unavailable}
+
+    post:
+      operationId: precreateAccount
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: "./iam/provision.yaml#/Create"}}
+      responses:
+        '200':
+          description: Account provisioned by an authorized administrator.
+          content:
+            application/json: {schema: {$ref: "./iam/lock-account.yaml#/Profile"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+        '503': {$ref: '#/components/responses/domainError'}
+  /api/tenants/{slug}/admin/users/{id}:
+    parameters:
+      - {$ref: '#/components/parameters/tenantSlug'}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+    get:
+      operationId: getManagedAccount
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Account operation completed within current scope.
+          content:
+            application/json:
+              schema: {$ref: './iam/lock-account.yaml#/Receipt'}
+        '403': {description: Inactive or insufficient permissions}
+        '404': {description: Account unavailable}
+    delete:
+      operationId: deactivateAccount
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Account operation completed within current scope.
+          content:
+            application/json:
+              schema: {$ref: './iam/lock-account.yaml#/Receipt'}
+        '403': {description: Inactive or insufficient permissions}
+        '404': {description: Account unavailable}
+
+  /api/tenants/{slug}/admin/users/{id}/lock:
+    parameters:
+      - {$ref: '#/components/parameters/tenantSlug'}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+    post:
+      operationId: lockAccount
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Account operation completed within current scope.
+          content:
+            application/json:
+              schema: {$ref: './iam/lock-account.yaml#/Receipt'}
+        '403': {description: Inactive or insufficient permissions}
+        '404': {description: Account unavailable}
+
+  /api/tenants/{slug}/admin/users/{id}/unlock:
+    parameters:
+      - {$ref: '#/components/parameters/tenantSlug'}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+    post:
+      operationId: unlockAccount
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Account operation completed within current scope.
+          content:
+            application/json:
+              schema: {$ref: './iam/lock-account.yaml#/Receipt'}
+        '403': {description: Inactive or insufficient permissions}
+        '404': {description: Account unavailable}
+
+  /api/tenants/{slug}/admin/users/{id}/change-role:
+    parameters:
+      - {$ref: '#/components/parameters/tenantSlug'}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+    post:
+      operationId: changeAccountRole
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {type: object, required: [userType], properties: {userType: {type: string, enum: [user,author,staff,admin]}}}
+      responses:
+        '200':
+          description: Account operation completed within current scope.
+          content:
+            application/json:
+              schema: {$ref: './iam/lock-account.yaml#/Receipt'}
+        '403': {description: Inactive or insufficient permissions}
+        '404': {description: Account unavailable}
+
+  /api/tenants/{slug}/workflow/active:
+    parameters:
+      - {$ref: '#/components/parameters/tenantSlug'}
+    get:
+      operationId: getActiveWorkflow
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Configured graph or revision zero for a fresh tenant.
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/WorkflowTemplate'}
+    put:
+      operationId: activateWorkflow
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/WorkflowTemplate'}
+      responses:
+        '200':
+          description: Newly activated version.
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/WorkflowTemplate'}
+        '400': {description: Invalid step or transition}
+        '409': {description: Active revision changed}
+  /api/tenants/{slug}/projects/{projectId}/workflow:
+    parameters:
+      - {$ref: '#/components/parameters/tenantSlug'}
+      - {name: projectId, in: path, required: true, schema: {type: string, format: uuid}}
+    get:
+      operationId: getProjectWorkflow
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Pinned version, current step and candidate actions for this role.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [version,step,semantic,next]
+                properties:
+                  version: {type: integer}
+                  step: {type: string}
+                  semantic: {type: string}
+                  next: {type: array, items: {type: object, required: [code,to], properties: {code: {type: string}, to: {type: string}}}}
+        '404': {description: Project unavailable}
+  /api/tenants/{slug}/calls:
+    parameters:
+      - {$ref: '#/components/parameters/tenantSlug'}
+    get:
+      operationId: listCalls
+      security: [{bearer: []}]
+      parameters:
+        - {name: search, in: query, schema: {type: string}}
+        - {name: group, in: query, schema: {type: string, enum: [receiving,all]}}
+        - {name: skip, in: query, schema: {type: integer}}
+      responses:
+        '200':
+          description: Scoped intake call response.
+          content:
+            application/json:
+              schema: {$ref: './call/open-call.yaml#/Listing'}
+        '400': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+    post:
+      operationId: saveNewCall
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: './call/open-call.yaml#/Input'}
+      responses:
+        '200':
+          description: Scoped intake call response.
+          content:
+            application/json:
+              schema: {$ref: './call/open-call.yaml#/Row'}
+        '400': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+
+  /api/tenants/{slug}/calls/references:
+    parameters:
+      - {$ref: '#/components/parameters/tenantSlug'}
+    get:
+      operationId: listIntakeReferences
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Scoped intake call response.
+          content:
+            application/json:
+              schema: {type: array, items: {$ref: './call/open-call.yaml#/Reference'}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+
+  /api/tenants/{slug}/calls/{id}:
+    parameters:
+      - {$ref: '#/components/parameters/tenantSlug'}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+    get:
+      operationId: getCall
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Scoped intake call response.
+          content:
+            application/json:
+              schema: {$ref: './call/open-call.yaml#/Row'}
+        '400': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+    put:
+      operationId: editCall
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: './call/open-call.yaml#/Input'}
+      responses:
+        '200':
+          description: Scoped intake call response.
+          content:
+            application/json:
+              schema: {$ref: './call/open-call.yaml#/Row'}
+        '400': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+
+  /api/tenants/{slug}/calls/{id}/actions:
+    parameters:
+      - {$ref: '#/components/parameters/tenantSlug'}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+    post:
+      operationId: changeCallStatus
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: './call/open-call.yaml#/Change'}
+      responses:
+        '200':
+          description: Scoped intake call response.
+          content:
+            application/json:
+              schema: {$ref: './call/open-call.yaml#/Row'}
+        '400': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+
+  /api/tenants/{slug}/calls/{id}/proposals:
+    parameters:
+      - {$ref: '#/components/parameters/tenantSlug'}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+    post:
+      operationId: createDraftProposal
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: './proposal/draft-proposal.yaml#/Fields'}
+      responses:
+        '200':
+          description: Proposal in current scope.
+          content:
+            application/json:
+              schema: {$ref: './proposal/draft-proposal.yaml#/Proposal'}
+        '400': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+
+  /api/tenants/{slug}/projects/{id}/proposal:
+    parameters:
+      - {$ref: '#/components/parameters/tenantSlug'}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+    get:
+      operationId: getProposal
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Proposal in current scope.
+          content:
+            application/json:
+              schema: {$ref: './proposal/draft-proposal.yaml#/Proposal'}
+        '400': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+    put:
+      operationId: editDraftProposal
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: './proposal/draft-proposal.yaml#/Fields'}
+      responses:
+        '200':
+          description: Proposal in current scope.
+          content:
+            application/json:
+              schema: {$ref: './proposal/draft-proposal.yaml#/Proposal'}
+        '400': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+
+  /api/tenants/{slug}/projects/{id}/proposal/actions:
+    parameters:
+      - {$ref: '#/components/parameters/tenantSlug'}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+    post:
+      operationId: actOnProposal
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: './proposal/draft-proposal.yaml#/Command'}
+      responses:
+        '200':
+          description: Proposal in current scope.
+          content:
+            application/json:
+              schema: {$ref: './proposal/draft-proposal.yaml#/Proposal'}
+        '400': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+
+  /api/tenants/{slug}/review/setup:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+    get:
+      operationId: getReviewSetup
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Scoped review response.
+          content:
+            application/json: {schema: {$ref: './review/open-review.yaml#/Setup'}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+
+  /api/tenants/{slug}/review/committees:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+    post:
+      operationId: createReviewCommittee
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: './review/open-review.yaml#/Committee'}}
+      responses:
+        '200':
+          description: Scoped review response.
+          content:
+            application/json: {schema: {$ref: './review/open-review.yaml#/Option'}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+
+  /api/tenants/{slug}/projects/{id}/finalize:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+    post:
+      operationId: finalizeProposal
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Scoped review response.
+          content:
+            application/json: {schema: {type: object,required: [id,finalized],properties: {id: {type: string}, finalized: {type: boolean}}}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+
+  /api/tenants/{slug}/projects/{id}/reviews:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+    post:
+      operationId: openReview
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: './review/open-review.yaml#/Open'}}
+      responses:
+        '200':
+          description: Scoped review response.
+          content:
+            application/json: {schema: {$ref: './review/open-review.yaml#/Round'}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+
+  /api/tenants/{slug}/review/queue:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+    get:
+      operationId: listReviewAssignments
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Scoped review response.
+          content:
+            application/json: {schema: {type: array, items: {$ref: './review/open-review.yaml#/Assigned'}}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+
+  /api/tenants/{slug}/review/rounds/{id}:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+    get:
+      operationId: getManagedRound
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Scoped review response.
+          content:
+            application/json: {schema: {$ref: './review/open-review.yaml#/Round'}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+
+  /api/tenants/{slug}/review/rounds/{id}/sheet:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+    put:
+      operationId: saveReviewSheet
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: './review/submit-score.yaml#/Input'}}
+      responses:
+        '200':
+          description: Scoped review response.
+          content:
+            application/json: {schema: {$ref: './review/submit-score.yaml#/Sheet'}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+
+  /api/tenants/{slug}/review/rounds/{id}/conclusion:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+    post:
+      operationId: concludeReview
+      security: [{bearer: []}]
+      requestBody:
+        required: false
+        content:
+          application/json: {schema: {$ref: './review/amendment.yaml#/DecisionVersion'}}
+      responses:
+        '200':
+          description: Scoped review response.
+          content:
+            application/json: {schema: {$ref: './review/open-review.yaml#/Round'}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+
+  /api/tenants/{slug}/review/rounds/{id}/ethics:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+    put:
+      operationId: recordReviewEthics
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: './review/review-decision.yaml#/Ethics'}}
+      responses:
+        '200':
+          description: Scoped review response.
+          content:
+            application/json: {schema: {$ref: './review/open-review.yaml#/Round'}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+
+  /api/tenants/{slug}/projects/{id}/review-result:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+    get:
+      operationId: getReviewResult
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Scoped review response.
+          content:
+            application/json: {schema: {$ref: './review/review-decision.yaml#/Result'}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+
+  /api/tenants/{slug}/home/work:
+    parameters:
+      - {$ref: '#/components/parameters/tenantSlug'}
+    get:
+      operationId: listHomeWork
+      security: [{bearer: []}]
+      parameters:
+        - {in: query,name: group,schema: {type: string,enum: [all,overdue]}}
+        - {in: query,name: skip,schema: {type: integer,minimum: 0}}
+      responses:
+        '200':
+          description: Tasks and counts in the current user's scope.
+          content:
+            application/json: {schema: {$ref: './home/open-work-item.yaml#/Page'}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+  /api/tenants/{slug}/home/work/{id}:
+    parameters:
+      - {$ref: '#/components/parameters/tenantSlug'}
+      - {name: id,in: path,required: true,schema: {type: string,format: uuid}}
+    get:
+      operationId: resolveHomeWork
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: The current actor can open this source task.
+          content:
+            application/json: {schema: {$ref: './home/open-work-item.yaml#/Work'}}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+
+  /api/tenants/{slug}/reports/calls/filters:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+    get:
+      operationId: getCallReportFilters
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Frozen report within the actor's current scope.
+          content:
+            application/json: {schema: {$ref: "./report/call-report.yaml#/Filters"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+
+  /api/tenants/{slug}/reports/calls/snapshots:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+    post:
+      operationId: generateCallReport
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: "./report/call-report.yaml#/Input"}}
+      responses:
+        '200':
+          description: Frozen report within the actor's current scope.
+          content:
+            application/json: {schema: {$ref: "./report/call-report.yaml#/Snapshot"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+
+  /api/tenants/{slug}/reports/calls/snapshots/{id}:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: id,in: path,required: true,schema: {type: string,format: uuid}}
+    get:
+      operationId: getCallReport
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Frozen report within the actor's current scope.
+          content:
+            application/json: {schema: {$ref: "./report/call-report.yaml#/Snapshot"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+
+  /api/tenants/{slug}/reports/calls/snapshots/{id}/csv:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: id,in: path,required: true,schema: {type: string,format: uuid}}
+    get:
+      operationId: exportCallReport
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Frozen report within the actor's current scope.
+          content:
+            text/csv: {schema: {type: string}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+
+  /api/tenants/{slug}/projects/{id}/progress:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: id,in: path,required: true,schema: {type: string,format: uuid}}
+    get:
+      operationId: getProgress
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Scoped domain response.
+          content:
+            application/json: {schema: {$ref: "./progress/assign-project.yaml#/Detail"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+
+  /api/tenants/{slug}/projects/{id}/assignment:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: id,in: path,required: true,schema: {type: string,format: uuid}}
+    post:
+      operationId: assignProject
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: "./progress/assign-project.yaml#/Assignment"}}
+      responses:
+        '200':
+          description: Scoped domain response.
+          content:
+            application/json: {schema: {$ref: "./progress/assign-project.yaml#/Detail"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+
+  /api/tenants/{slug}/projects/{id}/activity:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: id,in: path,required: true,schema: {type: string,format: uuid}}
+    post:
+      operationId: changeProjectActivity
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: "./progress/assign-project.yaml#/Activity"}}
+      responses:
+        '200':
+          description: Scoped domain response.
+          content:
+            application/json: {schema: {$ref: "./progress/assign-project.yaml#/Detail"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+
+  /api/tenants/{slug}/projects/{id}/periods:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: id,in: path,required: true,schema: {type: string,format: uuid}}
+    post:
+      operationId: createReportPeriod
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: "./progress/report-period.yaml#/Schedule"}}
+      responses:
+        '200':
+          description: Scoped domain response.
+          content:
+            application/json: {schema: {$ref: "./progress/report-period.yaml#/Period"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+
+  /api/tenants/{slug}/projects/{id}/periods/{periodId}/submission:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: id,in: path,required: true,schema: {type: string,format: uuid}}
+      - {name: periodId,in: path,required: true,schema: {type: string,format: uuid}}
+    post:
+      operationId: submitProgress
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: "./progress/submit-progress.yaml#/Submit"}}
+      responses:
+        '200':
+          description: Scoped domain response.
+          content:
+            application/json: {schema: {$ref: "./progress/report-period.yaml#/Period"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+
+  /api/tenants/{slug}/projects/{id}/periods/{periodId}/review:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: id,in: path,required: true,schema: {type: string,format: uuid}}
+      - {name: periodId,in: path,required: true,schema: {type: string,format: uuid}}
+    post:
+      operationId: reviewProgress
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: "./progress/submit-progress.yaml#/Review"}}
+      responses:
+        '200':
+          description: Scoped domain response.
+          content:
+            application/json: {schema: {$ref: "./progress/report-period.yaml#/Period"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+
+  /internal/notifications/{tenant}/retry-policy:
+    get:
+      operationId: getNotificationRetryPolicy
+      security: [{reminderService: []}]
+      parameters:
+        - {name: tenant, in: path, required: true, schema: {type: string, format: uuid}}
+      responses:
+        '200':
+          description: Effective B04 SMTP retry policy.
+          content:
+            application/json: {schema: {$ref: "./notification/deliveries.yaml#/RetryPolicy"}}
+        '401': {$ref: '#/components/responses/domainError'}
+  /internal/reminders/{tenant}/window:
+    get:
+      operationId: getProgressReminderWindow
+      security: [{reminderService: []}]
+      parameters:
+        - {name: tenant, in: path, required: true, schema: {type: string, format: uuid}}
+      responses:
+        '200':
+          description: Effective active B01 deadline configuration.
+          content:
+            application/json: {schema: {$ref: "./notification/deadline-reminder.yaml#/Window"}}
+        '401': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+
+  /internal/teaching-hours/{tenant}/calendar:
+    get:
+      operationId: getTeachingCalendar
+      security: [{teachingService: []}]
+      parameters:
+        - {name: tenant, in: path, required: true, schema: {type: string, format: uuid}}
+      responses:
+        '200':
+          description: Effective B01 recognition periods for an enabled tenant.
+          content:
+            application/json: {schema: {$ref: "./teaching-hour/teaching-hours.yaml#/Calendar"}}
+        '401': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+
+  /api/tenants/{slug}/notifications/deliveries:
+    get:
+      operationId: listNotificationDeliveries
+      security: [{bearer: []}]
+      parameters:
+        - {$ref: '#/components/parameters/tenantSlug'}
+        - {name: filter, in: query, schema: {type: string, enum: [all,failed,reconcile]}}
+        - {name: skip, in: query, schema: {type: integer, minimum: 0}}
+      responses:
+        '200':
+          description: Delivery log in the current management scope.
+          content:
+            application/json: {schema: {$ref: './notification/deliveries.yaml#/Page'}}
+        '403': {$ref: '#/components/responses/domainError'}
+  /api/tenants/{slug}/notifications/deliveries/resend:
+    post:
+      operationId: resendNotificationDeliveries
+      security: [{bearer: []}]
+      parameters:
+        - {$ref: '#/components/parameters/tenantSlug'}
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: './notification/deliveries.yaml#/Retry'}}
+      responses:
+        '200':
+          description: Accepted deliveries returned to the queue atomically.
+          content:
+            application/json: {schema: {type: object, required: [count], properties: {count: {type: integer}}}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+  /api/tenants/{slug}/notifications:
+    get:
+      operationId: listInbox
+      security: [{bearer: []}]
+      parameters:
+        - {$ref: "#/components/parameters/tenantSlug"}
+        - {name: filter, in: query, schema: {type: string, enum: [all, unread]}}
+        - {name: skip, in: query, schema: {type: integer, minimum: 0}}
+      responses:
+        '200':
+          description: Recipient-scoped inbox.
+          content:
+            application/json: {schema: {$ref: './notification/inbox.yaml#/Page'}}
+        '404': {$ref: '#/components/responses/domainError'}
+  /api/tenants/{slug}/notifications/{id}/read:
+    post:
+      operationId: readNotice
+      security: [{bearer: []}]
+      parameters:
+        - {$ref: "#/components/parameters/tenantSlug"}
+        - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+      responses:
+        '200':
+          description: Recipient-scoped inbox.
+          content:
+            application/json: {schema: {$ref: './notification/inbox.yaml#/Detail'}}
+        '404': {$ref: '#/components/responses/domainError'}
+  /api/tenants/{slug}/notifications/read-all:
+    post:
+      operationId: readAllNotices
+      security: [{bearer: []}]
+      parameters:
+        - {$ref: "#/components/parameters/tenantSlug"}
+      responses:
+        '204': {description: All personal notices read.}
+        '404': {$ref: '#/components/responses/domainError'}
+
+  /api/tenants/{slug}/projects/{id}/budget:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+    get:
+      operationId: getProjectBudget
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./budget/budget-allocation.yaml#/Detail"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+  /api/tenants/{slug}/projects/{id}/budget/allocation:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+    post:
+      operationId: confirmAllocation
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: "./budget/budget-allocation.yaml#/Allocation"}}
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./budget/budget-allocation.yaml#/Detail"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+    put:
+      operationId: adjustAllocation
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: "./budget/budget-allocation.yaml#/Allocation"}}
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./budget/budget-allocation.yaml#/Detail"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+  /api/tenants/{slug}/projects/{id}/budget/expenses/{expenseId}:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+      - {name: expenseId, in: path, required: true, schema: {type: string, format: uuid}}
+    put:
+      operationId: saveExpense
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: "./budget/record-expense.yaml#/Input"}}
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./budget/budget-allocation.yaml#/Detail"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+  /api/tenants/{slug}/projects/{id}/budget/expenses/{expenseId}/void:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+      - {name: expenseId, in: path, required: true, schema: {type: string, format: uuid}}
+    post:
+      operationId: voidExpense
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: "./budget/record-expense.yaml#/Void"}}
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./budget/budget-allocation.yaml#/Detail"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+  /api/tenants/{slug}/projects/{id}/budget/expenses/{expenseId}/reconcile:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+      - {name: expenseId, in: path, required: true, schema: {type: string, format: uuid}}
+    post:
+      operationId: reconcileExpense
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: "./budget/close-project.yaml#/Reconcile"}}
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./budget/budget-allocation.yaml#/Detail"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+  /api/tenants/{slug}/projects/{id}/budget/settle:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+    post:
+      operationId: settleBudget
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: "./budget/close-project.yaml#/Settle"}}
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./budget/budget-allocation.yaml#/Detail"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+
+  /api/tenants/{slug}/independent-products:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+    get:
+      operationId: listIndependentProducts
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Independent research output in the current scope.
+          content:
+            application/json: {schema: {$ref: "./product/submit-output.yaml#/IndependentPage"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+  /api/tenants/{slug}/independent-products/author-lookup:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+    post:
+      operationId: findIndependentAuthor
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {type: object, required: [email], properties: {email: {type: string,format: email}}}
+      responses:
+        '200':
+          description: Author matching the complete institutional email.
+          content:
+            application/json: {schema: {$ref: "./review/open-review.yaml#/Option"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+  /api/tenants/{slug}/independent-products/{id}:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+    put:
+      operationId: saveIndependentProduct
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: "./product/submit-output.yaml#/Draft"}}
+      responses:
+        '200':
+          description: Independent research output in the current scope.
+          content:
+            application/json: {schema: {$ref: "./product/submit-output.yaml#/Independent"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+  /api/tenants/{slug}/independent-products/{id}/submit:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+    post:
+      operationId: submitIndependentProduct
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: "./product/submit-output.yaml#/Submit"}}
+      responses:
+        '200':
+          description: Independent research output in the current scope.
+          content:
+            application/json: {schema: {$ref: "./product/submit-output.yaml#/Independent"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+  /api/tenants/{slug}/independent-products/{id}/decision:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+    post:
+      operationId: decideIndependentProduct
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: "./product/approve-output.yaml#/Decision"}}
+      responses:
+        '200':
+          description: Independent research output in the current scope.
+          content:
+            application/json: {schema: {$ref: "./product/submit-output.yaml#/Independent"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+  /api/tenants/{slug}/product-types:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+    get:
+      operationId: listProductTypes
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Active product choices for this tenant.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: {$ref: "./extension/evidence.yaml#/Choice"}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+  /api/tenants/{slug}/projects/{id}/products:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+    get:
+      operationId: listProjectProducts
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./product/submit-output.yaml#/Project"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+  /api/tenants/{slug}/projects/{id}/products/{productId}:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+      - {name: productId, in: path, required: true, schema: {type: string, format: uuid}}
+    put:
+      operationId: saveProduct
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: "./product/submit-output.yaml#/Draft"}}
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./product/submit-output.yaml#/Project"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+  /api/tenants/{slug}/projects/{id}/products/{productId}/submit:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+      - {name: productId, in: path, required: true, schema: {type: string, format: uuid}}
+    post:
+      operationId: submitProduct
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: "./product/submit-output.yaml#/Submit"}}
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./product/submit-output.yaml#/Project"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+  /api/tenants/{slug}/projects/{id}/products/{productId}/decision:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+      - {name: productId, in: path, required: true, schema: {type: string, format: uuid}}
+    post:
+      operationId: decideProduct
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: "./product/approve-output.yaml#/Decision"}}
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./product/submit-output.yaml#/Project"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+  /api/tenants/{slug}/projects/{id}/products/files/{fileId}/revoke:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+      - {name: fileId, in: path, required: true, schema: {type: string, format: uuid}}
+    post:
+      operationId: revokeProductEvidence
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: "./product/submit-output.yaml#/Revoke"}}
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./product/submit-output.yaml#/Project"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+
+  /api/tenants/{slug}/projects/{id}/acceptance:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+    get:
+      operationId: getAcceptance
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./acceptance/request-acceptance.yaml#/Detail"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+    post:
+      operationId: requestAcceptance
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: "./acceptance/request-acceptance.yaml#/Submit"}}
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./acceptance/request-acceptance.yaml#/Detail"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+  /api/tenants/{slug}/projects/{id}/acceptance/rounds:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+    post:
+      operationId: openAcceptance
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: "./acceptance/acceptance-result.yaml#/Open"}}
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./review/open-review.yaml#/Round"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+  /api/tenants/{slug}/projects/{id}/acceptance/redo:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+    post:
+      operationId: redoAcceptance
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: "./acceptance/acceptance-result.yaml#/Redo"}}
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./acceptance/request-acceptance.yaml#/Detail"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+  /api/tenants/{slug}/acceptance/committees:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+    post:
+      operationId: createAcceptanceCommittee
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: "./review/open-review.yaml#/Committee"}}
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./review/open-review.yaml#/Option"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+  /api/tenants/{slug}/acceptance/queue:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+    get:
+      operationId: getAcceptanceQueue
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./acceptance/acceptance-result.yaml#/Queue"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+  /api/tenants/{slug}/acceptance/rounds/{id}:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+    get:
+      operationId: getAcceptanceRound
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./review/open-review.yaml#/Round"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+  /api/tenants/{slug}/acceptance/rounds/{id}/sheet:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+    put:
+      operationId: saveAcceptanceSheet
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: "./review/submit-score.yaml#/Input"}}
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./review/submit-score.yaml#/Sheet"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+  /api/tenants/{slug}/acceptance/rounds/{id}/conclusion:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+    post:
+      operationId: concludeAcceptance
+      security: [{bearer: []}]
+      requestBody:
+        required: false
+        content:
+          application/json: {schema: {$ref: './review/amendment.yaml#/DecisionVersion'}}
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./review/open-review.yaml#/Round"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+
+  /api/tenants/{slug}/profiles/{id}/cv:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+    get:
+      operationId: getScientificProfile
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./profile/export-profile.yaml#/Profile"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+  /api/tenants/{slug}/profiles/{id}/cv/exports:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+    post:
+      operationId: exportScientificProfile
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./profile/export-profile.yaml#/Receipt"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+  /api/tenants/{slug}/profiles/{id}/cv/exports/{exportId}/file:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+      - {name: exportId, in: path, required: true, schema: {type: string, format: uuid}}
+    get:
+      operationId: downloadScientificProfile
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/pdf: {schema: {type: string, format: binary}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+
+  /api/tenants/{slug}/applied-projects:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+    get:
+      operationId: listAppliedProjects
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./applied-project/register-applied-project.yaml#/Page"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+  /api/tenants/{slug}/applied-projects/{id}:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+    put:
+      operationId: saveAppliedProject
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: "./applied-project/register-applied-project.yaml#/Draft"}}
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./applied-project/register-applied-project.yaml#/Record"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+  /api/tenants/{slug}/applied-projects/{id}/submit:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+    post:
+      operationId: submitAppliedProject
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: "./applied-project/register-applied-project.yaml#/Revision"}}
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./applied-project/register-applied-project.yaml#/Record"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+
+  /api/tenants/{slug}/features:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+    get:
+      operationId: listOptionalModules
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./catalog/features.yaml#/Capabilities"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+
+  /api/tenants/{slug}/student-projects:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+    get:
+      operationId: listStudentProjects
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./student-project/confirm-mentor.yaml#/Page"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+  /api/tenants/{slug}/student-projects/{id}:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+    put:
+      operationId: registerStudentProject
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: "./student-project/confirm-mentor.yaml#/Draft"}}
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./student-project/confirm-mentor.yaml#/Record"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+  /api/tenants/{slug}/student-projects/{id}/mentor:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+    post:
+      operationId: respondStudentMentor
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: "./student-project/confirm-mentor.yaml#/Response"}}
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./student-project/confirm-mentor.yaml#/Record"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+  /api/tenants/{slug}/student-projects/{id}/decision:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+    post:
+      operationId: decideStudentProject
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: "./student-project/confirm-mentor.yaml#/Decision"}}
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./student-project/confirm-mentor.yaml#/Record"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+  /api/tenants/{slug}/student-projects/{id}/amendment:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+    get:
+      operationId: getStudentAmendmentPeople
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Eligible members and mentors for the authorized project's unit.
+          content:
+            application/json: {schema: {$ref: './student-project/confirm-mentor.yaml#/Page/properties/people'}}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+    post:
+      operationId: amendStudentProject
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: './student-project/confirm-mentor.yaml#/Amendment'}}
+      responses:
+        '200':
+          description: An amended registration awaiting its invited mentor.
+          content:
+            application/json: {schema: {$ref: './student-project/confirm-mentor.yaml#/Record'}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+  /api/tenants/{slug}/student-projects/{id}/progress:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+    post:
+      operationId: recordStudentProgress
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: "./student-project/confirm-mentor.yaml#/Progress"}}
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./student-project/confirm-mentor.yaml#/Record"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+  /api/tenants/{slug}/student-projects/{id}/result:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+    post:
+      operationId: decideStudentResult
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: "./student-project/confirm-mentor.yaml#/ResultDecision"}}
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./student-project/confirm-mentor.yaml#/Record"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+  /api/tenants/{slug}/student-projects/{id}/submit:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+    post:
+      operationId: submitStudentProject
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./student-project/confirm-mentor.yaml#/Record"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+
+  /api/tenants/{slug}/extensions/{module}:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: module, in: path, required: true, schema: {type: string, enum: [upper-project, activity]}}
+    get:
+      operationId: listEvidenceEntries
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./extension/evidence.yaml#/Page"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+  /api/tenants/{slug}/extensions/{module}/{id}:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: module, in: path, required: true, schema: {type: string, enum: [upper-project, activity]}}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+    put:
+      operationId: saveEvidenceEntry
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: "./extension/evidence.yaml#/Draft"}}
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./extension/evidence.yaml#/Record"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+  /api/tenants/{slug}/extensions/{module}/{id}/decision:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: module, in: path, required: true, schema: {type: string, enum: [upper-project, activity]}}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+    post:
+      operationId: changeEvidenceEntry
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: "./extension/evidence.yaml#/Decision"}}
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./extension/evidence.yaml#/Record"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+  /api/tenants/{slug}/extensions/{module}/{id}/files:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: module, in: path, required: true, schema: {type: string, enum: [upper-project, activity, applied-project, student-project, product]}}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+    post:
+      operationId: createEntryFileIntent
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: "./extension/evidence.yaml#/Upload"}}
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./attachments/project-file.yaml#/Intent"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+  /api/tenants/{slug}/extensions/{module}/{id}/files/{fileId}/finalize:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: module, in: path, required: true, schema: {type: string, enum: [upper-project, activity, applied-project, student-project, product]}}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+      - {name: fileId, in: path, required: true, schema: {type: string, format: uuid}}
+    post:
+      operationId: finalizeEntryFile
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./attachments/project-file.yaml#/File"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+  /api/tenants/{slug}/extensions/{module}/{id}/files/{fileId}/download:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: module, in: path, required: true, schema: {type: string, enum: [upper-project, activity, applied-project, student-project, product]}}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+      - {name: fileId, in: path, required: true, schema: {type: string, format: uuid}}
+    get:
+      operationId: readEntryFile
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./attachments/project-file.yaml#/Download"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+
+  /api/tenants/{slug}/teaching-hours/formulas:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+    get:
+      operationId: listTeachingFormulas
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./teaching-hour/teaching-hours.yaml#/Formulas"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+    post:
+      operationId: publishTeachingFormula
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: "./teaching-hour/teaching-hours.yaml#/Formula"}}
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./teaching-hour/teaching-hours.yaml#/Formula"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+  /api/tenants/{slug}/teaching-hours/people/{id}:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+    get:
+      operationId: getPersonHours
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./teaching-hour/teaching-hours.yaml#/Ledger"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+  /api/tenants/{slug}/teaching-hours/records/{id}/adjustments:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+    post:
+      operationId: adjustTeachingHours
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: "./teaching-hour/teaching-hours.yaml#/Adjustment"}}
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./teaching-hour/teaching-hours.yaml#/Ledger"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+
+  /api/tenants/{slug}/assistant/library:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+    get:
+      operationId: listReadingLibrary
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./assistant/evidence.yaml#/Library"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+  /api/tenants/{slug}/assistant/{module}/{id}:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: module, in: path, required: true, schema: {type: string, enum: [proposal, product]}}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+    get:
+      operationId: listSourceSuggestions
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./assistant/evidence.yaml#/History"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+    post:
+      operationId: generateSourceSuggestion
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./assistant/evidence.yaml#/Suggestion"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+  /api/tenants/{slug}/assistant/{module}/{id}/{suggestionId}:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: module, in: path, required: true, schema: {type: string, enum: [proposal, product]}}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+      - {name: suggestionId, in: path, required: true, schema: {type: string, format: uuid}}
+    get:
+      operationId: readSourceSuggestion
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./assistant/evidence.yaml#/Suggestion"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+    post:
+      operationId: decideSourceSuggestion
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: "./assistant/evidence.yaml#/FieldDecision"}}
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./assistant/evidence.yaml#/Suggestion"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+
+  /api/tenants/{slug}/admin/units:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+    get:
+      operationId: listProvisionUnits
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./iam/provision.yaml#/Units"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+
+  /api/tenants/{slug}/profiles/{id}/professional:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+    get:
+      operationId: readProfessionalProfile
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./profile/professional.yaml#/Profile"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+    put:
+      operationId: saveProfessionalProfile
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: "./profile/professional.yaml#/Update"}}
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./profile/professional.yaml#/Profile"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+
+  /api/tenants/{slug}/users/me/author-request:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+    get:
+      operationId: myAuthorRequests
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./iam/author-request.yaml#/Requests"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+    post:
+      operationId: submitAuthorRequest
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: "./iam/author-request.yaml#/Application"}}
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./iam/author-request.yaml#/AuthorRequest"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+  /api/tenants/{slug}/users/author-requests:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+    get:
+      operationId: pendingAuthorRequests
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./iam/author-request.yaml#/Requests"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+  /api/tenants/{slug}/users/author-requests/{id}/approve:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+    patch:
+      operationId: approveAuthorRequest
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: "./iam/author-request.yaml#/ReviewNote"}}
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./iam/author-request.yaml#/AuthorRequest"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+  /api/tenants/{slug}/users/author-requests/{id}/reject:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+    patch:
+      operationId: rejectAuthorRequest
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: "./iam/author-request.yaml#/ReviewNote"}}
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./iam/author-request.yaml#/AuthorRequest"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+
+  /api/tenants/{slug}/home/layout:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+    get:
+      operationId: getHomeLayout
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Ordered widgets and shortcuts available for the current account.
+          content:
+            application/json: {schema: {$ref: "./home/overview.yaml#/Layout"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+        '503': {$ref: '#/components/responses/domainError'}
+
+  /api/tenants/{slug}/home/widgets/{widget}:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - in: path
+        name: widget
+        required: true
+        schema: {type: string, enum: [profile, projects, activity, teaching]}
+    get:
+      operationId: getHomeWidget
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Data for one authorized home widget.
+          content:
+            application/json: {schema: {$ref: "./home/overview.yaml#/WidgetData"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+        '503': {$ref: '#/components/responses/domainError'}
+
+  /api/tenants/{slug}/home/overview:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+    get:
+      operationId: getHomeOverview
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./home/overview.yaml#/Overview"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+
+  /api/tenants/{slug}/notifications/templates/{code}/{channel}:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: code, in: path, required: true, schema: {type: string}}
+      - {name: channel, in: path, required: true, schema: {$ref: "./notification/templates.yaml#/Channel"}}
+    get:
+      operationId: getNoticeTemplate
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Tenant-scoped notification template.
+          content:
+            application/json: {schema: {$ref: "./notification/templates.yaml#/Template"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+    put:
+      operationId: saveNoticeTemplate
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: "./notification/templates.yaml#/Draft"}}
+      responses:
+        '200':
+          description: Tenant-scoped notification template.
+          content:
+            application/json: {schema: {$ref: "./notification/templates.yaml#/Template"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+  /api/tenants/{slug}/notifications/templates/{code}/{channel}/preview:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: code, in: path, required: true, schema: {type: string}}
+      - {name: channel, in: path, required: true, schema: {$ref: "./notification/templates.yaml#/Channel"}}
+    post:
+      operationId: previewNoticeTemplate
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: "./notification/templates.yaml#/Draft"}}
+      responses:
+        '200':
+          description: Tenant-scoped notification template.
+          content:
+            application/json: {schema: {$ref: "./notification/templates.yaml#/Preview"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+
+  /api/tenants/{slug}/notifications/preferences:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+    get:
+      operationId: notificationPolicies
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./notification/policy.yaml#/RuleList"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+    put:
+      operationId: saveNoticePreference
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: "./notification/policy.yaml#/PreferenceInput"}}
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./notification/policy.yaml#/RuleList"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+  /api/tenants/{slug}/notifications/rules:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+    put:
+      operationId: saveNoticeRule
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: "./notification/policy.yaml#/RuleInput"}}
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./notification/policy.yaml#/RuleList"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+
+  /api/tenants/{slug}/applied-projects/{id}/decision:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+    post:
+      operationId: reviewAppliedProject
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: "./applied-project/register-applied-project.yaml#/Decision"}}
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./applied-project/register-applied-project.yaml#/Record"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+
+  /api/tenants/{slug}/review/meeting-rounds:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+    get:
+      operationId: listMeetingRounds
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./review/meetings.yaml#/RoundList"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+  /api/tenants/{slug}/review/rounds/{id}/meetings:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+    get:
+      operationId: listRoundMeetings
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./review/meetings.yaml#/List"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+    post:
+      operationId: createRoundMeeting
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: "./review/meetings.yaml#/Create"}}
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./review/meetings.yaml#/Meeting"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+  /api/tenants/{slug}/review/meetings/{id}/files:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+    post:
+      operationId: issueMeetingFile
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: "./attachments/project-file.yaml#/Request"}}
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./attachments/project-file.yaml#/Intent"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+  /api/tenants/{slug}/review/meetings/{id}/files/{fileId}/finalize:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+      - {name: fileId, in: path, required: true, schema: {type: string, format: uuid}}
+    post:
+      operationId: finalizeMeetingFile
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./attachments/project-file.yaml#/File"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+  /api/tenants/{slug}/review/meetings/{id}/files/{fileId}/download:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+      - {name: fileId, in: path, required: true, schema: {type: string, format: uuid}}
+    get:
+      operationId: downloadMeetingFile
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./attachments/project-file.yaml#/Download"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+
+  /api/tenants/{slug}/review/rounds/{id}/amendment:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+    get:
+      operationId: getRoundAmendment
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./review/amendment.yaml#/State"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+    post:
+      operationId: amendRound
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: "./review/amendment.yaml#/Command"}}
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./review/amendment.yaml#/State"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+
+  /api/tenants/{slug}/applied-projects/{id}/result:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+    post:
+      operationId: submitAppliedResult
+      security: [{bearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: "./applied-project/register-applied-project.yaml#/Result"}}
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./applied-project/register-applied-project.yaml#/Record"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+
+  /api/tenants/{slug}/applied-projects/{id}/hours:
+    parameters:
+      - {$ref: "#/components/parameters/tenantSlug"}
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+    get:
+      operationId: getAppliedHours
+      security: [{bearer: []}]
+      responses:
+        '200':
+          description: Authorized domain result.
+          content:
+            application/json: {schema: {$ref: "./applied-project/register-applied-project.yaml#/Hours"}}
+        '400': {$ref: '#/components/responses/domainError'}
+        '401': {$ref: '#/components/responses/domainError'}
+        '403': {$ref: '#/components/responses/domainError'}
+        '404': {$ref: '#/components/responses/domainError'}
+        '409': {$ref: '#/components/responses/domainError'}
+
+components:
+  schemas:
+    WorkflowTemplate:
+      type: object
+      required: [version,graph]
+      properties:
+        version: {type: integer, minimum: 0}
+        graph: {$ref: './workflow/workflow-version.yaml'}
+    WorkflowGraph: {$ref: "./workflow/workflow-version.yaml"}
+    ThemeTokens: {$ref: "./catalog/theme-tokens.yaml"}
+  parameters:
+    tenantSlug:
+      name: slug
+      in: path
+      required: true
+      schema: {type: string}
+  requestBodies:
+    configuration:
+      required: true
+      content:
+        application/json: {schema: {$ref: './catalog/config-override.yaml#/Input'}}
+        application/x-www-form-urlencoded: {schema: {$ref: './catalog/config-override.yaml#/Input'}}
+        multipart/form-data:
+          schema:
+            allOf:
+              - {$ref: './catalog/config-override.yaml#/Input'}
+              - {type: object, properties: {content: {type: string, format: binary}}}
+  responses:
+    domainError:
+      description: Domain validation or access error.
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [statusCode,message]
+            properties:
+              statusCode: {type: integer}
+              message: {type: string}
+    configuration:
+      description: Configuration metadata.
+      content:
+        application/json: {schema: {$ref: './catalog/config-override.yaml#/Meta'}}
+  securitySchemes:
+    teachingService: {type: apiKey, in: header, name: X-RMS-Teaching-Service}
+    reminderService: {type: apiKey, in: header, name: X-RMS-Reminder-Service}
+    catalogService: {type: apiKey, in: header, name: X-RMS-Service}
+    bearer: {type: http, scheme: bearer, bearerFormat: JWT}

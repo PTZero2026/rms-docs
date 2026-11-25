@@ -27,8 +27,11 @@ import { configValue } from "./base-seed"
 import { inbox } from "./notifications"
 import { tenants } from "./identity"
 import { useState } from "react"
+import { DeadlineQueue } from "../features/mobile/DeadlineQueue"
+import { usePhoneLayout } from "../features/mobile/usePhoneLayout"
 import art from "../assets/river-atlas.webp"
 export default function Home(p: FeatureProps) {
+  const phone = usePhoneLayout()
   const { rows, session, go } = p
   const [allTasks, setAllTasks] = useState(false)
   const visible = rows.filter((r) => rowVisible(r, session, rows))
@@ -163,6 +166,47 @@ export default function Home(p: FeatureProps) {
     n: projects.length - groups.reduce((s, g) => s + g.n, 0),
   })
   const heroAction = admin ? () => go("B01") : call ? () => go("F02", call.id) : () => go("B04")
+  const banner = (
+    <section
+      className="call-banner"
+      style={{
+        backgroundImage: `linear-gradient(90deg,rgba(10,65,63,.96) 5%,rgba(10,65,63,.82) 43%,transparent 83%),url(${art})`,
+      }}
+    >
+      <div className="call-tag">
+        <i />
+        {admin ? "Quản trị đơn vị" : call ? "Đang nhận đề xuất" : "Không gian nghiên cứu"}
+      </div>
+      <h2>{admin ? "Cấu hình hoạt động nghiên cứu" : (call?.title ?? "Trung tâm thông báo")}</h2>
+      <p>
+        {admin
+          ? "Quản lý tính năng và mẫu cấu hình đang áp dụng."
+          : call?.fields.due
+            ? "Hạn nhận hồ sơ · " + vietnamDate(call.fields.due)
+            : "Theo dõi cập nhật liên quan đến hồ sơ của bạn."}
+      </p>
+      <Button variant="secondary" onClick={heroAction}>
+        {admin ? "Mở cấu hình" : call ? "Xem thông tin kỳ" : "Xem thông báo"}
+        <ArrowUpRight data-icon="inline-end" />
+      </Button>
+    </section>
+  )
+  const metricCards = (
+    <section className="home-metrics" aria-label="Số liệu trong phạm vi">
+      {metrics.map(({ label, n, icon: Icon, dest }, i) => (
+        <button key={label} onClick={() => go(dest)} className={"metric-link tone-" + i}>
+          <span className="metric-symbol">
+            <Icon size={19} />
+          </span>
+          <span>
+            <small>{label}</small>
+            <strong>{n.toLocaleString("vi-VN")}</strong>
+          </span>
+          <ArrowUpRight size={15} className="metric-open" />
+        </button>
+      ))}
+    </section>
+  )
   return (
     <div className="home stack">
       <Heading
@@ -175,84 +219,55 @@ export default function Home(p: FeatureProps) {
           </span>
         }
       />
-      <section
-        className="call-banner"
-        style={{
-          backgroundImage: `linear-gradient(90deg,rgba(10,65,63,.96) 5%,rgba(10,65,63,.82) 43%,transparent 83%),url(${art})`,
-        }}
-      >
-        <div className="call-tag">
-          <i />
-          {admin ? "Quản trị đơn vị" : call ? "Đang nhận đề xuất" : "Không gian nghiên cứu"}
-        </div>
-        <h2>{admin ? "Cấu hình hoạt động nghiên cứu" : (call?.title ?? "Trung tâm thông báo")}</h2>
-        <p>
-          {admin
-            ? "Quản lý tính năng và mẫu cấu hình đang áp dụng."
-            : call?.fields.due
-              ? "Hạn nhận hồ sơ · " + vietnamDate(call.fields.due)
-              : "Theo dõi cập nhật liên quan đến hồ sơ của bạn."}
-        </p>
-        <Button variant="secondary" onClick={heroAction}>
-          {admin ? "Mở cấu hình" : call ? "Xem thông tin kỳ" : "Xem thông báo"}
-          <ArrowUpRight data-icon="inline-end" />
-        </Button>
-      </section>
-      <section className="home-metrics" aria-label="Số liệu trong phạm vi">
-        {metrics.map(({ label, n, icon: Icon, dest }, i) => (
-          <button key={label} onClick={() => go(dest)} className={"metric-link tone-" + i}>
-            <span className="metric-symbol">
-              <Icon size={19} />
-            </span>
-            <span>
-              <small>{label}</small>
-              <strong>{n.toLocaleString("vi-VN")}</strong>
-            </span>
-            <ArrowUpRight size={15} className="metric-open" />
-          </button>
-        ))}
-      </section>
+      {!phone && banner}
+      {!phone && metricCards}
       {layout.map((section) =>
         section === "tasks" ? (
           <div className="home-columns" key={section}>
-            <section className="panel tasks">
-              <div className="section-heading">
-                <h2>
-                  Việc cần xử lý <span>{tasks.length}</span>
-                </h2>
-                <ClipboardCheck size={18} />
-              </div>
-              {tasks.length ? (
-                (allTasks ? tasks : tasks.slice(0, 4)).map((t) => (
-                  <button className="task-row" key={t.id} onClick={() => go(t.feature, t.target)}>
-                    <span
-                      className={"task-symbol " + (t.date && t.date < "2026-11-21" ? "late" : "")}
-                    >
-                      <FilePenLine size={18} />
-                    </span>
-                    <span className="task-copy">
-                      <b>{t.title}</b>
-                      <small>
-                        {t.detail}
-                        {t.date ? " · " + vietnamDate(t.date) : ""}
-                      </small>
-                    </span>
-                    {t.date && t.date < "2026-11-21" && <span className="late-label">Quá hạn</span>}
-                    <ChevronRight size={15} />
-                  </button>
-                ))
-              ) : (
-                <Blank
-                  title="Bạn đã xử lý hết công việc"
-                  body="Những hồ sơ cần bạn xử lý sẽ xuất hiện tại đây."
-                />
-              )}
-              {tasks.length > 4 && (
-                <Button variant="ghost" onClick={() => setAllTasks(!allTasks)}>
-                  {allTasks ? "Thu gọn" : "Xem thêm " + (tasks.length - 4) + " việc"}
-                </Button>
-              )}
-            </section>
+            {phone ? (
+              <DeadlineQueue tasks={tasks} />
+            ) : (
+              <section className="panel tasks">
+                <div className="section-heading">
+                  <h2>
+                    Việc cần xử lý <span>{tasks.length}</span>
+                  </h2>
+                  <ClipboardCheck size={18} />
+                </div>
+                {tasks.length ? (
+                  (allTasks ? tasks : tasks.slice(0, 4)).map((t) => (
+                    <button className="task-row" key={t.id} onClick={() => go(t.feature, t.target)}>
+                      <span
+                        className={"task-symbol " + (t.date && t.date < "2026-11-21" ? "late" : "")}
+                      >
+                        <FilePenLine size={18} />
+                      </span>
+                      <span className="task-copy">
+                        <b>{t.title}</b>
+                        <small>
+                          {t.detail}
+                          {t.date ? " · " + vietnamDate(t.date) : ""}
+                        </small>
+                      </span>
+                      {t.date && t.date < "2026-11-21" && (
+                        <span className="late-label">Quá hạn</span>
+                      )}
+                      <ChevronRight size={15} />
+                    </button>
+                  ))
+                ) : (
+                  <Blank
+                    title="Bạn đã xử lý hết công việc"
+                    body="Những hồ sơ cần bạn xử lý sẽ xuất hiện tại đây."
+                  />
+                )}
+                {tasks.length > 4 && (
+                  <Button variant="ghost" onClick={() => setAllTasks(!allTasks)}>
+                    {allTasks ? "Thu gọn" : "Xem thêm " + (tasks.length - 4) + " việc"}
+                  </Button>
+                )}
+              </section>
+            )}
             <section className="panel distribution">
               <div className="section-heading">
                 <h2>Phân bố đề tài</h2>
@@ -346,6 +361,8 @@ export default function Home(p: FeatureProps) {
           </section>
         ) : null,
       )}
+      {phone && metricCards}
+      {phone && banner}
     </div>
   )
 }

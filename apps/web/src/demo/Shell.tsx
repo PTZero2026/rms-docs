@@ -1,3 +1,4 @@
+import { ServiceStatus } from "./ServiceStatus"
 import { useEffect, useState } from "react"
 import type { ReactNode } from "react"
 import {
@@ -36,6 +37,7 @@ import { items, canOpen, routeUrl } from "./catalog"
 import { featureOf, sourceId, rowVisible } from "./views"
 import { tenants, initials, roleNames, person, roleForAccount } from "./identity"
 import { inbox } from "./notifications"
+import { usePhoneLayout } from "../features/mobile/usePhoneLayout"
 import FixtureSignIn from "./FixtureSignIn"
 import { loadTenant } from "./repository"
 import { Blank } from "./ui"
@@ -46,6 +48,7 @@ type Props = FeatureProps & {
   locked: boolean
 }
 export default function Shell(p: Props) {
+  const phone = usePhoneLayout()
   const [dialog, setDialog] = useState(""),
     [menu, setMenu] = useState(false),
     [query, setQuery] = useState("")
@@ -224,6 +227,11 @@ export default function Shell(p: Props) {
           >
             <Menu />
           </Button>
+          {phone && (
+            <span className="mobile-brand">
+              RMS<span>.</span>
+            </span>
+          )}
           <div className="crumb">
             <PanelLeft size={16} />
             <span>Không gian làm việc</span>
@@ -262,6 +270,24 @@ export default function Shell(p: Props) {
         <main id="main" tabIndex={-1} className="workspace">
           {p.children}
         </main>
+        {phone && !p.locked && (
+          <nav className="mobile-dock" aria-label="Điều hướng nhanh">
+            {["B06", "F02", "B04"].map((id) => {
+              const item = accessible.find((entry) => entry.id === id)
+              if (!item) return null
+              return (
+                <a
+                  key={id}
+                  href={routeUrl(id)}
+                  aria-current={route.feature === id ? "page" : undefined}
+                >
+                  <item.icon size={19} />
+                  {id === "B04" ? "Hộp thư" : id === "F02" ? "Kỳ đề xuất" : item.label}
+                </a>
+              )
+            })}
+          </nav>
+        )}
       </div>
       <Dialog
         open={dialog === "notices"}
@@ -330,6 +356,7 @@ export default function Shell(p: Props) {
               ))}
             </select>
           </label>
+          <ServiceStatus />
           <Button variant="outline" onClick={() => setSignIn(!signIn)}>
             {signIn ? "Chọn tài khoản có sẵn" : "Đăng nhập bằng email mẫu"}
           </Button>

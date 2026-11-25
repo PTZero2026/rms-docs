@@ -2,8 +2,8 @@
 title: "Trang chủ (Dashboard cá nhân) — Test plan"
 spec: "./spec.md"
 owner: "QA/Test"
-status: Draft
-updated: 2026-06-26
+status: Review
+updated: 2026-11-25
 ---
 
 # Trang chủ (Dashboard cá nhân) — Kế hoạch kiểm thử
@@ -30,17 +30,17 @@ updated: 2026-06-26
 | TC-05 | AC-04 | CN có 1 đề xuất bị trả lại bổ sung + 1 báo cáo quá hạn | Mở trang chủ | Khối "việc cần làm" liệt kê đúng 2 đề mục; mỗi đề mục có link tới feature nguồn | Happy |
 | TC-06 | AC-04 | Hai tenant đặt **tên bước** workflow khác nhau nhưng cùng `statusSemantic` | Mở trang chủ ở từng tenant với cùng tình huống | Cùng đề mục "việc cần làm" xuất hiện ở cả hai (gom theo statusSemantic, không theo tên bước) | Biên |
 | TC-07 | AC-05 | U thấy đề mục việc cần làm | Bấm vào đề mục | Điều hướng tới đúng màn hình feature nguồn; trang chủ không sửa dữ liệu | Happy |
-| TC-08 | AC-06 | U có thẻ "đề tài đang thực hiện = N" | Bấm "xem chi tiết/phân tích" trên thẻ | Điều hướng sang báo cáo **B02**; trang chủ không có lọc/drill-down tại chỗ | Happy |
+| TC-08 | AC-06 | U có số liệu nhanh theo khoa và quyền báo cáo của hai khoa | Mở báo cáo từ thẻ, tải lại, chọn kỳ rồi chủ động mở rộng phạm vi | B02 chọn sẵn khoa của U. Bản đầu gồm hai hồ sơ thuộc khoa đó. Chọn tất cả đơn vị được phép tạo bản gồm ba hồ sơ. Người thiếu quyền B02 thấy thông báo và đường về trang chủ. [Ca Chrome](../../../e2e/report/call-report/acceptance.spec.ts) | Happy, quyền |
 | TC-09 | AC-07 | U có ≥ 7 thông báo IN_APP | Mở trang chủ | Khối thông báo hiển thị đúng **5** bản ghi gần nhất của U; "Xem tất cả" → B04 | Happy |
 | TC-10 | AC-07 | U2 có thông báo riêng | Đăng nhập U, mở trang chủ | Không thấy thông báo của U2 (chỉ recipient = U) | Biên (quyền) |
 | TC-11 | AC-08 | Tenant T **tắt** E4 | Người dùng T mở trang chủ | Không có widget E4 (giờ giảng P03, đề tài sinh viên F10…) | Happy |
 | TC-12 | AC-08 | Tenant T2 **bật** E4, vai trò phù hợp | Người dùng T2 mở trang chủ | Hiển thị widget E4 tương ứng | Happy |
 | TC-13 | AC-09 | Quản trị tenant đã cấu hình bố cục cho vai trò "chuyên viên" | Chuyên viên của tenant mở trang chủ | Tập widget & thứ tự đúng cấu hình tenant; khác tenant khác | Happy |
-| TC-14 | AC-09 | Có quyền `HOME.CONFIG` | Mở HOME-11, đổi tập widget/thứ tự cho 1 vai trò, lưu | Lưu thành công, ghi `AuditLog`; người dùng vai trò đó thấy bố cục mới | Happy |
+| TC-14 | AC-09 | Có quyền `HOME.CONFIG` | Mở HOME-11, đổi tập widget/thứ tự cho 1 vai trò, lưu | Lưu thành công có `AuditLog` và người dùng vai trò đó thấy bố cục mới. Hai quản trị cùng sửa một phiên bản. Người lưu sau tải lại rồi lưu lần hai. Đối chiếu người ghi, trường, thứ tự trước/sau, trang chủ chuyên viên và xử lý khi hạ quyền. [Ca HOME-11](../../../e2e/home/triage-deadlines/layout-editor.spec.ts) · [Đường B01 và chủ nhiệm](../../../e2e/home/triage-deadlines/acceptance.spec.ts) | Happy |
 | TC-15 | AC-10 | Người dùng mới M chưa có đề tài/việc | Mở trang chủ | Hiển thị trạng thái rỗng + lối tắt khởi đầu theo vai trò; không màn hình trống | Biên |
 | TC-16 | AC-11 | U có quyền xem audit nghiệp vụ | Mở trang chủ nhiều lần, kiểm `AuditLog` | Không có bản ghi audit nghiệp vụ cho hành động xem trang chủ | Biên |
 | TC-17 | AC-12 | Số liệu nhanh lấy từ cache | Mở trang chủ | Thẻ số liệu hiển thị **mốc cập nhật**; việc cần làm phản ánh trạng thái đủ tươi | Biên |
-| TC-18 | AC-01/AC-02 | Một widget nguồn lỗi tải | Mở trang chủ | Lỗi cục bộ trong thẻ đó; các widget khác vẫn hiển thị bình thường | Lỗi |
+| TC-18 | AC-01/AC-02 | Cấu hình F08 sai định dạng hoặc một nguồn thẻ bị chậm rồi trả 503 | Mở trang chủ, dùng thẻ khác, phục hồi nguồn rồi chọn **Thử lại** | Thẻ lỗi có thông báo riêng. Chỉ nguồn của thẻ đó được gọi lại, bộ lọc công việc đang dùng vẫn được giữ. [Hai ca Chrome](../../../e2e/home/triage-deadlines/isolated-widgets.spec.ts) | Lỗi, phục hồi |
 
 ## 3. Trường hợp biên & negative
 
@@ -59,4 +59,24 @@ updated: 2026-06-26
 - Bật/tắt feature per-tenant (VP-FEAT) phản ánh đúng trên trang chủ.
 - Khối thông báo đồng bộ với trung tâm thông báo B04 (cùng nguồn `Notification`).
 - Số liệu nhanh nhất quán về định nghĩa đếm với báo cáo tương ứng ở B02 (cùng cách hiểu phạm vi).
-</content>
+
+## Ca biên theo quyết định triển khai
+
+| Ca | AC nguồn | Điều kiện | Thao tác | Kết quả |
+|---|---|---|---|---|
+| TC-19 · [US-12/TC-03](../../../specs/012-mobile-open-work-item/quickstart.md) | AC-05 | Điện thoại rộng 360 px đã hiện thẻ rồi tài khoản bị thu quyền | chạm thẻ cũ | không lộ hồ sơ và có đường về trang chủ |
+
+## Lọc việc quá hạn
+
+| Ca | AC nguồn | Điều kiện | Thao tác | Kết quả |
+|---|---|---|---|---|
+| TC-20 | AC-13 | Hai báo cáo có hạn 18/11 và 28/11 | Chọn Quá hạn ngày 21/11 | Danh sách có kỳ 2 và loại kỳ 3, số đếm khớp. |
+| TC-21 | AC-13 | Có việc hạn hôm nay và việc chưa có hạn | So Quá hạn với Tất cả | Cả hai chỉ có trong Tất cả. Khi nhóm quá hạn rỗng có cách trở lại toàn bộ việc. |
+| TC-22 | AC-13 | Chủ nhiệm nhìn thấy kỳ 2 của chính mình | Mở thẻ rồi quay lại B06 | F04 mở đúng đề tài. Dữ liệu và audit giữ nguyên. |
+| TC-23 | AC-13 | Đổi người hoặc tenant, hoặc cấu hình bỏ widget việc | Mở lại tổng quan | Danh sách và số đếm theo phiên mới. Widget bị tắt thì cả thẻ và tổng tương ứng đều ẩn. |
+
+## Phân công hội đồng
+
+| Ca | AC nguồn | Điều kiện | Thao tác | Kết quả |
+|---|---|---|---|---|
+| TC-24 | AC-03, AC-04, AC-05 | Có hồ sơ nghiệm thu, chuyên viên hai khoa, người có ghế hợp lệ và chủ nhiệm cũng được ghi ghế | Từ trang chủ mở hồ sơ điều phối hoặc phiếu chấm, lưu nháp, thay đổi tư cách thành viên, mở lại rồi gửi phiếu | Đúng chuyên viên thấy hồ sơ của khoa. Người có quyền chấm thấy phiếu chưa gửi của chính mình. Sau khi phát sinh xung đột, danh sách và liên kết cũ loại phiếu. Chốt kết luận gỡ việc điều phối. Mở lại vòng giữ phiếu đã gửi. [Ca PostgreSQL](../../../apps/backend/test/db/acceptance.test.mjs) · [Chrome](../../../e2e/acceptance/request-acceptance/acceptance.ts) |

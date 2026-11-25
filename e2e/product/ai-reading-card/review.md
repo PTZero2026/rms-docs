@@ -1,0 +1,5 @@
+# US-32 · Thẻ đọc theo quyền của nguồn
+
+Bộ thử dùng DOI 10.18637/jss.v059.i10, bài *Tidy Data* của Hadley Wickham, năm 2014. Đã đối chiếu tác giả, tên và năm qua Crossref. Đoạn ngắn trong ca kiểm nằm ở trang 1, phần Abstract trong bản tác giả cung cấp. [Metadata Crossref](https://api.crossref.org/works/10.18637/jss.v059.i10) · [Bản của tác giả](https://vita.had.co.nz/papers/tidy-data.pdf)
+
+Tại trường thử, quyền người dùng và quyền xử lý của mô hình là hai điều kiện riêng. Cấp quyền thư mục chỉ hiện bốn trường thư mục. Khi cả hai quyền toàn văn có hiệu lực, nhà nghiên cứu mở đúng vị trí dẫn và bỏ gợi ý phương pháp. Hết hạn, mở lại bản cũ và lập bản mới đều ẩn đoạn, cả hai trường nội dung báo chưa đủ căn cứ. Dữ liệu nhận ở mô hình được đối chiếu theo hash, số lượt nhận đoạn toàn văn không tăng. Thu quyền thư mục làm lần mở tiếp theo nhận 404. Quyết định chỉ ghi bảng gợi ý riêng và P02. [Ca trình duyệt](../../assistant/evidence/acceptance.spec.ts) · [Ảnh thẻ](../../../docs/reviews/screenshots/assistant/the-doc-co-can-cu.png)

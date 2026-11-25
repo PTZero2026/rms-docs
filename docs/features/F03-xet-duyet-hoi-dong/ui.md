@@ -2,8 +2,8 @@
 title: "Xét duyệt hội đồng — Giao diện (một web app, phân quyền)"
 spec: "./spec.md"
 owner: "PO/BA"
-status: Draft
-updated: 2026-11-21
+status: Review
+updated: 2026-11-24
 ---
 
 # Xét duyệt hội đồng — Giao diện
@@ -183,3 +183,7 @@ xem nhật ký xét duyệt của người khác.
 | BO-03 | AC-03 (kết luận APPROVED), AC-04 (kết luận REJECTED), AC-05 (thiếu phiếu), AC-09 (sai quyền kết luận), AC-10 (khóa sau kết luận) |
 | BO-04 | AC-06 (ẩn đề tài xung đột lợi ích) |
 | BO-05 | AC-02 (chấm & gửi phiếu), AC-07 (điểm vượt maxScore), AC-08 (một thành viên một phiếu), AC-10 (đợt đã kết luận) |
+
+FE-02 hiển thị nhận xét công bố theo AC-11. Tại chi tiết hội đồng, thư ký mở cuộc họp của vòng, gắn hoặc xem bản biên bản có phiên bản theo AC-12.
+
+**Điều chỉnh sau kết luận (BR-10, AC-10).** Chuyên viên mở vòng xét duyệt, nhập lý do và kiểm lịch sử theo thời gian Việt Nam. Giao diện hiển thị thao tác mở lại hoặc chọn chủ quy trình nhận yêu cầu theo trạng thái do API trả về. [Hướng dẫn theo vai trò](../../guides/nguoi-dung/xet-duyet-hoi-dong.md)

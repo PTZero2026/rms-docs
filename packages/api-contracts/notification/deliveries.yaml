@@ -1,0 +1,42 @@
+Page:
+  type: object
+  required: [items,total]
+  properties:
+    total: {type: integer}
+    items:
+      type: array
+      items:
+        type: object
+        required: [id,event,title,recipient,channel,status,attempts,revision,error,createdAt,templateMissing]
+        properties:
+          id: {type: string,format: uuid}
+          event: {type: string}
+          title: {type: string}
+          recipient: {type: string}
+          channel: {type: string, enum: [smtp,in_app,sms]}
+          status: {type: string, enum: [ready,leased,sent,failed,reconcile,skipped]}
+          templateMissing: {type: boolean}
+          attempts: {type: integer}
+          revision: {type: integer}
+          error: {type: string,nullable: true}
+          createdAt: {type: string,format: date-time}
+Retry:
+  type: object
+  required: [items]
+  properties:
+    items:
+      type: array
+      minItems: 1
+      maxItems: 20
+      items:
+        type: object
+        required: [id,revision]
+        properties:
+          id: {type: string,format: uuid}
+          revision: {type: integer,minimum: 0}
+RetryPolicy:
+  type: object
+  required: [maxAttempts,baseSeconds]
+  properties:
+    maxAttempts: {type: integer,minimum: 1,maximum: 20}
+    baseSeconds: {type: integer,minimum: 1,maximum: 900}

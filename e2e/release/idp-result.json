@@ -1,0 +1,20 @@
+{
+  "recordedAt": "2026-11-24T15:56:09.672Z",
+  "realmBackups": [
+    {
+      "realm": "school-1",
+      "bytes": 84658,
+      "sha256": "5b3d6703063e0669669f60243cb1017291bca7bd2d88ffe1ab76fb5aac6df31f"
+    },
+    {
+      "realm": "school-2",
+      "bytes": 83768,
+      "sha256": "960f1e869369f3d18dc333eaa50bd8ad312a234d13c203844d02fbf8d3d56600"
+    }
+  ],
+  "subjectsPreserved": 2,
+  "beforeAndAfterOtpLogins": 4,
+  "validSignatureAndAudience": true,
+  "recoverySeconds": 60.106,
+  "totalSeconds": 97.248
+}

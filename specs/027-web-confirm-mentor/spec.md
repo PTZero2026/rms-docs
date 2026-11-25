@@ -5,7 +5,7 @@ epic: E4
 channel: web
 wave: C
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-24
 ---
 
 # Xác nhận người hướng dẫn đề tài sinh viên
@@ -16,7 +16,7 @@ updated: 2026-11-18
 
 ### Session 2026-11-18
 
-- Q: Xác nhận hướng dẫn của một hồ sơ có dùng cho hồ sơ khác cùng sinh viên không? → A: Gắn xác nhận với đúng đăng ký, kiểm khi sinh viên nộp chính thức. [RV-27](../review-decisions.md#rv-27). Khuyến nghị dùng để lập kế hoạch, chờ Đại diện khoa, giảng viên hướng dẫn và BA xác nhận.
+- Q: Xác nhận hướng dẫn của một hồ sơ có dùng cho hồ sơ khác cùng sinh viên không? → A: Gắn xác nhận với đúng đăng ký, kiểm khi sinh viên nộp chính thức. [RV-27](../review-decisions.md#rv-27). BA/PO chốt cho triển khai ngày 24/11/2026.
 
 ## User Scenarios & Testing
 
@@ -29,7 +29,7 @@ Sinh viên xin xác nhận của giảng viên hướng dẫn để đủ điề
 - **AC-01** (US-27.1) — Given nhóm đủ điều kiện còn lại, giảng viên đã xác nhận. When nộp. Then qua điều kiện người hướng dẫn.
 - **AC-02** (US-27.2) — Given chưa ai xác nhận. When nộp. Then chỉ rõ thiếu xác nhận và giữ bản đăng ký.
 
-- **AC-03** (US-27.3, khuyến nghị) — Given Giảng viên đã xác nhận cho hồ sơ A, sinh viên gửi hồ sơ B. When nộp B. Then yêu cầu xác nhận riêng cho B.
+- **AC-03** (US-27.3) — Given Giảng viên đã xác nhận cho hồ sơ A, sinh viên gửi hồ sơ B. When nộp B. Then yêu cầu xác nhận riêng cho B.
 
 ### Edge Cases
 
@@ -42,7 +42,7 @@ Chưa ai xác nhận → chỉ rõ thiếu xác nhận và giữ bản đăng k�
 - **BR-01 / FR-001.** Khi nhóm đủ điều kiện còn lại, giảng viên đã xác nhận, người có quyền có thể nộp. Kết quả phải quan sát được: qua điều kiện người hướng dẫn (AC-01).
 - **BR-02 / FR-002.** Với tình huống chưa ai xác nhận, thao tác nộp phải cho kết quả chỉ rõ thiếu xác nhận và giữ bản đăng ký (AC-02).
 
-- **BR-03 / FR-003 (đề xuất).** Gắn xác nhận với đúng đăng ký, kiểm khi sinh viên nộp chính thức. Kiểm bằng AC-03.
+- **BR-03 / FR-003.** Gắn xác nhận với đúng đăng ký, kiểm khi sinh viên nộp chính thức. Kiểm bằng AC-03.
 
 ### Key Entities
 

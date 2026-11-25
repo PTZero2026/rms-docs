@@ -1,0 +1,30 @@
+Source:
+  type: object
+  required: [id,title,status,version,hasProposal]
+  properties:
+    id: {type: string, format: uuid}
+    title: {type: string}
+    status: {type: string}
+    version: {type: integer}
+    hasProposal: {type: boolean}
+Event:
+  type: object
+  required: [id,action,at,actorType,actorLabel,unitLabel,before,after,reason,onBehalfOf]
+  properties:
+    id: {type: string, format: uuid}
+    action: {type: string}
+    at: {type: string, format: date-time}
+    actorType: {type: string, enum: [HUMAN,SYSTEM,AI_AGENT]}
+    actorLabel: {type: string}
+    unitLabel: {type: string, nullable: true}
+    before: {type: string, nullable: true}
+    after: {type: string, nullable: true}
+    reason: {type: string, nullable: true}
+    onBehalfOf: {type: string, format: uuid, nullable: true}
+Trail:
+  type: object
+  required: [project,total,items]
+  properties:
+    project: {$ref: '#/Source'}
+    total: {type: integer}
+    items: {type: array, items: {$ref: '#/Event'}}

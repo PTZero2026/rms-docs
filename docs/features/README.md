@@ -1,7 +1,7 @@
 ---
 title: "Danh sách tính năng & checklist rà soát tài liệu"
 status: Draft
-updated: 2026-11-21
+updated: 2026-11-24
 ---
 
 # Danh sách tính năng RMS
@@ -55,10 +55,10 @@ Quy ước tiến độ:
 |---|:--:|---|---|---|---|---|
 | F01 | E1 | [Đề xuất đề tài](F01-de-xuat-de-tai/) | `proposal` | FE, BO, công khai một phần | Now | Đã có nội dung; **đã tách spec↔design (mẫu)** |
 | F02 | E1 | [Kỳ nhận đề xuất](F02-dot-keu-goi/) | `call` | FE, BO | Now | Đã có nội dung |
-| F03 | E1 | [Xét duyệt hội đồng](F03-xet-duyet-hoi-dong/) | `review` | FE, BO | Now | Đã có nội dung; cần bổ sung đạo đức & cuộc họp |
+| F03 | E1 | [Xét duyệt hội đồng](F03-xet-duyet-hoi-dong/) | `review` | FE, BO | Now | RV-11 và biên bản theo cuộc họp |
 | F04 | E2 | [Quản lý tiến độ](F04-quan-ly-tien-do/) | `progress` | FE, BO | Next | Đã có nội dung |
 | F05 | E2 | [Quản lý kinh phí](F05-quan-ly-kinh-phi/) | `budget` | FE, BO | Next | Đã có nội dung + prototype |
-| F06 | E2 | [Nghiệm thu](F06-nghiem-thu/) | `acceptance` | FE, BO | Next | Test plan phủ 12 AC; F05/F06 chờ chốt điều kiện khóa |
+| F06 | E2 | [Nghiệm thu](F06-nghiem-thu/) | `acceptance` | FE, BO | Next | F06 chốt nghiệm thu, F05 quyết toán theo RV-24 |
 | F07 | E3 | [Sản phẩm khoa học](F07-san-pham-khoa-hoc/) | `product` | FE, BO, công khai một phần | Later | Có spec, design, UI và test plan |
 | F08 | E3 | [Lý lịch khoa học](F08-ly-lich-khoa-hoc/) | `profile` | FE, BO | Later | Có spec, design, UI và test plan |
 | B01 | E0 | [Danh mục & cấu hình](B01-danh-muc-cau-hinh/) | `catalog` | BO | Now | Đã có nội dung |
@@ -70,7 +70,7 @@ Quy ước tiến độ:
 | P02 | E0 | [Audit](P02-audit/) | `audit` | BE/xuyên suốt | Xuyên suốt | Spec nền (tech) từ ADR-0010 + §4.4 |
 | P03 | E4 | [Quy đổi giờ giảng](P03-quy-doi-gio-giang/) | `teaching-hour` | BE/xuyên suốt | Later (optional) | **Năng lực optional** — spec khởi tạo, chờ chốt công thức |
 | F09 | E4 | [Đề tài cấp trên](F09-de-tai-cap-tren/) | `upper-project` | FE, BO | Later (optional) | Quản lý đầu mục, spec khởi tạo |
-| F10 | E4 | [Đề tài sinh viên](F10-de-tai-sinh-vien/) | `student-project` | FE, BO | Later (optional) | Phạm vi vòng đời chờ chốt |
+| F10 | E4 | [Đề tài sinh viên](F10-de-tai-sinh-vien/) | `student-project` | FE, BO | Later (optional) | Triển khai luồng rút gọn, tenant chọn khi kích hoạt |
 | F11 | E4 | [Dự án phục vụ sản xuất](F11-du-an-phuc-vu-san-xuat/) | `applied-project` | FE, BO | Later (optional) | Đã chi tiết hóa đầu mục, duyệt, minh chứng, giờ giảng |
 | F12 | E4 | [Hoạt động khoa học & minh chứng](F12-hoat-dong-khoa-hoc/) | `activity` | FE, BO | Later (optional) | Gộp hội nghị/cộng đồng/SHTT |
 
@@ -136,7 +136,7 @@ Quy ước tiến độ:
 
 ### F07 — Sản phẩm khoa học
 
-> Danh sách sơ bộ từ roadmap/glossary; cần hoàn thiện trong spec.
+> Tra phạm vi theo đặc tả và bảng truy vết ở §4.
 
 - Kê khai sản phẩm khoa học theo loại sản phẩm.
 - Gắn sản phẩm với đề tài nguồn và tác giả/thành viên.
@@ -146,7 +146,7 @@ Quy ước tiến độ:
 
 ### F08 — Lý lịch khoa học
 
-> Danh sách sơ bộ từ roadmap/glossary; cần hoàn thiện trong spec.
+> Tra phạm vi theo đặc tả và bảng truy vết ở §4.
 
 - Quản lý thông tin hồ sơ khoa học của người dùng.
 - Quản lý học vị, chức danh, đơn vị, lĩnh vực và chuyên môn.
@@ -156,12 +156,7 @@ Quy ước tiến độ:
 
 ### B01 — Danh mục & cấu hình
 
-- Quản lý cây đơn vị và cây lĩnh vực/chuyên ngành.
-- Quản lý loại sản phẩm và các danh mục lookup dùng chung.
-- Quản lý tham số hệ thống.
-- Quản lý bộ tiêu chí xét duyệt/nghiệm thu.
-- Quản lý mẫu biểu thuyết minh.
-- Vô hiệu hóa/xóa mềm, kiểm tra tham chiếu và ghi audit.
+Blob giữ bản shared/override, phạm vi đọc/ghi, cache và metadata. Catalog adapter kết nối danh mục quan hệ trong RMS với các module sử dụng. Bộ tiêu chí và biểu mẫu có schema do feature sở hữu quản lý. [Thiết kế B01](B01-danh-muc-cau-hinh/design.md)
 
 ### B02 — Báo cáo & thống kê
 
@@ -178,9 +173,9 @@ Quy ước tiến độ:
 - Tạo tài khoản nội bộ và auto-provision khi đăng nhập email-OTP lần đầu.
 - Quản lý trạng thái tài khoản: kích hoạt, khóa, mở khóa, vô hiệu.
 - Quản lý vai trò và quyền nguyên tử `MODULE.ACTION`.
-- Gán/gỡ vai trò cho người dùng; nâng/hạ quyền nghiệp vụ.
+- Đổi một userType và duyệt yêu cầu nâng lên author.
 - Kiểm tra quyền tại backend và áp dụng data scoping.
-- Quản lý chính sách OTP và audit hành động người dùng/phân quyền.
+- Đối chiếu phiên Keycloak, ghi audit hành động đổi quyền.
 
 ### B04 — Thông báo
 
@@ -218,40 +213,32 @@ Quy ước tiến độ:
 - Ghi cùng transaction với thay đổi; xem nhật ký theo quyền & tenant.
 - Dependency cứng của mọi feature đổi trạng thái.
 
-## 4. Checklist rà soát theo feature
+## 4. Hồ sơ giao task ngày 24/11/2026
 
-| Mã | Epic | spec | design | ui | test-plan | BR/AC | Sẵn sàng SDD | Đã rà |
-|---|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
-| F01 | E1 | ✅ | ✅ | ✅ | ✅ | 11/11 | 🟢 | [ ] |
-| F02 | E1 | ✅ | – | ✅ | ✅ | 8/8 | 🟡 | [ ] |
-| F03 | E1 | ✅ | – | ✅ | ✅ | 11/10 | 🟡 | [ ] |
-| F04 | E2 | ✅ | – | ✅ | ✅ | 15/15 | 🟡 | [ ] |
-| F05 | E2 | ✅ | – | ✅ | ✅ | 10/12 | 🟡 | [ ] |
-| F06 | E2 | ✅ | – | ✅ | ✅ | 12/12 | 🟡 | [ ] |
-| F07 | E3 | ✅ | ✅ | ✅ | ✅ | 14/13 | 🟡 | [ ] |
-| F08 | E3 | ✅ | ✅ | ✅ | ✅ | 10/13 | 🟡 | [ ] |
-| B01 | E0 | ✅ | – | ✅ | ✅ | 13/14 | 🟡 | [ ] |
-| B02 | E3 | 🟡 | 🟡 | 🟡 | 🟡 | 3/3 | 🟡 | [ ] |
-| B03 | E0 | ✅ | 🟡 | 🟡 | ✅ | 11/11 | 🟡 | [ ] |
-| B04 | E0 | ✅ | – | ✅ | ✅ | 10/10 | 🟡 | [ ] |
-| B06 | E0 | 🟡 | – | 🟡 | 🟡 | 10/12 | 🔴 | [ ] |
-| P01 | E0 | ✅ | – | – | ✅ | 9/8 | 🟡 | [ ] |
-| P02 | E0 | ✅ | – | – | ✅ | 7/5 | 🟡 | [ ] |
-| P03 | E4 | 🟡 | – | 🔴 | 🔴 | 6/5 | 🔴 | [ ] |
-| F09 | E4 | 🟡 | – | 🔴 | 🔴 | 3/3 | 🔴 | [ ] |
-| F10 | E4 | 🟡 | – | 🔴 | 🔴 | 3/3 | 🔴 | [ ] |
-| F11 | E4 | 🟡 | ✅ | 🟡 | 🟡 | 7/7 | 🔴 | [ ] |
-| F12 | E4 | 🟡 | – | 🔴 | 🔴 | 4/4 | 🔴 | [ ] |
+| Feature | BR / AC nguồn | Thiết kế | Màn hình | Ca kiểm |
+|---|---|---|---|---|
+| [B01](B01-danh-muc-cau-hinh/spec.md) | 12 / 13 | [Design](B01-danh-muc-cau-hinh/design.md) | [UI](B01-danh-muc-cau-hinh/ui.md) | [Test plan](B01-danh-muc-cau-hinh/test-plan.md) |
+| [B02](B02-bao-cao-thong-ke/spec.md) | 3 / 3 | [Design](B02-bao-cao-thong-ke/design.md) | [UI](B02-bao-cao-thong-ke/ui.md) | [Test plan](B02-bao-cao-thong-ke/test-plan.md) |
+| [B03](B03-quan-ly-nguoi-dung/spec.md) | 11 / 11 | [Design](B03-quan-ly-nguoi-dung/design.md) | [UI](B03-quan-ly-nguoi-dung/ui.md) | [Test plan](B03-quan-ly-nguoi-dung/test-plan.md) |
+| [B04](B04-thong-bao/spec.md) | 11 / 11 | [Design](B04-thong-bao/design.md) | [UI](B04-thong-bao/ui.md) | [Test plan](B04-thong-bao/test-plan.md) |
+| [B06](B06-trang-chu/spec.md) | 11 / 13 | [Design](B06-trang-chu/design.md) | [UI](B06-trang-chu/ui.md) | [Test plan](B06-trang-chu/test-plan.md) |
+| [F01](F01-de-xuat-de-tai/spec.md) | 12 / 12 | [Design](F01-de-xuat-de-tai/design.md) | [UI](F01-de-xuat-de-tai/ui.md) | [Test plan](F01-de-xuat-de-tai/test-plan.md) |
+| [F02](F02-dot-keu-goi/spec.md) | 9 / 9 | [Design](F02-dot-keu-goi/design.md) | [UI](F02-dot-keu-goi/ui.md) | [Test plan](F02-dot-keu-goi/test-plan.md) |
+| [F03](F03-xet-duyet-hoi-dong/spec.md) | 11 / 12 | [Design](F03-xet-duyet-hoi-dong/design.md) | [UI](F03-xet-duyet-hoi-dong/ui.md) | [Test plan](F03-xet-duyet-hoi-dong/test-plan.md) |
+| [F04](F04-quan-ly-tien-do/spec.md) | 15 / 15 | [Design](F04-quan-ly-tien-do/design.md) | [UI](F04-quan-ly-tien-do/ui.md) | [Test plan](F04-quan-ly-tien-do/test-plan.md) |
+| [F05](F05-quan-ly-kinh-phi/spec.md) | 10 / 12 | [Design](F05-quan-ly-kinh-phi/design.md) | [UI](F05-quan-ly-kinh-phi/ui.md) | [Test plan](F05-quan-ly-kinh-phi/test-plan.md) |
+| [F06](F06-nghiem-thu/spec.md) | 12 / 12 | [Design](F06-nghiem-thu/design.md) | [UI](F06-nghiem-thu/ui.md) | [Test plan](F06-nghiem-thu/test-plan.md) |
+| [F07](F07-san-pham-khoa-hoc/spec.md) | 15 / 14 | [Design](F07-san-pham-khoa-hoc/design.md) | [UI](F07-san-pham-khoa-hoc/ui.md) | [Test plan](F07-san-pham-khoa-hoc/test-plan.md) |
+| [F08](F08-ly-lich-khoa-hoc/spec.md) | 10 / 13 | [Design](F08-ly-lich-khoa-hoc/design.md) | [UI](F08-ly-lich-khoa-hoc/ui.md) | [Test plan](F08-ly-lich-khoa-hoc/test-plan.md) |
+| [F09](F09-de-tai-cap-tren/spec.md) | 7 / 6 | [Design](F09-de-tai-cap-tren/design.md) | [UI](F09-de-tai-cap-tren/ui.md) | [Test plan](F09-de-tai-cap-tren/test-plan.md) |
+| [F10](F10-de-tai-sinh-vien/spec.md) | 14 / 13 | [Design](F10-de-tai-sinh-vien/design.md) | [UI](F10-de-tai-sinh-vien/ui.md) | [Test plan](F10-de-tai-sinh-vien/test-plan.md) |
+| [F11](F11-du-an-phuc-vu-san-xuat/spec.md) | 7 / 7 | [Design](F11-du-an-phuc-vu-san-xuat/design.md) | [UI](F11-du-an-phuc-vu-san-xuat/ui.md) | [Test plan](F11-du-an-phuc-vu-san-xuat/test-plan.md) |
+| [F12](F12-hoat-dong-khoa-hoc/spec.md) | 4 / 4 | [Design](F12-hoat-dong-khoa-hoc/design.md) | [UI](F12-hoat-dong-khoa-hoc/ui.md) | [Test plan](F12-hoat-dong-khoa-hoc/test-plan.md) |
+| [P01](P01-workflow-engine/spec.md) | 9 / 8 | [Design](P01-workflow-engine/design.md) | [UI](P01-workflow-engine/ui.md) | [Test plan](P01-workflow-engine/test-plan.md) |
+| [P02](P02-audit/spec.md) | 7 / 5 | [Design](P02-audit/design.md) | [UI](P02-audit/ui.md) | [Test plan](P02-audit/test-plan.md) |
+| [P03](P03-quy-doi-gio-giang/spec.md) | 10 / 9 | [Design](P03-quy-doi-gio-giang/design.md) | [UI](P03-quy-doi-gio-giang/ui.md) | [Test plan](P03-quy-doi-gio-giang/test-plan.md) |
 
-> **E4 (mới — ĐH Thủy Lợi):** spec đã có **bối cảnh/phạm vi/luồng + BR/AC khởi tạo**, nhưng còn nhiều
-> **điểm chặn cần chốt với Trường** (công thức giờ giảng, phạm vi vòng đời đề tài SV, link đề tài↔bài báo,
-> phạm vi kinh phí) nên Sẵn sàng SDD = 🔴. ui/test-plan mới ở mức khung. Xem [E4](../epics/E4-hoat-dong-mo-rong.md).
-
-> **Cột độ chín** (`spec/design/ui/test-plan`): ✅ đầy đủ · 🟡 một phần · 🔴 khung mẫu · `–` chưa tách.
-> **BR/AC**: số mã `BR-xx`/`AC-xx` duy nhất trong `spec.md`. **Sẵn sàng SDD**: 🟢 sẵn sàng · 🟡 gần sẵn sàng
-> (thiếu `design.md`) · 🟠 gần đủ nhưng test-plan còn khung · 🔴 chưa sẵn sàng (spec khung mẫu).
-> **Đã rà**: đánh `[x]` khi đã rà soát & hết điểm mở chặn duyệt (gồm đối chiếu kiến trúc & tài liệu dùng chung).
-> Trạng thái độ chín lấy từ [REVIEW.md](REVIEW.md) (2026-06-12); cập nhật khi tài liệu thay đổi.
+Số liệu trên đếm mã định nghĩa tại feature, gồm BR-01b của F09. [Báo cáo kiểm chứng](../reviews/san-sang-implement.md) · [Đánh giá lịch sử tháng 6](REVIEW.md)
 
 Tài liệu dùng chung cần đối chiếu:
 
@@ -270,7 +257,7 @@ Các mục dưới đây phải được rà trong nhiều feature, không tự 
 - **Multi-tenant & RBAC:** backend kiểm tra tenant, quyền và phạm vi dữ liệu cho mọi API.
 - **Tệp đính kèm:** quyền tải/xem file phải bám quyền của thực thể nghiệp vụ nguồn.
 - **Thời gian & tiền:** lưu UTC, hiển thị Asia/Ho_Chi_Minh; ngày `dd/MM/yyyy`; tiền VND.
-- **Cổng công khai:** đang nằm trong roadmap Later, chưa có mã feature riêng; chỉ công khai dữ liệu được phép.
+- **Cổng công khai:** dành mã B05 trong roadmap Later; chỉ công khai dữ liệu được phép.
 - **Cuộc họp hội đồng:** mô hình dùng chung do F03 định nghĩa, F06 tái sử dụng.
 
 ## 6. Thứ tự rà soát đề xuất
@@ -282,27 +269,9 @@ Các mục dưới đây phải được rà trong nhiều feature, không tự 
 5. **Mở rộng (E4 — sau khi chốt phạm vi với Trường):** P03 → F12 → F09 → F11 → F10.
 6. **Rà xuyên suốt:** workflow, audit, RBAC, data model, tích hợp và cổng công khai.
 
-## 7. Khoảng trống đã nhận diện
+## 7. Phạm vi sau đợt triển khai
 
-- B02 đã chốt quy tắc đếm hồ sơ theo kỳ và dùng chung bản chụp theo RV-13. Các báo cáo nâng cao cần đặc tả riêng. F07/F08 là nguồn cho US-20/21/25.
-- F06 đã có 12 ca theo AC; điều kiện khóa sổ đã chốt tại [RV-24](../../specs/review-decisions.md#rv-24).
-- F03 cần cập nhật đầy đủ phê duyệt đạo đức song song và mô hình cuộc họp/biên bản theo roadmap.
-- F06 cần đồng bộ phần cuộc họp nghiệm thu dùng chung từ F03.
-- Cổng công khai chưa có mã feature riêng; cần quyết định tách feature nếu phạm vi tiếp tục mở rộng.
-- F03 có AC (10) ít hơn BR (11) — soát lại BR nào chưa có AC phủ. (B01 BR=13/AC=14 là bình thường, không phải lỗi.)
-
-### Khoảng trống mới từ khảo sát ĐH Thủy Lợi (Epic E4 — chờ chốt với Trường)
-
-- **Quy đổi giờ giảng (P03)** — trục xuyên suốt của Trường, **trước đây không có** trong mọi feature/ADR;
-  spec khởi tạo nhưng **công thức quy đổi cần Trường cung cấp** (chặn).
-- **F09–F12** (đề tài cấp trên, đề tài SV, dự án phục vụ sản xuất, hoạt động khoa học & minh chứng) —
-  spec khởi tạo, chờ chốt phạm vi (đặc biệt vòng đời đề tài SV; phạm vi kinh phí hoạt động).
-- **Công bố/bài báo & SHTT:** build-out [F07](F07-san-pham-khoa-hoc/) cho 2 luồng (độc lập/thuộc đề tài)
-  + phê duyệt & cấp kinh phí + **link tự động đề tài↔bài báo**; build-out [F08](F08-ly-lich-khoa-hoc/)
-  (tự tổng hợp + trích template + ký xác nhận).
-- **Kỹ thuật/kiến trúc cần quyết định:** **SSO Microsoft Entra ID** (cần ADR mới, khác ADR-0008 Keycloak
-  email-OTP); **đồng bộ GV/SV** theo cơ chế xác nhận (bổ sung `integrations.md`); **số hóa dữ liệu cũ 5 năm**
-  (khác việc migrate code repo cũ ở `migration-coverage.md`).
+B05, báo cáo liên kỳ, kết nối kế toán, Entra và số hóa lịch sử thuộc lộ trình sau. Với E4, trường ký ví dụ quy chế riêng cho từng phân hệ được bật. Với AI, chủ dữ liệu duyệt danh mục nguồn và QA đo bộ đối chứng trước pilot. [Lộ trình](../product/roadmap.md) · [Bàn giao cho trường](../guides/handover-thuy-loi.md)
 
 ## Changelog
 

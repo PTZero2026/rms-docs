@@ -1,0 +1,5 @@
+Capabilities:
+  type: object
+  required: [modules]
+  properties:
+    modules: {type: array, items: {type: string}}

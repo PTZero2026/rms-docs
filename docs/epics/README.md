@@ -1,7 +1,7 @@
 ---
 title: "Bản đồ Epic — RMS"
 status: Draft
-updated: 2026-06-12
+updated: 2026-11-24
 ---
 
 # Bản đồ Epic RMS
@@ -24,7 +24,7 @@ updated: 2026-06-12
 
 > **E4** = **năng lực mở rộng optional** (bật/tắt per-tenant — [ADR-0012](../architecture/decisions/0012-ranh-gioi-loi-vs-cau-hinh-tenant.md)),
 > trung lập với mọi trường. Nhu cầu lần đầu từ khảo sát **ĐH Thủy Lợi** ([biên bản](BienBan_TongHop_NCKH_ThuyLoi.md));
-> Thủy Lợi là *tenant đầu tiên kích hoạt* — *Draft, chờ chốt phạm vi*.
+> Thủy Lợi là *tenant đầu tiên kích hoạt* — *RV-36 quy định điều kiện bật từng phân hệ*.
 
 ## Cây Epic → Feature
 

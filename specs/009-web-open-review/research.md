@@ -3,14 +3,14 @@ story: US-09
 feature: F03
 review_id: RV-09
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-24
 ---
 
 # Căn cứ và quyết định · US-09
 
 **Vấn đề.** Hai chuyên viên cùng mở đợt cho một đề tài thì sao?
 
-**Khuyến nghị hiện dùng.** Chỉ mở một đợt đang thu phiếu cho cùng hồ sơ và lần xét, trả thông tin đợt đã mở cho lần sau.
+**Quyết định triển khai.** Chỉ mở một đợt đang thu phiếu cho cùng hồ sơ và lần xét, trả thông tin đợt đã mở cho lần sau.
 
 **Lý do.** Trong trường hợp hai chuyên viên cùng chọn một hồ sơ đủ điều kiện, người dùng cần thấy kết quả “chỉ một đợt thu phiếu, một lần chuyển trạng thái”. Phương án khác: Mở nhiều đợt đồng thời rồi gộp phiếu khi khóa sổ. Dùng TC-03 để phân biệt hai phương án. [RV-09](../review-decisions.md#rv-09)
 

@@ -64,6 +64,16 @@ export function saveAction(
     throw Error("Tài khoản đã bị khóa. Hãy chuyển phiên mô phỏng.")
   if (session.role !== effectiveSession(original, expected.rows).role)
     throw Error("Quyền đã thay đổi. Hãy mở lại hồ sơ.")
+  // Two tabs can open the same unread item before either receives a storage event.
+  if (updates.length && updates.every((r) => r.kind === "notice" && r.status === "READ")) {
+    updates = updates.filter((r) => {
+      const live = now.rows.find((item) => item.id === r.id && item.kind === "notice")
+      if (!live || live.owner !== session.userId || r.owner !== session.userId)
+        throw Error("Thông báo ngoài phạm vi người nhận.")
+      return live.status !== "READ"
+    })
+    if (!updates.length) return now
+  }
   for (const r of updates) {
     const live = now.rows.find((x) => x.id === r.id),
       prior = expected.rows.find((x) => x.id === r.id)

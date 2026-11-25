@@ -5,7 +5,7 @@ epic: E1
 channel: web
 wave: A
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-24
 ---
 
 # Trả hồ sơ cần bổ sung
@@ -16,7 +16,7 @@ updated: 2026-11-18
 
 ### Session 2026-11-18
 
-- Q: Có thể trả hồ sơ mà chỉ ghi khoảng trắng ở lý do? → A: Yêu cầu lý do có chữ nhìn thấy, hiển thị nguyên nội dung cho chủ nhiệm. [RV-08](../review-decisions.md#rv-08). Khuyến nghị dùng để lập kế hoạch, chờ Chuyên viên tiếp nhận và PO xác nhận.
+- Q: Có thể trả hồ sơ mà chỉ ghi khoảng trắng ở lý do? → A: Yêu cầu lý do có chữ nhìn thấy, hiển thị nguyên nội dung cho chủ nhiệm. [RV-08](../review-decisions.md#rv-08). BA/PO chốt cho triển khai ngày 24/11/2026.
 
 ## User Scenarios & Testing
 
@@ -29,7 +29,7 @@ Chuyên viên ghi lý do để chủ nhiệm sửa và theo cùng một mã khi 
 - **AC-01** (US-08.1) — Given còn hạn. When trả kèm lý do rồi chủ nhiệm nộp lại. Then chủ nhiệm thấy lý do, mã đề tài được giữ.
 - **AC-02** (US-08.2) — Given đã hết hạn. When chuyên viên trả. Then chặn thao tác và giữ trạng thái.
 
-- **AC-03** (US-08.3, khuyến nghị) — Given Hồ sơ còn hạn và lý do chỉ chứa khoảng trắng. When chuyên viên gửi trả. Then giữ Đã nộp, yêu cầu nhập lý do.
+- **AC-03** (US-08.3) — Given Hồ sơ còn hạn và lý do chỉ chứa khoảng trắng. When chuyên viên gửi trả. Then giữ Đã nộp, yêu cầu nhập lý do.
 
 ### Edge Cases
 
@@ -42,7 +42,7 @@ Chuyên viên ghi lý do để chủ nhiệm sửa và theo cùng một mã khi 
 - **BR-01 / FR-001.** Khi còn hạn, người có quyền có thể trả kèm lý do rồi chủ nhiệm nộp lại. Kết quả phải quan sát được: chủ nhiệm thấy lý do, mã đề tài được giữ (AC-01).
 - **BR-02 / FR-002.** Với tình huống đã hết hạn, thao tác chuyên viên trả phải cho kết quả chặn thao tác và giữ trạng thái (AC-02).
 
-- **BR-03 / FR-003 (đề xuất).** Yêu cầu lý do có chữ nhìn thấy, hiển thị nguyên nội dung cho chủ nhiệm. Kiểm bằng AC-03.
+- **BR-03 / FR-003.** Yêu cầu lý do có chữ nhìn thấy, hiển thị nguyên nội dung cho chủ nhiệm. Kiểm bằng AC-03.
 
 ### Key Entities
 

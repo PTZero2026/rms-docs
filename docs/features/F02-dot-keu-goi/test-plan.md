@@ -2,8 +2,8 @@
 title: "Kỳ nhận đề xuất — Test plan"
 spec: "./spec.md"
 owner: "PO/BA"
-status: Draft
-updated: 2026-11-21
+status: Review
+updated: 2026-11-25
 ---
 
 # Kỳ nhận đề xuất — Kế hoạch kiểm thử
@@ -63,3 +63,14 @@ updated: 2026-11-21
 - **B03 — Phân quyền:** thay đổi quyền `PROPOSAL_CALL.MANAGE` phản ánh đúng ở ẩn/hiện hành động BO.
 - **Audit:** mọi chuyển trạng thái kỳ (mở/đóng/hủy/gia hạn) đều sinh bản ghi `AuditLog`.
 - **Job đóng kỳ:** chạy đúng theo cuối ngày `endDate` múi giờ Asia/Ho_Chi_Minh, không lệch ngày.
+
+## Tra kỳ trên điện thoại
+
+| Ca | AC nguồn | Điều kiện | Thao tác | Kết quả |
+|---|---|---|---|---|
+| TC-17 | AC-09 | Có kỳ đang nhận, kỳ đã đóng và bản nháp | Mở F02 trên điện thoại | Nhóm đang nhận chỉ hiển thị kỳ đang trong cửa sổ nhận. |
+| TC-18 | AC-09 | Kỳ KG-2027-01 kết thúc 30/11/2026 | Tìm kg-2027-01 rồi mở thẻ | Thẻ hiện hạn 30/11/2026. Chi tiết hiện mã kỳ, biểu mẫu và hành động F01 phù hợp quyền. |
+| TC-19 | AC-09 | Từ khóa không khớp | Tìm rồi xóa từ khóa | Có thông điệp rỗng và danh sách được phục hồi. |
+| TC-20 | AC-09 | Một chuyên viên được quản lý kỳ nháp, một chủ nhiệm chỉ tra kỳ mở | Mỗi người chọn Tất cả | Kỳ nháp chỉ xuất hiện cho chuyên viên có quyền. Kỳ OPEN tương lai hoặc hết hạn bị loại khỏi Đang nhận. |
+
+**Đối chứng AC-04 / TC-06.** Dùng hai mốc UTC cách nhau một mili giây qua nửa đêm Việt Nam, hai worker đồng thời và một giao dịch gia hạn giữ khóa. Đối chiếu số lần tăng phiên bản, trạng thái, audit hệ thống, hoàn tác, kỳ nháp, kỳ đã hủy và trường khác. Trên Chrome, mở kỳ từ danh sách **Tất cả** của chuyên viên, chạy worker rồi gửi lệnh từ phiên bản cũ. Mở lại đúng mã kỳ, kiểm lý do và hạn mới khi gia hạn. Kiểm nút nộp tự khóa ngay trên tab chủ nhiệm, HTTP 409 khi bản đang xem đã cũ và mã đề tài sau khi nộp lại bản nháp còn trong hạn mới. [Ca PostgreSQL](../../../apps/backend/test/db/call-expiry.test.mjs) · [Kịch bản Chrome](../../../e2e/call/open-call/expiry.spec.ts)

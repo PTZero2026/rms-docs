@@ -2,16 +2,16 @@
 title: "Kế hoạch phát triển và giao việc RMS"
 owner: "Tech lead"
 status: Review
-updated: 2026-11-21
+updated: 2026-11-24
 ---
 
 # Kế hoạch phát triển và giao việc RMS
 
-**Mốc bàn giao v0 là một kỳ nghiên cứu hoàn chỉnh từ mở kỳ đến kết luận và đối chiếu số đếm ở hai tenant.** Tech lead giao thẻ kỹ thuật N01–N14 dưới đây cùng các task T001–T008 của từng lát US. Đường dẫn code là đích dự kiến ở repo thực thi. Quyết định kiến trúc và cấu hình có tác động chi phí nằm trong [hồ sơ SA](../architecture/rms-v0-sa-review.md). Nghiệp vụ của mỗi thẻ lấy từ [32 lát INVEST](../../specs/README.md) và [20 spec feature](../features/README.md).
+**Mốc bàn giao v0 là một kỳ nghiên cứu hoàn chỉnh từ mở kỳ đến kết luận và đối chiếu số đếm ở hai tenant.** Tech lead giao thẻ kỹ thuật N01–N14 dưới đây cùng T001–T008 của US-01–32 và T001–T007 của US-33–35. Đường dẫn code là đích dự kiến trong monorepo hiện tại. Quyết định kiến trúc và cấu hình có tác động chi phí nằm trong [hồ sơ SA](../architecture/rms-v0-sa-review.md). Nghiệp vụ của mỗi thẻ lấy từ [35 lát INVEST](../../specs/README.md) và [20 spec feature](../features/README.md).
 
 ## Phân bổ đợt
 
-Ước lượng theo tuần lịch cho 1 Tech lead/BE, 1 FE, 1 BE và 1 QA, có Ops và PO theo buổi. Tuần 1 tính từ khi nhận repo code, hạ tầng thử và người duyệt. Đây là khung lập nguồn lực, Tech lead cập nhật lại sau hai lát đầu bằng thời gian thực tế.
+Ước lượng theo tuần lịch cho 1 Tech lead/BE, 1 FE, 1 BE và 1 QA, có Ops và PO theo buổi. Tuần 1 bắt đầu từ N01 local trong monorepo. Hạ tầng thử bên ngoài cần ở bước tích hợp N11. Đây là khung lập nguồn lực, Tech lead cập nhật lại sau hai lát đầu bằng thời gian thực tế.
 
 | Mốc dự kiến | Giao theo thứ tự | Bằng chứng bàn giao |
 |---|---|---|
@@ -29,7 +29,7 @@ Mỗi dòng là một phiếu độc lập. Người nhận thực thi phần vi
 
 | ID · người nhận → reviewer | Cần | Việc làm và đầu ra tại repo code | Nghiệm thu quan sát được |
 |---|---|---|---|
-| N01 · Platform → Tech lead | SA-01 | Khởi tạo pnpm workspace với `apps/web`, `apps/backend`, `packages/api-contracts`, `packages/ui`, `e2e`. Khóa Node/pnpm và bộ dependency. Tạo contract health, sinh client, CI chạy lint, typecheck, test, build | Từ checkout sạch, cài theo lockfile và build cả hai app. UI gọi health từ client sinh tự động. Chỉnh contract mà bỏ regenerate làm CI fail |
+| N01 · Platform → Tech lead | SA-01 đã chốt, local/CI | Giữ web, UI, E2E, Node và pnpm hiện có. Bổ sung hai workspace `apps/backend` và `packages/api-contracts` vào cấu hình hiện hành. Tạo contract health, sinh client, CI chạy lint, typecheck, test, build | Từ checkout sạch, cài theo lockfile và build cả hai app. UI gọi health từ client sinh tự động. Chỉnh contract mà bỏ regenerate làm CI fail |
 | N02 · DBA → SA | N01, SA-03 | Trong `apps/backend/prisma/migrations` tạo Tenant, bảng owned mẫu, unique/FK cùng tenant, policy đọc/ghi, role runtime và role migrate. Trong `src/db/tenant-transaction.ts` cấp client cho toàn callback | Runtime luân phiên A/B trên pool size 1, đọc đúng A/B qua 100 vòng. Thiếu context đọc rỗng, ghi bị từ chối. Cross-tenant FK bị chặn. Rollback không giữ context |
 | N03 · IAM/Ops → Security | N01 | Trong `infra/keycloak` ghim image + SPI tương thích, realm seed A/B, audience, SMTP inbox thử, redirect URI và chính sách hạn OTP/retry. Viết runbook tạo realm mới và xoay secret | OTP sử dụng một lần ở A, hết hạn, nhập lại và xác minh tại B đều bị từ chối. Token A có issuer/audience dự kiến. Hai lần seed cho cùng tenant cho cùng cấu hình |
 | N04 · IAM/BE → SA | N02, N03, SA-02 | `apps/backend/src/modules/iam` và `apps/web/src/auth`. Tra registry, xác minh token, upsert lần đầu, resolve RBAC/scope theo B03, logout và xóa cache. Đồng bộ admin đầu tiên qua bootstrap | Login đồng thời cùng danh tính chỉ tạo một tài khoản. Token A + slug B, sai aud, token hết hạn đều bị từ chối. Khóa người dùng thì request kế tiếp với token cũ bị từ chối. Có log quyết định đã ẩn thông tin nhạy cảm |
@@ -37,18 +37,28 @@ Mỗi dòng là một phiếu độc lập. Người nhận thực thi phần vi
 | N06 · BE → DBA/Design | N02, N04, N05, N08, SA-04 | `packages/api-contracts/catalog/theme.yaml`, `apps/backend/src/modules/catalog/theme`. Định nghĩa đọc active, lưu draft, preview có quyền, áp dụng theo expected revision, rollback có audit | A áp dụng v2 từ v1 có đúng một audit, B tiếp tục default. Hai lần áp dụng cùng revision có 1 thành công và 1 xung đột. Khôi phục v1 giữ lịch sử v2. Admin B không đọc draft A |
 | N07 · FE → PO/QA | N05, N06 | `apps/web/src/features/catalog/theme`. Soạn nháp, preview form và dialog, hiển thị lỗi contrast, publish/rollback, refetch active revision sau lưu. Xóa cache khi đổi phiên | Đổi theme không redeploy. Khi bỏ nháp người dùng đang hoạt động vẫn thấy bản cũ. Khi token không tương thích web dùng default đúng tenant. Chụp A/B trước và sau rollback |
 | N08 · Platform/BE → SA | N02, N04 | `apps/backend/src/modules/audit` và `workflow`. Dựng port ghi audit trong transaction, fixture graph v1, primitive khóa phiên bản và append history. US-03/04 thêm hành vi người dùng và query | Cố ý fail sau cập nhật trạng thái thì status, history, audit đều rollback. Thành công một lần có một cặp history/audit. Hai lệnh cùng version cho một lần chuyển |
-| N09 · BE/Ops → QA | N08 | `apps/worker` + `modules/notification`. Ghi outbox trong giao dịch, worker theo tenant claim lease có hạn, phát in-app và SMTP sandbox, retry, danh sách lỗi và replay | Dừng worker sau commit rồi chạy lại, thông báo in-app có đúng một bản. Thử lỗi SMTP, thấy số lần thử và việc cần đối soát. Theo vết được từ lệnh đến event qua correlation ID |
+| N09 · BE/Ops → QA | N08, SA-06 | `apps/worker` + `modules/notification`. Ghi outbox trong giao dịch, worker theo tenant claim lease có hạn, phát in-app và SMTP sandbox, retry, danh sách lỗi và replay | Dừng worker sau commit rồi chạy lại, thông báo in-app có đúng một bản. Thử lỗi SMTP, thấy số lần thử và việc cần đối soát. Theo vết được từ lệnh đến event qua correlation ID |
 | N10 · BE → Security | N04, N08 | `modules/attachments` + adapter S3. Tạo upload intent có tenant/resource/version, giới hạn MIME/kích thước, quarantine rồi xác nhận checksum và quyền lúc attach. URL ký có hạn, xóa staging mồ côi | Tải minh chứng thành công, file vượt giới hạn/sai nội dung bị loại. Đổi tài khoản trước finalize không gắn được file. Sau khi thu quyền, API từ chối cấp URL mới. Lần retry không tạo liên kết trùng |
-| N11 · Ops/BE → Tech lead | N01–04, SA-01, SA-05 | `infra/pilot` và adapter B01 `apps/sys-config-service`, namespace contract vẫn là `catalog`. Chuẩn bị manifest môi trường Vercel, Neon pooled/direct, B01 trên TLS riêng với Redis, object store, worker và backup. Kiểm tra thời gian chờ, body limit, secret và callback của từng môi trường | Trên môi trường thử được phép, SPA → API → DB qua pool, OTP hai realm, cấu hình 6 MB tới B01 và blob quá 20 MB bị từ chối. Preview không có credential của pilot. Lưu quota và chi phí phụ trợ |
+| N11 · Ops/BE → Tech lead | N01–04, SA-01, SA-05. N09/N10 cho kiểm tích hợp | `infra/pilot` và adapter B01 `apps/sys-config-service`, namespace contract vẫn là `catalog`. Chuẩn bị manifest môi trường Vercel, Neon pooled/direct, B01 trên TLS riêng với Redis, object store, worker và backup. Kiểm tra thời gian chờ, body limit, secret và callback của từng môi trường | Trên môi trường thử được phép, SPA → API → DB qua pool, OTP hai realm, cấu hình 6 MB tới B01 và blob quá 20 MB bị từ chối. Preview không có credential của pilot. Lưu quota và chi phí phụ trợ |
 | N12 · Security/QA → SA | N04, N07–11, các US của đợt | `e2e/security` kiểm ma trận quyền theo actor × tenant × resource, scope ngay trước ghi/tải, cache, quyền file, log, policy DB, phụ thuộc phần mềm | Đủ S1–S7 trong kế hoạch QA. Mọi ca từ chối có bằng chứng response và trạng thái DB. Không lộ nội dung, kể cả số đếm. Lỗi cách ly hoặc đổi trạng thái sai chặn phát hành |
 | N13 · Performance/DBA → Tech lead | N11, US-07/12/13 cho A | `e2e/perf` tạo dataset, k6, trace query, tải front-end và báo cáo cold/warm. Chạy baseline rồi đo lại với cùng seed sau khi tối ưu | Có số lần chạy, p50/p95/p99, RPS, lỗi, thời gian đợi pool, EXPLAIN trước/sau. Đạt các ngưỡng ở kế hoạch QA hoặc có quyết định đổi quy mô pilot |
 | N14 · QA/Ops → PO và SA | N12, N13, các US của đợt | `e2e/release` thực hiện diễn tập khôi phục, rollback ứng dụng, UAT và đo quota thực. Ghi hồ sơ nghiệm thu theo đợt với dữ liệu đã ẩn | Phục hồi vào DB/kho thử riêng, đăng nhập lại ở hai realm, kiểm checksum và số mã, RPO/RTO. PO xác nhận phép đếm và các nhánh RV đã chốt. Đủ bằng chứng mới ghi kết luận thử |
 
 **Trình tự N01–N11.** Sau N01 mở N02/N03/N05 song song. N04 mở N08 và phần hạ tầng N11. Khi N08 xong, chạy N06/N09/N10 song song, sau đó N07. Bản tích hợp N11 cần worker và kho file từ N09/N10. N12–N14 lặp lại với dữ liệu đã mở rộng tại từng đợt.
 
+### Ba lát mobile bổ sung cho luồng A/B
+
+| Lát | Phụ thuộc cung cấp dữ liệu thật | Bàn giao |
+|---|---|---|
+| US-33 · B06 | US-12 và nguồn kỳ báo cáo F04/US-15 khi kiểm hạn báo cáo | Danh sách và số đếm cùng scope. Chạm thẻ mở đúng hồ sơ. |
+| US-34 · B04 | N04/N09, tin in-app theo người nhận | Mở lại cùng tin giữ đúng số chưa đọc và bộ lọc. |
+| US-35 · F02 | US-05, điều kiện kỳ dùng chung US-07 | Cùng cửa sổ tiếp nhận tại danh sách, chi tiết và khi nộp. |
+
+Cả ba có thể giao contract sau N01 và dùng fixture có sẵn. Mỗi lát đã hoàn thành T001 ở v0. Giao T002 → (T003 ∥ T004) → T005 → T006 → T007 theo file tasks của chính lát. QA kiểm ở 360/390 CSS px trên bản nối API.
+
 ## Phiếu giao từng task nghiệp vụ
 
-Tech lead giao bằng khóa ghép, ví dụ **US-07/T005**. Cùng T005 ở lát khác là việc khác. Mỗi [thẻ trong bảng 32 lát](../../specs/README.md) có file đích, dữ liệu, thay đổi cụ thể và phép đối chiếu. Dùng bảng sau để xác định đầu ra có thể nhận **từng task**, trước khi nghiệm thu cả lát.
+Tech lead giao bằng khóa ghép, ví dụ **US-07/T005**. Cùng T005 ở lát khác là việc khác. Mỗi [thẻ US-01–32](../../specs/README.md) có file đích, dữ liệu, thay đổi cụ thể và phép đối chiếu. Dùng bảng sau để xác định đầu ra có thể nhận **từng task**, trước khi nghiệm thu cả lát.
 
 | Task trong mỗi lát | Người thực hiện | Bằng chứng riêng để nhận việc |
 |---|---|---|
@@ -58,7 +68,7 @@ Tech lead giao bằng khóa ghép, ví dụ **US-07/T005**. Cùng T005 ở lát 
 | T004 · model/hạ tầng dữ liệu | BE | Ràng buộc chỉ định trong data-model của lát có integration test PostgreSQL, gồm input hợp lệ và input vi phạm |
 | T005 · nghiệp vụ | BE | FR-001/002 đạt TC-01/02. Đổi trạng thái dùng service của miền và audit đồng giao dịch. Thử lệnh lặp hoặc hai phiên với cùng dữ liệu |
 | T006 · điểm tương tác | FE hoặc BE theo file trong thẻ | User có quyền thấy kết quả như mô tả, người ngoài quyền bị chặn cả ở server. Mobile kiểm độ rộng của quickstart. B06 chỉ điều hướng |
-| T007 · quyết định biên | BE/QA | Gắn kết luận RV của chủ nghiệp vụ với TC-03 và kết quả chạy, phân biệt khuyến nghị chờ duyệt với luật đã chốt |
+| T007 · quyết định biên | BE/QA | Kiểm kết luận RV của lát bằng TC-03, lưu kết quả chạy. Với US-31, đo thêm SC-003 trước pilot |
 | T008 · hồi quy/bàn giao | QA | Chạy đủ TC-01–04, ca tích hợp module thật và phép đối chiếu riêng ở cuối quickstart. Ghi vào review.md của lát |
 
 Ví dụ giao **US-07/T005** cho BE sau T003/T004. Đọc [phiếu nộp đề xuất](../../specs/007-web-submit-proposal/tasks.md) và [bốn ca nghiệm thu](../../specs/007-web-submit-proposal/quickstart.md). Người nhận trả mã theo dõi, bước mới và audit cho chủ nhiệm. QA nộp lại theo cùng thao tác, so mã và số lần chuyển, rồi thử sau hạn. Reviewer so cả kết quả với bản ghi nguồn.
@@ -75,7 +85,7 @@ Một lát INVEST thường chỉ đi qua một phần feature. Bảng dưới �
 | A · [B01](../features/B01-danh-muc-cau-hinh/spec.md) | 01, 03, 04, 06, 08, 09, 10, 11, 12, 13 | BE cấu hình hoàn thiện multipart, dry-run, giới hạn, shared và cache. |
 | A · [F02](../features/F02-dot-keu-goi/spec.md) | 03, 04, 06, 07, 08 | BE/FE hoàn thiện đóng, hủy, gia hạn, điều kiện hợp lệ và danh sách kỳ. |
 | A · [F01](../features/F01-de-xuat-de-tai/spec.md) | 05, 09, 10 | BE/FE khóa sửa sau nộp, chặn trùng thành viên, chốt danh sách chuyển xét. |
-| A · [F03](../features/F03-xet-duyet-hoi-dong/spec.md) | 08, 10 | BE kiểm một người một phiếu và khóa khi kết luận. |
+| A · [F03](../features/F03-xet-duyet-hoi-dong/spec.md) | 08, 10, 11, 12 | BE kiểm một người một phiếu, khóa khi kết luận, quyền xem nhận xét và biên bản đúng hội đồng. |
 | A/B · [B04](../features/B04-thong-bao/spec.md) | 01, 02, 03, 04, 05, 06, 08, 09, 10 | BE/worker xử lý sự kiện, các kênh, ưu tiên, retry và quyền đọc. Đợt A cần thông báo nộp/duyệt, B mở rộng nhắc hạn. |
 | A · [B06](../features/B06-trang-chu/spec.md) | 01, 02, 06, 07, 08, 09, 10, 11, 12 | FE/BE hoàn thiện tổng, widget theo quyền, trạng thái rỗng, cấu hình và độ tươi dữ liệu. |
 | A · [B02](../features/B02-bao-cao-thong-ke/spec.md) | 01, 02, 03 | BE/QA đối chiếu cả ba AC bản B02 trình review bằng quickstart US-13 và test-plan B02. |
@@ -90,7 +100,7 @@ Một lát INVEST thường chỉ đi qua một phần feature. Bảng dưới �
 | C · [F12](../features/F12-hoat-dong-khoa-hoc/spec.md) | 03, 04 | BE/FE kiểm từ chối và phát giờ khi nguồn hợp lệ. |
 | C · [P03](../features/P03-quy-doi-gio-giang/spec.md) | 02, 03, 04, 06, 07, 08, 09 | BE/DBA hoàn thiện kỳ ghi nhận, phân bổ, hiệu lực, điều chỉnh và liên kết F08. |
 
-Lấy trước các AC là tiền điều kiện của luồng cuối đợt. Cụ thể, giao F01/AC-10 trước US-09, F04/AC-04 và F04/AC-07 cùng US-22, F06/AC-02–03 trước US-23. Với khả năng được tham chiếu ở cả hai module, giao một lệnh cho domain service sở hữu, module còn lại kiểm điều kiện và kết quả. E4 chỉ mở phiếu sau khi tenant bật năng lực và cung cấp dữ liệu quy chế. PO xếp phần còn lại sau lát ưu tiên của cùng đợt, ước lượng lại theo số AC chưa có bằng chứng.
+Lấy trước các AC là tiền điều kiện của luồng cuối đợt. Cụ thể, giao F01/AC-10 trước US-09, F04/AC-04 và F04/AC-07 cùng US-22, F06/AC-02–03 trước US-23. Với khả năng được tham chiếu ở cả hai module, giao một lệnh cho domain service sở hữu, module còn lại kiểm điều kiện và kết quả. E4 phát triển với cấu hình và ví dụ giả lập ở tenant thử. Khi kích hoạt cho trường, áp dụng RV-36 cho từng phân hệ. PO xếp phần còn lại sau lát ưu tiên của cùng đợt, ước lượng lại theo số AC chưa có bằng chứng.
 
 ## Mẫu giao việc cho agent ở repo code
 

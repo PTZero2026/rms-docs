@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { formatVietnamDate } from '../../format-date'
 import { Button } from '@rms/ui/components/button'
 import type { DemoRow, FeatureProps } from '../../demo/types'
 import { catalog, codes, contributors, dateLabel, entries, evidenceLabels, featureInfo, money, names, requiredEvidence, scoped, sourceOf, statuses } from './model'
@@ -111,7 +112,7 @@ export function Detail({ctx,row}: {ctx: FeatureProps; row: DemoRow}) {
       <div className="ext-line" key={r.id}><div>{names[r.owner]} · {r.fields.recognitionPeriodCode}<p className="muted">{r.fields.formulaVersion} · {statuses[r.status]}</p></div>
         <Button variant="link" onClick={() => ctx.go('P03',r.id)}>{r.fields.hours} giờ →</Button></div>)}</section>}
     <section className="panel stack"><h2>Lịch sử xử lý</h2>{history.length ? history.map(e =>
-      <div key={e.id} className="ext-line"><div>{e.action}<p className="muted">{e.actor} · {new Intl.DateTimeFormat('vi-VN',{ dateStyle:'short',timeStyle:'short',timeZone:'Asia/Ho_Chi_Minh' }).format(new Date(e.at))}</p></div></div>
+      <div key={e.id} className="ext-line"><div>{e.action}<p className="muted">{e.actor} · {formatVietnamDate(e.at, 'minute')}</p></div></div>
     ) : <Blank title="Chưa có thao tác mới trên hồ sơ"/>}</section>
     {decision && <DecisionForm ctx={ctx} row={row} action={decision} close={() => setDecision(undefined)}/>}
   </>

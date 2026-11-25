@@ -3,7 +3,7 @@ title: "Quản lý kinh phí — Test plan"
 spec: "./spec.md"
 owner: "PO/BA"
 status: Review
-updated: 2026-11-21
+updated: 2026-11-24
 ---
 
 # Quản lý kinh phí — Kế hoạch kiểm thử
@@ -53,3 +53,10 @@ updated: 2026-11-21
 - Data scoping & RBAC kinh phí (chủ nhiệm chỉ đề tài mình; chuyên viên theo phạm vi được phân).
 - Thông báo xác nhận cấp kinh phí & quyết toán (B04).
 - Tổng hợp kinh phí ở báo cáo B02 khớp số liệu F05 (tổng cấp, tổng đã chi) tại thời điểm chạy.
+
+## Ca biên theo quyết định triển khai
+
+| Ca | AC nguồn | Điều kiện | Thao tác | Kết quả |
+|---|---|---|---|---|
+| TC-16 · [US-18/TC-03](../../../specs/018-shared-budget-allocation/quickstart.md) | AC-01 | Cấp 300 triệu, tỷ lệ 5%, trần 10 triệu, không điều chỉnh riêng | xác nhận | phí 10 triệu và phần thực hiện 290 triệu |
+| TC-17 · [US-19/TC-03](../../../specs/019-web-record-expense/quickstart.md) | AC-04 | Còn 2 triệu, khoản chi đúng 2 triệu đồng | chủ nhiệm lưu | số dư bằng 0 và không cảnh báo vượt |

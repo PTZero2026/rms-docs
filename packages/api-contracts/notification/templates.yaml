@@ -1,0 +1,27 @@
+Channel:
+  type: string
+  enum: [in_app, smtp, sms]
+Draft:
+  type: object
+  additionalProperties: false
+  required: [title, body, revision]
+  properties:
+    title: {type: string, nullable: true, maxLength: 180}
+    body: {type: string, nullable: true, maxLength: 4000}
+    revision: {type: integer, minimum: 0}
+Template:
+  type: object
+  required: [code, channel, title, body, revision, variables]
+  properties:
+    code: {type: string}
+    channel: {$ref: '#/Channel'}
+    title: {type: string, nullable: true}
+    body: {type: string, nullable: true}
+    revision: {type: integer}
+    variables: {type: array, items: {type: string}}
+Preview:
+  type: object
+  required: [title, body]
+  properties:
+    title: {type: string}
+    body: {type: string}

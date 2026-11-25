@@ -4,7 +4,8 @@ const baseURL = "http://127.0.0.1:4187"
 
 export default defineConfig({
   testDir: "./v0",
-  workers: 2,
+  outputDir: "test-results/v0",
+  workers: process.platform === "darwin" ? 1 : 2,
   timeout: 60_000,
   use: {
     baseURL,

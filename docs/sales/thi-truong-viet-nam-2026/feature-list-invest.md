@@ -1,7 +1,7 @@
 ---
 title: "Danh mục tính năng RMS theo INVEST — Đầu vào Spec Kit"
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-24
 ---
 
 # Danh mục tính năng RMS theo INVEST
@@ -20,7 +20,7 @@ Bản làm việc của PO/BA để chọn một lát cắt có thể giao và k
 
 Quản trị viên khóa một tài khoản khi người dùng rời đơn vị để ngừng truy cập nghiệp vụ.
 
-[B03](../../features/B03-quan-ly-nguoi-dung/spec.md) · AC-09, AC-12 · Cỡ S. Dữ liệu thử gồm một tài khoản hoạt động, hai vai trò. Nhóm có thể điều chỉnh lời nhắc xác nhận khóa.
+[B03](../../features/B03-quan-ly-nguoi-dung/spec.md) · AC-09, AC-12 · Cỡ S. Dữ liệu thử gồm một tài khoản đích đang hoạt động và hai người thao tác khác nhau (admin, user). Nhóm có thể điều chỉnh lời nhắc xác nhận khóa.
 
 - **US-01.1** — **G** admin khóa đúng người. **W** gửi lệnh. **T** tài khoản chuyển sang bị khóa và ghi audit.
 - **US-01.2** — **G** người chỉ có quyền xem. **W** gửi cùng yêu cầu. **T** backend từ chối, tài khoản giữ nguyên.
@@ -128,7 +128,7 @@ Chủ nhiệm dùng web trên điện thoại để tìm hồ sơ bị trả và
 
 Trưởng phòng lấy số đề tài theo trạng thái chuẩn của một kỳ tại thời điểm trích xuất, để đối chiếu danh sách hội đồng.
 
-[B02](../../features/B02-bao-cao-thong-ke/spec.md) · đề xuất mới cho khung B02 · Cỡ M. Dữ liệu thử gồm một kỳ gồm 3 mã hợp lệ, 2 đơn vị, một mã đã nộp lại. Nhóm có thể điều chỉnh sắp xếp cột và định dạng xuất.
+[B02](../../features/B02-bao-cao-thong-ke/spec.md) · AC-01, AC-02, AC-03 · Cỡ M. Dữ liệu thử gồm một kỳ gồm 3 mã hợp lệ, 2 đơn vị, một mã đã nộp lại. Nhóm có thể điều chỉnh sắp xếp cột và định dạng xuất.
 
 - **US-13.1** — **G** 3 mã trong quyền, 1 mã đã nộp lại. **W** tổng hợp theo trạng thái hiện tại. **T** tổng bằng 3, từng nhóm khớp danh sách chốt.
 - **US-13.2** — **G** chỉ có quyền một đơn vị. **W** xuất báo cáo. **T** cả dòng chi tiết và tổng loại hồ sơ ngoài quyền.
@@ -294,7 +294,7 @@ Chuyên viên đối chiếu giờ của một giảng viên với hoạt độn
 
 Chủ nhiệm yêu cầu trợ lý đọc một bản nháp được phép dùng và chỉ ra đoạn nào chứng minh một yêu cầu của mẫu.
 
-[F01](../../features/F01-de-xuat-de-tai/spec.md) · đề xuất AI, chưa có AC nguồn · Cỡ M. Dữ liệu thử gồm một mẫu yêu cầu, hai đoạn đã gán nhãn, một hồ sơ ở tenant khác. Nhóm có thể điều chỉnh cách sắp các mục cần rà.
+[F01](../../features/F01-de-xuat-de-tai/spec.md) · F01/AC-12 · Cỡ M. Dữ liệu thử gồm một mẫu yêu cầu, hai đoạn đã gán nhãn, một hồ sơ ở tenant khác. Nhóm có thể điều chỉnh cách sắp các mục cần rà.
 
 - **US-31.1** — **G** đoạn nguồn hợp lệ. **W** yêu cầu rà. **T** thấy trích đoạn, vị trí và bản mẫu, chủ nhiệm có thể bác gợi ý.
 - **US-31.2** — **G** tài liệu ngoài quyền hoặc thiếu căn cứ. **W** yêu cầu rà. **T** từ chối truy xuất hoặc ghi chưa đủ căn cứ, hồ sơ gốc giữ nguyên.
@@ -303,7 +303,7 @@ Chủ nhiệm yêu cầu trợ lý đọc một bản nháp được phép dùng
 
 Nhà nghiên cứu tạo bản nháp thẻ đọc có trích dẫn để chuẩn bị tổng quan và tự quyết định có dùng hay không.
 
-[F07](../../features/F07-san-pham-khoa-hoc/spec.md) · đề xuất hỗ trợ nghiên cứu, chưa có AC nguồn · Cỡ M. Dữ liệu thử gồm một DOI đã xác minh, một bản toàn văn được phép dùng và một trường hợp chỉ có metadata. Nhóm có thể điều chỉnh trường ghi chú của thẻ đọc.
+[F07](../../features/F07-san-pham-khoa-hoc/spec.md) · F07/AC-14 · Cỡ M. Dữ liệu thử gồm một DOI đã xác minh, một bản toàn văn được phép dùng và một trường hợp chỉ có metadata. Nhóm có thể điều chỉnh trường ghi chú của thẻ đọc.
 
 - **US-32.1** — **G** bài có đoạn phương pháp. **W** lập thẻ. **T** trường phương pháp có dẫn trang hoặc đoạn để người đọc kiểm lại.
 - **US-32.2** — **G** chỉ có metadata. **W** lập thẻ. **T** chỉ điền thư mục, đánh dấu thiếu căn cứ cho nội dung bài.

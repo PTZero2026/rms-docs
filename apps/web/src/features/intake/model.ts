@@ -1,3 +1,4 @@
+import { formatVietnamDate } from '../../format-date.ts'
 import type { DemoRow, FeatureProps } from '../../demo/types.ts'
 import { defaultEdges, type Edge } from '../../demo/workflow.ts'
 
@@ -56,7 +57,7 @@ export function demoTime() {
   return new Date(today + 'T' + local + '+07:00').toISOString()
 }
 export const timeLabel = (iso: string) =>
-  new Date(iso).toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' })
+  formatVietnamDate(iso, 'second')
 export function scopeUnit(ctx: Context) {
   const account = ctx.rows.find((r) => r.kind === 'account' && r.owner === ctx.session.userId)
   if (account) return account.fields.scopeUnit || ''

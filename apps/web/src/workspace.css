@@ -23,7 +23,7 @@
 }
 body {
   margin: 0;
-  font-family: "Geist Variable", system-ui, sans-serif;
+  font-family: var(--rms-font, "Geist Variable", system-ui, sans-serif);
   font-size: 14px;
   background: var(--paper);
   color: var(--ink);
@@ -49,7 +49,7 @@ a:focus-visible,
 summary:focus-visible,
 select:focus-visible,
 input:focus-visible {
-  outline: 3px solid #268e80;
+  outline: 3px solid var(--ring);
   outline-offset: 2px;
 }
 button:disabled {

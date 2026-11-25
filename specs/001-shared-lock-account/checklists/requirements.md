@@ -3,7 +3,7 @@ story: US-01
 feature: B03
 review_id: RV-01
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-24
 ---
 
 # Kiểm tra chất lượng đặc tả · US-01
@@ -35,4 +35,4 @@ Ngày 18/11/2026 · [Đặc tả](../spec.md). Checklist rà chất lượng vă
 - [x] Có kết quả mong đợi để đánh giá tiêu chí thành công.
 - [x] Đặc tả mô tả nhu cầu nghiệp vụ, thiết kế nằm ở plan.
 
-Bằng chứng: bộ dữ liệu một tài khoản hoạt động, hai vai trò. Hai ca gốc kiểm US-01.1–2. Sau clarify, ca thứ ba kiểm RV-01.
+Bằng chứng: bộ dữ liệu một tài khoản đích đang hoạt động và hai người thao tác riêng biệt (một admin, một user chỉ xem). Hai ca gốc kiểm US-01.1–2. Sau clarify, ca thứ ba kiểm RV-01.

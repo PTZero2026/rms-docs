@@ -2,7 +2,7 @@
 title: "Sổ điểm biến thiên (variation points) — RMS đa tổ chức"
 status: Draft
 version: 0.3
-updated: 2026-11-19
+updated: 2026-11-24
 ---
 
 # Sổ điểm biến thiên — cấu hình per-tenant
@@ -39,7 +39,7 @@ updated: 2026-11-19
 |---|---|---|---|---|---|---|
 | VP-IDP | Nhà cung cấp định danh (IdP) | Cấu hình IdP theo `realm` | Chọn | Keycloak email-OTP | Quản trị hệ thống | [ADR-0008](decisions/0008-keycloak-idp-dang-nhap-email-otp.md); Microsoft Entra cần ADR mới |
 | VP-PROV | Cách khởi tạo tài khoản | Tham số | Chọn | Auto-provision khi đăng nhập lần đầu, role `USER` | Quản trị hệ thống | [ADR-0008](decisions/0008-keycloak-idp-dang-nhap-email-otp.md) |
-| VP-SYNC | Đồng bộ GV/SV từ hệ thống ngoài | Adapter tích hợp | Bật/tắt + Giá trị | Tắt (khai báo trong RMS) | Quản trị hệ thống | `integrations.md` (cần bổ sung) |
+| VP-SYNC | Đồng bộ GV/SV từ hệ thống ngoài | Adapter tích hợp | Bật/tắt + Giá trị | Tắt đồng bộ tự động, cho nạp danh sách được cấp | Quản trị hệ thống | [Nguồn danh sách GV/SV](integrations.md) |
 
 > **Ranh giới:** Keycloak = authN, RMS = authZ; **quyền (RBAC) luôn do RMS quản**, không lấy role từ IdP
 > ([ADR-0005](decisions/0005-sso-va-rbac.md)). Đây là lõi cố định, không biến thiên.
@@ -89,7 +89,7 @@ updated: 2026-11-19
 |---|---|---|---|---|---|---|
 | VP-FIELD | Trường tùy chọn: bắt buộc / ẩn / nhãn | Field config per-tenant | Chọn | Theo spec feature | Quản trị tenant | *(cần thêm cơ chế)* |
 | VP-PROFILE | Trường hồ sơ người dùng nào *hiển thị / bắt buộc* (giới tính, năm sinh, địa chỉ, chức vụ, học hàm-học vị, quá trình công tác) | Field config per-tenant trên **bộ trường chuẩn** (không tạo trường tùy biến) | Bật/tắt + Giá trị (cờ bắt buộc) | Trường lõi (họ tên) bật; phần mở rộng hiển thị, không bắt buộc | Quản trị tenant | [F08](../features/F08-ly-lich-khoa-hoc/) (BR-04) |
-| VP-ROLE | Ánh xạ vai trò RMS ↔ con người của trường | Cấu hình role per-tenant | Giá trị | Bộ role chuẩn | Quản trị tenant | [ADR-0005](decisions/0005-sso-va-rbac.md), [B03](../features/B03-quan-ly-nguoi-dung/) |
+| VP-ROLE | Ánh xạ vai trò RMS ↔ con người của trường | Gán một userType trong tenant | Giá trị | Bốn vai trò cố định B03 | Quản trị tenant | [ADR-0005](decisions/0005-sso-va-rbac.md), [B03](../features/B03-quan-ly-nguoi-dung/) |
 | VP-SCOPE | Phạm vi dữ liệu (data scoping) theo đơn vị/kỳ | Cấu hình scope | Giá trị | Theo spec RBAC | Quản trị tenant | [ADR-0005](decisions/0005-sso-va-rbac.md) |
 
 > **Ranh giới:** *quyền nguyên tử* `MODULE.ACTION` và việc **kiểm quyền ở backend** là lõi cố định; chỉ *bộ
@@ -106,7 +106,7 @@ updated: 2026-11-19
 |---|---|---|---|---|---|---|
 | VP-MIGRATE | Phạm vi & nguồn số hóa dữ liệu cũ | Kế hoạch import per-tenant | Giá trị | Không | Quản trị hệ thống | `migration-coverage.md` |
 | VP-BRAND | Tên hiển thị, logo, slug, realm | Thuộc tính `Tenant` | Giá trị | — | Quản trị hệ thống | `data-model.md §4.8` |
-| VP-THEME (đề xuất) | Bộ token màu, font, radius của web RMS | Schema token shadcn, phiên bản active và override theo tenant | Giá trị theo schema | Theme gốc của sản phẩm | Quản trị tenant áp dụng và khôi phục, Design lead quản lý schema | [SA-04 và quy trình quản trị theme](rms-v0-sa-review.md) |
+| VP-THEME (SA-04) | Bộ token màu, font, radius của web RMS | Schema token shadcn, phiên bản active và override theo tenant | Giá trị theo schema | Theme gốc của sản phẩm | Quản trị tenant áp dụng và khôi phục, Design lead quản lý schema | [SA-04 và quy trình quản trị theme](rms-v0-sa-review.md) |
 
 ---
 

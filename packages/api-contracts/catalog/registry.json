@@ -1,0 +1,14 @@
+{
+  "config.fe": {
+    "owner": "B01 / Web",
+    "refer": "FRONTEND",
+    "scopes": ["shared", "tenant"],
+    "schema": {"type": "object", "properties": {"appName": {"type": "string"}}, "additionalProperties": true}
+  },
+  "roles": {
+    "owner": "B01 / IAM",
+    "refer": "ROLES",
+    "scopes": ["shared", "tenant"],
+    "description": "Nhãn hiển thị vai trò. Quyền hiệu lực thuộc IAM."
+  }
+}

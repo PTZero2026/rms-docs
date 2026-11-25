@@ -3,9 +3,9 @@ title: "Workflow engine (vòng đời ResearchProject)"
 id: "P01"
 epic: "E0"
 owner: "Kiến trúc/DEV (SA)"
-status: Draft        # Draft | Review | Approved
+status: Review
 version: 0.1
-updated: 2026-11-21
+updated: 2026-11-24
 ---
 
 # Workflow engine (vòng đời ResearchProject)
@@ -88,4 +88,6 @@ Chi tiết bảng/trường → [data-model §3, §4.8](../../architecture/data-
 - **Nguồn thiết kế:** [ADR-0007](../../architecture/decisions/0007-workflow-engine-dong-per-tenant.md) (engine 3 tầng, kernel ~100 dòng, danh mục guard/effect khởi điểm).
 - **Phụ thuộc:** role RMS từ [B03](../B03-quan-ly-nguoi-dung/) ([ADR-0005](../../architecture/decisions/0005-sso-va-rbac.md)); actor mở rộng trong `WorkflowHistory` theo [ADR-0010](../../architecture/decisions/0010-chuan-du-lieu-cho-ai-tham-gia.md); nhật ký dùng [P02 Audit](../P02-audit/); `statusSemantic` cần thêm vào `packages/domain-types`.
 - **Là dependency cứng của:** F01–F06 (mọi chuyển trạng thái đề tài).
-- **Rủi ro / điểm cần chốt:** lift an toàn từ engine cũ (gỡ nhánh hardcode trong `execute()`); **danh mục guard/effect khởi điểm** và **tập `statusSemantic` chuẩn** cần chốt với PO/BA của F01–F06; guard-rail trình cấu hình graph.
+- Khi chuyển engine cũ, đưa luật từng miền ra khỏi execute. N08 kiểm graph, guard và semantic theo nguồn ở dưới.
+
+**Căn cứ giao task ngày 24/11/2026.** Kernel kiểm semantic của ResearchProject theo mô hình dữ liệu, dùng danh mục guard/effect đã đăng ký theo ADR-0007. N08 dựng graph v1, US-03 kiểm lại hồ sơ cũ sau kích hoạt v2.

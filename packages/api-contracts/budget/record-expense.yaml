@@ -1,0 +1,23 @@
+Input:
+  type: object
+  required: [amount,date,description,files,revision]
+  properties:
+    amount: {$ref: './budget-allocation.yaml#/Money'}
+    date: {type: string,format: date}
+    description: {type: string,maxLength: 2000}
+    files: {type: array,uniqueItems: true,items: {type: string,format: uuid}}
+    revision: {type: integer,minimum: 0}
+Expense:
+  allOf:
+    - {$ref: '#/Input'}
+    - type: object
+      required: [id,reconciliation,reference,transferred]
+      properties:
+        id: {type: string,format: uuid}
+        reconciliation: {type: string,enum: [UNRECONCILED,MATCHED,MISMATCHED]}
+        reference: {type: string,nullable: true}
+        transferred: {type: string,nullable: true}
+Void:
+  type: object
+  required: [revision,reason]
+  properties: {revision: {type: integer},reason: {type: string}}

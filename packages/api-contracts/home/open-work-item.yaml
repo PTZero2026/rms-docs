@@ -1,0 +1,20 @@
+Work:
+  type: object
+  required: [id,targetId,targetType,title,feature,dueDate,overdue,projectCode]
+  properties:
+    id: {type: string,format: uuid}
+    targetId: {type: string,format: uuid}
+    targetType: {type: string,enum: [project,round]}
+    title: {type: string}
+    feature: {type: string,enum: [F01,F03,F04,F06]}
+    dueDate: {type: string,format: date,nullable: true}
+    overdue: {type: boolean}
+    projectCode: {type: string,nullable: true}
+Page:
+  type: object
+  required: [visible,total,overdue,items]
+  properties:
+    visible: {type: boolean}
+    total: {type: integer}
+    overdue: {type: integer}
+    items: {type: array,items: {$ref: '#/Work'}}

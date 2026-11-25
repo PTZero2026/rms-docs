@@ -1,0 +1,31 @@
+type: object
+additionalProperties: false
+required: [steps, transitions]
+properties:
+  steps:
+    type: array
+    minItems: 2
+    maxItems: 128
+    items:
+      type: object
+      required: [code, semantic, initial, final]
+      properties:
+        code: {type: string, maxLength: 64}
+        semantic: {type: string, enum: [DRAFT,SUBMITTED,UNDER_REVIEW,APPROVED,IN_PROGRESS,SUSPENDED,PENDING_ACCEPTANCE,UNDER_ACCEPTANCE,PASSED,FAILED,COMPLETED,REJECTED,CANCELLED]}
+        initial: {type: boolean}
+        final: {type: boolean}
+  transitions:
+    type: array
+    minItems: 1
+    maxItems: 512
+    items:
+      type: object
+      required: [code, from, to, roles, requiresComment, guards, effects]
+      properties:
+        code: {type: string, maxLength: 64}
+        from: {type: string}
+        to: {type: string}
+        roles: {type: array, minItems: 1, items: {type: string, enum: [admin,staff,author,user]}}
+        requiresComment: {type: boolean}
+        guards: {type: array, items: {type: string, enum: [requireComment,validateProposalContent,authorCancellableOnly]}}
+        effects: {type: array, items: {type: string, enum: [syncProposalStatus,setRevisionDeadline,clearRevision,notify]}}

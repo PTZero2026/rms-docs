@@ -2,9 +2,9 @@
 title: "Xét duyệt hội đồng — Test plan"
 spec: "./spec.md"
 owner: "PO/BA"
-status: Draft
+status: Review
 version: 0.1
-updated: 2026-11-21
+updated: 2026-11-24
 ---
 
 # Xét duyệt hội đồng — Kế hoạch kiểm thử
@@ -42,8 +42,8 @@ updated: 2026-11-21
 | TC-12 | AC-01 (BR-02) | DT thuộc kỳ nhận đề xuất **chưa** gán `reviewCriteriaSetId` | Chuyên viên tạo `EvaluationRound` | Bị chặn; thông báo "kỳ chưa gán bộ tiêu chí xét duyệt" | Biên/Lỗi |
 | TC-13 | AC-01 (BR-01) | DT-A `SUBMITTED` nhưng hội đồng **chưa** có thành viên | Chuyên viên tạo `EvaluationRound` | Bị chặn; DT-A không đổi trạng thái | Biên/Lỗi |
 | TC-14 | AC-02 (BR-05) | Thành viên bỏ trống điểm 1 tiêu chí | Gửi phiếu | Bị chặn; báo "phải chấm đủ tất cả tiêu chí" | Biên/Lỗi |
-| TC-15 | AC-03 / FE-02 (BR-11) | DT-A `APPROVED`, `PUBLIC_COMMENTS=false` | Chủ nhiệm mở màn Kết quả (FE-02) | Thấy kết luận APPROVED; **không** thấy nhận xét hội đồng | Happy |
-| TC-16 | BR-11 | Đặt `PUBLIC_COMMENTS=true`, DT-A `APPROVED` | Chủ nhiệm mở FE-02 | Thấy nhận xét hội đồng, danh tính người chấm ẩn | Happy |
+| TC-15 | AC-03, AC-11 / FE-02 (BR-11) | DT-A `APPROVED`, `PUBLIC_COMMENTS=false` | Chủ nhiệm mở màn Kết quả (FE-02) | Thấy kết luận APPROVED; **không** thấy nhận xét hội đồng | Happy |
+| TC-16 | AC-11 / BR-11 | Đặt `PUBLIC_COMMENTS=true`, DT-A `APPROVED` | Chủ nhiệm mở FE-02 | Thấy nhận xét hội đồng, danh tính người chấm ẩn | Happy |
 | TC-17 | AC-03 (BR-06) | 3 phiếu `totalScore` = 8.0 / 7.0 / 9.0 | Hệ thống tính `aggregateScore` | `aggregateScore = 8.0` (trung bình), làm tròn 2 chữ số | Happy |
 | TC-18 | AC-03 | Hồ sơ bắt buộc thẩm định đạo đức, đủ phiếu khoa học và đạt ngưỡng | Chốt khoa học khi đang chờ đạo đức, sau đó ghi yêu cầu bổ sung | Đợt khoa học `CONCLUDED/PASSED`. Cả hai lần đề tài vẫn `UNDER_REVIEW`, FE-01 hiện đúng bước chờ hoặc nội dung cần bổ sung, chưa có thông báo phê duyệt | Biên |
 | TC-19 | AC-03 | Hồ sơ ở cuối TC-18 | Ghi kết quả đạo đức thông qua, xử lý lại cùng kết quả | Đề tài chuyển `APPROVED` một lần, có audit và đúng một thông báo phê duyệt cho chủ nhiệm | Happy |
@@ -72,3 +72,15 @@ updated: 2026-11-21
 - [ ] B01: đổi ngưỡng/`MIN_SUBMITTED_SCORE_SHEETS` phản ánh đúng ở màn kết luận.
 - [ ] B04: thông báo vào xét duyệt và kết quả gửi đúng người nhận (chủ nhiệm).
 - [ ] Audit: lập HĐ / gửi phiếu / ra kết luận đều ghi `AuditLog`.
+
+## Ca biên theo quyết định triển khai
+
+| Ca | AC nguồn | Điều kiện | Thao tác | Kết quả |
+|---|---|---|---|---|
+| TC-21 · [US-09/TC-03](../../../specs/009-web-open-review/quickstart.md) | AC-01 | Hai chuyên viên cùng chọn một hồ sơ đủ điều kiện | xác nhận mở đợt đồng thời | chỉ một đợt thu phiếu, một lần chuyển trạng thái |
+| TC-22 · [US-10/TC-03](../../../specs/010-web-submit-score/quickstart.md) | AC-06 | Người đã mở nháp vừa được bổ sung vào nhóm đề tài | gửi phiếu đã điền | phiếu không được tính và người đó mất quyền chấm |
+| TC-23 | AC-12 | Hai hội đồng có cuộc họp và tệp biên bản riêng | Thư ký gắn tệp vào đúng cuộc họp rồi mở lại, người thuộc hội đồng khác truy cập cùng tệp | Đúng hồ sơ, revision và actor ở vòng của thư ký. Người ngoài phạm vi không đọc được. |
+
+### Ngoại lệ sau kết luận · BR-10
+
+Chuyên viên gửi hai lệnh mở lại cùng phiên bản. Kiểm một dòng lịch sử, một lần mở lại, lý do và đúng điểm/ngưỡng ban đầu. Chốt lại bằng màn hình cũ nhận 409. Tải lại vòng rồi chốt theo phiên bản mới. Khi hồ sơ đã đi tiếp, kiểm người nhận đính chính trong B04 và trạng thái đề tài. [Ca dữ liệu F03](../../../apps/backend/test/db/review.test.mjs) · [Luồng chuyên viên trên trình duyệt](../../../e2e/review/open-review/acceptance.spec.ts)

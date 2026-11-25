@@ -1,26 +1,28 @@
 ---
 title: "Hồ sơ duyệt kiến trúc RMS v0"
 owner: "SA / Tech lead"
-status: Review
-updated: 2026-11-19
+status: Approved
+updated: 2026-11-24
 ---
 
 # Hồ sơ duyệt kiến trúc RMS v0
 
-**Đề nghị SA duyệt một web React dùng shadcn/ui, một API nghiệp vụ NestJS theo module, Neon PostgreSQL dùng chung có RLS và một realm Keycloak cho mỗi tổ chức.** V0 lấy đợt A làm mốc nghiệm thu đầu tiên. Hai trường giả lập dùng cùng bản web để mở kỳ, nộp, trả bổ sung, chấm và đối chiếu tổng theo khoa. Đợt B nối đến quyết toán. Đợt C bật riêng năng lực mở rộng và trợ lý theo từng tenant. [Lộ trình](../product/roadmap.md) · [Bản giao việc](../guides/ke-hoach-implement-rms.md) · [Kế hoạch kiểm chứng](../guides/kiem-thu-rms.md)
+**SA chọn một web React dùng shadcn/ui, một API nghiệp vụ NestJS theo module, Neon PostgreSQL dùng chung có RLS và một realm Keycloak cho mỗi tổ chức.** V0 lấy đợt A làm mốc nghiệm thu đầu tiên. Hai trường giả lập dùng cùng bản web để mở kỳ, nộp, trả bổ sung, chấm và đối chiếu tổng theo khoa. Đợt B nối đến quyết toán. Đợt C bật riêng năng lực mở rộng và trợ lý theo từng tenant. [Lộ trình](../product/roadmap.md) · [Bản giao việc](../guides/ke-hoach-implement-rms.md) · [Kế hoạch kiểm chứng](../guides/kiem-thu-rms.md)
 
-## Quyết định cần ký
+## Quyết định triển khai ngày 24/11/2026
 
-Mỗi dòng ở trạng thái **đề xuất**. SA ghi kết luận, ngày, người duyệt và bằng chứng vào dòng tương ứng khi review. Quyết định làm đổi BR/AC cần PO/BA cập nhật spec nguồn. [Sổ quyết định nghiệp vụ](../../specs/review-decisions.md)
+SA chốt thiết kế trong phạm vi được giao. Platform có thể nhận N01 trên checkout hiện tại. Cột kiểm chứng ghi bằng chứng người nhận phải tạo trong lúc thực hiện hoặc trước pilot. Ops và chủ ngân sách xác nhận môi trường dùng thật khi nhận N11/N14.
 
-| Mã | Use case và khuyến nghị | Cái giá cần chấp nhận / bằng chứng để duyệt | Người duyệt |
-|---|---|---|---|
-| SA-01 | Chạy đợt A trên Vercel + Neon Free, đặt IdP và dịch vụ cần tiến trình thường trực trên hạ tầng thử của đội | Chủ hạ tầng xác nhận host TLS, SMTP, dung lượng và loại sử dụng Vercel. Đo cả lúc Neon thức dậy | SA, Ops, chủ ngân sách |
-| SA-02 | Realm-per-tenant theo ADR-0008. AuthZ bằng RMS ở mọi API, kể cả B01. Dùng trạng thái hoạt động và vai trò theo spec B03 v0.4 | B01 hiện ghi quyền từ realm, B03 design cũ dùng nhiều role, US-01 có fixture hai role. PO/BA chốt bản ánh xạ quyền và sửa fixture thành hai người có role khác nhau. Bằng chứng gồm khóa phiên đang mở và đọc cấu hình ngoài tenant bị từ chối | SA, PO/BA, chủ IAM |
-| SA-03 | Dùng transaction có tenant context và một vai trò DB hạn quyền. Chừa dữ liệu dùng chung cho cấu hình được phép | RLS, khóa ngoại ghép và thử lại trên pooled endpoint phải giữ nguyên cách ly. Kiểm riêng list, tổng và download | SA, DBA |
-| SA-04 | Đăng ký VP-THEME cho token thiết kế theo tenant, có bản nháp và phiên bản đã áp dụng | Thêm một mô hình có phiên bản. Duyệt bằng hai theme, đo tương phản, phục hồi và thử hai admin sửa đồng thời | SA, Design lead, PO |
-| SA-05 | Giữ B01 blob theo hợp đồng riêng. Cho giao diện cấu hình nói trực tiếp với endpoint TLS trên container qua origin được phép | B01 nhận tới 20 MB, Redis TTL 5 phút. Cần vận hành thêm container/cache và kiểm cả đổi bản shared khi đã cache fallback | SA, BE lead |
-| SA-06 | Dùng bảng outbox và worker nhỏ cho thông báo. Áp dụng chỉ tiêu tải và mục tiêu phục hồi trong kế hoạch QA | Chấp nhận giao nhận ít nhất một lần. Cần khóa chống xử lý lặp và diễn tập gián đoạn | SA, QA, Ops |
+| Mã | Quyết định của SA | Người nhận và phép kiểm |
+|---|---|---|
+| SA-01 | Local/CI dùng web hiện có, NestJS, PostgreSQL, Keycloak, Redis, kho tệp và SMTP thử. N01 thêm backend và hợp đồng health vào monorepo. Vercel/Neon là phương án môi trường tích hợp cho N11 khi có tài nguyên phù hợp. | Platform chạy checkout sạch, sinh client và gọi health. Ops ghi host TLS, quota, vùng, SMTP, chi phí và kết quả cold/warm trước pilot. |
+| SA-02 | Một realm mỗi tenant. B03 định danh bằng issuer + sub, mỗi tài khoản có đúng một userType. RMS kiểm tài khoản, quyền hiệu lực và phạm vi ở từng request, kể cả ở B01. Quyền ghi shared cấp riêng trong IAM cho chủ thể vận hành đã định danh. | IAM/BA dùng hai người khác vai trò. Kiểm sau khi khóa hoặc hạ quyền ở cả hai API. Tenant admin chỉ ghi bản riêng. |
+| SA-03 | Dùng pool với context giới hạn trong transaction, RLS bắt buộc và FK ghép tenant. Credential migration tách khỏi runtime. | DBA chạy N02, luân phiên hai tenant qua pool một kết nối, kiểm commit, rollback và trường hợp thiếu context. |
+| SA-04 | Đăng ký VP-THEME. Catalog quản lý revision bất biến, draft, publish và rollback bằng expected revision. N05 dựng hai theme, N06/N07 tích hợp. | Design/BE kiểm màu, focus, portal, phục hồi và hai lần publish cùng revision cho đúng một lần thành công. |
+| SA-05 | B01 có host TLS và DB riêng, Redis TTL 5 phút cho nội dung nhỏ, giới hạn upload 20 MiB. Adapter catalog dùng hợp đồng tập trung. IAM kiểm scope trước cả cache hit. | BE/N11 kiểm blob 6 MiB, vượt trần, override và thay shared trong khi hai tenant đang dùng fallback. |
+| SA-06 | Ghi outbox, history và audit cùng giao dịch đổi trạng thái. Worker xử lý ít nhất một lần bằng lease, khóa nghiệp vụ và ledger từng kênh. Mục tiêu thử tải và khôi phục theo kế hoạch QA. | BE/N09 kiểm replay sau khi commit, chỉ một tin in-app. Ops/QA kiểm gửi thư bất định, đo tải N13 và diễn tập phục hồi N14. |
+
+[Đặc tả B03](../features/B03-quan-ly-nguoi-dung/spec.md) · [Thiết kế B01](../features/B01-danh-muc-cau-hinh/design.md) · [Các phiếu N01–N14](../guides/ke-hoach-implement-rms.md)
 
 ## Cấu trúc chạy thử
 
@@ -58,7 +60,7 @@ API xử lý lệnh đồng bộ ngắn. Trong cùng transaction, P01 kiểm vai
 | File và cấu hình | Kho S3-compatible private cho hồ sơ. B01 có DB, Redis và API blob riêng | File lớn đi thẳng tới kho bằng URL ký ngắn hạn. B01 giữ API multipart hiện có trên host riêng vì giới hạn payload của Function. [Spec B01](../features/B01-danh-muc-cau-hinh/spec.md) · [Giới hạn Functions](https://vercel.com/docs/functions/limitations) |
 | Kiểm thử và quan sát | Vitest, PostgreSQL thật, Playwright, axe và k6. Log JSON, OpenTelemetry, dashboard độ trễ/lỗi theo route | So sánh được rule đơn lẻ, commit thật và kết quả người dùng nhìn thấy. Track pool wait, queue age, quota DB. Correlation ID nối request và worker. Ẩn token, OTP, email và nội dung đề tài |
 
-Tech lead ghim phiên bản chính xác của Node, pnpm, TypeScript, Prisma, pg, Keycloak và SPI trong lockfile hoặc image digest ở task đầu. Tiêu chí chốt bộ phiên bản là build được trên runtime Vercel, callback OTP chạy được và transaction RLS qua pool vượt qua ca cách ly. Hai hạng mục tốn công vận hành nhất là IdP và B01. Tách thêm service nghiệp vụ khi trace cho thấy một module cần scale độc lập và giao dịch liên quan đã có hợp đồng sự kiện.
+N01 dùng Node/pnpm của monorepo, ghim dependency API/client trong lockfile và kiểm build local/CI. N02 ghim Prisma/pg và chứng minh cách ly trên pool. N03 ghim cặp image Keycloak/SPI và kiểm callback OTP. N11 xác minh runtime ở môi trường được cấp. Hai hạng mục tốn công vận hành nhất là IdP và B01. Tách thêm service nghiệp vụ khi trace cho thấy một module cần scale độc lập và giao dịch liên quan đã có hợp đồng sự kiện.
 
 ## Ranh giới tenant từ đăng nhập tới dữ liệu
 
@@ -68,13 +70,13 @@ Tech lead ghim phiên bản chính xác của Node, pnpm, TypeScript, Prisma, pg
 4. B01 có ngoại lệ đọc bản shared, chỉ chủ thể quản trị hệ thống được ghi shared. Phân vai super-admin cho thao tác này phải do RMS cấp rõ. Worker lấy lease qua interface nội bộ chỉ trả ID việc và tenant, mở transaction có context để nhận payload. Bản xuất, file, hàng đợi và audit đều có tenant. Kiểm quyền tại thời điểm tải trước khi cấp URL. URL đã cấp có hiệu lực đến TTL, dùng endpoint download kiểm quyền từng lượt cho bản xuất yêu cầu thu hồi tức thì.
 5. Onboard theo thứ tự tạo tenant ở trạng thái chờ, tạo realm/SMTP/client, seed graph/catalog/theme, tạo admin đầu tiên qua tác vụ bootstrap hạn quyền, kiểm đăng nhập và cách ly A/B rồi mở tenant. Thực hiện idempotent theo tenant ID. Khi ngừng phục vụ, khóa tenant ở registry, từ chối API và job mới, thu hồi phiên, sao lưu có kiểm tra và xử lý dữ liệu theo chính sách đã ký.
 
-**Hợp đồng giữa IAM và B01.** Đề xuất adapter `catalog` trong backend làm điểm gọi nội bộ cho các feature dùng cấu hình. API blob B01 xác thực token đúng audience, rồi hỏi IAM qua kênh service-to-service về quyền đọc tenant, ghi tenant hoặc ghi shared của danh tính đã xác minh. Nếu IAM từ chối hoặc gián đoạn, B01 dừng thao tác được bảo vệ. Backend chỉ tin kết quả do IAM cấp cho chính subject, tenant và operation đó. SA-02 cần chốt nguồn cấp đặc quyền quản trị shared riêng với admin trường. QA sẽ thử cùng token sau khi hạ quyền. B01 vẫn sở hữu DB, Redis và hợp đồng HTTP của blob. Danh mục nghiệp vụ có FK tiếp tục thuộc module nghiệp vụ. [Spec cấu hình](../features/B01-danh-muc-cau-hinh/spec.md) · [ADR-0013 đang đề xuất](decisions/0013-cau-truc-sys-config-service.md)
+**Hợp đồng giữa IAM và B01.** Dùng adapter `catalog` trong backend làm điểm gọi nội bộ cho các feature dùng cấu hình. API blob B01 xác thực token đúng audience, rồi hỏi IAM qua kênh service-to-service về quyền đọc tenant, ghi tenant hoặc ghi shared của danh tính đã xác minh. Nếu IAM từ chối hoặc gián đoạn, B01 dừng thao tác được bảo vệ. Backend chỉ tin kết quả do IAM cấp cho chính subject, tenant và operation đó. IAM giữ danh sách cấp quyền shared theo issuer + sub do vận hành quản lý, tách khỏi bốn userType. Admin trường không thể tự cấp quyền này. QA sẽ thử cùng token sau khi hạ quyền. B01 vẫn sở hữu DB, Redis và hợp đồng HTTP của blob. Danh mục nghiệp vụ có FK tiếp tục thuộc module nghiệp vụ. [Spec cấu hình](../features/B01-danh-muc-cau-hinh/spec.md) · [ADR-0013](decisions/0013-cau-truc-sys-config-service.md)
 
 ## Design system theo tenant
 
 Design lead sở hữu component Button, Input, Select, Dialog, Table, trạng thái lỗi và focus. Bản dựng web chứa theme gốc. Tenant admin soạn một bộ override có schema version, gồm các cặp màu nền/chữ (background, primary, muted), ring, radius theo thang và font từ danh mục đóng. Logo lấy asset ID đã duyệt theo VP-BRAND. Trạng thái nghiệp vụ luôn có chữ hoặc biểu tượng. Schema chỉ nhận giá trị đã chuẩn hóa. CSS tùy ý, URL font ngoài và HTML do tenant gửi bị từ chối. [VP-BRAND và VP-THEME](variation-points.md)
 
-Trong `catalog`, đề xuất bảng phiên bản theme riêng gồm tenant, revision, schema version, token JSON, tác giả, thời điểm và con trỏ active theo tenant. Một revision đã áp dụng là bất biến. Màn hình quản trị có sửa nháp, xem trước trên form nộp đề tài, áp dụng và khôi phục. API kiểm quyền quản trị theo tenant, schema, độ tương phản, revision hiện tại. Publish bằng compare-and-swap trong cùng transaction ghi con trỏ và audit. Xung đột trả 409 để tải lại. Khôi phục tạo lần áp dụng mới trỏ tới bộ token đã kiểm. Draft chỉ hiển thị cho người sửa có quyền. Tính năng này mở rộng VP-BRAND qua SA-04, độc lập với thao tác PUT có hiệu lực ngay của B01 blob.
+Trong `catalog`, dùng bảng phiên bản theme riêng gồm tenant, revision, schema version, token JSON, tác giả, thời điểm và con trỏ active theo tenant. Một revision đã áp dụng là bất biến. Màn hình quản trị có sửa nháp, xem trước trên form nộp đề tài, áp dụng và khôi phục. API kiểm quyền quản trị theo tenant, schema, độ tương phản, revision hiện tại. Publish bằng compare-and-swap trong cùng transaction ghi con trỏ và audit. Xung đột trả 409 để tải lại. Khôi phục tạo lần áp dụng mới trỏ tới bộ token đã kiểm. Draft chỉ hiển thị cho người sửa có quyền. Tính năng này mở rộng VP-BRAND qua SA-04, độc lập với thao tác PUT có hiệu lực ngay của B01 blob.
 
 Web lấy active revision từ server sau xác thực, ghép `default → tenant override` lên root và portal của dialog. Cache token bất biến theo `tenantId:revision:schemaVersion`, revalidate con trỏ sau publish. Mất cấu hình dùng bản đã xác thực của đúng tenant hoặc theme gốc. Mẫu đối chiếu gồm hai trường có màu đối nghịch, dialog qua portal, focus bàn phím, bảng và thông báo lỗi, ở 390 px và desktop. Từ chối publish nếu chữ thường dưới 4.5:1 hoặc trạng thái focus quan trọng dưới 3:1 với nền liền kề.
 

@@ -1,6 +1,7 @@
 ---
 title: "ADR-0014 · Kênh sản phẩm và phạm vi lập kế hoạch từ INVEST"
-status: Proposed
+status: Accepted
+updated: 2026-11-24
 date: 2026-11-18
 deciders: "PO, kiến trúc sư, chủ dữ liệu"
 ---
@@ -9,11 +10,11 @@ deciders: "PO, kiến trúc sư, chủ dữ liệu"
 
 Phòng khoa học cần xử lý một kỳ trên máy tính trong khi chủ nhiệm thường mở việc cần làm trên điện thoại. Nhu cầu thử AI ở F01/F07 đặt thêm câu hỏi về quyền đọc nguồn và trách nhiệm với kết quả. [Nghiên cứu thị trường](../../sales/thi-truong-viet-nam-2026/README.md)
 
-## Khuyến nghị
+## Quyết định cho triển khai
 
 Giữ web phân quyền theo ADR-0009. Nghiệm thu tương tác màn hình hẹp trong cùng ứng dụng. Mỗi lát INVEST có một tiền tố kênh theo nơi chịu trách nhiệm chính. Dịch vụ dùng chung sở hữu kiểm tra quyền, dữ liệu và chuyển bước. Chỉ mở E4 hoặc AI theo cấu hình tổ chức. Với AI, người dùng có thể truy lại căn cứ và bác đề xuất. Xác định nguồn được phép, kiểm soát truy xuất và giữ được luồng thủ công trước khi mở thử.
 
-Ghi kế hoạch và tasks trong xưởng Spec Kit để PO/BA, QA và kiến trúc sư cùng rà. Repo code nhận các task đã chọn sau khi người phụ trách quyết định các vấn đề còn mở. Việc ký BR/AC vẫn theo quy trình của feature. [Hiến pháp](../../../AGENTS.md) · [Sổ khuyến nghị](../../../specs/review-decisions.md)
+Ghi kế hoạch và tasks trong xưởng Spec Kit để PO/BA, QA và kiến trúc sư cùng rà. N01 và US-01–35 thực hiện trong monorepo theo SA-01–06 và sổ RV. Quyền dùng dữ liệu thực tế được chủ dữ liệu xác nhận trước khi bật AI. Việc ký BR/AC vẫn theo quy trình của feature. [Hiến pháp](../../../AGENTS.md) · [Sổ khuyến nghị](../../../specs/review-decisions.md)
 
 ## Các lựa chọn và hệ quả
 

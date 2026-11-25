@@ -5,7 +5,7 @@ epic: E2
 channel: shared
 wave: B
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-24
 ---
 
 # Xác nhận kinh phí được cấp
@@ -16,7 +16,7 @@ updated: 2026-11-18
 
 ### Session 2026-11-18
 
-- Q: Khi tỷ lệ cho kết quả cao hơn trần, lấy số nào? → A: Dùng mức trần trước khi tính phần được dùng, lưu giá trị đã áp dụng để tra lại. [RV-18](../review-decisions.md#rv-18). Khuyến nghị dùng để lập kế hoạch, chờ Kế toán và chuyên viên kinh phí xác nhận.
+- Q: Khi tỷ lệ cho kết quả cao hơn trần, lấy số nào? → A: Dùng mức trần trước khi tính phần được dùng, lưu giá trị đã áp dụng để tra lại. [RV-18](../review-decisions.md#rv-18). BA/PO chốt cho triển khai ngày 24/11/2026.
 
 ## User Scenarios & Testing
 
@@ -29,7 +29,7 @@ Chuyên viên ghi tổng cấp, phí quản lý và phần được dùng cho ng
 - **AC-01** (US-18.1) — Given cấp 100 triệu, tỷ lệ 5%, trần 10 triệu. When xác nhận. Then phí 5 triệu, kinh phí thực hiện 95 triệu đồng.
 - **AC-02** (US-18.2) — Given chủ nhiệm. When xác nhận cấp. Then bị chặn ở máy chủ.
 
-- **AC-03** (US-18.3, khuyến nghị) — Given Cấp 300 triệu, tỷ lệ 5%, trần 10 triệu, không điều chỉnh riêng. When xác nhận. Then phí 10 triệu và phần thực hiện 290 triệu.
+- **AC-03** (US-18.3) — Given Cấp 300 triệu, tỷ lệ 5%, trần 10 triệu, không điều chỉnh riêng. When xác nhận. Then phí 10 triệu và phần thực hiện 290 triệu.
 
 ### Edge Cases
 
@@ -42,7 +42,7 @@ Chủ nhiệm → bị chặn ở máy chủ.
 - **BR-01 / FR-001.** Khi cấp 100 triệu, tỷ lệ 5%, trần 10 triệu, người có quyền có thể xác nhận. Kết quả phải quan sát được: phí 5 triệu, kinh phí thực hiện 95 triệu đồng (AC-01).
 - **BR-02 / FR-002.** Với tình huống chủ nhiệm, thao tác xác nhận cấp phải cho kết quả bị chặn ở máy chủ (AC-02).
 
-- **BR-03 / FR-003 (đề xuất).** Dùng mức trần trước khi tính phần được dùng, lưu giá trị đã áp dụng để tra lại. Kiểm bằng AC-03.
+- **BR-03 / FR-003.** Dùng mức trần trước khi tính phần được dùng, lưu giá trị đã áp dụng để tra lại. Kiểm bằng AC-03.
 
 ### Key Entities
 

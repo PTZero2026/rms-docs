@@ -4,7 +4,7 @@ spec: "./spec.md"
 owner: "BE DEV"
 status: Review        # Draft | Review | Approved
 version: 0.1
-updated: 2026-07-04
+updated: 2026-11-25
 ---
 
 # Sản phẩm khoa học — Thiết kế kỹ thuật
@@ -77,7 +77,7 @@ Tham chiếu [`data-model.md §4.6`](../../architecture/data-model.md#46-sản-p
 **Bổ sung cần chốt khi triển khai:**
 - `ResearchOutput` fields: `submittedAt`, `approvedBy`, `approvedAt`, `rejectedBy`, `rejectedAt`,
   `rejectionReason`, `correctionReason`.
-- `ExpectedOutput` hoặc cấu trúc chuẩn hóa tương đương: `researchProjectId`, `productTypeId`, `minQuantity`,
+- `ExpectedOutput`: `researchProjectId`, `productTypeId`, `minQuantity`,
   `note`, dùng cho BR-11.
 - `authors` schema: `[{ userId?, name, affiliation?, order, role? }]`; `userId` dùng để F08 gom sản phẩm theo
   tác giả nội bộ.
@@ -125,10 +125,22 @@ Tham chiếu [`data-model.md §4.6`](../../architecture/data-model.md#46-sản-p
 }
 ```
 
-## 5. Điểm kỹ thuật cần chốt
+## 5. Quyết định triển khai
 
-- **Nháp sản phẩm:** bổ sung `DRAFT` vào `approvalStatus` hay chỉ tạo bản ghi khi gửi duyệt.
-- **Sản phẩm cam kết:** thêm bảng `ExpectedOutput` hay chuẩn hóa một phần `ResearchProject.proposalDocument`.
+- **Nháp sản phẩm:** lưu bản ghi DRAFT theo chủ thể và tenant, kiểm đủ trường và minh chứng khi gửi duyệt.
+- **Sản phẩm cam kết:** F04 lưu ExpectedOutput theo đề tài và loại sản phẩm từ thuyết minh đã duyệt khi xác nhận giao.
 - **Minh chứng nhiều file:** data-model hiện có `evidenceAttachmentId`; nghiệp vụ cần ít nhất một minh chứng,
   nên triển khai 1-n `Attachment` sẽ linh hoạt hơn.
 - **Hợp nhất sản phẩm trùng:** bản này chỉ cảnh báo; cần feature sau nếu muốn merge nhiều kê khai của đồng tác giả.
+
+## Thẻ đọc DOI
+
+| Truy vết | Hành vi |
+|---|---|
+| BR-15, AC-14 | Kiểm quyền và phiên bản mỗi lần mở hoặc sinh lại. Bỏ đoạn trích cũ khi thu hồi, lưu nguồn, phiên bản mô hình/mẫu lệnh và quyết định người dùng. |
+
+**BR-04 · Loại sản phẩm theo trường.** API `GET /api/tenants/{slug}/product-types` trả danh mục B01 `PRODUCT.ACTIVE_TYPES` cho người dùng đã xác thực. Mỗi mục mới có mã và nhãn, ví dụ `{"code":"BASIN_MAP","label":"Bản đồ nghiên cứu"}`. Danh sách chuỗi mã chuẩn cũ tiếp tục dùng nhãn mặc định. Mảng rỗng tắt các lựa chọn mới. F07 đọc lại danh mục khi gửi duyệt. F01 kiểm cam kết mới và giữ số lượng đã lưu nếu mã bị ngừng dùng. F04 giữ nguyên cam kết đã chốt từ thuyết minh, hoặc kiểm theo danh mục đang áp dụng khi cần nhập cam kết lần đầu. F06 đối chiếu số lượng bằng mã. [Hợp đồng](../../../packages/api-contracts/openapi.yaml) · [Kiểm tương thích](../../../apps/backend/test/product-types.test.mjs)
+
+**AC-02 · Sản phẩm ngoài đề tài.** Điểm vào `independent-products` áp dụng cùng kiểm tra loại, năm, tên trùng và minh chứng với F07. Bản ghi dùng `research_output.project_id IS NULL`. Tệp có FK `attachment_intent.output_id` và thuộc đúng một nguồn. Hồ sơ nhập hộ tách người khai khỏi tác giả đứng tên. Khoa có quyền quyết định trong đơn vị mình, đồng tác giả và người nhập hộ không được tự duyệt. F08 đọc các sản phẩm đã duyệt theo tác giả. F04/F06 đối chiếu theo ID đề tài nên sản phẩm độc lập không tăng số lượng cam kết. [Migration](../../../apps/backend/prisma/migrations/0042_independent_product_evidence/migration.sql) · [Ca DB](../../../apps/backend/test/db/independent-products.test.mjs)
+
+**Phân bổ giờ công bố.** Khi E4/P03 bật lúc duyệt, F07 ghim danh sách tác giả hưởng giờ, vai trò và tỷ lệ trong cùng giao dịch với trạng thái APPROVED và yêu cầu P03. Với một tác giả, tỷ lệ là 100%. Với nhiều tác giả, chuyên viên chọn người chính/liên hệ và xác nhận tổng 100%; nguồn chỉ chấp nhận ID tác giả của bản kê khai. Ghi giờ theo ngày duyệt tại Việt Nam. Khi mở lại, khóa phiên bản cũ và đảo tổng ròng còn hiệu lực theo từng người. [Migration](../../../apps/backend/prisma/migrations/0043_product_teaching_hours/migration.sql) · [Kiểm hai vai trò](../../../apps/backend/test/db/independent-products.test.mjs)

@@ -3,7 +3,7 @@ story: US-02
 feature: B01
 review_id: RV-02
 status: Draft
-updated: 2026-11-21
+updated: 2026-11-24
 ---
 
 # Kế hoạch · Ghi đè một cấu hình của trường
@@ -12,7 +12,7 @@ updated: 2026-11-21
 
 ## Summary
 
-Quản trị tenant điều chỉnh một giá trị dùng cho kỳ xét của trường, các trường khác tiếp tục dùng giá trị chung. Kiểm điều kiện ngay lúc ghi. Lưu thay đổi và sự kiện nghiệp vụ cùng giao dịch, rollback đồng thời nếu ghi lỗi. Làm mất hiệu lực mục trong bộ nhớ đệm của trường vừa sửa trước lần đọc kế tiếp.
+Quản trị tenant điều chỉnh một giá trị dùng cho kỳ xét của trường, các trường khác tiếp tục dùng giá trị chung. Kiểm điều kiện ngay lúc ghi. Lưu thay đổi và sự kiện nghiệp vụ cùng giao dịch, rollback đồng thời nếu ghi lỗi. Kiểm qua adapter rằng B01 đã làm mất hiệu lực mục cache của trường vừa sửa trước lần đọc kế tiếp.
 
 ## Technical Context
 
@@ -20,7 +20,7 @@ Một SPA trong `apps/web`, backend chia module, PostgreSQL và hợp đồng si
 
 ### Xử lý tại module B01
 
-Xác định tenant từ phiên quản trị. Ghi override riêng, xóa mục cache đúng phạm vi, rồi thử đọc cùng key ở A và B. Xử lý giá trị lớn bằng cơ chế của B01.
+Adapter catalog chuyển lệnh đúng tenant đến B01 bằng hợp đồng catalog. Service ở apps/sys-config-service kiểm quyền với IAM và sở hữu thao tác ghi blob, audit cùng giao dịch và vô hiệu cache theo scope. Thử lại bản riêng ở A và fallback ở B.
 
 ## Constitution Check
 
@@ -42,4 +42,4 @@ Trong repo code, module `apps/backend/src/modules/catalog/config-override` chị
 |---|---|---|
 | FR-001 / AC-01 | Khóa cấu hình, nội dung mới, trường đang quản trị → Giá trị đọc hiệu lực tại A và giá trị chung tại B | TC-01 |
 | FR-002 / AC-02 | Kiểm nhánh tenant B chỉ có giá trị chung trước khi trả kết quả | TC-02 |
-| FR-003 / AC-03 | Làm mất hiệu lực mục trong bộ nhớ đệm của trường vừa sửa trước lần đọc kế tiếp. | TC-03 |
+| FR-003 / AC-03 | Kiểm qua adapter rằng B01 đã làm mất hiệu lực mục cache của trường vừa sửa trước lần đọc kế tiếp. | TC-03 |

@@ -1,0 +1,15 @@
+Ethics:
+  type: object
+  required: [result,note]
+  properties:
+    result: {type: string,enum: [SUPPLEMENT,APPROVED,REJECTED]}
+    note: {type: string,maxLength: 4000}
+Result:
+  type: object
+  required: [projectStatus,conclusion,ethics,ethicsNote,comments]
+  properties:
+    projectStatus: {type: string}
+    conclusion: {type: string,nullable: true}
+    ethics: {type: string}
+    ethicsNote: {type: string,nullable: true}
+    comments: {type: array,items: {type: string}}

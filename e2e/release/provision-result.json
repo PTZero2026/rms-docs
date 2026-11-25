@@ -1,0 +1,9 @@
+{
+  "at": "2026-11-24T15:55:08.457Z",
+  "issuer": "school-1",
+  "adminHttpStatus": 200,
+  "replayStatus": 200,
+  "sameAccountAtFirstOtp": true,
+  "permissions": 3,
+  "creationAuditRows": 1
+}

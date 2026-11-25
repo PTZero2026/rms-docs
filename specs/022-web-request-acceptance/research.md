@@ -3,14 +3,14 @@ story: US-22
 feature: F06
 review_id: RV-22
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-24
 ---
 
 # Căn cứ và quyết định · US-22
 
 **Vấn đề.** Cùng đủ số lượng tổng nhưng thiếu một loại sản phẩm thì có được nghiệm thu?
 
-**Khuyến nghị hiện dùng.** Kiểm từng loại cam kết tại lúc nộp cùng kết quả kỳ cuối.
+**Quyết định triển khai.** Kiểm từng loại cam kết tại lúc nộp cùng kết quả kỳ cuối.
 
 **Lý do.** Trong trường hợp cam kết một bài và một sáng chế, đã duyệt hai bài, người dùng cần thấy kết quả “nêu thiếu sáng chế và giữ IN_PROGRESS”. Phương án khác: Cho bù thừa loại này sang loại khác theo tổng đầu ra. Dùng TC-03 để phân biệt hai phương án. [RV-22](../review-decisions.md#rv-22)
 

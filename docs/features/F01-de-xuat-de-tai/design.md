@@ -2,8 +2,8 @@
 title: "Đề xuất đề tài — Thiết kế kỹ thuật"
 spec: "./spec.md"
 owner: "BE DEV"
-status: Draft        # Draft | Review | Approved
-updated: 2026-06-11
+status: Review
+updated: 2026-11-25
 ---
 
 # Đề xuất đề tài — Thiết kế kỹ thuật
@@ -37,15 +37,15 @@ Trạng thái `ResearchProject.status` (data-model §3 — vòng đời đề t�
 | BR-08 | `UNIQUE (researchProjectId, userId)` trên `ProjectMember`. | §2 |
 | BR-09 | `requestedBudget` `BIGINT ≥ 0` (VND); `durationMonths` `INT > 0`. | §2, data-model §1 |
 | BR-10 | `DRAFT`/`SUBMITTED → CANCELLED` kèm `reason`; không `DELETE` bản ghi. | §3 |
-| BR-11 | Mọi `status` đổi qua domain service `proposal`; ghi `AuditLog`; cấm `UPDATE` enum trực tiếp. | §3, overview §4.3 |
+| BR-11 | Mọi `status` đổi khi proposal gọi P01; ghi `AuditLog`; cấm `UPDATE` enum trực tiếp. | §3, overview §4.3 |
 | AC-01 | Tạo `ResearchProject(status=DRAFT)` + `ProjectMember(PI)`, `projectCode = null`. | §2, §3 |
 | AC-02 | Transaction nộp: validate → set `SUBMITTED`, sinh `projectCode`, set `submittedAt`, khóa sửa, `AuditLog(SUBMIT)`. | §3, §5 |
-| AC-03/04 | Guard BR-01/BR-02 ném lỗi nghiệp vụ, giữ `DRAFT`. | §3 |
+| AC-03, AC-04 | Guard BR-01/BR-02 ném lỗi nghiệp vụ, giữ `DRAFT`. | §3 |
 | AC-05 | Guard BR-05 chặn `UPDATE` khi `status = SUBMITTED`. | §3 |
 | AC-06 | Data scoping + permission `RESEARCH_PROJECT.*`; ngoài phạm vi → 403. | §3, B03 |
-| AC-07/08 | `RETURN_FOR_REVISION`: BR-06 (reason + còn hạn); `AuditLog(RETURN_FOR_REVISION)`. | §3 |
+| AC-07, AC-08 | `RETURN_FOR_REVISION`: BR-06 (lý do có ký tự nhìn thấy và kỳ còn hạn); `AuditLog(RETURN_FOR_REVISION)`. | §3 |
 | AC-09 | Vi phạm `UNIQUE (researchProjectId, userId)` → lỗi nghiệp vụ. | §2 |
-| AC-10 | Chốt danh sách = thao tác F01; chuyển `UNDER_REVIEW` thuộc domain service F03. | §3 |
+| AC-10 | Chốt danh sách = thao tác F01; chuyển `UNDER_REVIEW` do F03 gọi P01. | §3 |
 | AC-11 | Nộp lại: `projectCode` giữ nguyên (đã có), chỉ cập nhật `submittedAt`. | §5 |
 
 ## 2. Mô hình dữ liệu
@@ -79,22 +79,25 @@ lại. Phần đặc thù F01:
 
 ## 4. API / hợp đồng (nếu có)
 
-Đề xuất endpoint (chốt khi định nghĩa `packages/api-contracts`):
+Các đường dẫn dưới đây dùng chung tiền tố `/api/tenants/{slug}`. [Hợp đồng API](../../../packages/api-contracts/openapi.yaml)
 
 | Thao tác | Gợi ý endpoint | Ghi chú |
 |----------|----------------|---------|
-| Tạo nháp | `POST /proposals` | tạo `DRAFT` + PI member |
-| Sửa nháp | `PATCH /proposals/{id}` | chỉ khi `DRAFT` (BR-05) |
-| Nộp | `POST /proposals/{id}:submit` | transaction §3; sinh `projectCode` |
-| Trả lại bổ sung | `POST /proposals/{id}:return` | body `{ reason }` (BR-06) |
-| Hủy | `POST /proposals/{id}:cancel` | body `{ reason }` (BR-10) |
-| Chốt danh sách | `POST /calls/{callId}/proposals:finalize` | chuẩn bị sang F03 |
+| Tạo nháp | `POST /calls/{id}/proposals` | Tạo hồ sơ và thành viên chủ nhiệm. |
+| Mở hoặc lưu nháp | `GET` hoặc `PUT /projects/{id}/proposal` | Khi lưu, gửi phiên bản đang sửa. |
+| Nộp, trả bổ sung, hủy | `POST /projects/{id}/proposal/actions` | Gửi `action` và `revision`. Lệnh `return` và `cancel` cần thêm `reason`. |
+| Chốt hồ sơ cho F03 | `POST /projects/{id}/finalize` | Chuyên viên cùng khoa chốt từng đề xuất đã nộp khi kỳ đã đóng. |
 
-## 5. Điểm kỹ thuật cần chốt
+Khi chủ nhiệm mở bản nháp trong kỳ đang nhận, `submitUntil` là thời điểm 00:00 giờ Việt Nam ngay sau ngày cuối cùng nhận hồ sơ, biểu diễn ở UTC. Tab đang mở tự khóa nút nộp khi đến mốc. Mỗi lệnh nộp kiểm lại kỳ trên máy chủ. [Kiểu dữ liệu thuyết minh](../../../packages/api-contracts/proposal/draft-proposal.yaml) · [Ca chuyển ngày và gia hạn](../../../e2e/call/open-call/expiry.spec.ts)
 
-- **Sinh `projectCode` chống trùng khi nộp đồng thời:** dùng sequence/khóa theo `proposalCallId` (vd
-  `<callCode>-<seq>`) trong cùng transaction nộp, hoặc advisory lock. Cần chốt định dạng cùng quy tắc
-  đánh số nghiệp vụ ở [`spec.md §7`](./spec.md).
-- **Version hóa `proposalDocument`** khi biểu mẫu (`proposalTemplateId`) đổi giữa kỳ: lưu `templateVersion`
-  kèm jsonb để render đúng biểu mẫu đã nhập (liên quan điểm mở nghiệp vụ ở `spec.md §7`).
-- **Quyền sửa của thành viên/thư ký:** nếu mở rộng ngoài chủ nhiệm, bổ sung permission + nhánh data scoping.
+Theo BR-10, chủ nhiệm hoặc chuyên viên cùng đơn vị có thể hủy đề xuất trước xét duyệt kể cả khi kỳ đã đóng. Backend kiểm phiên bản, phạm vi và cạnh đến `CANCELLED` trong quy trình đã ghim. P01 lưu người thao tác và lý do vào lịch sử cùng giao dịch với đổi trạng thái, audit và outbox. Khi mở lại, F01 đọc lý do từ lần chuyển bước đó. Hồ sơ đã nộp giữ mã và thời điểm tiếp nhận. [Cổng lệnh F01](../../../apps/backend/src/modules/proposal/service.ts) · [Phép kiểm cạnh tranh và phạm vi](../../../apps/backend/test/db/proposals.test.mjs)
+
+## 5. Cấp mã và phiên bản
+
+Nộp lần đầu giữ khóa dòng đề tài và bộ đếm của kỳ, cấp projectCode có prefix tenant, mã kỳ và số tuần tự trong transaction chuyển bước. Unique toàn hệ thống. Khi xử lý lại, dùng mã đã cấp. Nháp giữ templateVersion trỏ bản ghim ở F02. Dịch vụ chỉ cho chủ nhiệm sửa nội dung trong DRAFT.
+
+## Trợ lý rà thuyết minh
+
+| Truy vết | Hành vi |
+|---|---|
+| BR-12, AC-12 | Kiểm lại cả hai quyền trước truy xuất và mở lại. Ghi AiSuggestion riêng với proposalDocument. |

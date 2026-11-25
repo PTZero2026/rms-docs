@@ -1,0 +1,16 @@
+Input:
+  type: object
+  required: [points,comment,submit]
+  properties:
+    points: {type: object,additionalProperties: {type: number}}
+    comment: {type: string,maxLength: 4000}
+    submit: {type: boolean}
+Sheet:
+  type: object
+  required: [id,points,comment,total,submitted]
+  properties:
+    id: {type: string}
+    points: {type: object,additionalProperties: {type: number}}
+    comment: {type: string}
+    total: {type: number,nullable: true}
+    submitted: {type: boolean}

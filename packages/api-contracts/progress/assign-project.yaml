@@ -1,0 +1,35 @@
+Assignment:
+  type: object
+  required: [reference,signed,effective,start,end,budget,note,commitments,fileId]
+  properties:
+    reference: {type: string}
+    signed: {type: string,format: date}
+    effective: {type: string,format: date}
+    start: {type: string,format: date}
+    end: {type: string,format: date}
+    budget: {type: integer}
+    note: {type: string}
+    commitments: {type: object,additionalProperties: {type: integer,minimum: 0,maximum: 999}}
+    fileId: {type: string,format: uuid}
+Detail:
+  type: object
+  required: [id,title,status,revision,canManage,principal,assignment,periods,files,promised]
+  properties:
+    id: {type: string}
+    title: {type: string}
+    status: {type: string}
+    revision: {type: integer}
+    canManage: {type: boolean}
+    principal: {type: boolean}
+    promised: {type: object,additionalProperties: {type: integer}}
+    assignment:
+      nullable: true
+      allOf: [{$ref: '#/Assignment'}]
+    files: {type: array,items: {type: object,required: [id,filename],properties: {id: {type: string},filename: {type: string}}}}
+    periods: {type: array,items: {$ref: './report-period.yaml#/Period'}}
+Activity:
+  type: object
+  required: [action,reason]
+  properties:
+    action: {type: string,enum: [suspend,resume]}
+    reason: {type: string}

@@ -1,12 +1,13 @@
 ---
-title: "ADR-0013: Rủi ro cấu trúc & quyết định cần chốt cho sys-config-service (B01)"
-status: Proposed
+title: "ADR-0013: Quyết định cấu trúc cho sys-config-service (B01)"
+status: Accepted
 date: 2026-07-04
+updated: 2026-11-24
 deciders: "SA, Tech lead, PO/BA"
 extends: "ADR-0012 (ranh giới lõi vs cấu hình tenant)"
 ---
 
-# ADR-0013: Rủi ro cấu trúc & quyết định cần chốt cho sys-config-service (B01)
+# ADR-0013: Quyết định cấu trúc cho sys-config-service (B01)
 
 ## Bối cảnh
 
@@ -21,8 +22,7 @@ nhận** các điểm đó và đề xuất hướng xử lý để đội chố
 
 ## Quyết định
 
-> Trạng thái **Proposed**: mỗi mục dưới đây là **đề xuất** kèm mức ưu tiên. Cần PO/Tech lead xác nhận
-> trước khi đưa vào `design.md`. Mục đánh dấu **[cần PO chốt]** có ảnh hưởng nghiệp vụ, không thuần kỹ thuật.
+> D1–D6 dưới đây ghi phương án được xem xét ban đầu. Kết luận của SA và BA/PO ngày 24/11/2026 nằm ở cuối ADR.
 
 ### D1 — 🔴 Tách blob nhị phân lớn khỏi bảng cấu hình
 **Vấn đề:** một bảng `sys_configuration` đang gánh hai loại dữ liệu khác bản chất: *tham số nóng nhỏ*
@@ -81,14 +81,15 @@ khe hở đúng/sai, rẻ để sửa.*
 - **C — Để nguyên, xử lý khi phát sinh sự cố:** rẻ trước mắt, nhưng D1/D2/D4 là loại lỗi *âm thầm* —
   phát hiện khi đã ảnh hưởng nhiều tenant. Loại.
 
-## Hệ quả
+## Kết luận áp dụng cho triển khai
 
-- Các mục **[cần PO chốt]** (D2, D3, D4) đưa ra buổi review PO/BA + Tech lead; kết quả cập nhật ngược vào
-  [B01 spec.md](../../features/B01-danh-muc-cau-hinh/spec.md) (business rule mới) và `design.md` (chưa tồn
-  tại — dựng cùng dịp).
-- D1, D6 là quyết định kỹ thuật — Tech lead chốt, phản ánh ở `design.md`.
-- Sổ đăng ký key (D3) liên kết vào [`variation-points.md`](../variation-points.md) — key cấu hình là điểm
-  biến thiên theo [ADR-0012](0012-ranh-gioi-loi-vs-cau-hinh-tenant.md).
-- Khi các mục được chốt, cập nhật ADR này sang **Accepted** và ghi rõ quyết định cuối cho từng D#.
-- Đây là repo docs-only ([ADR-0011](0011-tach-code-quay-ve-docs-only.md)) — ADR này định hướng cho spec/
-  design, việc hiện thực code diễn ra ở repo thực thi sau.
+| Mục | Quyết định | Phép kiểm |
+|---|---|---|
+| D1 | Giữ bytes trong DB B01 tới 20 MiB. Chỉ cache JSON/text nhỏ (tối đa 1 MiB). Đo trước khi tách blob sang kho object. | Tệp 6 MiB đọc lại đúng checksum, Redis không giữ nội dung. |
+| D2 | Với key đã đăng ký schema, adapter kiểm schema trước commit, kể cả JSON hợp lệ nhưng sai kiểu. Key tự do giữ hành vi theo MIME. | CONFIG.FE sai schema trả 400, bản cũ còn đọc được. |
+| D3 | Chủ module đăng ký key chuẩn, refer, scope và schema tương ứng cạnh OpenAPI catalog. Dùng sổ điểm biến thiên để tra owner. | QA tìm được owner và schema của CONFIG.FE, ROLES chỉ chứa nhãn hiển thị. |
+| D4 | Ghi audit metadata cùng giao dịch, xác nhận UI khi sửa/xóa shared. Ghi đè blob có hiệu lực ngay. Lịch sử revision/rollback thuộc VP-THEME. | Lỗi ghi audit làm rollback dữ liệu. Dry-run giữ số bản ghi. |
+| D5 | Giữ public là metadata để tương thích. Mọi GET đều cần xác thực và quyền hiện hành. | Bản public với phiên hết hạn trả 401. |
+| D6 | Dùng lowercase ASCII làm khóa so khớp nhất quán cho DB, API và cache. Trước migrate liệt kê các cặp đụng khóa trong cùng scope, chủ dữ liệu chọn bản giữ. | CONFIG.FE rồi config.fe trong cùng tenant trả 409, tenant khác được có override riêng. |
+
+[Thiết kế B01](../../features/B01-danh-muc-cau-hinh/design.md) · [SA-02 và SA-05](../rms-v0-sa-review.md)

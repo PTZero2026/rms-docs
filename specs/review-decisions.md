@@ -1,14 +1,14 @@
 ---
-title: "Sổ quyết định cần review"
+title: "Sổ quyết định triển khai"
 status: Review
-updated: 2026-11-21
+updated: 2026-11-24
 ---
 
-# Sổ quyết định cần review
+# Sổ quyết định triển khai
 
 RV-31 đã tạm chốt để thử trên hồ sơ thực tế. RV-32 đã chốt phạm vi thông tin được điền trên thẻ đọc. Hai tác vụ AI cùng áp dụng quy tắc nguồn đã chốt ở RV-35. Mỗi mã dưới đây là một quyết định có thể duyệt riêng. Mã RV-01–32 đi cùng AC-03 và TC-03 của thẻ tương ứng. [Báo cáo và danh mục](README.md)
 
-**Cách xử lý.** Người chịu trách nhiệm ghi kết quả `Chấp thuận`, `Sửa` hoặc `Hoãn`, ngày, tên/vai trò, căn cứ và nội dung thay thế. AI có thể rà kết quả với spec → plan → tasks → quickstart, nêu tệp và mã còn lệch. Người duyệt nghiệp vụ ký trước khi cập nhật BR/AC nguồn hoặc đưa cam kết vào pilot. “Chờ review” là trạng thái của quyết định, kể cả khi tài liệu lập kế hoạch đã đầy đủ.
+**Cách xử lý.** Người chịu trách nhiệm ghi kết quả `Chấp thuận`, `Sửa` hoặc `Hoãn`, ngày, tên/vai trò, căn cứ và nội dung thay thế. AI có thể rà kết quả với spec → plan → tasks → quickstart, nêu tệp và mã còn lệch. Người duyệt nghiệp vụ ký trước khi cập nhật BR/AC nguồn hoặc đưa cam kết vào pilot. Ngày 24/11/2026, BA/PO theo ủy nhiệm chốt các hành vi còn mở cho DEV/QA. Các đầu mối của trường nêu dưới mỗi mã đối chiếu khi UAT. RV-31 giữ bộ đo thử đã tạm chốt, chủ dữ liệu xác nhận nguồn và kết quả trước pilot.
 
 ## RV-01
 
@@ -52,42 +52,42 @@ RV-31 đã tạm chốt để thử trên hồ sơ thực tế. RV-32 đã chố
 
 ## RV-06
 
-**Giảng viên cần điền tới đâu để lưu lần đầu?** · Chờ review · Chủ nhiệm và BA.
+**Giảng viên cần điền tới đâu để lưu lần đầu?** · **Chốt triển khai 24/11/2026 (BA/PO)** · Đầu mối UAT: Chủ nhiệm và BA.
 
 - **Use case.** Chủ nhiệm lưu đề xuất của mình trong kỳ đang mở để hoàn thiện qua nhiều lần trước khi xin xét. Với điều kiện chủ nhiệm đã chọn kỳ và nhập tên nhưng thiếu phần phương pháp, khi lưu rồi mở lại nháp, kết quả mong đợi là thấy phần đã nhập và có thể tiếp tục sửa.
-- **Khuyến nghị.** Cho lưu bản nháp thiếu trường bắt buộc của lần nộp khi đã xác định kỳ và chủ nhiệm.
+- **Quyết định.** Cho lưu bản nháp thiếu trường bắt buộc của lần nộp khi đã xác định kỳ và chủ nhiệm.
 - **Chứng cứ để ký.** Kiểm TC-03 cùng hai ca gốc và ghi giá trị thực tế. [US-06 · đặc tả](006-web-draft-proposal/spec.md) · [Ca thử](006-web-draft-proposal/quickstart.md) · [Phương án khác](006-web-draft-proposal/research.md)
 
 ## RV-07
 
-**Xử lý hồ sơ đến đúng thời điểm kết thúc kỳ thế nào?** · Chờ review · Chuyên viên quản lý kỳ và PO.
+**Xử lý hồ sơ đến đúng thời điểm kết thúc kỳ thế nào?** · **Chốt triển khai 24/11/2026 (BA/PO)** · Đầu mối UAT: Chuyên viên quản lý kỳ và PO.
 
 - **Use case.** Chủ nhiệm nộp thuyết minh đủ trường, nhận mã duy nhất và thời điểm tiếp nhận để tra cứu sau kỳ. Với điều kiện nháp hợp lệ, đồng hồ máy chủ đúng hạn và kỳ còn mở, khi chủ nhiệm gửi hai lần, kết quả mong đợi là chỉ có một mã và một lần chuyển Đã nộp.
-- **Khuyến nghị.** Nhận khi thời điểm máy chủ tiếp nhận bằng hạn và kỳ còn mở, từ chối sau hạn.
+- **Quyết định.** Nhận khi thời điểm máy chủ tiếp nhận bằng hạn và kỳ còn mở, từ chối sau hạn.
 - **Chứng cứ để ký.** Kiểm TC-03 cùng hai ca gốc và ghi giá trị thực tế. [US-07 · đặc tả](007-web-submit-proposal/spec.md) · [Ca thử](007-web-submit-proposal/quickstart.md) · [Phương án khác](007-web-submit-proposal/research.md)
 
 ## RV-08
 
-**Có thể trả hồ sơ mà chỉ ghi khoảng trắng ở lý do?** · Chờ review · Chuyên viên tiếp nhận và PO.
+**Có thể trả hồ sơ mà chỉ ghi khoảng trắng ở lý do?** · **Chốt triển khai 24/11/2026 (BA/PO)** · Đầu mối UAT: Chuyên viên tiếp nhận và PO.
 
 - **Use case.** Chuyên viên ghi lý do để chủ nhiệm sửa và theo cùng một mã khi nộp lại. Với điều kiện hồ sơ còn hạn và lý do chỉ chứa khoảng trắng, khi chuyên viên gửi trả, kết quả mong đợi là giữ Đã nộp, yêu cầu nhập lý do.
-- **Khuyến nghị.** Yêu cầu lý do có chữ nhìn thấy, hiển thị nguyên nội dung cho chủ nhiệm.
+- **Quyết định.** Yêu cầu lý do có chữ nhìn thấy, hiển thị nguyên nội dung cho chủ nhiệm.
 - **Chứng cứ để ký.** Kiểm TC-03 cùng hai ca gốc và ghi giá trị thực tế. [US-08 · đặc tả](008-web-return-proposal/spec.md) · [Ca thử](008-web-return-proposal/quickstart.md) · [Phương án khác](008-web-return-proposal/research.md)
 
 ## RV-09
 
-**Hai chuyên viên cùng mở đợt cho một đề tài thì sao?** · Chờ review · Thư ký hội đồng và BA.
+**Hai chuyên viên cùng mở đợt cho một đề tài thì sao?** · **Chốt triển khai 24/11/2026 (BA/PO)** · Đầu mối UAT: Thư ký hội đồng và BA.
 
 - **Use case.** Chuyên viên gắn đề tài đã chốt vào hội đồng và bộ tiêu chí để phát phiếu cho người được phân công. Với điều kiện hai chuyên viên cùng chọn một hồ sơ đủ điều kiện, khi xác nhận mở đợt đồng thời, kết quả mong đợi là chỉ một đợt thu phiếu, một lần chuyển trạng thái.
-- **Khuyến nghị.** Chỉ mở một đợt đang thu phiếu cho cùng hồ sơ và lần xét, trả thông tin đợt đã mở cho lần sau.
+- **Quyết định.** Chỉ mở một đợt đang thu phiếu cho cùng hồ sơ và lần xét, trả thông tin đợt đã mở cho lần sau.
 - **Chứng cứ để ký.** Kiểm TC-03 cùng hai ca gốc và ghi giá trị thực tế. [US-09 · đặc tả](009-web-open-review/spec.md) · [Ca thử](009-web-open-review/quickstart.md) · [Phương án khác](009-web-open-review/research.md)
 
 ## RV-10
 
-**Nếu phát hiện xung đột sau khi người chấm mở nháp thì sao?** · Chờ review · Chủ tịch hội đồng và QA.
+**Nếu phát hiện xung đột sau khi người chấm mở nháp thì sao?** · **Chốt triển khai 24/11/2026 (BA/PO)** · Đầu mối UAT: Chủ tịch hội đồng và QA.
 
 - **Use case.** Thành viên hội đồng nhập điểm theo tiêu chí và nhận xét để phiếu hợp lệ được tính đúng trọng số. Với điều kiện người đã mở nháp vừa được bổ sung vào nhóm đề tài, khi gửi phiếu đã điền, kết quả mong đợi là phiếu không được tính và người đó mất quyền chấm.
-- **Khuyến nghị.** Kiểm lại phân công và quan hệ với đề tài ngay lúc gửi.
+- **Quyết định.** Kiểm lại phân công và quan hệ với đề tài ngay lúc gửi.
 - **Chứng cứ để ký.** Kiểm TC-03 cùng hai ca gốc và ghi giá trị thực tế. [US-10 · đặc tả](010-web-submit-score/spec.md) · [Ca thử](010-web-submit-score/quickstart.md) · [Phương án khác](010-web-submit-score/research.md)
 
 ## RV-11
@@ -100,10 +100,10 @@ RV-31 đã tạm chốt để thử trên hồ sơ thực tế. RV-32 đã chố
 
 ## RV-12
 
-**Nếu mất quyền sau khi đã thấy thẻ trên điện thoại thì sao?** · Chờ review · Chủ nhiệm, UX và chủ dữ liệu.
+**Nếu mất quyền sau khi đã thấy thẻ trên điện thoại thì sao?** · **Chốt triển khai 24/11/2026 (BA/PO)** · Đầu mối UAT: Chủ nhiệm, UX và chủ dữ liệu.
 
 - **Use case.** Chủ nhiệm dùng web trên điện thoại để tìm hồ sơ bị trả và mở đúng nơi sửa. Trang chủ chỉ đọc. Với điều kiện điện thoại rộng 360 px đã hiện thẻ rồi tài khoản bị thu quyền, khi chạm thẻ cũ, kết quả mong đợi là không lộ hồ sơ và có đường về trang chủ.
-- **Khuyến nghị.** Kiểm quyền khi mở liên kết, hướng người dùng về danh sách đã làm mới.
+- **Quyết định.** Kiểm quyền khi mở liên kết, hướng người dùng về danh sách đã làm mới.
 - **Chứng cứ để ký.** Kiểm TC-03 cùng hai ca gốc và ghi giá trị thực tế. [US-12 · đặc tả](012-mobile-open-work-item/spec.md) · [Ca thử](012-mobile-open-work-item/quickstart.md) · [Phương án khác](012-mobile-open-work-item/research.md)
 
 ## RV-13
@@ -116,82 +116,82 @@ RV-31 đã tạm chốt để thử trên hồ sơ thực tế. RV-32 đã chố
 
 ## RV-14
 
-**Chuyên viên có thể giao khi mới có số quyết định nhưng chưa có bản đính kèm?** · Chờ review · Trưởng phòng KHCN và chuyên viên hợp đồng.
+**Chuyên viên có thể giao khi mới có số quyết định nhưng chưa có bản đính kèm?** · **Chốt triển khai 24/11/2026 (BA/PO)** · Đầu mối UAT: Trưởng phòng KHCN và chuyên viên hợp đồng.
 
 - **Use case.** Chuyên viên xác nhận căn cứ giao để từ một quyết định phê duyệt tạo hồ sơ thực hiện có chủ nhiệm và kinh phí duyệt. Với điều kiện thiếu tệp căn cứ dù đã nhập số quyết định, khi xác nhận giao, kết quả mong đợi là nêu mục tệp thiếu, giữ APPROVED.
-- **Khuyến nghị.** Yêu cầu tệp căn cứ đọc được theo phạm vi đề tài trước khi xác nhận giao.
+- **Quyết định.** Yêu cầu tệp căn cứ đọc được theo phạm vi đề tài trước khi xác nhận giao.
 - **Chứng cứ để ký.** Kiểm TC-03 cùng hai ca gốc và ghi giá trị thực tế. [US-14 · đặc tả](014-web-assign-project/spec.md) · [Ca thử](014-web-assign-project/quickstart.md) · [Phương án khác](014-web-assign-project/research.md)
 
 ## RV-15
 
-**Hai đề tài có được dùng cùng mã kỳ không?** · Chờ review · Chuyên viên tiến độ và BA.
+**Hai đề tài có được dùng cùng mã kỳ không?** · **Chốt triển khai 24/11/2026 (BA/PO)** · Đầu mối UAT: Chuyên viên tiến độ và BA.
 
 - **Use case.** Chuyên viên lập một kỳ báo cáo có hạn nộp để chủ nhiệm biết thời điểm phải nộp tiến độ. Với điều kiện hai đề tài đang thực hiện cùng chưa có kỳ 1, khi tạo kỳ 1 cho từng đề tài, kết quả mong đợi là mỗi đề tài có một báo cáo chờ riêng.
-- **Khuyến nghị.** Áp khóa theo cặp đề tài và kỳ, cho hai đề tài khác nhau dùng cùng tên kỳ.
+- **Quyết định.** Áp khóa theo cặp đề tài và kỳ, cho hai đề tài khác nhau dùng cùng tên kỳ.
 - **Chứng cứ để ký.** Kiểm TC-03 cùng hai ca gốc và ghi giá trị thực tế. [US-15 · đặc tả](015-web-report-period/spec.md) · [Ca thử](015-web-report-period/quickstart.md) · [Phương án khác](015-web-report-period/research.md)
 
 ## RV-16
 
-**Chạy lại sau lỗi gửi email có tạo thông báo nghiệp vụ thứ hai?** · Chờ review · Chuyên viên tiến độ và phụ trách vận hành.
+**Chạy lại sau lỗi gửi email có tạo thông báo nghiệp vụ thứ hai?** · **Chốt triển khai 24/11/2026 (BA/PO)** · Đầu mối UAT: Chuyên viên tiến độ và phụ trách vận hành.
 
 - **Use case.** Chủ nhiệm nhận nhắc khi đến mốc cấu hình để kịp chuẩn bị báo cáo, dù tác vụ gửi được chạy lại. Với điều kiện thông báo trong ứng dụng đã có nhưng kênh email lỗi, khi tác vụ chạy lại cùng mốc, kết quả mong đợi là vẫn một thông báo và theo dõi được lần gửi lại.
-- **Khuyến nghị.** Dùng một khóa theo tenant, đề tài, kỳ, người nhận và mốc; thử lại việc giao trên cùng thông báo.
+- **Quyết định.** Dùng một khóa theo tenant, đề tài, kỳ, người nhận và mốc; thử lại việc giao trên cùng thông báo.
 - **Chứng cứ để ký.** Kiểm TC-03 cùng hai ca gốc và ghi giá trị thực tế. [US-16 · đặc tả](016-shared-deadline-reminder/spec.md) · [Ca thử](016-shared-deadline-reminder/quickstart.md) · [Phương án khác](016-shared-deadline-reminder/research.md)
 
 ## RV-17
 
-**Có chặn báo cáo quá hạn nếu đề tài vẫn đang thực hiện?** · Chờ review · Chủ nhiệm và chuyên viên tiến độ.
+**Có chặn báo cáo quá hạn nếu đề tài vẫn đang thực hiện?** · **Chốt triển khai 24/11/2026 (BA/PO)** · Đầu mối UAT: Chủ nhiệm và chuyên viên tiến độ.
 
 - **Use case.** Chủ nhiệm đính báo cáo của kỳ và nộp để chuyên viên theo dõi được cả thời điểm nộp trễ. Với điều kiện báo cáo đến đúng hạn trong khi đề tài đang thực hiện, khi chủ nhiệm nộp đủ tệp, kết quả mong đợi là ghi nhận đúng hạn và chuyển chờ duyệt.
-- **Khuyến nghị.** Nhận hồ sơ, ghi giờ và nhãn trễ, chặn khi đề tài tạm dừng.
+- **Quyết định.** Nhận hồ sơ, ghi giờ và nhãn trễ, chặn khi đề tài tạm dừng.
 - **Chứng cứ để ký.** Kiểm TC-03 cùng hai ca gốc và ghi giá trị thực tế. [US-17 · đặc tả](017-web-submit-progress/spec.md) · [Ca thử](017-web-submit-progress/quickstart.md) · [Phương án khác](017-web-submit-progress/research.md)
 
 ## RV-18
 
-**Khi tỷ lệ cho kết quả cao hơn trần, lấy số nào?** · Chờ review · Kế toán và chuyên viên kinh phí.
+**Khi tỷ lệ cho kết quả cao hơn trần, lấy số nào?** · **Chốt triển khai 24/11/2026 (BA/PO)** · Đầu mối UAT: Kế toán và chuyên viên kinh phí.
 
 - **Use case.** Chuyên viên ghi tổng cấp, phí quản lý và phần được dùng cho nghiên cứu để chủ nhiệm theo dõi số khả dụng. Với điều kiện cấp 300 triệu, tỷ lệ 5%, trần 10 triệu, không điều chỉnh riêng, khi xác nhận, kết quả mong đợi là phí 10 triệu và phần thực hiện 290 triệu.
-- **Khuyến nghị.** Dùng mức trần trước khi tính phần được dùng, lưu giá trị đã áp dụng để tra lại.
+- **Quyết định.** Dùng mức trần trước khi tính phần được dùng, lưu giá trị đã áp dụng để tra lại.
 - **Chứng cứ để ký.** Kiểm TC-03 cùng hai ca gốc và ghi giá trị thực tế. [US-18 · đặc tả](018-shared-budget-allocation/spec.md) · [Ca thử](018-shared-budget-allocation/quickstart.md) · [Phương án khác](018-shared-budget-allocation/research.md)
 
 ## RV-19
 
-**Khoản chi vượt mức thực hiện xử lý thế nào?** · Chờ review · Kế toán và chủ nhiệm.
+**Khoản chi vượt mức thực hiện xử lý thế nào?** · **Chốt triển khai 24/11/2026 (BA/PO)** · Đầu mối UAT: Kế toán và chủ nhiệm.
 
 - **Use case.** Chủ nhiệm ghi khoản chi VND với ngày và minh chứng. Hệ thống tính số còn lại và cảnh báo khi vượt kinh phí thực hiện. Với điều kiện còn 2 triệu, khoản chi đúng 2 triệu đồng, khi chủ nhiệm lưu, kết quả mong đợi là số dư bằng 0 và không cảnh báo vượt.
-- **Khuyến nghị.** Lưu khoản hợp lệ, hiển thị số vượt và số dư mới, để chuyên viên rà khi đóng.
+- **Quyết định.** Lưu khoản hợp lệ, hiển thị số vượt và số dư mới, để chuyên viên rà khi đóng.
 - **Chứng cứ để ký.** Kiểm TC-03 cùng hai ca gốc và ghi giá trị thực tế. [US-19 · đặc tả](019-web-record-expense/spec.md) · [Ca thử](019-web-record-expense/quickstart.md) · [Phương án khác](019-web-record-expense/research.md)
 
 ## RV-20
 
-**Một tệp có trong thư viện nhưng người dùng vừa mất quyền có thể làm minh chứng không?** · Chờ review · Chủ nhiệm và chuyên viên sản phẩm.
+**Một tệp có trong thư viện nhưng người dùng vừa mất quyền có thể làm minh chứng không?** · **Chốt triển khai 24/11/2026 (BA/PO)** · Đầu mối UAT: Chủ nhiệm và chuyên viên sản phẩm.
 
 - **Use case.** Chủ nhiệm khai một sản phẩm thuộc đề tài trong phạm vi để chuyên viên kiểm tra đầu ra cam kết. Với điều kiện tệp đính kèm đã bị thu quyền trước khi gửi, khi nộp sản phẩm, kết quả mong đợi là báo minh chứng chưa hợp lệ, giữ nháp.
-- **Khuyến nghị.** Kiểm lại quyền sử dụng tệp tại lúc gửi, yêu cầu thay tệp khi quyền hết hiệu lực.
+- **Quyết định.** Kiểm lại quyền sử dụng tệp tại lúc gửi, yêu cầu thay tệp khi quyền hết hiệu lực.
 - **Chứng cứ để ký.** Kiểm TC-03 cùng hai ca gốc và ghi giá trị thực tế. [US-20 · đặc tả](020-web-submit-output/spec.md) · [Ca thử](020-web-submit-output/quickstart.md) · [Phương án khác](020-web-submit-output/research.md)
 
 ## RV-21
 
-**Duyệt cùng sản phẩm hai lần có làm tăng số cam kết đã đạt không?** · Chờ review · Chuyên viên sản phẩm và phòng KHCN.
+**Duyệt cùng sản phẩm hai lần có làm tăng số cam kết đã đạt không?** · **Chốt triển khai 24/11/2026 (BA/PO)** · Đầu mối UAT: Chuyên viên sản phẩm và phòng KHCN.
 
 - **Use case.** Chuyên viên duyệt một sản phẩm hợp lệ để hệ thống phản ánh đúng số sản phẩm đạt theo loại. Với điều kiện cùng một đầu ra vừa duyệt, cam kết còn thiếu một sản phẩm cùng loại, khi gửi lại lệnh duyệt, kết quả mong đợi là chỉ một đầu ra được tính, mục cam kết vẫn thiếu một.
-- **Khuyến nghị.** Tổng hợp theo định danh sản phẩm đã duyệt, độc lập số lần gửi lệnh.
+- **Quyết định.** Tổng hợp theo định danh sản phẩm đã duyệt, độc lập số lần gửi lệnh.
 - **Chứng cứ để ký.** Kiểm TC-03 cùng hai ca gốc và ghi giá trị thực tế. [US-21 · đặc tả](021-shared-approve-output/spec.md) · [Ca thử](021-shared-approve-output/quickstart.md) · [Phương án khác](021-shared-approve-output/research.md)
 
 ## RV-22
 
-**Cùng đủ số lượng tổng nhưng thiếu một loại sản phẩm thì có được nghiệm thu?** · Chờ review · Chuyên viên nghiệm thu và chủ nhiệm.
+**Cùng đủ số lượng tổng nhưng thiếu một loại sản phẩm thì có được nghiệm thu?** · **Chốt triển khai 24/11/2026 (BA/PO)** · Đầu mối UAT: Chuyên viên nghiệm thu và chủ nhiệm.
 
 - **Use case.** Chủ nhiệm nộp hồ sơ cuối khi kỳ cuối đã đạt và đủ sản phẩm cam kết để phòng khoa học tiếp nhận nghiệm thu. Với điều kiện cam kết một bài và một sáng chế, đã duyệt hai bài, khi đăng ký nghiệm thu, kết quả mong đợi là nêu thiếu sáng chế và giữ IN_PROGRESS.
-- **Khuyến nghị.** Kiểm từng loại cam kết tại lúc nộp cùng kết quả kỳ cuối.
+- **Quyết định.** Kiểm từng loại cam kết tại lúc nộp cùng kết quả kỳ cuối.
 - **Chứng cứ để ký.** Kiểm TC-03 cùng hai ca gốc và ghi giá trị thực tế. [US-22 · đặc tả](022-web-request-acceptance/spec.md) · [Ca thử](022-web-request-acceptance/quickstart.md) · [Phương án khác](022-web-request-acceptance/research.md)
 
 ## RV-23
 
-**Một phiếu xét duyệt đầu vào có được tính để đủ số phiếu nghiệm thu?** · Chờ review · Thư ký hội đồng nghiệm thu và PO.
+**Một phiếu xét duyệt đầu vào có được tính để đủ số phiếu nghiệm thu?** · **Chốt triển khai 24/11/2026 (BA/PO)** · Đầu mối UAT: Thư ký hội đồng nghiệm thu và PO.
 
 - **Use case.** Chuyên viên ghi kết luận đạt theo bộ phiếu nghiệm thu để bàn giao sang bước quyết toán. Với điều kiện đợt nghiệm thu thiếu một phiếu, đề tài có một phiếu xét duyệt đầu vào, khi chốt kết luận, kết quả mong đợi là vẫn thiếu một phiếu, chưa chuyển PASSED.
-- **Khuyến nghị.** Chỉ tính phiếu đã gửi của đợt nghiệm thu đang kết luận.
+- **Quyết định.** Chỉ tính phiếu đã gửi của đợt nghiệm thu đang kết luận.
 - **Chứng cứ để ký.** Kiểm TC-03 cùng hai ca gốc và ghi giá trị thực tế. [US-23 · đặc tả](023-shared-acceptance-result/spec.md) · [Ca thử](023-shared-acceptance-result/quickstart.md) · [Phương án khác](023-shared-acceptance-result/research.md)
 
 ## RV-24
@@ -212,18 +212,18 @@ RV-31 đã tạm chốt để thử trên hồ sơ thực tế. RV-32 đã chố
 
 ## RV-26
 
-**Căn cứ phê duyệt phải có ở lúc lưu nháp hay lúc duyệt?** · Chờ review · Phòng KHCN phụ trách nhiệm vụ cấp trên.
+**Căn cứ phê duyệt phải có ở lúc lưu nháp hay lúc duyệt?** · **Chốt triển khai 24/11/2026 (BA/PO)** · Đầu mối UAT: Phòng KHCN phụ trách nhiệm vụ cấp trên.
 
 - **Use case.** Chuyên viên ghi đầu mục cấp Bộ gắn với đơn vị chủ trì và căn cứ phê duyệt để tổng hợp danh mục. Với điều kiện đầu mục cấp Bộ có tệp sai loại so với quy tắc DECISION, khi chuyên viên duyệt, kết quả mong đợi là nêu đúng loại quyết định phải bổ sung.
-- **Khuyến nghị.** Cho lưu thông tin ban đầu theo trường bắt buộc, kiểm loại minh chứng theo cấp ở bước duyệt.
+- **Quyết định.** Cho lưu thông tin ban đầu theo trường bắt buộc, kiểm loại minh chứng theo cấp ở bước duyệt.
 - **Chứng cứ để ký.** Kiểm TC-03 cùng hai ca gốc và ghi giá trị thực tế. [US-26 · đặc tả](026-web-register-upper-project/spec.md) · [Ca thử](026-web-register-upper-project/quickstart.md) · [Phương án khác](026-web-register-upper-project/research.md)
 
 ## RV-27
 
-**Xác nhận hướng dẫn của một hồ sơ có dùng cho hồ sơ khác cùng sinh viên không?** · Chờ review · Đại diện khoa, giảng viên hướng dẫn và BA.
+**Xác nhận hướng dẫn của một hồ sơ có dùng cho hồ sơ khác cùng sinh viên không?** · **Chốt triển khai 24/11/2026 (BA/PO)** · Đầu mối UAT: Đại diện khoa, giảng viên hướng dẫn và BA.
 
 - **Use case.** Sinh viên xin xác nhận của giảng viên hướng dẫn để đủ điều kiện nộp đăng ký của nhóm. Với điều kiện giảng viên đã xác nhận cho hồ sơ A, sinh viên gửi hồ sơ B, khi nộp B, kết quả mong đợi là yêu cầu xác nhận riêng cho B.
-- **Khuyến nghị.** Gắn xác nhận với đúng đăng ký, kiểm khi sinh viên nộp chính thức.
+- **Quyết định.** Gắn xác nhận với đúng đăng ký, kiểm khi sinh viên nộp chính thức.
 - **Chứng cứ để ký.** Kiểm TC-03 cùng hai ca gốc và ghi giá trị thực tế. [US-27 · đặc tả](027-web-confirm-mentor/spec.md) · [Ca thử](027-web-confirm-mentor/quickstart.md) · [Phương án khác](027-web-confirm-mentor/research.md)
 
 ## RV-28
@@ -236,10 +236,10 @@ RV-31 đã tạm chốt để thử trên hồ sơ thực tế. RV-32 đã chố
 
 ## RV-29
 
-**Dùng quy tắc chứng cứ của trường nào khi cùng loại hội nghị?** · Chờ review · Phòng KHCN và đại diện giảng viên.
+**Dùng quy tắc chứng cứ của trường nào khi cùng loại hội nghị?** · **Chốt triển khai 24/11/2026 (BA/PO)** · Đầu mối UAT: Phòng KHCN và đại diện giảng viên.
 
 - **Use case.** Giảng viên khai một hoạt động hội nghị có minh chứng theo cấu hình của trường để đề nghị ghi nhận. Với điều kiện hai trường yêu cầu minh chứng khác nhau cho cùng một hội nghị, khi giảng viên trường A gửi, kết quả mong đợi là chỉ kiểm bộ minh chứng của A.
-- **Khuyến nghị.** Lấy bộ minh chứng của tenant và loại hoạt động tại bước gửi, nêu từng mục thiếu.
+- **Quyết định.** Lấy bộ minh chứng của tenant và loại hoạt động tại bước gửi, nêu từng mục thiếu.
 - **Chứng cứ để ký.** Kiểm TC-03 cùng hai ca gốc và ghi giá trị thực tế. [US-29 · đặc tả](029-web-submit-activity/spec.md) · [Ca thử](029-web-submit-activity/quickstart.md) · [Phương án khác](029-web-submit-activity/research.md)
 
 ## RV-30
@@ -308,3 +308,15 @@ RV-31 đã tạm chốt để thử trên hồ sơ thực tế. RV-32 đã chố
 - **Use case.** Trường đề nghị báo giá sau khảo sát. Khi phạm vi bao gồm kết nối hoặc di trú, hai bên chọn số hồ sơ, chi phí một lần và chỉ tiêu nghiệm thu.
 - **Quyết định.** Dùng mức giá tham khảo trong báo cáo thị trường để lập dự toán nội bộ. Trước khi gửi báo giá pilot, hai bên xác nhận ngân sách, số hồ sơ và tiêu chí nghiệm thu. Nếu có kết nối hệ thống hoặc chuyển dữ liệu cũ, báo giá ghi riêng phạm vi và chi phí một lần cho từng hạng mục. [Căn cứ dự toán nội bộ](../docs/sales/thi-truong-viet-nam-2026/README.md)
 - **Chứng cứ để ký.** Phạm vi đã xác nhận, chi phí trực tiếp và đầu mối mua sắm.
+
+## RV-38
+
+**Chốt triển khai 24/11/2026 (BA/PO)** · **Việc đến hạn hôm nay và việc thiếu hạn thuộc nhóm nào?** Dùng ngày nghiệp vụ Asia/Ho_Chi_Minh. Hai trường hợp thuộc Tất cả. Nhãn bộ lọc là Quá hạn và Tất cả. [Thẻ INVEST](../docs/product/mobile-invest.md) · [Đặc tả và người duyệt](033-mobile-triage-deadlines/spec.md).
+
+## RV-39
+
+**Chốt triển khai 24/11/2026 (BA/PO)** · **Lúc nào tin rời bộ lọc và khi quay lại thì bộ lọc nào còn hiệu lực?** B04 AC-06 đặt mốc khi mở tin. Lưu lựa chọn Chưa đọc trong URL danh sách để quay lại và tải lại cùng bộ lọc. [Thẻ INVEST](../docs/product/mobile-invest.md) · [Đặc tả và người duyệt](034-mobile-read-inbox/spec.md).
+
+## RV-40
+
+**Chốt triển khai 24/11/2026 (BA/PO)** · **Mặc định thu gọn theo trạng thái OPEN hay theo cả cửa sổ nhận?** Dùng cả ngày bắt đầu và hạn cuối như F01. Cho phép chuyển Tất cả để chuyên viên tìm lại các kỳ trong phạm vi. Mặc định chọn Đang nhận khi vào từ điện thoại. [Thẻ INVEST](../docs/product/mobile-invest.md) · [Đặc tả và người duyệt](035-mobile-find-open-call/spec.md).

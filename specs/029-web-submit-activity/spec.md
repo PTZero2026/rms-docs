@@ -5,7 +5,7 @@ epic: E4
 channel: web
 wave: C
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-24
 ---
 
 # Kê khai một hoạt động khoa học
@@ -16,7 +16,7 @@ updated: 2026-11-18
 
 ### Session 2026-11-18
 
-- Q: Dùng quy tắc chứng cứ của trường nào khi cùng loại hội nghị? → A: Lấy bộ minh chứng của tenant và loại hoạt động tại bước gửi, nêu từng mục thiếu. [RV-29](../review-decisions.md#rv-29). Khuyến nghị dùng để lập kế hoạch, chờ Phòng KHCN và đại diện giảng viên xác nhận.
+- Q: Dùng quy tắc chứng cứ của trường nào khi cùng loại hội nghị? → A: Lấy bộ minh chứng của tenant và loại hoạt động tại bước gửi, nêu từng mục thiếu. [RV-29](../review-decisions.md#rv-29). BA/PO chốt cho triển khai ngày 24/11/2026.
 
 ## User Scenarios & Testing
 
@@ -29,7 +29,7 @@ Giảng viên khai một hoạt động hội nghị có minh chứng theo cấu
 - **AC-01** (US-29.1) — Given đủ dữ liệu và minh chứng yêu cầu. When gửi duyệt. Then hoạt động vào danh sách chờ xét.
 - **AC-02** (US-29.2) — Given thiếu minh chứng bắt buộc của loại hoạt động. When gửi. Then nêu loại tệp cần bổ sung.
 
-- **AC-03** (US-29.3, khuyến nghị) — Given Hai trường yêu cầu minh chứng khác nhau cho cùng một hội nghị. When giảng viên trường A gửi. Then chỉ kiểm bộ minh chứng của A.
+- **AC-03** (US-29.3) — Given Hai trường yêu cầu minh chứng khác nhau cho cùng một hội nghị. When giảng viên trường A gửi. Then chỉ kiểm bộ minh chứng của A.
 
 ### Edge Cases
 
@@ -42,7 +42,7 @@ Thiếu minh chứng bắt buộc của loại hoạt động → nêu loại t�
 - **BR-01 / FR-001.** Khi đủ dữ liệu và minh chứng yêu cầu, người có quyền có thể gửi duyệt. Kết quả phải quan sát được: hoạt động vào danh sách chờ xét (AC-01).
 - **BR-02 / FR-002.** Với tình huống thiếu minh chứng bắt buộc của loại hoạt động, thao tác gửi phải cho kết quả nêu loại tệp cần bổ sung (AC-02).
 
-- **BR-03 / FR-003 (đề xuất).** Lấy bộ minh chứng của tenant và loại hoạt động tại bước gửi, nêu từng mục thiếu. Kiểm bằng AC-03.
+- **BR-03 / FR-003.** Lấy bộ minh chứng của tenant và loại hoạt động tại bước gửi, nêu từng mục thiếu. Kiểm bằng AC-03.
 
 ### Key Entities
 

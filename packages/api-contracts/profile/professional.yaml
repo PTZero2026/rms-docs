@@ -1,0 +1,43 @@
+Qualification:
+  type: object
+  required: [kind,name,year]
+  properties: {kind: {type: string, enum: [DEGREE,RANK]}, name: {type: string}, year: {type: integer}}
+Job:
+  type: object
+  required: [place,from,to]
+  properties: {place: {type: string}, from: {type: string, format: date}, to: {type: [string,'null'], format: date}}
+Fields:
+  type: object
+  additionalProperties: false
+  properties:
+    gender: {type: string}
+    birthDate: {type: string}
+    phone: {type: string}
+    address: {type: string}
+    affiliation: {type: string}
+    position: {type: string}
+    qualifications: {type: array, items: {$ref: '#/Qualification'}}
+    jobs: {type: array, items: {$ref: '#/Job'}}
+Update:
+  type: object
+  required: [revision,fullName,data]
+  properties: {revision: {type: integer}, fullName: {type: string}, data: {$ref: '#/Fields'}}
+Profile:
+  allOf:
+    - {$ref: '#/Update'}
+    - type: object
+      required: [email,institution,required,visible,units,positions,ranks,degrees]
+      properties:
+        email: {type: string}
+        institution: {type: string}
+        required: {type: array, items: {type: string}}
+        visible: {type: array, items: {type: string}}
+        units:
+          type: array
+          items:
+            type: object
+            required: [id,name]
+            properties: {id: {type: string}, name: {type: string}}
+        positions: {type: array, items: {type: string}}
+        ranks: {type: array, items: {type: string}}
+        degrees: {type: array, items: {type: string}}

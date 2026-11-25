@@ -1,0 +1,48 @@
+Input:
+  type: object
+  required: [code,name,startDate,endDate,fieldIds,templateId,criteriaId]
+  properties:
+    code: {type: string}
+    name: {type: string}
+    startDate: {type: string, format: date}
+    endDate: {type: string, format: date}
+    fieldIds: {type: array, items: {type: string, format: uuid}}
+    templateId: {type: string, format: uuid, nullable: true}
+    criteriaId: {type: string, format: uuid, nullable: true}
+    revision: {type: integer}
+Row:
+  allOf:
+    - {$ref: '#/Input'}
+    - type: object
+      required: [id,status,revision,receiving,templateName,formFields,fieldOptions]
+      properties:
+        id: {type: string, format: uuid}
+        status: {type: string, enum: [DRAFT,OPEN,CLOSED,CANCELLED]}
+        revision: {type: integer}
+        receiving: {type: boolean}
+        templateName: {type: string, nullable: true}
+        formFields: {type: array, items: {$ref: '../proposal/draft-proposal.yaml#/Field'}}
+        fieldOptions: {type: array, items: {type: object, required: [id,name], properties: {id: {type: string}, name: {type: string}}}}
+Change:
+  type: object
+  required: [action,revision]
+  properties:
+    action: {type: string, enum: [open,close,cancel,extend]}
+    reason: {type: string, maxLength: 2000, description: Căn cứ bắt buộc khi hủy kỳ hoặc mở lại kỳ đã đóng bằng gia hạn.}
+    revision: {type: integer}
+    endDate: {type: string, format: date}
+Reference:
+  type: object
+  required: [id,kind,name,revision]
+  properties:
+    id: {type: string, format: uuid}
+    kind: {type: string, enum: [field,form,criteria]}
+    name: {type: string}
+    revision: {type: integer}
+Listing:
+  type: object
+  required: [items,total,canManage]
+  properties:
+    items: {type: array, items: {$ref: '#/Row'}}
+    total: {type: integer}
+    canManage: {type: boolean}

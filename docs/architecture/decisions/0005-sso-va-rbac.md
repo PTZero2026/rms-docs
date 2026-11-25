@@ -13,10 +13,8 @@ nhiều vai trò với quyền khác nhau (chủ nhiệm, thành viên, chuyên 
 soát chặt phạm vi dữ liệu.
 
 ## Quyết định
-- **Xác thực** bằng SSO nội bộ (OIDC ưu tiên, hỗ trợ SAML); RMS không tự quản mật khẩu trừ tài khoản
-  nội bộ dự phòng.
-- **Phân quyền** bằng RBAC do RMS quản lý: quyền nguyên tử `MODULE.ACTION` → gom vào `Role` → gán `User`.
-  Kiểm tra quyền bắt buộc ở backend cho mọi API.
+- Keycloak xác thực qua OIDC theo [ADR-0008](0008-keycloak-idp-dang-nhap-email-otp.md). Khi IdP gián đoạn, Ops phục hồi dịch vụ.
+- RMS kiểm quyền tại backend theo một userType hiện hành, trạng thái và phạm vi dữ liệu. Admin tenant và chủ thể vận hành cấu hình shared có phạm vi riêng theo SA-02.
 
 ## Phương án đã cân nhắc
 - **A — SSO chứng thực + RBAC nội bộ (chọn):** tận dụng định danh sẵn có, nhưng RMS chủ động về vai trò
@@ -25,6 +23,6 @@ soát chặt phạm vi dữ liệu.
 - **C — Tự quản cả định danh lẫn quyền:** trùng hệ thống định danh tổ chức, tăng rủi ro bảo mật.
 
 ## Hệ quả
-- B03 quản lý vòng đời vai trò/quyền; SSO chỉ ánh xạ danh tính (claim email).
+- B03 quản lý vòng đời vai trò/quyền; định danh liên kết bằng issuer + sub.
 - Phạm vi dữ liệu (data scoping) theo vai trò: chủ nhiệm thấy đề tài của mình, chuyên viên theo đơn vị/kỳ.
 - FE/BO chỉ ẩn/hiện theo quyền; backend là lớp thực thi quyền duy nhất.

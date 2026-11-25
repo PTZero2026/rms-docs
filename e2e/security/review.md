@@ -1,0 +1,15 @@
+# Kiểm tra phòng vệ S1–S7
+
+Đối tượng là workspace cục bộ của RMS, hai trường giả lập dùng tài khoản riêng, hai DB PostgreSQL, hai realm, SMTP thử và kho S3 riêng cho lượt chạy. Kết quả từ nhà cung cấp pilot cần ghi theo đúng môi trường cấp cho trường. [Phạm vi QA và tiêu chí](../../docs/guides/kiem-thu-rms.md)
+
+| Mã | Kiểm soát đã đối chiếu | Phần cần người xác nhận |
+|---|---|---|
+| S1 | OTP, kiểm chữ ký và audience, cùng email ở hai realm, phiên bị khóa và đăng xuất. Cấp trước danh tính cho hai realm trong diễn tập khôi phục. [Ca OTP](../keycloak/otp.spec.ts) · [Đối chiếu tài khoản](../integration/account.spec.ts) · [Kết quả IdP](../release/idp-result.json) | IAM xác nhận cấu hình chống thử mã, hostname, SMTP TLS và xoay khóa trên tier đích. |
+| S2 | Chủ hồ sơ, người khác cùng trường, quản trị trường khác, người vừa mất thẩm quyền. So danh sách, đếm, truy cập nguồn, quyết định và tải lại báo cáo. [B02](../report/call-report/acceptance.spec.ts) · [F03](../../apps/backend/test/db/review.test.mjs) · [Trợ lý](../assistant/evidence/acceptance.spec.ts) | PO phân quyền thư ký, người nhập thay, người ký và chủ tài liệu hội đồng. |
+| S3 | Kiểm pool một kết nối qua 100 vòng hai tenant, FK ghép, rollback, cache shared/tenant và đọc lại theo role runtime sau restore. [PostgreSQL](../../apps/backend/test/db/isolation.test.mjs) · [B01](../catalog/config-override/review.md) · [Restore](../release/restore-result.json) | DBA đối chiếu grant theo cột và credential pooled/direct tại pilot. |
+| S4 | Theme draft, publish, rollback, portal và focus ở hai độ rộng màn hình. Phiên khác trường tiếp tục thấy token giao diện của chính trường đó. [Chromium](../integration/theme-admin.spec.ts) | Kiểm CSP tại hostname SPA/callback, back cache trên thiết bị dùng chung. |
+| S5 | SHA-256 và phạm vi tệp lúc gắn/tải, quyền hiện tại của bản CSV, phiên bản và phạm vi của PDF. Thu hẹp quyền thấy đề tài/ẩn trường lý lịch khiến PDF cũ bị từ chối tại lần tải kế tiếp. [S3](../../apps/backend/test/db/attachments.test.mjs) · [PDF](../../apps/backend/test/db/profile.test.mjs) | DPO chốt thời hạn lưu và chính sách xử lý nội dung Office/PDF. |
+| S6 | Đối chiếu cạnh hợp lệ, log append-only, rollback và cạnh tranh. Worker xử lý lại event giữ đúng số bản; sổ giờ dùng nguồn và phiên bản hệ số ban đầu. [P01](../../apps/backend/test/db/workflow.test.mjs) · [Worker](../../apps/backend/test/db/notification.test.mjs) · [P03](../../apps/backend/test/db/teaching.test.mjs) | Đối soát mở lại kết luận và thu hồi giờ theo quy chế của trường. |
+| S7 | Header mặc định của API, kể cả phản hồi lỗi; B01 giới hạn origin, MIME và cache. Đối chiếu phụ thuộc production với npm registry. Diễn tập khôi phục DB, object và IdP riêng. [Ca HTTP](../../apps/backend/test/health.test.mjs) · [Quét dấu hiệu credential](scan.py) · [Kết quả khôi phục](../release/README.md) | Kiểm lớp ingress, phân quyền secret, lưu giữ bản sao và ngân sách/độ trễ tại môi trường thuê thật. |
+
+Các hạng mục có chủ trì, ưu tiên và điều kiện đóng trong [danh sách sửa bảo mật](../../docs/reviews/viec-can-sua-bao-mat.md).

@@ -1,0 +1,33 @@
+RuleStatus:
+  type: object
+  required: [code, label, title, mailSubject, mandatory, highPriority, email, ownEmail, sms, ownSms, hasPhone, revision]
+  properties:
+    code: {type: string}
+    label: {type: string}
+    title: {type: string}
+    mailSubject: {type: string}
+    mandatory: {type: boolean}
+    highPriority: {type: boolean}
+    email: {type: boolean}
+    sms: {type: boolean}
+    ownEmail: {type: boolean}
+    ownSms: {type: boolean}
+    hasPhone: {type: boolean}
+    revision: {type: integer}
+RuleList:
+  type: array
+  items: {$ref: '#/RuleStatus'}
+PreferenceInput:
+  type: object
+  required: [code, email]
+  properties: {code: {type: string}, email: {type: boolean}, sms: {type: boolean}}
+RuleInput:
+  type: object
+  required: [code, email, title, mailSubject, revision]
+  properties:
+    code: {type: string}
+    email: {type: boolean}
+    sms: {type: boolean}
+    title: {type: string}
+    mailSubject: {type: string}
+    revision: {type: integer, minimum: 0}

@@ -1,0 +1,18 @@
+Schedule:
+  type: object
+  required: [period,dueDate]
+  properties: {period: {type: integer,minimum: 1},dueDate: {type: string,format: date}}
+Period:
+  allOf:
+    - {$ref: '#/Schedule'}
+    - type: object
+      required: [id,status,revision,late,submittedAt,content,comment,fileId]
+      properties:
+        id: {type: string}
+        status: {type: string,enum: [PENDING_SUBMISSION,SUBMITTED,PASSED,REVISION_REQUESTED]}
+        revision: {type: integer}
+        late: {type: boolean}
+        submittedAt: {type: string,format: date-time,nullable: true}
+        content: {type: string,nullable: true}
+        comment: {type: string,nullable: true}
+        fileId: {type: string,nullable: true}

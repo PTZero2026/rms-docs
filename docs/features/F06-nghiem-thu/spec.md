@@ -3,9 +3,9 @@ title: "Nghiệm thu"
 id: "F06"
 epic: "E2"
 owner: "PO/BA"
-status: Draft        # Draft | Review | Approved
+status: Review
 version: 0.1
-updated: 2026-11-21
+updated: 2026-11-24
 ---
 
 # Nghiệm thu
@@ -184,11 +184,11 @@ F06 thao tác với `type=ACCEPTANCE`.
 - **B04** — thông báo lịch & kết quả nghiệm thu, làm lại, hoàn thành.
 - **F03** — dùng chung mô hình hội đồng/phiếu chấm ([ADR-0003](../../architecture/decisions/0003-mo-hinh-hoi-dong-dung-chung.md)); thay đổi model cân nhắc cả hai.
 
-**Rủi ro & điểm cần làm rõ:**
-- **Định nghĩa "đủ sản phẩm cam kết" (BR-01):** đồng bộ chính xác với F04 BR-10 và F07 — đếm theo loại/số
-  lượng từ thuyết minh? Cần PO chốt nguồn dữ liệu chung.
-- **Ai sở hữu chuyển `PASSED → COMPLETED`:** F06 hay F05 kích hoạt — thống nhất domain service dùng chung,
-  F05 cung cấp điều kiện quyết toán (xem F05 §7).
-- **Chính sách làm lại (BR-10):** số lần tối đa, thời hạn, và xử lý khi quá hạn/quá số lần (đóng không đạt?
-  chuyển hội đồng?). Cần PO chốt.
-- **Mở lại đợt sau kết luận (BR-12):** quyền & quy trình mở lại cần làm rõ.
+**Quyết định nghiệm thu.** Kiểm kỳ cuối PASSED và từng loại/số lượng cam kết đã chốt khi giao. Đếm mỗi sản phẩm APPROVED đúng đề tài một lần. F06 chốt kết quả vòng ACCEPTANCE, F05 sở hữu lệnh quyết toán và gọi P01 để đóng. Khi làm lại, chuyên viên đặt hạn và lý do, kiểm số lần theo MAX_REDO_COUNT của tenant. Nếu hết hạn hoặc hết lượt, giữ trạng thái, chuyển việc cho chuyên viên xử lý theo quy chế. Mở lại vòng đã kết luận cần quyền chuyên viên, lý do và audit, bảo toàn kết luận cũ. Hồ sơ đã khóa sổ cần xử lý đính chính riêng.
+
+## Phạm vi BA/PO đã chốt cho task
+
+| Quyết định | AC nguồn | Hành vi ở ca biên |
+|---|---|---|
+| [RV-22](../../../specs/review-decisions.md#rv-22) | AC-07 | Kiểm từng loại cam kết tại lúc nộp cùng kết quả kỳ cuối. |
+| [RV-23](../../../specs/review-decisions.md#rv-23) | AC-06 | Chỉ tính phiếu đã gửi của đợt nghiệm thu đang kết luận. |

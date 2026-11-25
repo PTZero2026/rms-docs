@@ -1,7 +1,7 @@
 ---
 title: "Lộ trình sản phẩm RMS"
 status: Review
-updated: 2026-11-21
+updated: 2026-11-24
 ---
 
 # Lộ trình sản phẩm RMS
@@ -10,8 +10,8 @@ Lộ trình theo kỳ nghiệp vụ. Phòng khoa học và PO chọn kỳ, số 
 
 | Đợt | Phạm vi ưu tiên | Bằng chứng để chuyển đợt |
 |---|---|---|
-| A · US-01–13 | B03/B01/P01/P02 làm nền. F02/F01/F03 mở kỳ, nộp lại cùng mã, chấm và kết luận. B06 dẫn tới việc cần xử lý trên điện thoại. B02 đếm theo kỳ. | Chạy một kỳ với hai đơn vị, đối chiếu số đề tài với danh sách đã chốt, kiểm quyền cả dòng và tổng. Đo thời gian xử lý và số hồ sơ phải bổ sung. Nếu có thẩm định đạo đức, xác nhận điểm chặn trước công bố kết quả. |
-| B · US-14–25 | F04/B04 giao đề tài, nhắc và nhận báo cáo. F05 ghi cấp/chi. F07 duyệt đầu ra, F06 nghiệm thu. F05 khóa sổ, F08 xuất lý lịch. | Từ quyết định giao đến hồ sơ cuối có đủ chứng cứ và nhật ký. PO, QLKH và tài chính thống nhất điều kiện khóa sổ. Đối soát tự động chỉ lập kế hoạch khi có hệ thống đối tác, dữ liệu mẫu và người chịu trách nhiệm. |
+| A · US-01–13, bổ sung mobile US-33–35 | B03/B01/P01/P02 làm nền. F02/F01/F03 mở kỳ, nộp lại cùng mã, chấm và kết luận. B06 dẫn tới việc cần xử lý trên điện thoại. B02 đếm theo kỳ. | Chạy một kỳ với hai đơn vị, đối chiếu số đề tài với danh sách đã chốt, kiểm quyền cả dòng và tổng. Đo thời gian xử lý và số hồ sơ phải bổ sung. Khi đạo đức bắt buộc, kiểm các nhánh của RV-11. |
+| B · US-14–25 | F04/B04 giao đề tài, nhắc và nhận báo cáo. F05 ghi cấp/chi. F07 duyệt đầu ra, F06 nghiệm thu. F05 khóa sổ, F08 xuất lý lịch. | Từ quyết định giao đến hồ sơ cuối có đủ chứng cứ và nhật ký. QA kiểm hai chế độ khóa sổ theo RV-24. Đối soát tự động chỉ lập kế hoạch khi có hệ thống đối tác, dữ liệu mẫu và người chịu trách nhiệm. |
 | C · US-26–32 | Kích hoạt riêng F09–F12 và P03 theo quy chế từng trường. Hai thử nghiệm AI rà thuyết minh và tạo thẻ đọc có dẫn nguồn thuộc F01/F07. | Tại Thủy lợi, Trường ký ít nhất một ví dụ đầu vào–kết quả cho từng phân hệ E4 trước khi bật. Chủ dữ liệu duyệt nguồn AI, QA đo sai dẫn chứng, lọt quyền, độ chính xác và khả năng tiếp tục thủ công. [RV-36](../../specs/review-decisions.md#rv-36) |
 
 Đợt A chạy thử tại Trường Đại học Thủy lợi, kỳ đề tài cấp cơ sở năm 2027. Danh sách hồ sơ đã chốt của kỳ cấp cơ sở liền trước do Phòng KHCN quản lý là mốc so sánh. Báo cáo B02 đối chiếu với danh sách hồ sơ của kỳ 2027. Trưởng phòng KHCN ký kết quả đợt A khi nghiệm thu. [RV-33](../../specs/review-decisions.md#rv-33)

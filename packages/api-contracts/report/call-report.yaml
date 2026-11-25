@@ -1,0 +1,39 @@
+Option:
+  type: object
+  required: [id,label]
+  properties: {id: {type: string,format: uuid},label: {type: string}}
+Filters:
+  type: object
+  required: [calls,units]
+  properties:
+    calls: {type: array,items: {$ref: '#/Option'}}
+    units: {type: array,items: {$ref: '#/Option'}}
+Input:
+  type: object
+  required: [callId]
+  properties:
+    callId: {type: string,format: uuid}
+    unitId: {type: string,format: uuid}
+Row:
+  type: object
+  required: [id,code,title,unitId,unit,semantic]
+  properties:
+    id: {type: string}
+    code: {type: string}
+    title: {type: string}
+    unitId: {type: string}
+    unit: {type: string}
+    semantic: {type: string}
+Snapshot:
+  type: object
+  required: [id,callId,callCode,capturedAt,units,unitIds,groups,total,rows]
+  properties:
+    id: {type: string}
+    callId: {type: string,format: uuid}
+    callCode: {type: string}
+    capturedAt: {type: string,format: date-time}
+    units: {type: array,items: {type: string}}
+    unitIds: {type: array,items: {type: string,format: uuid}}
+    total: {type: integer}
+    groups: {type: object,additionalProperties: {type: integer}}
+    rows: {type: array,items: {$ref: '#/Row'}}

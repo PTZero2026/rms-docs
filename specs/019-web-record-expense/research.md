@@ -3,14 +3,14 @@ story: US-19
 feature: F05
 review_id: RV-19
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-24
 ---
 
 # Căn cứ và quyết định · US-19
 
 **Vấn đề.** Khoản chi vượt mức thực hiện xử lý thế nào?
 
-**Khuyến nghị hiện dùng.** Lưu khoản hợp lệ, hiển thị số vượt và số dư mới, để chuyên viên rà khi đóng.
+**Quyết định triển khai.** Lưu khoản hợp lệ, hiển thị số vượt và số dư mới, để chuyên viên rà khi đóng.
 
 **Lý do.** Trong trường hợp còn 2 triệu, khoản chi đúng 2 triệu đồng, người dùng cần thấy kết quả “số dư bằng 0 và không cảnh báo vượt”. Phương án khác: Chặn mọi khoản vượt số còn lại. Dùng TC-03 để phân biệt hai phương án. [RV-19](../review-decisions.md#rv-19)
 

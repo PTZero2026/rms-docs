@@ -1,0 +1,42 @@
+{
+  "name": "@rms/backend",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "pnpm build && node --watch dist/main.js",
+    "start": "node dist/main.js",
+    "typecheck": "tsc --noEmit",
+    "test": "pnpm build && node --test test/*.test.mjs"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.1176.0",
+    "@aws-sdk/s3-presigned-post": "^3.1176.0",
+    "@aws-sdk/s3-request-presigner": "^3.1176.0",
+    "@nestjs/common": "11.2.11",
+    "@nestjs/core": "11.2.11",
+    "@nestjs/platform-express": "11.2.11",
+    "@rms/api-contracts": "workspace:*",
+    "file-type": "^22.3.0",
+    "jose": "^6.2.18",
+    "pdfmake": "^0.3.15",
+    "pg": "^8.16.3",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2"
+  },
+  "devDependencies": {
+    "@types/node": "^24",
+    "@types/pg": "^8",
+    "typescript": "~6.0.2"
+  },
+  "exports": {
+    "./call-expiry": "./dist/modules/call/expiry.js",
+    "./deadline-reminders": "./dist/modules/notification/deadline-reminder/consumer.js",
+    "./notification-worker": "./dist/modules/notification/worker.js",
+    "./verify-token": {
+      "types": "./src/modules/iam/token.ts",
+      "import": "./dist/modules/iam/token.js"
+    },
+    "./teaching-hours": "./dist/modules/teaching-hour/teaching-hours/consumer.js"
+  }
+}

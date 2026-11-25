@@ -2,7 +2,7 @@
 title: "Kế hoạch kiểm thử RMS theo feature, bảo mật và tải"
 owner: "QA lead / SA"
 status: Review
-updated: 2026-11-21
+updated: 2026-11-24
 ---
 
 # Kiểm chứng RMS từ feature đến kỳ pilot
@@ -11,13 +11,13 @@ updated: 2026-11-21
 
 ## Bộ dữ liệu và các lớp kiểm tra
 
-Dùng mã tenant A/B, cùng địa chỉ email ở hai realm, cùng mã đề tài hiển thị ở hai tenant, hai khoa A1/A2 và một kỳ đang mở. Seed admin, chủ nhiệm, thành viên, chuyên viên một khoa, hội đồng có người xung đột, người chỉ xem và người bị khóa. Một đề tài cần đạo đức, một đề tài bị trả rồi nộp lại, một nháp chưa có mã. Có file cùng tên ở hai trường và theme có màu đối nghịch. Đồng hồ test cố định quanh hạn nộp, lưu UTC và so ngày dd/MM/yyyy theo Asia/Ho_Chi_Minh.
+Dùng mã tenant A/B, cùng địa chỉ email ở hai realm, cùng hậu tố số thứ tự ở hai tenant, projectCode đầy đủ duy nhất, hai khoa A1/A2 và một kỳ đang mở. Seed admin, chủ nhiệm, thành viên, chuyên viên một khoa, hội đồng có người xung đột, người chỉ xem và người bị khóa. Một đề tài cần đạo đức, một đề tài bị trả rồi nộp lại, một nháp chưa có mã. Có file cùng tên ở hai trường và theme có màu đối nghịch. Đồng hồ test cố định quanh hạn nộp, lưu UTC và so ngày dd/MM/yyyy theo Asia/Ho_Chi_Minh.
 
 | Tần suất | Ai chạy | Phép thử và vật chứng |
 |---|---|---|
 | Mỗi thay đổi | AI thực hiện + CI | Unit cho guard, làm tròn VND, trạng thái, schema token. Validate OpenAPI và generate client sạch. Kiểm diff migration và dependency lock |
 | Mỗi PR chạm dữ liệu hoặc IAM | BE + QA | PostgreSQL thật, runtime role + pooled connection, Keycloak/SPI thật với inbox test. Kiểm constraint, transaction, cache Redis và lệnh cạnh tranh. Lưu assertion từ API và trạng thái DB |
-| Trước nhận từng lát | QA | TC-01–04 trong quickstart của lát, test-plan feature và luồng trình duyệt theo quyền. Chụp UI ở điểm quyết định, đánh dấu ca chưa trong đợt. Mỗi TC-03 có kết quả review RV |
+| Trước nhận từng lát | QA | TC-01–04 trong quickstart của lát, test-plan feature và luồng trình duyệt theo quyền. Chụp UI ở điểm quyết định, đánh dấu ca chưa trong đợt. Đối chiếu TC-03 với RV ở US-01–32. US-33–35 dùng ánh xạ RV/AC trong T006 |
 | Cuối đợt | QA lead, Ops, PO | Chạy liên module trên bộ deploy thử, kiểm S1–S7, tải định lượng, restore và UAT. Biên bản gồm commit, migration, vùng, tier, seed, thời điểm, điều kiện đo và lỗi mở |
 
 ## Phạm vi của từng feature
@@ -30,13 +30,13 @@ Mở test plan ở cột đầu để lấy điều kiện, thao tác và kết 
 | [B01 · Cấu hình](../features/B01-danh-muc-cau-hinh/test-plan.md) | 02 | Xóa override A khi key đã được cache. A quay về shared, B giữ override riêng. Đổi bản shared cũng phải làm mới các kết quả fallback |
 | [P01 · Workflow](../features/P01-workflow-engine/test-plan.md) | 03 | Hồ sơ cũ ở graph v1, hồ sơ mới vào v2. Thử guard lỗi và hai yêu cầu chuyển cùng version |
 | [P02 · Audit](../features/P02-audit/test-plan.md) | 04 | Một lệnh commit và một lệnh rollback. So số dòng, actor, tenant và quyền sửa nhật ký |
-| [F02 · Kỳ nhận đề xuất](../features/F02-dot-keu-goi/test-plan.md) | 05 | Mở kỳ và dịch đồng hồ qua giờ đóng. Thử nộp ở biên, đóng/gia hạn và đối chiếu theo giờ máy chủ |
+| [F02 · Kỳ nhận đề xuất](../features/F02-dot-keu-goi/test-plan.md) | 05, 35 | Mở kỳ và dịch đồng hồ qua giờ đóng. Thử nộp ở biên, đóng/gia hạn và đối chiếu theo giờ máy chủ |
 | [F01 · Đề xuất](../features/F01-de-xuat-de-tai/test-plan.md) | 06–08, 31 | Gửi hai lần, nhận một mã. Trả, sửa, nộp lại giữ mã. US-31 kiểm quyền nguồn và phương án thủ công |
 | [F03 · Xét duyệt](../features/F03-xet-duyet-hoi-dong/test-plan.md) | 09–11 | Chủ nhiệm có tên trong hội đồng bị chặn tự chấm. Thiếu phiếu hoặc thiếu kết luận đạo đức bắt buộc giữ hồ sơ chưa duyệt |
-| [B06 · Trang chủ](../features/B06-trang-chu/test-plan.md) | 12 | Trên màn hình 390 px, mở việc đúng feature sở hữu. Thu hồi quyền giữa hai màn hình thì chi tiết bị chặn. Đọc widget giữ nguyên trạng thái |
+| [B06 · Trang chủ](../features/B06-trang-chu/test-plan.md) | 12, 33 | Trên màn hình 390 px, mở việc đúng feature sở hữu. Thu hồi quyền giữa hai màn hình thì chi tiết bị chặn. Đọc widget giữ nguyên trạng thái |
 | [B02 · Báo cáo kỳ](../features/B02-bao-cao-thong-ke/test-plan.md) | 13 | Ba mã, một lần nộp lại, một nháp chưa cấp mã cho tổng ba. Sau thu hồi quyền một khoa, bản xuất cũ bị chặn |
 | [F04 · Tiến độ](../features/F04-quan-ly-tien-do/test-plan.md) | 14, 15, 17 | Thử giao thiếu căn cứ rồi giao đủ. Kiểm báo cáo trễ và yêu cầu sửa có lý do. Kỳ cuối chưa đạt chặn nghiệm thu |
-| [B04 · Thông báo](../features/B04-thong-bao/test-plan.md) | 16 | Chạy hai worker cùng mốc nhắc. Một thông báo in-app cho đúng người. Trì hoãn SMTP và kiểm retry riêng |
+| [B04 · Thông báo](../features/B04-thong-bao/test-plan.md) | 16, 34 | Chạy hai worker cùng mốc nhắc. Một thông báo in-app cho đúng người. Trì hoãn SMTP và kiểm retry riêng |
 | [F05 · Kinh phí](../features/F05-quan-ly-kinh-phi/test-plan.md) | 18, 19, 24 | So phí quản lý, số được chi và chứng từ. Ở PASSED thử pilot rà thủ công. Khi bật đối soát, thử MATCHED toàn bộ, còn UNRECONCILED và còn MISMATCHED theo RV-24 |
 | [F07 · Sản phẩm](../features/F07-san-pham-khoa-hoc/test-plan.md) | 20, 21, 32 | Nộp thiếu rồi đủ minh chứng. Chỉ sản phẩm đã duyệt được tính vào cam kết. Với DOI, phân biệt metadata và toàn văn có quyền |
 | [F06 · Nghiệm thu](../features/F06-nghiem-thu/test-plan.md) | 22, 23 | Thiếu một loại sản phẩm chặn đăng ký. Kiểm ngưỡng điểm, giới hạn làm lại, thiếu phiếu và khóa sau khi kết luận |

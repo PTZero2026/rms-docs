@@ -3,7 +3,7 @@ title: "Nghiệm thu — kế hoạch kiểm thử"
 spec: "./spec.md"
 owner: "QA nghiệp vụ"
 status: Review
-updated: 2026-11-21
+updated: 2026-11-24
 ---
 
 # Nghiệm thu cuối kỳ
@@ -26,3 +26,14 @@ Dựng một đề tài đang thực hiện, kỳ cuối, sản phẩm đã duy�
 | TC-12 | AC-12 | `EvaluationRound=CONCLUDED` | thành viên cố gửi/sửa phiếu | bị từ chối (BR-12). |
 
 Với TC-04, thử cả pilot đã rà thủ công và đơn vị bật đối soát có mọi khoản `MATCHED`. TC-10 đối chiếu từng khoản chặn với TC-03 của [US-24](../../../specs/024-shared-close-project/quickstart.md). QA lưu số phiếu, trạng thái trước/sau và sự kiện audit cho từng ca. [Nguồn AC](spec.md)
+
+## Ca biên theo quyết định triển khai
+
+| Ca | AC nguồn | Điều kiện | Thao tác | Kết quả |
+|---|---|---|---|---|
+| TC-13 · [US-22/TC-03](../../../specs/022-web-request-acceptance/quickstart.md) | AC-07 | Cam kết một bài và một sáng chế, đã duyệt hai bài | đăng ký nghiệm thu | nêu thiếu sáng chế và giữ IN_PROGRESS |
+| TC-14 · [US-23/TC-03](../../../specs/023-shared-acceptance-result/quickstart.md) | AC-06 | Đợt nghiệm thu thiếu một phiếu, đề tài có một phiếu xét duyệt đầu vào | chốt kết luận | vẫn thiếu một phiếu, chưa chuyển PASSED |
+
+### Ngoại lệ sau kết luận · BR-12
+
+Chuyên viên gửi hai lệnh mở lại cùng phiên bản. Kiểm một dòng lịch sử, một lần mở lại, lý do và đúng điểm/ngưỡng ban đầu. Chốt lại bằng màn hình cũ nhận 409. Tải lại vòng rồi chốt theo phiên bản mới. Khi hồ sơ đã đi tiếp, kiểm người nhận đính chính trong B04 và trạng thái đề tài. [Ca dữ liệu F06](../../../apps/backend/test/db/acceptance.test.mjs) · [Luồng chuyên viên trên trình duyệt](../../../e2e/acceptance/request-acceptance/acceptance.ts)

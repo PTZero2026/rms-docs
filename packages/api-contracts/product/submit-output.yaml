@@ -1,0 +1,70 @@
+Draft:
+  type: object
+  required: [title,kind,year,publication,authors,files,revision]
+  properties:
+    title: {type: string}
+    kind: {type: string}
+    year: {type: integer,nullable: true}
+    publication: {type: string}
+    authors: {type: array,items: {type: string,format: uuid}}
+    files: {type: array,items: {type: string,format: uuid}}
+    revision: {type: integer}
+Submit:
+  type: object
+  required: [revision,distinct]
+  properties: {revision: {type: integer},distinct: {type: boolean}}
+Revoke:
+  type: object
+  required: [reason]
+  properties: {reason: {type: string}}
+Output:
+  allOf:
+    - {$ref: '#/Draft'}
+    - type: object
+      required: [id,ownerId,reason,status]
+      properties:
+        id: {type: string,format: uuid}
+        ownerId: {type: string,format: uuid}
+        reason: {type: string}
+        status: {type: string,enum: [DRAFT,PENDING_APPROVAL,APPROVED,REJECTED]}
+Project:
+  type: object
+  required: [id,title,status,revision,canReview,principal,items,authors,files,commitments]
+  properties:
+    id: {type: string}
+    title: {type: string}
+    status: {type: string}
+    revision: {type: integer}
+    canReview: {type: boolean}
+    principal: {type: boolean}
+    items: {type: array,items: {$ref: '#/Output'}}
+    authors: {type: array,items: {$ref: '../review/open-review.yaml#/Option'}}
+    files: {type: array,items: {$ref: '../review/open-review.yaml#/Option'}}
+    commitments:
+      type: array
+      items:
+        type: object
+        required: [kind,required,approved,missing]
+        properties: {kind: {type: string},required: {type: integer},approved: {type: integer},missing: {type: integer}}
+Independent:
+  allOf:
+    - {$ref: '#/Output'}
+    - type: object
+      required: [canEdit,canReview,attachments,unitId,authorLabels]
+      properties:
+        unitId: {type: string,format: uuid}
+        authorLabels: {type: array,items: {type: string}}
+        canEdit: {type: boolean}
+        canReview: {type: boolean}
+        attachments:
+          type: array
+          items: {$ref: '../review/open-review.yaml#/Option'}
+IndependentPage:
+  type: object
+  required: [actorId,canCreate,defaultAuthorId,items,authors]
+  properties:
+    actorId: {type: string,format: uuid}
+    canCreate: {type: boolean}
+    defaultAuthorId: {type: [string,'null'],format: uuid}
+    items: {type: array,items: {$ref: '#/Independent'}}
+    authors: {type: array,items: {$ref: '../review/open-review.yaml#/Option'}}

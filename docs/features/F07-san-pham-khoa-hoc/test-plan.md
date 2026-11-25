@@ -4,7 +4,7 @@ spec: "./spec.md"
 owner: "TEST"
 status: Review
 version: 0.2
-updated: 2026-07-04
+updated: 2026-11-25
 ---
 
 # Sản phẩm khoa học — Kế hoạch kiểm thử
@@ -60,3 +60,23 @@ updated: 2026-07-04
 - [B01](../B01-danh-muc-cau-hinh/): đổi nhãn/ẩn `ProductType` không phá sản phẩm lịch sử; sản phẩm mới không chọn được loại inactive.
 - [B03](../B03-quan-ly-nguoi-dung/): RBAC `PRODUCT.*` và data scoping áp ở backend.
 - Audit: mọi tạo/gửi duyệt/duyệt/từ chối/mở lại/đính/gỡ minh chứng ghi append-only.
+
+## Ca biên theo quyết định triển khai
+
+| Ca | AC nguồn | Điều kiện | Thao tác | Kết quả |
+|---|---|---|---|---|
+| TC-18 · [US-20/TC-03](../../../specs/020-web-submit-output/quickstart.md) | AC-05 | Tệp đính kèm đã bị thu quyền trước khi gửi | nộp sản phẩm | báo minh chứng chưa hợp lệ, giữ nháp |
+| TC-19 · [US-21/TC-03](../../../specs/021-shared-approve-output/quickstart.md) | AC-11 | Cùng một đầu ra vừa duyệt, cam kết còn thiếu một sản phẩm cùng loại | gửi lại lệnh duyệt | chỉ một đầu ra được tính, mục cam kết vẫn thiếu một |
+
+## Thẻ đọc DOI
+
+| Ca | AC nguồn | Điều kiện | Thao tác | Kết quả |
+|---|---|---|---|---|
+| TC-20 | AC-14 | bài có đoạn phương pháp | lập thẻ | trường phương pháp có dẫn trang hoặc đoạn để người đọc kiểm lại |
+| TC-21 | AC-14 | chỉ có metadata | lập thẻ | chỉ điền tên bài, tác giả, năm và DOI trong phạm vi được phép. Phương pháp và kết quả ghi “chưa đủ căn cứ”. Người đọc kiểm thẻ và chọn dùng hoặc bỏ |
+| TC-22 | AC-14 | Tài liệu có DOI nhưng quyền dùng toàn văn đã hết | mở lại thẻ cũ rồi lập lại thẻ | cả hai lần chỉ hiện thông tin thư mục còn được phép. Phương pháp và kết quả ghi “chưa đủ căn cứ”. Trích đoạn toàn văn cũ vắng mặt trong kết quả và dữ liệu gửi cho mô hình |
+| TC-23 | AC-14 | Người tenant B có cùng vai trò nhưng chỉ có mã/đường dẫn của A | Yêu cầu lại dữ liệu hoặc thao tác của A | Không trả nội dung riêng của A và không thay đổi bản ghi A |
+
+**BR-04 / AC-01.** Thêm mã riêng của trường và đối chiếu nhãn trong biểu mẫu. Ngừng dùng loại giữa lúc lưu nháp và gửi duyệt. Kiểm hồ sơ còn nháp, sau khi trường bật lại thì gửi được với minh chứng nguyên vẹn. Kiểm riêng cam kết đã chốt có mã ngừng dùng ở F01/F04. [Kịch bản trình duyệt](../../../e2e/catalog/product-types/acceptance.spec.ts) · [F01](../../../apps/backend/test/db/proposals.test.mjs) · [F04](../../../apps/backend/test/db/progress.test.mjs)
+
+**AC-02, AC-04, AC-05, AC-08 đến AC-10 và AC-13.** Tạo sản phẩm độc lập có hai tác giả, tải và xác nhận tệp theo đúng sản phẩm. Kiểm chuyên viên khác khoa, đồng tác giả tự duyệt, gửi trùng, từ chối rồi gửi lại, hai yêu cầu duyệt, mở lại có lý do và sự hiện diện trên lý lịch mỗi tác giả. [PostgreSQL](../../../apps/backend/test/db/independent-products.test.mjs) · [Chrome](../../../e2e/product/independent/acceptance.spec.ts)

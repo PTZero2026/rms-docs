@@ -3,14 +3,14 @@ story: US-20
 feature: F07
 review_id: RV-20
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-24
 ---
 
 # Căn cứ và quyết định · US-20
 
 **Vấn đề.** Một tệp có trong thư viện nhưng người dùng vừa mất quyền có thể làm minh chứng không?
 
-**Khuyến nghị hiện dùng.** Kiểm lại quyền sử dụng tệp tại lúc gửi, yêu cầu thay tệp khi quyền hết hiệu lực.
+**Quyết định triển khai.** Kiểm lại quyền sử dụng tệp tại lúc gửi, yêu cầu thay tệp khi quyền hết hiệu lực.
 
 **Lý do.** Trong trường hợp tệp đính kèm đã bị thu quyền trước khi gửi, người dùng cần thấy kết quả “báo minh chứng chưa hợp lệ, giữ nháp”. Phương án khác: Chỉ kiểm khi chọn tệp trên giao diện. Dùng TC-03 để phân biệt hai phương án. [RV-20](../review-decisions.md#rv-20)
 

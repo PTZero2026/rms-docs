@@ -1,0 +1,32 @@
+{
+  "name": "@rms/api-contracts",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/client.ts",
+      "import": "./src/client.ts"
+    },
+    "./home-layout": "./src/home-layout.ts",
+    "./theme": "./src/theme.ts",
+    "./catalog-registry": "./catalog/registry.json",
+    "./products": "./src/products.ts",
+    "./workflow": "./src/workflow-preset.ts",
+    "./teaching-calendar": "./src/teaching-calendar.ts",
+    "./student-calls": "./src/student-calls.ts",
+    "./notification-retry": "./src/notification-retry.ts"
+  },
+  "scripts": {
+    "generate": "openapi-typescript openapi.yaml -o src/schema.d.ts",
+    "check": "openapi-typescript openapi.yaml -o src/schema.d.ts --check",
+    "typecheck": "tsc --noEmit",
+    "build": "pnpm check && pnpm typecheck"
+  },
+  "dependencies": {
+    "openapi-fetch": "^0.15.0"
+  },
+  "devDependencies": {
+    "openapi-typescript": "^7",
+    "typescript": "~5.9.3"
+  }
+}

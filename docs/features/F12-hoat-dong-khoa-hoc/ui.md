@@ -1,14 +1,14 @@
 ---
 title: "Hoạt động khoa học & minh chứng — Giao diện (một web app, phân quyền)"
 spec: "./spec.md"
-owner: "<BA/Designer>"
-status: Draft
-updated: 2026-06-24
+owner: "BA / Design"
+status: Review
+updated: 2026-11-25
 ---
 
 # Hoạt động khoa học & minh chứng — Giao diện
 
-> Khung mẫu — hoàn thiện sau khi chốt spec. Một form cấu hình theo **loại hoạt động**
+> Một form cấu hình theo **loại hoạt động**
 > (hội nghị/cộng đồng/SHTT). Luật nghiệp vụ → `./spec.md`.
 
 ## 1. Đối tượng & phân quyền
@@ -30,4 +30,6 @@ Form **động theo loại hoạt động**: hội nghị (tờ trình cử đi,
 (minh chứng tham gia), SHTT (văn bằng/đơn đăng ký). Trạng thái phê duyệt + khoản kinh phí hỗ trợ.
 
 ## 6. Liên kết AC
-Map MH ↔ AC-01..04 trong `spec.md`.
+MH-01 dùng AC-01, AC-02 để đổi form theo loại và chỉ rõ minh chứng thiếu khi gửi. MH-02 dùng AC-03, AC-04 để trả lại hoặc duyệt và xem kết quả ghi nhận.
+
+Trên MH-02, chuyên viên nhập **Kinh phí hỗ trợ được duyệt (VND)** khi hoạt động được hỗ trợ. Khi duyệt xong, giảng viên và chuyên viên thấy số tiền đã duyệt trên hồ sơ. **Trả lại đầu mục** cho phép giảng viên bổ sung trên hồ sơ cũ. **Từ chối hoạt động** kết thúc kê khai và hiển thị lý do. [Hướng dẫn thao tác](../../guides/nguoi-dung/nhiem-vu-va-hoat-dong.md)

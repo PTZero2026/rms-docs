@@ -1,0 +1,92 @@
+Revision:
+  type: object
+  required: [revision]
+  properties:
+    revision: {type: integer, minimum: 0}
+Draft:
+  allOf:
+    - {$ref: '#/Revision'}
+    - type: object
+      required: [unitId,title,partners,amount]
+      properties:
+        partnerCodes: {type: array, maxItems: 50, uniqueItems: true, items: {type: string}}
+        category: {type: string}
+        members: {type: array, items: {$ref: '#/Member'}}
+        unitId: {type: string, format: uuid}
+        title: {type: string}
+        partners: {type: array, items: {type: string}}
+        amount: {type: string, pattern: '^[0-9]{1,18}$'}
+Record:
+  allOf:
+    - {$ref: '#/Draft'}
+    - type: object
+      required: [id,unit,ownerId,status,category,reason,files,members,directoryPartners,approvalRevision,hourTrigger,resultStatus,resultDate,resultSummary]
+      properties:
+        category: {type: string}
+        members: {type: array, items: {$ref: '#/Member'}}
+        directoryPartners: {type: array, items: {$ref: '../extension/evidence.yaml#/Choice'}}
+        approvalRevision: {type: integer, nullable: true}
+        hourTrigger: {type: string,enum: [ON_PROJECT_APPROVED,ON_RESULT_APPROVED]}
+        resultStatus: {type: string,enum: [DRAFT,PENDING,CONFIRMED]}
+        resultDate: {type: string,format: date,nullable: true}
+        resultSummary: {type: string}
+        id: {type: string, format: uuid}
+        reason: {type: string}
+        files:
+          type: array
+          items:
+            type: object
+            required: [id,filename,code,cycle]
+            properties: {id: {type: string,format: uuid}, filename: {type: string}, code: {type: string}, cycle: {type: integer,nullable: true}}
+        ownerId: {type: string, format: uuid}
+        unit: {type: string}
+        status: {type: string, enum: [DRAFT,PENDING,APPROVED]}
+Page:
+  type: object
+  required: [items,units,catalog,actorId,canReview,hoursEnabled,partnerDirectory]
+  properties:
+    partnerDirectory: {type: array, items: {$ref: '../extension/evidence.yaml#/Choice'}}
+    actorId: {type: string, format: uuid}
+    hoursEnabled: {type: boolean}
+    canReview: {type: boolean}
+    catalog: {$ref: '../extension/evidence.yaml#/Catalog'}
+    items: {type: array, items: {$ref: '#/Record'}}
+    units:
+      type: array
+      items:
+        type: object
+        required: [id,name]
+        properties: {id: {type: string, format: uuid}, name: {type: string}}
+Decision:
+  type: object
+  required: [action,revision,reason]
+  properties:
+    action: {type: string, enum: [approve,return,revoke,confirmResult,returnResult]}
+    revision: {type: integer}
+    reason: {type: string}
+Member:
+  type: object
+  required: [email,role,share]
+  properties:
+    email: {type: string,format: email}
+    role: {type: string,enum: [MEMBER,SECRETARY]}
+    share: {type: integer,minimum: 1, maximum: 99}
+Result:
+  type: object
+  required: [revision,summary,date]
+  properties:
+    revision: {type: integer}
+    summary: {type: string,maxLength: 10000}
+    date: {type: string,format: date}
+Hours:
+  type: array
+  items:
+    type: object
+    required: [email,role,share,period,version,hours]
+    properties:
+      email: {type: string}
+      role: {type: string}
+      share: {type: integer}
+      period: {type: string,nullable: true}
+      version: {type: string,nullable: true}
+      hours: {type: string,nullable: true}

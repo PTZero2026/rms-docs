@@ -1,0 +1,18 @@
+Decision:
+  type: object
+  required: [action,reason,revision]
+  properties:
+    action: {type: string,enum: [approve,reject,reopen]}
+    reason: {type: string}
+    revision: {type: integer}
+    credits:
+      type: array
+      minItems: 1
+      maxItems: 100
+      items:
+        type: object
+        required: [accountId,role,share]
+        properties:
+          accountId: {type: string,format: uuid}
+          role: {type: string,enum: [CORRESPONDING_OR_FIRST,COAUTHOR]}
+          share: {type: integer,minimum: 1,maximum: 100}

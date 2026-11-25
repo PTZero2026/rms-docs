@@ -3,14 +3,14 @@ story: US-06
 feature: F01
 review_id: RV-06
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-24
 ---
 
 # Căn cứ và quyết định · US-06
 
 **Vấn đề.** Giảng viên cần điền tới đâu để lưu lần đầu?
 
-**Khuyến nghị hiện dùng.** Cho lưu bản nháp thiếu trường bắt buộc của lần nộp khi đã xác định kỳ và chủ nhiệm.
+**Quyết định triển khai.** Cho lưu bản nháp thiếu trường bắt buộc của lần nộp khi đã xác định kỳ và chủ nhiệm.
 
 **Lý do.** Trong trường hợp chủ nhiệm đã chọn kỳ và nhập tên nhưng thiếu phần phương pháp, người dùng cần thấy kết quả “thấy phần đã nhập và có thể tiếp tục sửa”. Phương án khác: Yêu cầu đủ biểu mẫu từ lần lưu đầu. Dùng TC-03 để phân biệt hai phương án. [RV-06](../review-decisions.md#rv-06)
 

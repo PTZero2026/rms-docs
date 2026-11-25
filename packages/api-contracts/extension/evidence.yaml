@@ -1,0 +1,81 @@
+Choice:
+  type: object
+  required: [code,label]
+  properties: {code: {type: string}, label: {type: string}}
+Category:
+  allOf:
+    - {$ref: '#/Choice'}
+    - type: object
+      required: [required]
+      properties:
+        required: {type: array, items: {type: string}}
+        resultEvidence: {type: array, minItems: 1, uniqueItems: true, items: {type: string}}
+Catalog:
+  type: object
+  required: [types,evidence,bodies]
+  properties:
+    types: {type: array, items: {$ref: '#/Category'}}
+    evidence: {type: array, items: {$ref: '#/Choice'}}
+    bodies: {type: array, items: {$ref: '#/Choice'}}
+Draft:
+  type: object
+  required: [title,category,body,hostId,date,revision]
+  properties:
+    members:
+      type: array
+      maxItems: 99
+      items:
+        type: object
+        required: [email,share]
+        properties:
+          email: {type: string, format: email}
+          share: {type: integer, minimum: 1, maximum: 99}
+    title: {type: string}
+    category: {type: string}
+    body: {type: string}
+    hostId: {type: [string,'null'], format: uuid}
+    date: {type: string, format: date}
+    revision: {type: integer}
+Upload:
+  allOf:
+    - {$ref: '../attachments/project-file.yaml#/Request'}
+    - type: object
+      required: [evidenceType]
+      properties: {evidenceType: {type: string}}
+Decision:
+  type: object
+  required: [action,revision,reason]
+  properties:
+    action: {type: string, enum: [submit,approve,return,reject,revoke]}
+    supportAmount: {$ref: '../budget/budget-allocation.yaml#/Money', description: Optional whole VND at F12 approval. Zero means no support.}
+    revision: {type: integer}
+    reason: {type: string}
+Record:
+  allOf:
+    - {$ref: '#/Draft'}
+    - type: object
+      required: [id,ownerId,unitId,status,reason,files,members,supportAmount]
+      properties:
+        members: {$ref: '#/Draft/properties/members'}
+        id: {type: string, format: uuid}
+        ownerId: {type: string, format: uuid}
+        unitId: {type: string, format: uuid}
+        status: {type: string, enum: [DRAFT,PENDING,APPROVED,REJECTED]}
+        supportAmount: {type: [string,'null'], pattern: '^[0-9]+$', description: Current approved activity support in whole VND.}
+        reason: {type: string}
+        files:
+          type: array
+          items:
+            type: object
+            required: [id,filename,code]
+            properties: {id: {type: string, format: uuid}, filename: {type: string}, code: {type: string}}
+Page:
+  type: object
+  required: [items,catalog,units,actorId,canReview,canCreate]
+  properties:
+    actorId: {type: string, format: uuid}
+    canReview: {type: boolean}
+    canCreate: {type: boolean}
+    items: {type: array, items: {$ref: '#/Record'}}
+    catalog: {$ref: '#/Catalog'}
+    units: {type: array, items: {$ref: '#/Choice'}}

@@ -3,9 +3,9 @@ title: "Quản lý kinh phí"
 id: "F05"
 epic: "E2"
 owner: "PO/BA"
-status: Draft        # Draft | Review | Approved
+status: Review
 version: 0.4
-updated: 2026-11-21
+updated: 2026-11-24
 ---
 
 # Quản lý kinh phí
@@ -212,17 +212,11 @@ Bản đơn giản thao tác trên `BudgetAllocation` (kinh phí được cấp)
 - **B03** — vai trò & quyền (Chuyên viên QL KHCN; Chủ nhiệm đề tài; **Quản trị** sửa cấu hình phí quản lý) và data scoping.
 - **B04** — kênh thông báo xác nhận cấp kinh phí và kết quả quyết toán.
 
-**Rủi ro & điểm cần làm rõ:**
-- **Ai sở hữu chuyển `PASSED → COMPLETED`:** F05 hay F06 kích hoạt; thống nhất domain service dùng chung
-  để tránh hai feature cùng đổi trạng thái.
-- **Chứng từ bắt buộc hay tùy chọn:** bản đơn giản cho đính chứng từ tùy chọn (BR-05). Cần PO xác nhận có
-  cần bắt buộc tối thiểu 1 chứng từ cho mỗi khoản chi hay không.
-- **Cảnh báo vượt mức khi quyết toán:** PO xác nhận có cần nhắc lại cảnh báo tổng chi vượt mức cấp tại lúc chuyên viên rà thủ công.
-- **Điều chỉnh kinh phí được cấp:** có cho chuyên viên sửa tổng cấp sau khi đã xác nhận (≤ `approvedBudget`)
-  không, và xử lý ra sao khi tổng đã chi đã vượt mức cấp mới.
-- **Phí quản lý:** bản đơn giản dùng **một tỷ lệ phẳng cấp tổ chức + cho override theo đề tài**, thay đổi
-  cấu hình **không hồi tố** đề tài đã xác nhận (BR-10). Cần PO xác nhận: mức tỷ lệ/trần khởi tạo, và có cần
-  phân biệt tỷ lệ theo **nguồn kinh phí/loại đề tài** ngay không (hiện xếp giai đoạn sau).
-- **Mở rộng giai đoạn sau:** khoản mục/dự toán (`BudgetEstimate` + `settlementMode`), nhiều đợt cấp
-  (`BudgetAllocation`), và đối soát với hệ thống tài chính ([ADR-0004](../../architecture/decisions/0004-doi-soat-kinh-phi-qua-api.md))
-  sẽ được thiết kế lại khi mở phạm vi — giữ data-model tương thích để không phải migrate lớn.
+**Quyết định tài chính cho triển khai.** F05 sở hữu lệnh đóng sau PASSED và gọi P01 khi thỏa RV-24. Chứng từ khoản chi tùy chọn theo BR-05. Khi chi vượt mức, vẫn ghi khoản hợp lệ, hiển thị số vượt tại lúc lưu và khi quyết toán. Chuyên viên điều chỉnh tổng cấp trong phạm vi approvedBudget bằng bút toán có lý do và audit, tính lại số dư với tổng đã chi. Giữ số phí đã xác nhận cho đến khi có điều chỉnh tường minh. Dùng tỷ lệ phẳng và trần tùy chọn của tenant. Fixture 5% và 10 triệu VND của US-18 dùng cho kiểm thử. Kế toán xác nhận tham số thật trước vận hành. Khoản mục, nhiều đợt cấp và kết nối tài chính thật thuộc đợt mở rộng.
+
+## Phạm vi BA/PO đã chốt cho task
+
+| Quyết định | AC nguồn | Hành vi ở ca biên |
+|---|---|---|
+| [RV-18](../../../specs/review-decisions.md#rv-18) | AC-01 | Dùng mức trần trước khi tính phần được dùng, lưu giá trị đã áp dụng để tra lại. |
+| [RV-19](../../../specs/review-decisions.md#rv-19) | AC-04 | Lưu khoản hợp lệ, hiển thị số vượt và số dư mới, để chuyên viên rà khi đóng. |

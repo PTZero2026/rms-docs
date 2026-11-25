@@ -3,7 +3,7 @@ story: US-10
 feature: F03
 review_id: RV-10
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-24
 ---
 
 # Kế hoạch · Gửi phiếu chấm cá nhân
@@ -29,7 +29,7 @@ Kiểm lại quan hệ với đề tài, đủ từng tiêu chí và giới hạ
 | Quyền và phạm vi | Xác định tenant, vai trò và đối tượng nguồn | Kiểm cả truy cập trực tiếp và dữ liệu ngoài quyền trong quickstart |
 | Vòng đời và audit | Mọi chuyển trạng thái đề tài phát sinh thuộc P01. Ghi P02 khi hành vi đổi trạng thái nghiệp vụ. | Kiểm điều kiện ngay lúc ghi. Lưu thay đổi và sự kiện nghiệp vụ cùng giao dịch, rollback đồng thời nếu ghi lỗi. |
 | Hợp đồng và định dạng | Nguồn triển khai tại `packages/api-contracts` | Đặc tả lời gọi trỏ về nguồn duy nhất. VND nguyên, UTC lưu trữ, dd/MM/yyyy và Asia/Ho_Chi_Minh khi hiển thị |
-| Phạm vi và review | RV-10 là giả định có người phụ trách | [RV-10](../review-decisions.md#rv-10). Đối chiếu với đặc tả module trước khi nhận task. |
+| Phạm vi và review | RV-10 đã chốt cho triển khai ngày 24/11/2026 | [RV-10](../review-decisions.md#rv-10). Đối chiếu với đặc tả module trước khi nhận task. |
 
 ## Project Structure
 

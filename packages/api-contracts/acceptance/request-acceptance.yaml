@@ -1,0 +1,30 @@
+Submit:
+  type: object
+  required: [fileId,summary]
+  properties: {fileId: {type: string,format: uuid},summary: {type: string}}
+Detail:
+  type: object
+  required: [decisionRevision,id,title,status,revision,principal,officer,finalPeriod,commitments,files,attempt,summary,committees,criteria,accounts,roundId,conclusion]
+  properties:
+    decisionRevision: {type: integer, minimum: 0}
+    id: {type: string}
+    title: {type: string}
+    status: {type: string}
+    revision: {type: integer}
+    principal: {type: boolean}
+    officer: {type: boolean}
+    finalPeriod:
+      oneOf:
+        - type: object
+          required: [id,period,status]
+          properties: {id: {type: string},period: {type: integer},status: {type: string}}
+        - {type: 'null'}
+    commitments: {$ref: '../product/submit-output.yaml#/Project/properties/commitments'}
+    files: {type: array,items: {$ref: '../review/open-review.yaml#/Option'}}
+    attempt: {type: integer}
+    summary: {type: string,nullable: true}
+    committees: {type: array,items: {$ref: '../review/open-review.yaml#/Option'}}
+    criteria: {type: array,items: {$ref: '../review/open-review.yaml#/Option'}}
+    accounts: {type: array,items: {$ref: '../review/open-review.yaml#/Option'}}
+    roundId: {type: string,nullable: true}
+    conclusion: {type: string,nullable: true}

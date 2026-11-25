@@ -5,7 +5,7 @@ epic: E2
 channel: shared
 wave: B
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-24
 ---
 
 # Ghi kết luận nghiệm thu đạt
@@ -16,7 +16,7 @@ updated: 2026-11-18
 
 ### Session 2026-11-18
 
-- Q: Một phiếu xét duyệt đầu vào có được tính để đủ số phiếu nghiệm thu? → A: Chỉ tính phiếu đã gửi của đợt nghiệm thu đang kết luận. [RV-23](../review-decisions.md#rv-23). Khuyến nghị dùng để lập kế hoạch, chờ Thư ký hội đồng nghiệm thu và PO xác nhận.
+- Q: Một phiếu xét duyệt đầu vào có được tính để đủ số phiếu nghiệm thu? → A: Chỉ tính phiếu đã gửi của đợt nghiệm thu đang kết luận. [RV-23](../review-decisions.md#rv-23). BA/PO chốt cho triển khai ngày 24/11/2026.
 
 ## User Scenarios & Testing
 
@@ -29,7 +29,7 @@ Chuyên viên ghi kết luận đạt theo bộ phiếu nghiệm thu để bàn 
 - **AC-01** (US-23.1) — Given đủ phiếu và đạt ngưỡng. When kết luận. Then đề tài PASSED, chờ quyết toán F05.
 - **AC-02** (US-23.2) — Given thiếu một phiếu bắt buộc. When kết luận. Then chặn và báo số phiếu thiếu.
 
-- **AC-03** (US-23.3, khuyến nghị) — Given Đợt nghiệm thu thiếu một phiếu, đề tài có một phiếu xét duyệt đầu vào. When chốt kết luận. Then vẫn thiếu một phiếu, chưa chuyển PASSED.
+- **AC-03** (US-23.3) — Given Đợt nghiệm thu thiếu một phiếu, đề tài có một phiếu xét duyệt đầu vào. When chốt kết luận. Then vẫn thiếu một phiếu, chưa chuyển PASSED.
 
 ### Edge Cases
 
@@ -42,7 +42,7 @@ Thiếu một phiếu bắt buộc → chặn và báo số phiếu thiếu.
 - **BR-01 / FR-001.** Khi đủ phiếu và đạt ngưỡng, người có quyền có thể kết luận. Kết quả phải quan sát được: đề tài PASSED, chờ quyết toán F05 (AC-01).
 - **BR-02 / FR-002.** Với tình huống thiếu một phiếu bắt buộc, thao tác kết luận phải cho kết quả chặn và báo số phiếu thiếu (AC-02).
 
-- **BR-03 / FR-003 (đề xuất).** Chỉ tính phiếu đã gửi của đợt nghiệm thu đang kết luận. Kiểm bằng AC-03.
+- **BR-03 / FR-003.** Chỉ tính phiếu đã gửi của đợt nghiệm thu đang kết luận. Kiểm bằng AC-03.
 
 ### Key Entities
 

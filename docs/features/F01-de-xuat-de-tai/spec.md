@@ -3,9 +3,9 @@ title: "Đề xuất đề tài"
 id: "F01"
 epic: "E1"
 owner: "PO/BA"
-status: Draft        # Draft | Review | Approved
+status: Review
 version: 0.2
-updated: 2026-06-11
+updated: 2026-11-24
 ---
 
 # Đề xuất đề tài
@@ -95,7 +95,7 @@ Diễn giải các bước:
 | BR-04 | Mỗi đề xuất một chủ nhiệm | Một đề tài có đúng một chủ nhiệm, và chủ nhiệm cũng là một thành viên với vai trò chủ nhiệm. | Chủ nhiệm là người tạo đề xuất. |
 | BR-05 | Chủ nhiệm chỉ sửa khi Nháp | Chỉ chỉnh sửa được hồ sơ (thuyết minh, thành viên, dự toán, đính kèm) khi hồ sơ ở trạng thái **Nháp**. Sau khi **Đã nộp**, hồ sơ bị khóa. | Quyền sửa nội dung: chủ nhiệm; thành viên xem (xem `ui.md`). |
 | BR-06 | Trả lại mới mở khóa sửa | Sau khi đã nộp, hồ sơ chỉ sửa tiếp được khi chuyên viên **trả lại bổ sung** (Đã nộp → Nháp) kèm lý do, và chỉ khi kỳ còn hạn. | Mọi lần trả lại bắt buộc có lý do. |
-| BR-07 | Mã đề tài tự động & duy nhất | **Mã đề tài** được sinh tự động tại thời điểm nộp lần đầu, duy nhất toàn hệ thống, và **giữ nguyên** qua các lần trả lại/nộp lại. | Quy tắc đánh số: xem điểm mở §7. |
+| BR-07 | Mã đề tài tự động & duy nhất | **Mã đề tài** được sinh tự động tại thời điểm nộp lần đầu, duy nhất toàn hệ thống, và **giữ nguyên** qua các lần trả lại/nộp lại. | Quy tắc đánh số: xem §7. |
 | BR-08 | Thành viên không trùng | Trong một đề tài, một người chỉ xuất hiện một lần trong danh sách thành viên. | — |
 | BR-09 | Kinh phí & thời gian hợp lệ | Kinh phí đề xuất không âm (đơn vị VND); thời gian thực hiện là số tháng dương. | Định dạng tiền/thời gian theo quy ước chung. |
 | BR-10 | Hủy đề xuất có điều kiện | Đề xuất ở **Nháp** hoặc **Đã nộp** (trước xét duyệt) có thể chuyển **Đã hủy** kèm lý do; **không xóa cứng**. | Sau khi vào xét duyệt thì không hủy ở F01. |
@@ -173,12 +173,22 @@ Khẳng định mức field (tên enum, tên cột) để ở `test-plan.md`/`de
 **Giả định:**
 - Biểu mẫu thuyết minh được B01/F02 định nghĩa trước; F01 chỉ hiển thị & kiểm tra theo biểu mẫu.
 
-**Điểm nghiệp vụ cần chốt (mở):**
-- **Quy tắc đánh số mã đề tài:** theo kỳ hay theo năm? (ảnh hưởng BR-07). Chống trùng khi nộp đồng thời:
-  xem `design.md §5`.
-- **Biểu mẫu đổi giữa kỳ:** nếu biểu mẫu thay đổi sau khi đã có hồ sơ **Nháp**, cần quy tắc giữ nguyên dữ
-  liệu thuyết minh đã nhập (version hóa) để không vỡ hồ sơ — cần PO chốt cách xử lý.
-- **Quyền sửa của thành viên:** giai đoạn Now mặc định chỉ chủ nhiệm sửa nội dung; nếu cho thành viên/thư
-  ký cùng sửa cần bổ sung quyền & nhật ký (cần PO xác nhận).
-- **Hết hạn khi đang nháp:** hồ sơ **Nháp** chưa nộp khi kỳ đã đóng sẽ không nộp được — cần thông báo nhắc
-  hạn (B04) để giảm rủi ro trễ.
+**Quyết định BA/PO cho US-06–08.** Cấp số tuần tự theo kỳ khi nộp lần đầu, mã gồm định danh tenant ổn định, mã kỳ và số thứ tự để duy nhất toàn hệ thống. Nộp lại giữ mã. Nháp dùng phiên bản biểu mẫu đã ghim tại kỳ, chỉ chủ nhiệm sửa. Nộp tại đúng thời điểm hết hạn vẫn được nhận. Với hạn kiểu ngày, nhận đến trước 00:00 ngày kế tiếp theo Asia/Ho_Chi_Minh. Sau hạn giữ nháp, B04 nhắc theo cấu hình. Trả hồ sơ cần lý do có ký tự nhìn thấy.
+
+## Phạm vi BA/PO đã chốt cho task
+
+| Quyết định | AC nguồn | Hành vi ở ca biên |
+|---|---|---|
+| [RV-06](../../../specs/review-decisions.md#rv-06) | AC-01 | Cho lưu bản nháp thiếu trường bắt buộc của lần nộp khi đã xác định kỳ và chủ nhiệm. |
+| [RV-07](../../../specs/review-decisions.md#rv-07) | AC-02 | Nhận khi thời điểm máy chủ tiếp nhận bằng hạn và kỳ còn mở, từ chối sau hạn. |
+| [RV-08](../../../specs/review-decisions.md#rv-08) | AC-07 | Yêu cầu lý do có chữ nhìn thấy, hiển thị nguyên nội dung cho chủ nhiệm. |
+
+## Trợ lý rà thuyết minh
+
+| Quy tắc | Nội dung |
+|---|---|
+| BR-12 | Khi tenant bật AI, chỉ dùng đoạn nguồn còn quyền đọc và quyền xử lý cho AI. Lưu phiên bản nguồn/mô hình/mẫu lệnh và quyết định dùng hoặc bỏ. |
+
+- **AC-12** (BR-12) — Chủ nhiệm mở được vị trí căn cứ khi còn hai quyền. Khi thu quyền hoặc thiếu căn cứ, ngừng truy xuất hoặc báo “chưa đủ căn cứ”. Tắt dịch vụ vẫn sửa và lưu nháp thủ công.
+
+[Lát US-31](../../../specs/031-shared-ai-proposal-evidence/spec.md)

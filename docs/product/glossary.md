@@ -1,7 +1,7 @@
 ---
 title: "Thuật ngữ — RMS"
 status: Review
-updated: 2026-11-18
+updated: 2026-11-24
 ---
 
 # Thuật ngữ dùng chung
@@ -31,7 +31,7 @@ thực thể dữ liệu, cột "Thực thể" trỏ tới `../architecture/data
 | Xét duyệt | Quy trình hội đồng đánh giá đề xuất để chấp nhận/từ chối. | `EvaluationCommittee`, `ScoreSheet` |
 | Hội đồng | Nhóm chuyên gia đánh giá đề tài. **Hội đồng khoa học**: xét duyệt (`type=PROPOSAL_REVIEW`) hoặc nghiệm thu (`type=ACCEPTANCE`); **hội đồng đạo đức**: thẩm định đạo đức nghiên cứu (`type=ETHICS_REVIEW`), chạy song song xét duyệt. | `EvaluationCommittee` |
 | Phiếu chấm | Phiếu cho điểm/nhận xét của một thành viên hội đồng. | `ScoreSheet` |
-| Phê duyệt đạo đức | Thẩm định khía cạnh đạo đức nghiên cứu của đề tài (hội đồng đạo đức), chạy **song song** xét duyệt khoa học; khi thuộc diện thẩm định đạo đức, đề tài phải đạt cả hai (điểm kiểm chờ PO xác nhận tại [RV-11](../../specs/review-decisions.md#rv-11)). | `EvaluationCommittee` |
+| Phê duyệt đạo đức | Thẩm định khía cạnh đạo đức nghiên cứu của đề tài (hội đồng đạo đức), chạy **song song** xét duyệt khoa học; khi thuộc diện thẩm định đạo đức, đề tài phải đạt cả hai (điểm kiểm đã chốt tại [RV-11](../../specs/review-decisions.md#rv-11)). | `EvaluationCommittee` |
 | Cuộc họp (hội đồng) | Phiên họp hội đồng để **phê duyệt đề cương** hoặc **nghiệm thu**; có lịch, thành phần, biên bản & quyết nghị. Mô hình dùng chung F03/F06. | — |
 | Biên bản họp | Văn bản ghi diễn biến & kết luận/quyết nghị của một cuộc họp hội đồng. | — |
 | Tiến độ | Quá trình thực hiện đề tài, theo dõi qua các báo cáo định kỳ. | `ProgressReport` |
@@ -49,7 +49,7 @@ thực thể dữ liệu, cột "Thực thể" trỏ tới `../architecture/data
 | Thuật ngữ | Định nghĩa | Mặt dùng |
 |-----------|------------|----------|
 | Chủ nhiệm đề tài | Nhà khoa học chịu trách nhiệm chính: nộp đề xuất, báo cáo tiến độ, kê khai sản phẩm. | FE |
-| Thư ký đề tài | Thành viên được chủ nhiệm uỷ quyền cập nhật hồ sơ đề tài thay mặt cả nhóm. | FE |
+| Thư ký đề tài | Thành viên hỗ trợ chuẩn bị hồ sơ. Trong F01, chủ nhiệm lưu và nộp đề xuất. | FE |
 | Thành viên đề tài | Nhà khoa học tham gia đề tài, xem thông tin liên quan. | FE |
 | Chuyên viên QL KHCN | Cán bộ quản lý: tiếp nhận, kiểm tra, theo dõi toàn bộ vòng đời. | BO |
 | Thành viên hội đồng | Chuyên gia chấm điểm khi xét duyệt, nghiệm thu hoặc thẩm định đạo đức. | BO |

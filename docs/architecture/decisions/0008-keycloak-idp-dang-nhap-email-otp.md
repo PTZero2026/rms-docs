@@ -50,13 +50,8 @@ Giai đoạn đầu chỉ cần **một luồng đăng nhập đơn giản**: ng
 **Phải làm tiếp / lưu ý:**
 - **Sửa khi lift:** bỏ đoạn decode role từ JWT của code cũ; backend chỉ map `sub`→user RMS rồi check quyền RMS
   (phân quyền thực thi ở backend — [AGENTS.md §4.1](../../../AGENTS.md)).
-- DB RMS giữ **bản sao profile** khoá theo `keycloak_id` (= `sub`); upsert khi đăng nhập lần đầu (auto-provision),
-  đồng bộ tiếp từ Keycloak qua webhook/event.
-- **Auto-provision:** khi map `sub`→user mà chưa tồn tại → tạo user RMS với role `USER`. Quyền `USER` thấp nhất:
-  - Chỉ **xem thông tin đề tài đã publish**, và **không phải full đề tài** mà chỉ các trường do **admin quy định
-    được công khai** (ví dụ Abstract / tóm tắt …).
-  - Chưa có quyền thao tác nghiệp vụ nào khác cho tới khi B03 nâng quyền.
-  - (Chi tiết danh sách trường công khai + quyền đầy đủ đưa vào spec B03 / B01 cấu hình.)
+- DB RMS liên kết tài khoản theo issuer + sub. B03 đồng bộ email khi đăng nhập và cấp userType=user với quyền meetings.view ở lần đầu. Vai trò nâng cấp và phạm vi xem nghiệp vụ theo [B03](../../features/B03-quan-ly-nguoi-dung/spec.md).
+
 - **User enumeration:** auto-provision đồng nghĩa **mọi email gửi được OTP đều đăng nhập được** → mất cơ chế "không
   thực gửi cho email lạ" của bản trước. Chấp nhận ở giai đoạn đầu; bù bằng **throttling theo email/IP** và việc
   USER chưa có quyền gì đáng kể cho tới khi B03 nâng. Cân nhắc allowlist domain nếu cần siết sau.

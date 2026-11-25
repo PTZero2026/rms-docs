@@ -3,14 +3,14 @@ story: US-08
 feature: F01
 review_id: RV-08
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-24
 ---
 
 # Căn cứ và quyết định · US-08
 
 **Vấn đề.** Có thể trả hồ sơ mà chỉ ghi khoảng trắng ở lý do?
 
-**Khuyến nghị hiện dùng.** Yêu cầu lý do có chữ nhìn thấy, hiển thị nguyên nội dung cho chủ nhiệm.
+**Quyết định triển khai.** Yêu cầu lý do có chữ nhìn thấy, hiển thị nguyên nội dung cho chủ nhiệm.
 
 **Lý do.** Trong trường hợp hồ sơ còn hạn và lý do chỉ chứa khoảng trắng, người dùng cần thấy kết quả “giữ Đã nộp, yêu cầu nhập lý do”. Phương án khác: Cho phép trả hồ sơ với lý do mặc định. Dùng TC-03 để phân biệt hai phương án. [RV-08](../review-decisions.md#rv-08)
 

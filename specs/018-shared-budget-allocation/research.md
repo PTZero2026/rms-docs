@@ -3,14 +3,14 @@ story: US-18
 feature: F05
 review_id: RV-18
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-24
 ---
 
 # Căn cứ và quyết định · US-18
 
 **Vấn đề.** Khi tỷ lệ cho kết quả cao hơn trần, lấy số nào?
 
-**Khuyến nghị hiện dùng.** Dùng mức trần trước khi tính phần được dùng, lưu giá trị đã áp dụng để tra lại.
+**Quyết định triển khai.** Dùng mức trần trước khi tính phần được dùng, lưu giá trị đã áp dụng để tra lại.
 
 **Lý do.** Trong trường hợp cấp 300 triệu, tỷ lệ 5%, trần 10 triệu, không điều chỉnh riêng, người dùng cần thấy kết quả “phí 10 triệu và phần thực hiện 290 triệu”. Phương án khác: Tính lại mọi hồ sơ cũ khi thay tỷ lệ của trường. Dùng TC-03 để phân biệt hai phương án. [RV-18](../review-decisions.md#rv-18)
 

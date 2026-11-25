@@ -1,0 +1,25 @@
+{
+  "at": "2026-11-24T16:07:56.913Z",
+  "oldRevision": "3949a2b",
+  "scope": "static web and browser prototype draft",
+  "observations": [
+    {
+      "kind": "previous",
+      "indexSha256": "157a1591f29e4d200d6ae7051e2f7b3fb5b703b7143256314fbc44dfbab3f9a3",
+      "milliseconds": 338,
+      "draftVisible": true
+    },
+    {
+      "kind": "candidate",
+      "indexSha256": "d67efdfcac18fd167d98580446771e5a89a5fb99edcdf756758ae05195a76313",
+      "milliseconds": 846,
+      "draftVisible": true
+    },
+    {
+      "kind": "rollback",
+      "indexSha256": "157a1591f29e4d200d6ae7051e2f7b3fb5b703b7143256314fbc44dfbab3f9a3",
+      "milliseconds": 349,
+      "draftVisible": true
+    }
+  ]
+}

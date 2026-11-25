@@ -3,7 +3,7 @@ title: "Dự án phục vụ sản xuất — Test plan"
 spec: "./spec.md"
 owner: "<TEST>"
 status: Draft
-updated: 2026-11-21
+updated: 2026-11-24
 ---
 
 # Dự án phục vụ sản xuất — Kế hoạch kiểm thử
@@ -34,3 +34,7 @@ updated: 2026-11-21
 - Kinh phí âm, sai định dạng tiền VND, hoặc nhập ngày kết thúc trước ngày bắt đầu.
 - Người không có `APPLIEDPROJECT.APPROVE` gọi API duyệt/trả lại.
 - Đổi cấu hình `requiredEvidence` sau khi đã có dự án nháp/chờ duyệt.
+
+**Đối chứng TC-07, TC-08, TC-11 đến TC-13.** Ca PostgreSQL dùng cả hai mốc, so 350 triệu đồng ở bậc 60 giờ và 50 triệu đồng đúng cận dưới ở bậc 20 giờ. Tỷ lệ chủ nhiệm/thư ký 70/30 cho kết quả lần lượt 42/18 và 14/6. Ca Chrome kiểm tải tệp hai giai đoạn, hiển thị giờ và thu hồi trên lý lịch cá nhân. [PostgreSQL](../../../apps/backend/test/db/applied-hours.test.mjs) · [Chrome](../../../e2e/applied-project/register-applied-project/acceptance.spec.ts)
+
+**TC-03.** Chọn công ty cấp nước từ danh mục của trường, khai thêm một viện, lưu rồi gửi và kiểm cả hai tên. Ca DB còn kiểm mã ngoài danh mục, giữ mã khi client cũ lưu và gộp hai cách viết cùng tên. [Ca đối tác](../../../apps/backend/test/db/applied.test.mjs)

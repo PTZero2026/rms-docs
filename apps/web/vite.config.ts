@@ -5,6 +5,7 @@ import { defineConfig } from "vite"
 
 // https://vite.dev/config/
 export default defineConfig({
+  server: { proxy: { "^/api/tenants/[a-z0-9-]+/catalog/configurations(?:/|\\?|$)": process.env.RMS_CONFIG_ORIGIN ?? "http://127.0.0.1:3110", "/api": process.env.RMS_API_ORIGIN ?? "http://127.0.0.1:3100" } },
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {

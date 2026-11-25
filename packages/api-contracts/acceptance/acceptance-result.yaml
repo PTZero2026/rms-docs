@@ -1,0 +1,11 @@
+Open:
+  type: object
+  required: [committeeId,criteriaId]
+  properties: {committeeId: {type: string,format: uuid},criteriaId: {type: string,format: uuid}}
+Redo:
+  type: object
+  required: [reason,deadline]
+  properties: {reason: {type: string},deadline: {type: string,format: date}}
+Queue:
+  type: array
+  items: {$ref: '../review/open-review.yaml#/Assigned'}

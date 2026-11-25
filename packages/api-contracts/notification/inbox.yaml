@@ -1,0 +1,23 @@
+Item:
+  type: object
+  required: [id,title,createdAt,readAt]
+  properties:
+    id: {type: string, format: uuid}
+    title: {type: string}
+    createdAt: {type: string, format: date-time}
+    readAt: {type: string, format: date-time, nullable: true}
+Page:
+  type: object
+  required: [total,unread,items]
+  properties:
+    total: {type: integer}
+    unread: {type: integer}
+    items: {type: array, items: {$ref: "#/Item"}}
+Detail:
+  allOf:
+    - {$ref: "#/Item"}
+    - type: object
+      required: [body,targetId]
+      properties:
+        body: {type: string}
+        targetId: {type: string,format: uuid,nullable: true}

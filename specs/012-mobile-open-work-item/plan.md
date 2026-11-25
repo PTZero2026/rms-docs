@@ -3,7 +3,7 @@ story: US-12
 feature: B06
 review_id: RV-12
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-24
 ---
 
 # Kế hoạch · Mở việc cần xử lý trên điện thoại
@@ -29,7 +29,7 @@ Hiển thị thẻ theo trạng thái chuẩn của hồ sơ. Chạm thẻ mở 
 | Quyền và phạm vi | Xác định tenant, vai trò và đối tượng nguồn | Kiểm cả truy cập trực tiếp và dữ liệu ngoài quyền trong quickstart |
 | Vòng đời và audit | Mọi chuyển trạng thái đề tài phát sinh thuộc P01. Lát đọc này không phát lệnh chuyển. | Truy vấn trong phạm vi hiện tại. Đọc hoặc mở liên kết giữ nguyên trạng thái hồ sơ. |
 | Hợp đồng và định dạng | Nguồn triển khai tại `packages/api-contracts` | Đặc tả lời gọi trỏ về nguồn duy nhất. VND nguyên, UTC lưu trữ, dd/MM/yyyy và Asia/Ho_Chi_Minh khi hiển thị |
-| Phạm vi và review | RV-12 là giả định có người phụ trách | [RV-12](../review-decisions.md#rv-12). Đối chiếu với đặc tả module trước khi nhận task. |
+| Phạm vi và review | RV-12 đã chốt cho triển khai ngày 24/11/2026 | [RV-12](../review-decisions.md#rv-12). Đối chiếu với đặc tả module trước khi nhận task. |
 
 ## Project Structure
 

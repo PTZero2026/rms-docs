@@ -5,7 +5,7 @@ epic: "E3"
 owner: "PO/BA"
 status: Review        # Draft | Review | Approved
 version: 0.2
-updated: 2026-07-04
+updated: 2026-11-24
 ---
 
 # Sản phẩm khoa học
@@ -94,7 +94,7 @@ flowchart LR
 
 | ID | Quy tắc | Mô tả | Ghi chú |
 |----|---------|-------|---------|
-| BR-01 | Sản phẩm có vòng đời duyệt riêng | `ResearchOutput.approvalStatus`: `DRAFT` (nếu triển khai lưu nháp) → `PENDING_APPROVAL` → `APPROVED` hoặc `REJECTED`. Chỉ `APPROVED` được tính cho nghiệm thu/lý lịch/báo cáo. | Data-model hiện có `PENDING_APPROVAL`/`APPROVED`/`REJECTED`; cần bổ sung `DRAFT` nếu muốn lưu nháp. |
+| BR-01 | Sản phẩm có vòng đời duyệt riêng | `ResearchOutput.approvalStatus`: `DRAFT` → `PENDING_APPROVAL` → `APPROVED` hoặc `REJECTED`. Chỉ `APPROVED` được tính cho nghiệm thu/lý lịch/báo cáo. | Data-model hiện có `PENDING_APPROVAL`/`APPROVED`/`REJECTED`; cần bổ sung `DRAFT` nếu muốn lưu nháp. |
 | BR-02 | Người được kê khai | Chủ nhiệm đề tài kê khai sản phẩm cho đề tài mình; thành viên/tác giả kê khai sản phẩm của chính mình. Chuyên viên/Admin có thể nhập hộ theo phạm vi dữ liệu. | Backend kiểm RBAC + data scoping. |
 | BR-03 | Gắn đề tài nguồn có điều kiện | Nếu gắn `researchProjectId`, người kê khai phải là chủ nhiệm/thành viên đề tài hoặc có quyền chuyên viên trong phạm vi. Đề tài phải chưa `COMPLETED` khi gửi duyệt sản phẩm mới. | Sản phẩm ngoài RMS để `researchProjectId = null`. |
 | BR-04 | Loại sản phẩm bắt buộc | Mỗi sản phẩm phải chọn `ProductType` còn hiệu lực trong tenant. Loại sản phẩm dùng để đối chiếu cam kết và báo cáo. | Quản trị danh mục ở B01. |
@@ -105,7 +105,7 @@ flowchart LR
 | BR-09 | Duyệt/từ chối bởi chuyên viên | Chỉ Chuyên viên QL KHCN/Admin được duyệt hoặc từ chối. Từ chối bắt buộc có lý do; duyệt ghi thời điểm/người duyệt. | RBAC backend. |
 | BR-10 | Khóa trường chính sau duyệt | Sau `APPROVED`, không cho sửa loại, tên, năm công bố, tác giả, đề tài nguồn và minh chứng. Muốn sửa phải yêu cầu mở lại/đính chính có lý do, ghi audit. | Tránh làm lệch điều kiện nghiệm thu/lý lịch. |
 | BR-11 | Đối chiếu sản phẩm cam kết theo loại/số lượng | Một đề tài đủ sản phẩm cam kết khi số sản phẩm `APPROVED` gắn với đề tài đạt tối thiểu từng loại/số lượng đã cam kết trong hồ sơ đề tài. Thiếu phải nêu rõ loại và số lượng còn thiếu. | Cung cấp cho F04 BR-10, F06 BR-01. |
-| BR-12 | Sản phẩm bị từ chối không được tính | `REJECTED` không xuất hiện trong lý lịch F08, không tính vào nghiệm thu, nhưng người kê khai thấy lý do để sửa/gửi lại bản mới hoặc mở lại bản cũ nếu triển khai. | Không xóa cứng. |
+| BR-12 | Sản phẩm bị từ chối không được tính | `REJECTED` không xuất hiện trong lý lịch F08, không tính vào nghiệm thu, nhưng người kê khai thấy lý do để sửa/gửi lại bản sửa có liên kết đến lần từ chối. | Không xóa cứng. |
 | BR-13 | Phạm vi xem theo vai trò | Tác giả/chủ nhiệm xem sản phẩm của mình/đề tài mình; chuyên viên xem theo phạm vi dữ liệu; admin xem toàn tenant. | UI ẩn/hiện không thay kiểm tra backend. |
 | BR-14 | Mọi thay đổi quan trọng ghi audit | Tạo, gửi duyệt, duyệt, từ chối, mở lại/đính chính, đổi đề tài nguồn, đính/gỡ minh chứng đều ghi `AuditLog` append-only. | Tuân thủ AGENTS.md §4.4. |
 
@@ -184,7 +184,7 @@ Dùng chung mô hình ở [`data-model.md §4.6`](../../architecture/data-model.
 
 | Rủi ro / điểm mở | Ảnh hưởng | Giảm thiểu / cần chốt |
 |------------------|-----------|------------------------|
-| Chưa có cấu trúc chuẩn cho "sản phẩm cam kết" trong đề xuất/giao đề tài | Cao | Chốt `ExpectedOutput` hoặc chuẩn hóa phần này từ `proposalDocument` trước khi nghiệm thu. |
+| Cam kết theo loại sản phẩm | Cao | Khi F04 xác nhận giao, lưu ExpectedOutput theo đề tài, loại và số lượng từ thuyết minh đã duyệt. F07 đếm sản phẩm APPROVED riêng cho từng loại. |
 | Tác giả ngoài hệ thống và thứ tự tác giả phức tạp | Trung bình | Chuẩn hóa `authors` gồm tác giả nội bộ (`userId`) và ngoài (`name`, `affiliation`, `order`). |
 | Trùng sản phẩm do nhiều đồng tác giả cùng kê khai | Trung bình | Cảnh báo trùng + luồng hợp nhất/đính chính ở giai đoạn sau; hiện BR-08 giảm rủi ro. |
 | Sửa sản phẩm đã duyệt làm lệch nghiệm thu/lý lịch | Cao | Khóa trường chính sau duyệt; mọi đính chính qua mở lại có lý do và audit. |
@@ -194,3 +194,20 @@ Dùng chung mô hình ở [`data-model.md §4.6`](../../architecture/data-model.
 - Chỉ sản phẩm `APPROVED` được tính vào nghiệm thu, lý lịch và báo cáo.
 - F07 không tự chuyển trạng thái đề tài; chỉ trả kết quả đối chiếu sản phẩm cho F04/F06.
 - Sản phẩm ngoài đề tài RMS được phép kê khai để phục vụ lý lịch khoa học.
+
+## Phạm vi BA/PO đã chốt cho task
+
+| Quyết định | AC nguồn | Hành vi ở ca biên |
+|---|---|---|
+| [RV-20](../../../specs/review-decisions.md#rv-20) | AC-05 | Kiểm lại quyền sử dụng tệp tại lúc gửi, yêu cầu thay tệp khi quyền hết hiệu lực. |
+| [RV-21](../../../specs/review-decisions.md#rv-21) | AC-11 | Tổng hợp theo định danh sản phẩm đã duyệt, độc lập số lần gửi lệnh. |
+
+## Thẻ đọc DOI
+
+| Quy tắc | Nội dung |
+|---|---|
+| BR-15 | Khi tenant bật AI, tạo thẻ nháp trên nguồn còn quyền đọc và được phép dùng AI. Người đọc kiểm và chọn dùng/bỏ. |
+
+- **AC-14** (BR-15) — Khi còn quyền toàn văn, phương pháp có dẫn trang hoặc đoạn. Nếu chỉ được dùng metadata hoặc mất quyền toàn văn khi mở lại, chỉ hiện tên bài, tác giả, năm, DOI được phép. Phương pháp và kết quả ghi “chưa đủ căn cứ”.
+
+[Lát US-32](../../../specs/032-web-ai-reading-card/spec.md)

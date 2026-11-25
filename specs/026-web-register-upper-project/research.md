@@ -3,14 +3,14 @@ story: US-26
 feature: F09
 review_id: RV-26
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-24
 ---
 
 # Căn cứ và quyết định · US-26
 
 **Vấn đề.** Căn cứ phê duyệt phải có ở lúc lưu nháp hay lúc duyệt?
 
-**Khuyến nghị hiện dùng.** Cho lưu thông tin ban đầu theo trường bắt buộc, kiểm loại minh chứng theo cấp ở bước duyệt.
+**Quyết định triển khai.** Cho lưu thông tin ban đầu theo trường bắt buộc, kiểm loại minh chứng theo cấp ở bước duyệt.
 
 **Lý do.** Trong trường hợp đầu mục cấp Bộ có tệp sai loại so với quy tắc DECISION, người dùng cần thấy kết quả “nêu đúng loại quyết định phải bổ sung”. Phương án khác: Yêu cầu mọi minh chứng ngay lần lưu nháp. Dùng TC-03 để phân biệt hai phương án. [RV-26](../review-decisions.md#rv-26)
 

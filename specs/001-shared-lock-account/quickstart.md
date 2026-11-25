@@ -3,12 +3,12 @@ story: US-01
 feature: B03
 review_id: RV-01
 status: Draft
-updated: 2026-11-21
+updated: 2026-11-24
 ---
 
 # Kiểm tra đầu cuối · US-01
 
-Trong môi trường thử của repo code, tạo hai tenant A/B và người có/ngoài quyền. Chuẩn bị một tài khoản hoạt động, hai vai trò. Mở dịch vụ dùng chung và điểm gọi của module sở hữu với tài khoản thực hiện trong kỳ thử. Ghi mã hồ sơ và ảnh hoặc kết quả trả về cho từng ca.
+Trong môi trường thử của repo code, tạo hai tenant A/B và người có/ngoài quyền. Chuẩn bị một tài khoản đích đang hoạt động và hai người thao tác riêng biệt (một admin, một user chỉ xem). Mở dịch vụ dùng chung và điểm gọi của module sở hữu với tài khoản thực hiện trong kỳ thử. Ghi mã hồ sơ và ảnh hoặc kết quả trả về cho từng ca.
 
 | Ca / tiêu chí | Given | When | Then |
 |---|---|---|---|

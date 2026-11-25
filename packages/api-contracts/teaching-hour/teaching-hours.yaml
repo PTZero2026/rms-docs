@@ -1,0 +1,61 @@
+Formula:
+  type: object
+  required: [kind,category,role,periodType,from,to,hours,version]
+  properties:
+    kind: {type: string, enum: [activity,upper-project,applied-project,student-project,product]}
+    category: {type: string}
+    role: {type: string}
+    periodType: {type: string, enum: [ACADEMIC_YEAR,FISCAL_YEAR]}
+    from: {type: string, format: date}
+    to: {type: string, format: date}
+    hours: {type: string}
+    version: {type: string}
+    minVnd: {type: string,pattern: '^[0-9]{1,18}$'}
+    maxVnd: {type: string,pattern: '^[0-9]{1,18}$',nullable: true}
+Formulas:
+  type: array
+  items: {$ref: '#/Formula'}
+Calendar:
+  type: array
+  items:
+    type: object
+    required: [type,code,from,to]
+    properties:
+      type: {type: string, enum: [ACADEMIC_YEAR,FISCAL_YEAR]}
+      code: {type: string}
+      from: {type: string, format: date}
+      to: {type: string, format: date}
+Adjustment:
+  type: object
+  required: [id,delta,reason]
+  properties:
+    id: {type: string, format: uuid}
+    delta: {type: string}
+    reason: {type: string}
+Periods:
+  type: array
+  items:
+    type: object
+    required: [type,code,total]
+    properties: {type: {type: string}, code: {type: string}, total: {type: string}}
+Ledger:
+  type: object
+  required: [items,periods]
+  properties:
+    periods: {$ref: '#/Periods'}
+    items:
+      type: array
+      items:
+        type: object
+        required: [id,sourceId,title,date,role,share,hours,adjusted,version,period]
+        properties:
+          id: {type: string, format: uuid}
+          sourceId: {type: string, format: uuid}
+          title: {type: string}
+          date: {type: string, format: date}
+          role: {type: string}
+          share: {type: integer}
+          hours: {type: string}
+          adjusted: {type: string}
+          version: {type: string}
+          period: {type: string}

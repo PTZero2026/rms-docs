@@ -5,12 +5,12 @@ epic: E3
 channel: web
 wave: C
 status: Draft
-updated: 2026-11-21
+updated: 2026-11-24
 ---
 
 # Lập thẻ đọc cho một tài liệu có DOI
 
-**Đầu vào** · [Danh mục INVEST](../../docs/sales/thi-truong-viet-nam-2026/feature-list-invest.md), US-32, cỡ M. **Nguồn nghiệp vụ** · [F07](../../docs/features/F07-san-pham-khoa-hoc/spec.md) — Đề xuất mới, chờ PO/BA xác lập AC nghiệp vụ. Các AC dưới đây có phạm vi riêng của US-32.
+**Đầu vào** · [Danh mục INVEST](../../docs/sales/thi-truong-viet-nam-2026/feature-list-invest.md), US-32, cỡ M. **Nguồn nghiệp vụ** · [F07](../../docs/features/F07-san-pham-khoa-hoc/spec.md) — BR-15, AC-14. Các AC dưới đây có phạm vi riêng của US-32.
 
 ## Clarifications
 

@@ -1,0 +1,8 @@
+Submit:
+  type: object
+  required: [revision,content,fileId]
+  properties: {revision: {type: integer},content: {type: string},fileId: {type: string,format: uuid}}
+Review:
+  type: object
+  required: [revision,action,reason]
+  properties: {revision: {type: integer},action: {type: string,enum: [pass,return,reopen]},reason: {type: string}}

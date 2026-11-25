@@ -3,14 +3,14 @@ story: US-12
 feature: B06
 review_id: RV-12
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-24
 ---
 
 # Căn cứ và quyết định · US-12
 
 **Vấn đề.** Nếu mất quyền sau khi đã thấy thẻ trên điện thoại thì sao?
 
-**Khuyến nghị hiện dùng.** Kiểm quyền khi mở liên kết, hướng người dùng về danh sách đã làm mới.
+**Quyết định triển khai.** Kiểm quyền khi mở liên kết, hướng người dùng về danh sách đã làm mới.
 
 **Lý do.** Trong trường hợp điện thoại rộng 360 px đã hiện thẻ rồi tài khoản bị thu quyền, người dùng cần thấy kết quả “không lộ hồ sơ và có đường về trang chủ”. Phương án khác: Dùng quyền tại lần tải trang chủ gần nhất. Dùng TC-03 để phân biệt hai phương án. [RV-12](../review-decisions.md#rv-12)
 

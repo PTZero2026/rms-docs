@@ -2,7 +2,7 @@
 title: "Kế hoạch kiểm thử tích hợp — luồng phức tạp & đa vai trò"
 id: "integration-test-plan"
 status: Draft
-updated: 2026-11-21
+updated: 2026-11-24
 ---
 
 # Kế hoạch kiểm thử tích hợp (RMS)
@@ -92,7 +92,7 @@ updated: 2026-11-21
   3. Hội đồng `ACCEPTANCE` `PASSED` → thử `COMPLETED` khi đã bật đối soát và F05 còn giao dịch `MISMATCHED` hoặc `UNRECONCILED` (thử riêng từng trạng thái) → **CHẶN**.
   4. Mọi khoản `MATCHED`, chuyên viên xác nhận quyết toán → `PASSED→COMPLETED`.
 - **BR/luật:** F04 BR-10 · F06 BR-01, BR-09 · F07 BR-11 · [ADR-0004](../architecture/decisions/0004-doi-soat-kinh-phi-qua-api.md)
-- **Vì sao dễ lỗi:** 3 feature khóa chung một cổng; `ExpectedOutput` (sản phẩm cam kết) chưa chốt cấu trúc; chủ sở hữu `PASSED→COMPLETED` chưa rõ (F05/F06).
+- **Vì sao dễ lỗi:** F04 chốt ExpectedOutput khi giao. F07 đếm đúng theo loại, F06 kiểm lại tại nghiệm thu. F05 gọi P01 để đóng theo RV-24.
 
 ### INT-02 — Trần khoán `approvedBudget` xuyên F04→F05 + phí quản lý không hồi tố 🟠 🟡
 - **Vai trò:** chuyên viên, chủ nhiệm, quản trị
@@ -113,7 +113,7 @@ updated: 2026-11-21
   2. Sau khi loại, số người còn lại `< MIN_SUBMITTED_SCORE_SHEETS` → **không cho kết luận**.
   3. `aggregateScore` chỉ trung bình phiếu `SUBMITTED`; `totalScore = Σ(score×weight)`.
 - **BR/luật:** F03 BR-03, BR-04, BR-06, BR-07 · [ADR-0003](../architecture/decisions/0003-mo-hinh-hoi-dong-dung-chung.md)
-- **Vì sao dễ lỗi:** **open-point trong docs** — công thức số phiếu tối thiểu khi có xung đột lợi ích chưa chốt.
+- **Vì sao dễ lỗi:** Chỉ đếm phiếu hợp lệ của đúng vòng, giữ nguyên ngưỡng tối thiểu khi loại người xung đột.
 
 ### INT-04 — Cùng model hội đồng, hai `type` không lẫn (F03 ↔ F06) 🟠 🟡
 - **Bước:** cùng một đề tài lần lượt có `EvaluationRound` type `PROPOSAL_REVIEW` (F03) rồi `ACCEPTANCE` (F06); phiếu/tiêu chí/ngưỡng hai vòng **độc lập**, không rò chéo.

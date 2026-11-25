@@ -1,0 +1,14 @@
+{
+  "profiles": ["preview", "pilot"],
+  "tenantRegistry": "rms.tenant",
+  "services": {
+    "web": {"platform": "vercel-static", "build": "corepack pnpm --filter @rms/web build", "output": "apps/web/dist", "publicEnvironment": ["VITE_RMS_CONFIG_ORIGIN"], "secretRefs": []},
+    "api": {"platform": "vercel-function", "entry": "infra/pilot/api.mjs", "path": "/api/**", "secretRefs": ["DATABASE_URL","RMS_CATALOG_SERVICE_SECRET","AWS_ACCESS_KEY_ID","AWS_SECRET_ACCESS_KEY","RMS_IDP_PROVISION_CLIENTS"], "environment": ["RMS_CONFIG_ORIGIN","AWS_REGION","RMS_S3_ENDPOINT","RMS_S3_BUCKET","RMS_AI_MODEL","RMS_AI_LOCAL_ORIGIN"]},
+    "b01": {"platform": "persistent-node", "start": "node apps/sys-config-service/dist/main.js", "health": "/health", "transport": "https", "maxContentBytes": 20971520, "secretRefs": ["RMS_CONFIG_DATABASE_URL","RMS_CATALOG_SERVICE_SECRET","RMS_REDIS_URL","RMS_REMINDER_SERVICE_SECRET","RMS_TEACHING_SERVICE_SECRET"], "environment": ["RMS_IAM_ORIGIN","RMS_WEB_ORIGIN","HOST","PORT"]},
+    "worker": {"platform": "persistent-node", "start": "node apps/worker/src/main.mjs", "secretRefs": ["WORKER_DATABASE_URL","SMTP_USER","SMTP_PASSWORD","RMS_SMS_GATEWAY_TOKEN","RMS_REMINDER_SERVICE_SECRET","RMS_TEACHING_SERVICE_SECRET"], "environment": ["RMS_CONFIG_ORIGIN","SMTP_HOST","SMTP_PORT","SMTP_TLS","SMTP_FROM","RMS_SMS_GATEWAY_URL"]},
+    "idp": {"platform": "keycloak", "realmPerTenant": true, "flow": "RMS email OTP", "audiences": ["rms-api","rms-config"], "secretRefs": ["KC_DB_PASSWORD","SMTP_PASSWORD"]},
+    "db": {"platform": "postgresql", "minimumMajor": 15, "runtimeConnection": "transaction-pool", "migrationConnection": "direct", "secretRefs": ["MIGRATION_DATABASE_URL","CONFIG_MIGRATION_DATABASE_URL"]},
+    "objects": {"platform": "private-s3", "prefixes": ["quarantine/","files/"], "bucketPerEnvironment": true},
+    "backup": {"targets": ["rms-db","catalog-db","idp-db","object-versions","realm-provider-and-settings"], "operatorOnly": true, "rpoHours": 24, "rtoHours": 4}
+  }
+}

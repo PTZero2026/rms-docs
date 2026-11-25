@@ -3,9 +3,9 @@ title: "Đề tài cấp trên (Tỉnh/Bộ/Nhà nước)"
 id: "F09"
 epic: "E4"
 owner: "<PO/BA phụ trách>"
-status: Draft        # Draft | Review | Approved
+status: Review
 version: 0.2
-updated: 2026-06-26
+updated: 2026-11-24
 ---
 
 # Đề tài cấp trên (Tỉnh / Bộ / Nhà nước)
@@ -90,7 +90,15 @@ lý do trả lại).
   - **Loại minh chứng**: danh mục generic mới `EVIDENCE_TYPE` (seed `DECISION`/`CONTRACT`/`ACCEPTANCE`/`OUTPUT`/`OTHER`) — VP-CAT.
   - **Quy tắc minh chứng bắt buộc**: gắn vào `RESEARCH_TOPIC_CATEGORY.<item>.extra.requiredEvidence`
     `= { "khai_bao": [...], "ket_qua": [...] }`, theo **cấp × giai đoạn** — VP-EVID-REQ (dùng chung F09–F12).
-- **Điểm cần PO chốt:**
+- **Giá trị trường cần xác nhận khi kích hoạt theo RV-36:**
   - Giá trị seed cụ thể cho tenant pilot (Thủy Lợi): cấp nào bật, mỗi cấp yêu cầu loại minh chứng nào ở mỗi giai đoạn.
   - **Mốc phát sinh giờ giảng** (duyệt kê khai vs. duyệt kết quả hoàn thành) — cấu hình per-tenant qua tham số `f09.teachingHourTrigger` (VP-PARAM).
   - Có theo dõi **kinh phí cấp trên** chi tiết không (mặc định **không** — chỉ lưu kinh phí tổng tham khảo).
+
+**Căn cứ giao task ngày 24/11/2026.** Fixture dùng cấp Bộ yêu cầu DECISION khi duyệt, ghi kinh phí tổng tham khảo. Trigger tính giờ đọc từ cấu hình tenant. Khi mở thật áp RV-36.
+
+## Phạm vi BA/PO đã chốt cho task
+
+| Quyết định | AC nguồn | Hành vi ở ca biên |
+|---|---|---|
+| [RV-26](../../../specs/review-decisions.md#rv-26) | AC-02 | Cho lưu thông tin ban đầu theo trường bắt buộc, kiểm loại minh chứng theo cấp ở bước duyệt. |

@@ -2,7 +2,7 @@
 title: "Checklist bàn giao ĐH Thủy Lợi dùng thử"
 id: "handover-thuy-loi"
 status: Draft
-updated: 2026-11-21
+updated: 2026-11-24
 source: "docs/epics/BienBan_TongHop_NCKH_ThuyLoi.md"
 ---
 
@@ -22,7 +22,7 @@ source: "docs/epics/BienBan_TongHop_NCKH_ThuyLoi.md"
 - [ ] Quy tắc phân bổ giờ theo vai trò / tỉ lệ đóng góp (`VP-TH-ALLOC`)
 - [ ] `periodType` = `ACADEMIC_YEAR` hay `FISCAL_YEAR` (`VP-TH-PERIOD`)
 - [ ] **Phạm vi vòng đời F10 (đề tài SV)** — đầu mục / rút gọn / full lifecycle (`VP-MODE`)
-- [ ] **Cơ chế link tự động đề tài ↔ bài báo** (F07, 2 luồng bài) — chặn build-out F07
+- [ ] **Cơ chế link tự động đề tài ↔ bài báo** (F07, 2 luồng bài) — trường xác nhận riêng nếu cần tự suy đoán liên kết ngoài mã đề tài đã chọn
 - [ ] Phạm vi kinh phí F11 / F12 — chỉ ghi nhận hay dự toán / giải ngân
 - [ ] Danh mục biểu mẫu chuẩn (thuyết minh / tờ trình / hợp đồng / biên bản) — `VP-FORM`
 - [ ] Template trích xuất lý lịch KH + quy trình ký xác nhận (`VP-CV-TPL`)
@@ -35,14 +35,14 @@ source: "docs/epics/BienBan_TongHop_NCKH_ThuyLoi.md"
 - [ ] `VP-CAT`: seed danh mục — `RESEARCH_TOPIC_CATEGORY` (tier `UPPER` cho F09), `ProductType`, loại hoạt động F12, đơn vị / viện, học hàm / học vị
 - [ ] `VP-CRIT`: bộ tiêu chí xét duyệt (F03) + nghiệm thu (F06)
 - [ ] `VP-EVID-REQ`: minh chứng bắt buộc theo cấp / loại × giai đoạn (`khai_bao` / `ket_qua`)
-- [ ] `VP-MODE`: mức quản lý mỗi loại (F09 đầu mục, F10 chờ chốt, F11 đầu mục)
+- [ ] `VP-MODE`: mức quản lý mỗi loại (F09 đầu mục, F10 rút gọn cho triển khai, F11 đầu mục)
 - [ ] `VP-HOME`: widget + bố cục trang chủ theo vai trò
 - [ ] `VP-PROFILE` / `VP-FIELD`: trường hồ sơ hiển thị / bắt buộc
 - [ ] `VP-PARAM`: hạn nộp, ngưỡng điểm, số phiếu tối thiểu, `REMINDER_DAYS_BEFORE_DUE`, `MAX_REDO_COUNT`, `teachingHourTrigger` (F09 / F11)
 - [ ] `VP-ROLE` / `VP-SCOPE`: ánh xạ vai trò RMS ↔ người của Trường + phạm vi dữ liệu theo đơn vị
 
 ## C. Tích hợp kỹ thuật
-- [ ] **SSO Microsoft Entra ID** — Trường yêu cầu mail Microsoft; **mâu thuẫn [ADR-0008](../architecture/decisions/0008-keycloak-idp-dang-nhap-email-otp.md) (Keycloak OTP) → cần ADR mới** trước dùng thử (`VP-IDP`)
+- [ ] **SSO Microsoft Entra ID** — Trường yêu cầu mail Microsoft; **mâu thuẫn [ADR-0008](../architecture/decisions/0008-keycloak-idp-dang-nhap-email-otp.md) (Keycloak OTP) → cần ADR mới** nếu pilot yêu cầu liên kết Entra (VP-IDP). N03 dùng Keycloak/OTP trên local
 - [ ] `VP-PROV`: cách khởi tạo tài khoản (auto-provision role `USER`)
 - [ ] **Đồng bộ GV / SV** (`VP-SYNC`) — cơ chế "xác nhận, không khai lại" từ HR / hệ SV; **hiện chưa có tích hợp** (rủi ro F10)
 - [ ] Object storage S3 / MinIO cho file đính kèm — pre-signed URL
@@ -56,14 +56,9 @@ source: "docs/epics/BienBan_TongHop_NCKH_ThuyLoi.md"
 - [ ] Import GV / SV ban đầu; đảm bảo còn ≥1 admin hoạt động (B03 BR-12)
 - [ ] Nghiệm thu chất lượng dữ liệu sau migrate (đếm, đối chiếu mẫu)
 
-## E. Hoàn thiện tài liệu chặn dev (từ [REVIEW.md](../features/REVIEW.md))
-- [ ] **F07, F08, B02** — hiện khung mẫu rỗng (1 BR + 2 AC placeholder); F07 / F08 cần cho E4
-- [ ] **Sửa mâu thuẫn B03**: `design.md` lỗi thời (role many-to-many) vs `spec.md` v0.4 (`UserType` single-role, `POST /admin/users`)
-- [ ] **B01 `design.md` thiếu** (spec trỏ tới file không tồn tại)
-- [ ] F03: bổ sung AC còn thiếu (AC 10 < BR 11) + phê duyệt đạo đức song song + mô hình cuộc họp / biên bản
-- [ ] F06 test-plan còn khung → điền
-- [ ] `design.md` chưa tách cho F02–F06, B04
-- [ ] Đóng open-points §7 các spec (mã đề tài F01, gia hạn / làm lại…)
+## E. Hồ sơ cho đội triển khai
+
+20 feature đã có đặc tả, thiết kế, UI và ca kiểm. B03 dùng một userType, B01 xác thực quyền qua IAM. F03 có kết quả đạo đức và biên bản, F06 dùng cùng mô hình hội đồng. Đội nhận việc theo [kế hoạch](ke-hoach-implement-rms.md) và [báo cáo rà soát ngày 24/11](../reviews/san-sang-implement.md).
 
 ## F. Kiểm thử trước dùng thử
 - [ ] Chạy hết AC trong test-plan cho luồng lõi (F01 → F06 end-to-end; F01 là tracer bullet)
@@ -84,11 +79,6 @@ source: "docs/epics/BienBan_TongHop_NCKH_ThuyLoi.md"
 
 ---
 
-## Chặn cứng — phải xong trước dùng thử
-| Khối | Hạng mục chặn |
-|---|---|
-| A | Công thức giờ giảng P03 (`tlu.baseHoursScieQ1`, SCIE_Q2, phân bổ vai trò) |
-| C | ADR mới cho SSO Microsoft Entra ID + tích hợp đồng bộ GV/SV |
-| E | F07 / F08 hết trạng thái khung mẫu |
+## Điều kiện theo phạm vi dùng thử
 
-Còn lại (B, D, F, G) làm song song.
+Đợt A nghiệm thu qua B02, hai tenant có IAM/RLS, giao dịch thật, audit và bằng chứng N12–N14. E4 cần ví dụ có chữ ký theo từng phân hệ. Entra, đối soát thật và di trú cần đầu mối, nguồn dữ liệu và phạm vi được trường chọn. Chủ hạ tầng và ngân sách xác nhận môi trường trước vận hành. [Lộ trình](../product/roadmap.md)

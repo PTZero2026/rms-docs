@@ -21,6 +21,7 @@ import {
   Wallet,
 } from "lucide-react"
 import type { Role } from "./types"
+import { formatVietnamDate } from "../format-date.ts"
 export const items = [
   { id: "B06", label: "Tổng quan", icon: House, group: "Không gian làm việc" },
   { id: "B04", label: "Thông báo", icon: Bell, group: "Không gian làm việc" },
@@ -91,15 +92,4 @@ export const statusNames: Record<string, string> = {
   READ: "Đã đọc",
   UNREAD: "Chưa đọc",
 }
-export const vietnamDate = (iso: string, time = false) => {
-  const date = new Date(iso)
-  return Number.isNaN(date.getTime())
-    ? "—"
-    : new Intl.DateTimeFormat("vi-VN", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-        timeZone: "Asia/Ho_Chi_Minh",
-        ...(time ? { hour: "2-digit", minute: "2-digit" } : {}),
-      }).format(date)
-}
+export const vietnamDate = (iso: string, time = false) => formatVietnamDate(iso, time ? "minute" : "day")

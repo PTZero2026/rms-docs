@@ -1,0 +1,52 @@
+Widget:
+  type: string
+  enum: [tasks, projects, activity, shortcuts, teaching]
+Shortcuts:
+  type: array
+  items: {type: string, enum: [calls, reports, profile]}
+Counters:
+  type: array
+  items:
+    type: object
+    required: [code, label, value]
+    properties: {code: {type: string}, label: {type: string}, value: {type: number}}
+Notices:
+  type: array
+  maxItems: 5
+  items: {$ref: '../notification/inbox.yaml#/Item'}
+Layout:
+  type: object
+  required: [widgets, shortcuts]
+  properties:
+    widgets: {type: array, items: {$ref: '#/Widget'}}
+    shortcuts: {$ref: '#/Shortcuts'}
+WidgetData:
+  oneOf:
+    - type: object
+      required: [widget, name, profileIncomplete]
+      properties:
+        widget: {type: string, enum: [profile]}
+        name: {type: string}
+        profileIncomplete: {type: boolean}
+    - type: object
+      required: [widget, counters, capturedAt]
+      properties:
+        widget: {type: string, enum: [projects, teaching]}
+        counters: {$ref: '#/Counters'}
+        capturedAt: {type: string, format: date-time}
+    - type: object
+      required: [widget, notices]
+      properties:
+        widget: {type: string, enum: [activity]}
+        notices: {$ref: '#/Notices'}
+Overview:
+  type: object
+  required: [name, profileIncomplete, widgets, counters, notices, capturedAt, shortcuts]
+  properties:
+    name: {type: string}
+    profileIncomplete: {type: boolean}
+    capturedAt: {type: string, format: date-time}
+    widgets: {type: array, items: {$ref: '#/Widget'}}
+    counters: {$ref: '#/Counters'}
+    notices: {$ref: '#/Notices'}
+    shortcuts: {$ref: '#/Shortcuts'}

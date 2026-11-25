@@ -1,0 +1,74 @@
+Seat:
+  type: object
+  required: [accountId,role]
+  properties:
+    accountId: {type: string,format: uuid}
+    role: {type: string,enum: [CHAIR,REVIEWER,MEMBER,SECRETARY]}
+Committee:
+  type: object
+  required: [name,seats]
+  properties:
+    name: {type: string}
+    seats: {type: array,items: {$ref: '#/Seat'}}
+Option:
+  type: object
+  required: [id,label]
+  properties:
+    id: {type: string}
+    label: {type: string}
+Candidate:
+  allOf:
+    - {$ref: '#/Option'}
+    - {type: object,required: [finalized],properties: {finalized: {type: boolean}}}
+Setup:
+  type: object
+  required: [projects,committees,accounts,rounds]
+  properties:
+    projects: {type: array,items: {$ref: '#/Candidate'}}
+    committees: {type: array,items: {$ref: '#/Option'}}
+    accounts: {type: array,items: {$ref: '#/Option'}}
+    rounds: {type: array,items: {$ref: '#/Option'}}
+Open:
+  type: object
+  required: [committeeId,ethicsRequired]
+  properties:
+    committeeId: {type: string,format: uuid}
+    ethicsRequired: {type: boolean}
+Criterion:
+  type: object
+  required: [key,label,weight,maxScore]
+  properties:
+    key: {type: string}
+    label: {type: string}
+    weight: {type: number}
+    maxScore: {type: number}
+Round:
+  type: object
+  required: [decisionRevision,id,projectId,title,criteria,eligible,status,conclusion,projectStatus,ethics,ethicsNote,count,mean,passing,minimum]
+  properties:
+    decisionRevision: {type: integer, minimum: 0}
+    id: {type: string}
+    projectId: {type: string}
+    title: {type: string}
+    criteria: {type: array,items: {$ref: '#/Criterion'}}
+    eligible: {type: array,items: {$ref: '#/Option'}}
+    status: {type: string,enum: [COLLECTING_SCORES,CONCLUDED]}
+    conclusion: {type: string,nullable: true}
+    projectStatus: {type: string}
+    ethics: {type: string}
+    ethicsNote: {type: string,nullable: true}
+    count: {type: integer}
+    mean: {type: number,nullable: true}
+    passing: {type: number,nullable: true}
+    minimum: {type: integer,nullable: true}
+Assigned:
+  type: object
+  required: [id,title,criteria,document,sheet]
+  properties:
+    id: {type: string}
+    title: {type: string}
+    criteria: {type: array,items: {$ref: '#/Criterion'}}
+    document: {type: object,additionalProperties: {type: string}}
+    sheet:
+      nullable: true
+      allOf: [{$ref: './submit-score.yaml#/Sheet'}]

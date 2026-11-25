@@ -1,9 +1,9 @@
 ---
 title: "Đề tài cấp trên — Giao diện (một web app, phân quyền)"
 spec: "./spec.md"
-owner: "<BA/Designer>"
-status: Draft
-updated: 2026-06-26
+owner: "BA / Design"
+status: Review
+updated: 2026-11-24
 ---
 
 # Đề tài cấp trên — Giao diện
@@ -53,12 +53,11 @@ Gom theo nhóm; (✓) = bắt buộc, (○) = tùy chọn.
 | | Minh chứng (đính kèm + chọn **loại**) | * | upload `Attachment` + select `EVIDENCE_TYPE` |
 | **Trạng thái** | Trạng thái duyệt / lý do trả lại | – | hệ thống quản, không nhập tay |
 
-(*) Minh chứng bắt buộc **theo cấu hình** `requiredEvidence` của cấp × giai đoạn — form chỉ chặn khi **gửi
-duyệt/duyệt**, không chặn khi lưu nháp. Loại còn thiếu hiển thị rõ.
+(*) Minh chứng bắt buộc **theo cấu hình** `requiredEvidence` của cấp × giai đoạn — bước duyệt kiểm loại minh chứng bắt buộc của cấp và giai đoạn. Nháp lưu theo các trường đầu mục. Loại còn thiếu hiển thị rõ.
 
 ## 5. Phê duyệt (MH-02)
 Chuyên viên QLKH xem chi tiết + minh chứng → **Duyệt** (chặn nếu thiếu minh chứng bắt buộc, AC-02) hoặc
 **Trả lại** kèm lý do (AC-03). Sau khi Đã duyệt: hiển thị **giờ giảng phát sinh** (P03) theo từng thành viên.
 
 ## 6. Liên kết AC
-Map MH ↔ AC trong `spec.md`: MH-01 ↔ AC-01,03; MH-02 ↔ AC-02,04,05,06.
+Map MH ↔ AC trong `spec.md`: MH-01 ↔ AC-01, AC-03. MH-02 ↔ AC-02, AC-04, AC-05, AC-06.

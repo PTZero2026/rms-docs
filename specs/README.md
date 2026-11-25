@@ -1,14 +1,20 @@
 ---
-title: "Báo cáo review · Constitution và kế hoạch 32 lát RMS"
+title: "Danh mục triển khai 35 lát RMS"
 status: Review
-updated: 2026-11-21
+updated: 2026-11-24
 ---
 
-# Báo cáo review đợt 18/11/2026
+# Danh mục triển khai RMS
+
+**Ngày 24/11/2026.** Giao N01 ở monorepo hiện tại. Sáu quyết định SA và 40 quyết định RV đã có căn cứ dùng cho task. RV-31 giữ ngưỡng tạm chốt để kiểm trước pilot. [Báo cáo và bằng chứng](../docs/reviews/san-sang-implement.md)
+
+## Đợt lập kế hoạch 18/11/2026
 
 Hồ sơ bao phủ **32/32 thẻ INVEST**, theo đúng thứ tự US-01–32. Đợt A cung cấp phép thử đầu tiên: mở một kỳ, nộp và bổ sung, hội đồng chấm, trưởng phòng đối chiếu số đếm. Đợt B nối tới nghiệm thu và khóa sổ. Đợt C phụ thuộc cấu hình và dữ liệu được phép của từng đơn vị. [Danh mục gốc](../docs/sales/thi-truong-viet-nam-2026/feature-list-invest.md) · [Lộ trình](../docs/product/roadmap.md)
 
-## Những nội dung cần người quyết định trước
+**Đợt mobile tiếp theo, 22/11/2026.** US-33–35 bổ sung lọc việc quá hạn, đọc hộp thư và tra kỳ nhận trên điện thoại. [Backlog INVEST](../docs/product/mobile-invest.md) · [Biên bản chạy](workflow-run.md#đợt-v0-mobile--22112026) · [Báo cáo và ảnh v0-mobile](../docs/reviews/rms-v0-mobile.md).
+
+## Quyết định và đầu mối đối chiếu pilot
 
 | Khi gặp tình huống | Khuyến nghị để rà | Người cần duyệt |
 |---|---|---|
@@ -22,13 +28,13 @@ Hồ sơ bao phủ **32/32 thẻ INVEST**, theo đúng thứ tự US-01–32. Đ
 | Bật một phân hệ E4 tại Thủy lợi | Trường ký ít nhất một ví dụ đối chứng của chính phân hệ trước khi bật. Ví dụ có quy đổi giờ phải nêu hoạt động đủ điều kiện, định mức và ngày hiệu lực, phân bổ từng người và cách xử lý khi thu hồi. [RV-36 · Chấp thuận 21/11/2026](review-decisions.md#rv-36) | Phòng KHCN, Phòng Đào tạo và PO của trường |
 | AI rà thuyết minh hoặc lập thẻ đọc | Quy tắc nguồn đã chốt: kiểm quyền đọc hiện tại và quyền dùng nguồn cho AI của trường, kể cả khi mở lại. RV-31 tạm chốt bộ 50 hồ sơ và các ngưỡng đánh giá, có thể điều chỉnh theo dữ liệu thực tế của trường. RV-32 đã chốt. Khi chỉ được dùng thông tin thư mục, phương pháp và kết quả ghi “chưa đủ căn cứ”, người nghiên cứu kiểm thẻ trước khi dùng. [RV-35 · Chấp thuận 21/11/2026](review-decisions.md#rv-35) · [RV-31](review-decisions.md#rv-31) · [RV-32](review-decisions.md#rv-32) | Chủ dữ liệu, nhà nghiên cứu/thư viện, PO và QA AI |
 
-[Sổ đầy đủ 37 quyết định](review-decisions.md) có điều kiện ban đầu, hành động, kết quả, khuyến nghị, căn cứ cần xem và vai trò phụ trách. Năm mục cuối áp dụng chung cho pilot, mobile, quyền AI, kích hoạt E4 và thương mại.
+[Sổ 40 quyết định](review-decisions.md) có điều kiện ban đầu, hành động, kết quả, khuyến nghị, căn cứ cần xem và vai trò phụ trách. RV-33–37 áp dụng chung cho pilot, mobile, quyền AI, kích hoạt E4 và thương mại.
 
 ## Thay đổi quản trị và sản phẩm
 
 | Tài liệu | Nội dung cần rà |
 |---|---|
-| [AGENTS](../AGENTS.md) và [constitution 1.2.0](../.specify/memory/constitution.md) | Tăng MINOR từ 1.1.0. Giữ nguyên phân quyền backend, vòng đời P01, hợp đồng API, audit P02, tiền/ngày/giờ. Thêm nguyên tắc về kênh và AI, đồng bộ B06 và quy trình lập kế hoạch trong repo tài liệu. [ADR-0014 đề xuất](../docs/architecture/decisions/0014-kenh-san-pham-va-ke-hoach-invest.md) |
+| [AGENTS](../AGENTS.md) và [constitution 1.2.0](../.specify/memory/constitution.md) | Tăng MINOR từ 1.1.0. Giữ nguyên phân quyền backend, vòng đời P01, hợp đồng API, audit P02, tiền/ngày/giờ. Thêm nguyên tắc về kênh và AI, đồng bộ B06 và quy trình lập kế hoạch trong repo tài liệu. [ADR-0014](../docs/architecture/decisions/0014-kenh-san-pham-va-ke-hoach-invest.md) |
 | [Vision](../docs/product/vision.md) và [personas](../docs/product/personas.md) | Đối chiếu đầu mối nghiệp vụ ở đại học, bệnh viện, Sở. Đo kỳ cơ sở, theo mã xuyên vòng đời, nhận biết người dùng và người ký đầu ra. |
 | [Roadmap](../docs/product/roadmap.md) và [glossary](../docs/product/glossary.md) | A/B/C, tiêu chí qua đợt, định nghĩa kênh, bản chụp báo cáo và căn cứ AI. B06 là trang chủ chỉ đọc. |
 | [B02](../docs/features/B02-bao-cao-thong-ke/spec.md) | Thay khung trống bằng đặc tả **trình duyệt**, truy vết 3 BR/3 AC tới [thiết kế](../docs/features/B02-bao-cao-thong-ke/design.md), [màn hình](../docs/features/B02-bao-cao-thong-ke/ui.md) và [ca thử](../docs/features/B02-bao-cao-thong-ke/test-plan.md). Phạm vi đầu tiên là báo cáo một kỳ. |
@@ -80,6 +86,9 @@ Mỗi dòng có một story ưu tiên P1 trong phạm vi của lát. 19 lát web
 | US-30 | C / shared | P03 | [Ghi giờ giảng từ một sự kiện hợp lệ](030-shared-teaching-hours/spec.md) | [Plan](030-shared-teaching-hours/plan.md) | [Tasks](030-shared-teaching-hours/tasks.md) | [RV-30 · Chấp thuận 21/11/2026](review-decisions.md#rv-30) |
 | US-31 | C / shared | F01 | [Đối chiếu mục bắt buộc trong một thuyết minh](031-shared-ai-proposal-evidence/spec.md) | [Plan](031-shared-ai-proposal-evidence/plan.md) | [Tasks](031-shared-ai-proposal-evidence/tasks.md) | [RV-31](review-decisions.md#rv-31) |
 | US-32 | C / web | F07 | [Lập thẻ đọc cho một tài liệu có DOI](032-web-ai-reading-card/spec.md) | [Plan](032-web-ai-reading-card/plan.md) | [Tasks](032-web-ai-reading-card/tasks.md) | [RV-32](review-decisions.md#rv-32) |
+| US-33 | Mobile bổ sung | B06 | [Spec](033-mobile-triage-deadlines/spec.md) | [Plan](033-mobile-triage-deadlines/plan.md) | [Tasks](033-mobile-triage-deadlines/tasks.md) | [RV-38](review-decisions.md#rv-38) |
+| US-34 | Mobile bổ sung | B04 | [Spec](034-mobile-read-inbox/spec.md) | [Plan](034-mobile-read-inbox/plan.md) | [Tasks](034-mobile-read-inbox/tasks.md) | [RV-39](review-decisions.md#rv-39) |
+| US-35 | Mobile bổ sung | F02 | [Spec](035-mobile-find-open-call/spec.md) | [Plan](035-mobile-find-open-call/plan.md) | [Tasks](035-mobile-find-open-call/tasks.md) | [RV-40](review-decisions.md#rv-40) |
 
 ## Rà liên module và bàn giao
 
@@ -89,7 +98,7 @@ Mỗi dòng có một story ưu tiên P1 trong phạm vi của lát. 19 lát web
 
 ## Tài liệu cũ
 
-Tiếp tục dùng 20 đặc tả F/B/P, mô hình dữ liệu, bảng biến thể, quy tắc vòng đời, phân quyền, audit và các tài liệu UI/test còn nội dung. Mỗi hồ sơ nghiên cứu dẫn đến feature và các AC gốc khi có. Hai lát AI chưa có AC đã duyệt ở F01/F07. US-13 xuất phát từ khung B02 và đã chốt quy tắc đếm và bản chụp theo RV-13. Báo cáo thị trường giữ nguyên mốc quan sát trước đợt cập nhật.
+Tiếp tục dùng 20 đặc tả F/B/P, mô hình dữ liệu, bảng biến thể, quy tắc vòng đời, phân quyền, audit và các tài liệu UI/test còn nội dung. Mỗi hồ sơ nghiên cứu dẫn đến feature và các AC gốc khi có. Hai lát AI có tiêu chí nguồn F01/AC-12 và F07/AC-14. US-13 xuất phát từ khung B02 và đã chốt quy tắc đếm và bản chụp theo RV-13. Báo cáo thị trường giữ nguyên mốc quan sát trước đợt cập nhật.
 
 | Bản đã thay | Nơi lưu tham chiếu | Bản hiện hành |
 |---|---|---|
@@ -97,7 +106,7 @@ Tiếp tục dùng 20 đặc tả F/B/P, mô hình dữ liệu, bảng biến th
 | Khung B02 spec, UI, test | [Spec cũ](../docs/features/B02-bao-cao-thong-ke/ref/spec.md), [UI cũ](../docs/features/B02-bao-cao-thong-ke/ref/ui.md), [test cũ](../docs/features/B02-bao-cao-thong-ke/ref/test-plan.md) | [B02](../docs/features/B02-bao-cao-thong-ke/spec.md) |
 | Khung kiểm thử F06 | [Test cũ](../docs/features/F06-nghiem-thu/ref/test-plan.md) | [Test F06](../docs/features/F06-nghiem-thu/test-plan.md) |
 
-Tất cả 256 task đang mở cho repo code. 64 ví dụ gốc, 32 ca biên khuyến nghị và 32 ca cách ly tạo thành 128 kịch bản nghiệm thu dự kiến. Các số này đếm kế hoạch và ca được đặc tả. Bằng chứng vận hành và chấp thuận của người có thẩm quyền sẽ được bổ sung khi thực hiện pilot.
+US-01–32 có 256 task còn mở. US-33–35 thêm 21 task, trong đó 3 T001 có fixture đã kiểm ở v0. Tổng cộng còn 274 task ở workspace đích. 64 ví dụ gốc, 32 ca biên khuyến nghị và 32 ca cách ly tạo thành 128 kịch bản nghiệm thu dự kiến. Các số này đếm kế hoạch và ca được đặc tả. Bằng chứng vận hành và chấp thuận của người có thẩm quyền sẽ được bổ sung khi thực hiện pilot.
 
 ## Kết quả kiểm chứng tài liệu
 

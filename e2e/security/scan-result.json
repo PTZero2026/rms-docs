@@ -1,0 +1,22 @@
+{
+  "workingCopy": {
+    "files": 2404,
+    "filesMatching": {
+      "privateKey": 0,
+      "awsAccessKey": 0,
+      "githubToken": 0,
+      "slackToken": 0,
+      "signedJwt": 0
+    }
+  },
+  "webBuild": {
+    "files": 18,
+    "filesMatching": {
+      "privateKey": 0,
+      "awsAccessKey": 0,
+      "githubToken": 0,
+      "slackToken": 0,
+      "signedJwt": 0
+    }
+  }
+}

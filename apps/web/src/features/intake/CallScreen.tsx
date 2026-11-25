@@ -1,3 +1,5 @@
+import { CallCards } from '../mobile/CallCards'
+import { usePhoneLayout } from '../mobile/usePhoneLayout'
 import { useState } from 'react'
 import { Button } from '@rms/ui/components/button'
 import type { DemoRow, FeatureProps } from '../../demo/types'
@@ -130,11 +132,17 @@ function CallEditor({
   )
 }
 export function CallScreen(app: FeatureProps) {
+  const phone = usePhoneLayout()
   const { route, session, rows, go } = app
   const [edit, setEdit] = useState(false)
   const [query, setQuery] = useState('')
   const [due, setDue] = useState('')
   const calls = rows.filter((r) => callVisible(app, r))
+  const matches = calls.filter((c) =>
+    (c.title + ' ' + c.fields.code)
+      .toLocaleLowerCase('vi')
+      .includes(query.trim().toLocaleLowerCase('vi')),
+  )
   const call = calls.find((r) => r.id === route.id)
   const done = (id: string) => {
     setEdit(false)
@@ -170,15 +178,12 @@ export function CallScreen(app: FeatureProps) {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
-          <Grid
-            heads={['Kỳ nhận đề xuất', 'Mã kỳ', 'Thời gian nhận', 'Trạng thái']}
-            lines={calls
-              .filter((c) =>
-                (c.title + c.fields.code)
-                  .toLocaleLowerCase('vi')
-                  .includes(query.toLocaleLowerCase('vi')),
-              )
-              .map((c) => ({
+          {phone ? (
+            <CallCards matches={matches} />
+          ) : (
+            <Grid
+              heads={['Kỳ nhận đề xuất', 'Mã kỳ', 'Thời gian nhận', 'Trạng thái']}
+              lines={matches.map((c) => ({
                 id: c.id,
                 cells: [
                   <LinkRecord feature="F02" id={c.id}>
@@ -189,7 +194,8 @@ export function CallScreen(app: FeatureProps) {
                   <State value={callStatus(c)} />,
                 ],
               }))}
-          />
+            />
+          )}
         </Panel>
       </>
     )

@@ -1,9 +1,9 @@
 ---
 title: "Quy đổi giờ giảng — Giao diện (một web app, phân quyền)"
 spec: "./spec.md"
-owner: "<BA/Designer>"
-status: Draft
-updated: 2026-06-29
+owner: "BA / Design"
+status: Review
+updated: 2026-11-24
 ---
 
 # Quy đổi giờ giảng — Giao diện
@@ -56,5 +56,5 @@ updated: 2026-06-29
 | Màn hình | AC liên quan |
 |---|---|
 | MH-01 Cấu hình công thức quy đổi | AC-01, AC-02, AC-03, AC-07, AC-08 |
-| MH-02 Bảng giờ giảng theo giảng viên/kỳ | AC-05, AC-09 |
+| MH-02 Bảng giờ giảng theo giảng viên/kỳ | AC-04, AC-05, AC-09 |
 | MH-03 Điều chỉnh/tính lại có lý do | AC-06, AC-08 |

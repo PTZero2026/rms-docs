@@ -1,0 +1,92 @@
+{
+  "at": "2026-11-24T15:34:48.905Z",
+  "browser": "158.0.8127.37",
+  "environment": "darwin arm64",
+  "transport": "loopback",
+  "coldBrowser": [
+    {
+      "callbackToHeadingMs": 363,
+      "mailObservedMs": 144
+    },
+    {
+      "callbackToHeadingMs": 355,
+      "mailObservedMs": 135
+    },
+    {
+      "callbackToHeadingMs": 356,
+      "mailObservedMs": 117
+    },
+    {
+      "callbackToHeadingMs": 430,
+      "mailObservedMs": 148
+    },
+    {
+      "callbackToHeadingMs": 360,
+      "mailObservedMs": 143
+    }
+  ],
+  "warmBrowserMs": [
+    348,
+    348,
+    354,
+    346,
+    377,
+    371,
+    356,
+    376,
+    373,
+    380,
+    373,
+    374,
+    370,
+    373,
+    376,
+    376,
+    385,
+    373,
+    378,
+    380,
+    377,
+    386,
+    371,
+    377,
+    366,
+    375,
+    385,
+    381,
+    378,
+    380
+  ],
+  "firstPageMs": [
+    100,
+    95,
+    91,
+    83,
+    69,
+    50,
+    94,
+    96,
+    65,
+    92,
+    64,
+    67,
+    93,
+    95,
+    97,
+    92,
+    72,
+    95,
+    95,
+    85,
+    64,
+    66,
+    96,
+    65,
+    91,
+    63,
+    75,
+    71,
+    96,
+    68
+  ]
+}

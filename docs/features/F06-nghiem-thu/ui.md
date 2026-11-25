@@ -170,3 +170,5 @@ Ghi `AuditLog` (append-only) cho mọi hành động đổi trạng thái/quan t
 | BO-03 | AC-02 |
 | BO-04 | AC-03, AC-08, AC-09, AC-12 |
 | BO-05 | AC-04, AC-05, AC-06, AC-10, AC-11, AC-12 |
+
+**Điều chỉnh sau kết luận (BR-12, AC-12).** Chuyên viên mở vòng nghiệm thu, nhập lý do và kiểm lịch sử theo thời gian Việt Nam. Giao diện hiển thị thao tác mở lại hoặc chọn chủ quy trình nhận yêu cầu theo trạng thái do API trả về. [Hướng dẫn theo vai trò](../../guides/nguoi-dung/san-pham-va-nghiem-thu.md)

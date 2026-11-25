@@ -3,14 +3,14 @@ story: US-14
 feature: F04
 review_id: RV-14
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-24
 ---
 
 # Căn cứ và quyết định · US-14
 
 **Vấn đề.** Chuyên viên có thể giao khi mới có số quyết định nhưng chưa có bản đính kèm?
 
-**Khuyến nghị hiện dùng.** Yêu cầu tệp căn cứ đọc được theo phạm vi đề tài trước khi xác nhận giao.
+**Quyết định triển khai.** Yêu cầu tệp căn cứ đọc được theo phạm vi đề tài trước khi xác nhận giao.
 
 **Lý do.** Trong trường hợp thiếu tệp căn cứ dù đã nhập số quyết định, người dùng cần thấy kết quả “nêu mục tệp thiếu, giữ APPROVED”. Phương án khác: Cho giao trước rồi yêu cầu đính tệp bổ sung sau. Dùng TC-03 để phân biệt hai phương án. [RV-14](../review-decisions.md#rv-14)
 

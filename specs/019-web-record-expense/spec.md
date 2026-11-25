@@ -5,7 +5,7 @@ epic: E2
 channel: web
 wave: B
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-24
 ---
 
 # Ghi khoản chi kèm chứng từ
@@ -16,7 +16,7 @@ updated: 2026-11-18
 
 ### Session 2026-11-18
 
-- Q: Khoản chi vượt mức thực hiện xử lý thế nào? → A: Lưu khoản hợp lệ, hiển thị số vượt và số dư mới, để chuyên viên rà khi đóng. [RV-19](../review-decisions.md#rv-19). Khuyến nghị dùng để lập kế hoạch, chờ Kế toán và chủ nhiệm xác nhận.
+- Q: Khoản chi vượt mức thực hiện xử lý thế nào? → A: Lưu khoản hợp lệ, hiển thị số vượt và số dư mới, để chuyên viên rà khi đóng. [RV-19](../review-decisions.md#rv-19). BA/PO chốt cho triển khai ngày 24/11/2026.
 
 ## User Scenarios & Testing
 
@@ -29,7 +29,7 @@ Chủ nhiệm ghi khoản chi VND với ngày và minh chứng. Hệ thống tí
 - **AC-01** (US-19.1) — Given chủ nhiệm chi 3 triệu. When lưu khoản chi. Then vẫn lưu và cảnh báo vượt 1 triệu đồng.
 - **AC-02** (US-19.2) — Given số tiền bằng 0. When lưu. Then báo lỗi, số dư giữ nguyên.
 
-- **AC-03** (US-19.3, khuyến nghị) — Given Còn 2 triệu, khoản chi đúng 2 triệu đồng. When chủ nhiệm lưu. Then số dư bằng 0 và không cảnh báo vượt.
+- **AC-03** (US-19.3) — Given Còn 2 triệu, khoản chi đúng 2 triệu đồng. When chủ nhiệm lưu. Then số dư bằng 0 và không cảnh báo vượt.
 
 ### Edge Cases
 
@@ -42,7 +42,7 @@ Số tiền bằng 0 → báo lỗi, số dư giữ nguyên.
 - **BR-01 / FR-001.** Khi chủ nhiệm chi 3 triệu, người có quyền có thể lưu khoản chi. Kết quả phải quan sát được: vẫn lưu và cảnh báo vượt 1 triệu đồng (AC-01).
 - **BR-02 / FR-002.** Với tình huống số tiền bằng 0, thao tác lưu phải cho kết quả báo lỗi, số dư giữ nguyên (AC-02).
 
-- **BR-03 / FR-003 (đề xuất).** Lưu khoản hợp lệ, hiển thị số vượt và số dư mới, để chuyên viên rà khi đóng. Kiểm bằng AC-03.
+- **BR-03 / FR-003.** Lưu khoản hợp lệ, hiển thị số vượt và số dư mới, để chuyên viên rà khi đóng. Kiểm bằng AC-03.
 
 ### Key Entities
 

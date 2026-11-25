@@ -3,9 +3,9 @@ title: "Quy đổi giờ giảng"
 id: "P03"
 epic: "E4"
 owner: "<PO/BA phụ trách>"
-status: Draft        # Draft | Review | Approved
+status: Review
 version: 0.2
-updated: 2026-11-21
+updated: 2026-11-24
 ---
 
 # Quy đổi giờ giảng *(Platform / xuyên suốt)*
@@ -160,3 +160,5 @@ Tham số tối thiểu cần seed trong P03:
 
 Ví dụ nếu PO duyệt `tlu.baseHoursScieQ1 = 100`, P03 sẽ tính: SCIE-Q1 = 100 giờ, SCIE-Q2 = 50 giờ
 *(nếu chấp nhận hệ số suy luận)*, giải pháp hữu ích = 100 giờ, sáng chế = 200 giờ trước khi phân bổ tác giả.
+
+**Căn cứ giao task ngày 24/11/2026.** DEV/QA dùng công thức và lịch năm học của fixture có ngày hiệu lực. Thiếu quy chế thì giữ tắt ở tenant thật. Trường ký ví dụ theo RV-36, gồm phân bổ từng người, ngày nghiệp vụ nguồn và điều chỉnh thu hồi. Số hóa lịch sử 5 năm là phạm vi riêng.

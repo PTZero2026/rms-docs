@@ -5,7 +5,7 @@ epic: E2
 channel: web
 wave: B
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-24
 ---
 
 # Đặt hạn báo cáo theo kỳ
@@ -16,7 +16,7 @@ updated: 2026-11-18
 
 ### Session 2026-11-18
 
-- Q: Hai đề tài có được dùng cùng mã kỳ không? → A: Áp khóa theo cặp đề tài và kỳ, cho hai đề tài khác nhau dùng cùng tên kỳ. [RV-15](../review-decisions.md#rv-15). Khuyến nghị dùng để lập kế hoạch, chờ Chuyên viên tiến độ và BA xác nhận.
+- Q: Hai đề tài có được dùng cùng mã kỳ không? → A: Áp khóa theo cặp đề tài và kỳ, cho hai đề tài khác nhau dùng cùng tên kỳ. [RV-15](../review-decisions.md#rv-15). BA/PO chốt cho triển khai ngày 24/11/2026.
 
 ## User Scenarios & Testing
 
@@ -29,7 +29,7 @@ Chuyên viên lập một kỳ báo cáo có hạn nộp để chủ nhiệm bi�
 - **AC-01** (US-15.1) — Given chưa có kỳ. When tạo kỳ và hạn. Then xuất hiện đúng một báo cáo chờ nộp.
 - **AC-02** (US-15.2) — Given đã có cùng kỳ trên đề tài. When tạo lại. Then từ chối bản trùng.
 
-- **AC-03** (US-15.3, khuyến nghị) — Given Hai đề tài đang thực hiện cùng chưa có kỳ 1. When tạo kỳ 1 cho từng đề tài. Then mỗi đề tài có một báo cáo chờ riêng.
+- **AC-03** (US-15.3) — Given Hai đề tài đang thực hiện cùng chưa có kỳ 1. When tạo kỳ 1 cho từng đề tài. Then mỗi đề tài có một báo cáo chờ riêng.
 
 ### Edge Cases
 
@@ -42,7 +42,7 @@ Chuyên viên lập một kỳ báo cáo có hạn nộp để chủ nhiệm bi�
 - **BR-01 / FR-001.** Khi chưa có kỳ, người có quyền có thể tạo kỳ và hạn. Kết quả phải quan sát được: xuất hiện đúng một báo cáo chờ nộp (AC-01).
 - **BR-02 / FR-002.** Với tình huống đã có cùng kỳ trên đề tài, thao tác tạo lại phải cho kết quả từ chối bản trùng (AC-02).
 
-- **BR-03 / FR-003 (đề xuất).** Áp khóa theo cặp đề tài và kỳ, cho hai đề tài khác nhau dùng cùng tên kỳ. Kiểm bằng AC-03.
+- **BR-03 / FR-003.** Áp khóa theo cặp đề tài và kỳ, cho hai đề tài khác nhau dùng cùng tên kỳ. Kiểm bằng AC-03.
 
 ### Key Entities
 

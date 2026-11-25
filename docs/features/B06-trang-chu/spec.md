@@ -3,9 +3,9 @@ title: "Trang chủ (Dashboard cá nhân)"
 id: "B06"
 epic: "E0"
 owner: "PO/BA"
-status: Draft        # Draft | Review | Approved
+status: Review
 version: 0.1
-updated: 2026-06-26
+updated: 2026-11-24
 ---
 
 # Trang chủ (Dashboard cá nhân)
@@ -204,14 +204,26 @@ Viết theo Given / When / Then bằng ngôn ngữ nghiệp vụ; khẳng địn
 | Lộ số liệu vượt phạm vi do tổng hợp vòng qua phân quyền | Cao | Mọi truy vấn đi qua API/đọc tôn trọng data scoping của module nguồn; kiểm ở backend (BR-01) |
 | Việc cần làm lệch khi tenant đổi tên bước workflow | Trung bình | Gom theo `statusSemantic` chuẩn hoá, không theo tên bước (BR-03) |
 
-**Điểm cần PO chốt:**
-- **Tập widget chuẩn & bố cục mặc định theo từng vai trò** (đầu vào cho VP-HOME) — đang chờ PO/BA duyệt đề
-  xuất bộ widget `W-xx` + bố cục theo vai trò (xem [`ui.md` §3](./ui.md)).
+**Bố cục gốc.** BA/PO chọn bộ widget và bố cục theo vai trò ở [UI §3](ui.md) làm mặc định. VP-HOME cho phép tenant thay bố cục trong phạm vi quyền của từng người.
 
 **Đã chốt (2026-06-26):**
 - **Mã feature = B06**; `B05` để dành cho **Cổng công khai** (xem [epics/README.md](../../epics/README.md) §Ghi chú).
 - **Không** làm tuỳ chọn ghim/ẩn widget **cá nhân** (`HomePreference`) ở giai đoạn này — chỉ cấu hình ở
   **mức tenant theo vai trò** (VP-HOME, BR-05); để mở cá nhân hoá cho tương lai.
 - **N = 5** — khối thông báo trang chủ hiển thị **5** thông báo IN_APP gần nhất của người dùng (BR-07).
-</content>
-</invoke>
+
+## Phạm vi BA/PO đã chốt cho task
+
+| Quyết định | AC nguồn | Hành vi ở ca biên |
+|---|---|---|
+| [RV-12](../../../specs/review-decisions.md#rv-12) | AC-05 | Kiểm quyền khi mở liên kết, hướng người dùng về danh sách đã làm mới. |
+
+## Lọc việc quá hạn
+
+| Quy tắc | Nội dung |
+|---|---|
+| BR-11 | Dùng ngày nghiệp vụ Asia/Ho_Chi_Minh và cùng tập việc đã lọc quyền cho danh sách và số đếm. |
+
+- **AC-13** (BR-11) — Chạm Quá hạn chỉ thấy việc có hạn trước hôm nay. Việc hạn hôm nay hoặc thiếu hạn nằm trong Tất cả. Chạm việc mở đúng đối tượng ở feature nguồn.
+
+[Lát US-33](../../../specs/033-mobile-triage-deadlines/spec.md)

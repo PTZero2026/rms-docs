@@ -3,7 +3,7 @@ title: "Quy đổi giờ giảng — Test plan"
 spec: "./spec.md"
 owner: "<TEST>"
 status: Draft
-updated: 2026-11-21
+updated: 2026-11-24
 ---
 
 # Quy đổi giờ giảng — Kế hoạch kiểm thử
@@ -33,3 +33,11 @@ updated: 2026-11-21
 - Phân bổ vai trò tổng tỉ lệ khác 100%.
 - Công thức mới chồng lấn hiệu lực với công thức cũ cùng loại hoạt động/vai trò/kỳ.
 - Seed TLU thiếu `tlu.baseHoursScieQ1` thì không cho bật công thức quy đổi giờ.
+
+### Đối chứng phân bổ F09 theo vai trò
+
+Kê khai chủ nhiệm và hai thành viên với tỷ lệ lần lượt 50%, 30% và 20%. Cấu hình định mức thử 20 giờ cho chủ nhiệm và 10 giờ cho thành viên cùng cấp. Sau duyệt, chạy công việc quy đổi hai lần rồi đối chiếu sổ của ba người với 10,00 / 3,00 / 2,00 giờ. Thu hồi quyết định và kiểm từng tổng về 0. Lưu bằng client cũ phải giữ danh sách thành viên đã khai. [Ca tích hợp PostgreSQL](../../../apps/backend/test/db/teaching.test.mjs)
+
+### Nguồn F11 và biên tiền hợp đồng
+
+TC-01/04/05/07/10 dùng định mức cấu hình tại chỗ. Kiểm hai khoảng liền kề cùng ngày hiệu lực và phiên bản. Từ chối khoảng chồng lấn. Ghi nhận hợp đồng đúng cận dưới theo bậc mới, đối chiếu cả hai vai trò rồi chạy lại worker. Trên lý lịch thư ký, kiểm số giờ trước/sau khi thu hồi dự án. [Ca F11/P03](../../../apps/backend/test/db/applied-hours.test.mjs) · [Kịch bản F08](../../../e2e/applied-project/register-applied-project/acceptance.spec.ts)

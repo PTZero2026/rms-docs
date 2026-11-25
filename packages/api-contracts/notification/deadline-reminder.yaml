@@ -1,0 +1,5 @@
+Window:
+  type: object
+  required: [daysBefore]
+  properties:
+    daysBefore: {type: integer, minimum: 0, maximum: 365}

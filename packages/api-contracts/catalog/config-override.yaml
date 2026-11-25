@@ -1,0 +1,42 @@
+Meta:
+  type: object
+  required: [key, scope, mime, encoding, size, description, refer, group, active, public]
+  properties:
+    key: {type: string}
+    scope: {type: string, enum: [tenant, shared]}
+    mime: {type: string}
+    encoding: {type: string}
+    size: {type: integer}
+    description: {type: string}
+    refer: {type: string}
+    group: {type: string}
+    active: {type: boolean}
+    public: {type: boolean}
+    revision: {type: string, format: uuid}
+    created: {type: string, format: date-time}
+    modified: {type: string, format: date-time}
+Input:
+  type: object
+  additionalProperties: false
+  properties:
+    key: {type: string, pattern: '^[A-Za-z0-9._-]{1,128}$'}
+    content: {type: string, format: byte, description: Base64 in JSON and literal text in form fields.}
+    mime_type: {type: string}
+    encoding: {type: string}
+    description: {type: string}
+    refer: {type: string}
+    group: {type: string}
+    active: {type: boolean}
+    public: {type: boolean}
+Decision:
+  type: object
+  required: [tenantId, actorId, issuer, subject, slug, scope, canWrite]
+  properties:
+    tenantId: {type: string, format: uuid}
+    actorId: {type: string, format: uuid}
+    actorEmail: {type: string, format: email}
+    issuer: {type: string, format: uri}
+    subject: {type: string}
+    slug: {type: string}
+    scope: {type: string, enum: [tenant, shared]}
+    canWrite: {type: boolean}

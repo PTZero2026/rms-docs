@@ -2,8 +2,8 @@
 title: "Quản lý tiến độ — Test plan"
 spec: "./spec.md"
 owner: "PO/BA"
-status: Draft
-updated: 2026-06-05
+status: Review
+updated: 2026-11-24
 ---
 
 # Quản lý tiến độ — Kế hoạch kiểm thử
@@ -56,3 +56,11 @@ updated: 2026-06-05
 - Thông báo (B04) phát đúng sự kiện; audit ghi đủ.
 - Đối chiếu "đủ sản phẩm cam kết" với F07 khi quy tắc BR-10 được chốt.
 - F05 lấy đúng `ProjectAssignment.approvedBudget` làm trần khoán kinh phí.
+
+## Ca biên theo quyết định triển khai
+
+| Ca | AC nguồn | Điều kiện | Thao tác | Kết quả |
+|---|---|---|---|---|
+| TC-19 · [US-14/TC-03](../../../specs/014-web-assign-project/quickstart.md) | AC-14 | Thiếu tệp căn cứ dù đã nhập số quyết định | xác nhận giao | nêu mục tệp thiếu, giữ APPROVED |
+| TC-20 · [US-15/TC-03](../../../specs/015-web-report-period/quickstart.md) | AC-13 | Hai đề tài đang thực hiện cùng chưa có kỳ 1 | tạo kỳ 1 cho từng đề tài | mỗi đề tài có một báo cáo chờ riêng |
+| TC-21 · [US-17/TC-03](../../../specs/017-web-submit-progress/quickstart.md) | AC-08 | Báo cáo đến đúng hạn trong khi đề tài đang thực hiện | chủ nhiệm nộp đủ tệp | ghi nhận đúng hạn và chuyển chờ duyệt |

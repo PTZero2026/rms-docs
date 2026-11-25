@@ -3,14 +3,14 @@ story: US-17
 feature: F04
 review_id: RV-17
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-24
 ---
 
 # Căn cứ và quyết định · US-17
 
 **Vấn đề.** Có chặn báo cáo quá hạn nếu đề tài vẫn đang thực hiện?
 
-**Khuyến nghị hiện dùng.** Nhận hồ sơ, ghi giờ và nhãn trễ, chặn khi đề tài tạm dừng.
+**Quyết định triển khai.** Nhận hồ sơ, ghi giờ và nhãn trễ, chặn khi đề tài tạm dừng.
 
 **Lý do.** Trong trường hợp báo cáo đến đúng hạn trong khi đề tài đang thực hiện, người dùng cần thấy kết quả “ghi nhận đúng hạn và chuyển chờ duyệt”. Phương án khác: Đóng biểu mẫu ngay khi hết hạn. Dùng TC-03 để phân biệt hai phương án. [RV-17](../review-decisions.md#rv-17)
 

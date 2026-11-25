@@ -1,7 +1,7 @@
 ---
 title: "Biên bản chạy Spec Kit"
 status: Review
-updated: 2026-11-18
+updated: 2026-11-22
 ---
 
 # Biên bản chạy Spec Kit
@@ -44,3 +44,13 @@ Các dòng sau được tổng hợp từ kết quả phân giải mẫu, xác m
 | [US-32](032-web-ai-reading-card/spec.md) | specify → clarify → plan → tasks | research.md, data-model.md, contracts/, quickstart.md | 16/16 | [8](032-web-ai-reading-card/tasks.md) |
 
 Mỗi file tasks chia 1 việc chuẩn bị, 1 việc nền tảng, 5 việc US1 và 1 việc hồi quy. Sau khi có hợp đồng, T003 (ca kiểm) và T004 (ràng buộc dữ liệu) làm song song trên hai tệp riêng. [Báo cáo](README.md)
+
+## Đợt v0-mobile · 22/11/2026
+
+Từng thẻ chạy trọn bốn bước rồi mới chuyển sang thẻ kế tiếp. Specify phân giải spec-template, clarify kiểm đường dẫn bằng check-prerequisites, plan chạy setup-plan, tasks chạy setup-tasks với SPECIFY_FEATURE_DIRECTORY của thẻ. Hai hook agent-context vẫn là tùy chọn theo cấu hình của repo.
+
+| Thẻ | Thứ tự | Đầu vào mà setup-tasks tìm thấy | Chất lượng spec | Tasks |
+|---|---|---|---|---|
+| [US-33](033-mobile-triage-deadlines/spec.md) | specify → clarify → plan → tasks | research.md, data-model.md, contracts/, quickstart.md | [16/16](033-mobile-triage-deadlines/checklists/requirements.md) | [7](033-mobile-triage-deadlines/tasks.md) |
+| [US-34](034-mobile-read-inbox/spec.md) | specify → clarify → plan → tasks | research.md, data-model.md, contracts/, quickstart.md | [16/16](034-mobile-read-inbox/checklists/requirements.md) | [7](034-mobile-read-inbox/tasks.md) |
+| [US-35](035-mobile-find-open-call/spec.md) | specify → clarify → plan → tasks | research.md, data-model.md, contracts/, quickstart.md | [16/16](035-mobile-find-open-call/checklists/requirements.md) | [7](035-mobile-find-open-call/tasks.md) |

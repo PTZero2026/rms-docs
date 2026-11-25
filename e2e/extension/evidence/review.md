@@ -1,0 +1,7 @@
+# US-26 và US-29 · Quy tắc minh chứng của từng trường
+
+Bộ thử đăng nhập hai trường qua Keycloak, dùng B01 và tải PDF lên S3. Ở F09, hồ sơ cấp Bộ có báo cáo vẫn gửi được cho chuyên viên. Chuyên viên duyệt nhận lỗi thiếu **Quyết định (DECISION)**, trả lại kèm lý do. Người kê khai tải quyết định lên cùng hồ sơ và gửi lại. Chuyên viên duyệt thành công. Với cấp không yêu cầu quyết định, ca PostgreSQL duyệt được khi không có tệp.
+
+Ở F12, cùng loại CONFERENCE yêu cầu INVITE tại A và REPORT tại B. Hai tài khoản nhận đúng tên loại thiếu của trường mình. Sau khi có tệp tương ứng, cả hai hoạt động vào Chờ duyệt. API của trường B từ chối thay đổi mã hoạt động trường A. Ngày nguồn là 30/09/2026. [Kịch bản hai trường](acceptance.spec.ts) · [Chuyên viên kiểm quyết định](../../../docs/reviews/screenshots/extension/cap-bo-thieu-quyet-dinh.png) · [Giảng viên gửi hội nghị](../../../docs/reviews/screenshots/extension/hoi-nghi-cho-duyet.png)
+
+Ngày 25/11/2026, tại trường A, chuyên viên duyệt **2.500.000 ₫** cho hội nghị và worker tính **6,00 giờ**. Sau điều chỉnh thủ công -1,00 giờ rồi thu hồi quyết định, giờ ròng bằng 0 và số tiền được duyệt hết hiệu lực. Giảng viên gửi lại cùng hồ sơ, chuyên viên từ chối có lý do, giảng viên đọc lại kết luận trên phiên của mình. Hai quyết định duyệt song song trong ca PostgreSQL chỉ ghi một số tiền. [Kịch bản F12/P03](../../teaching-hour/teaching-hours/acceptance.ts) · [Ảnh quyết định hỗ trợ](../../../docs/reviews/screenshots/extension/kinh-phi-ho-tro-hoat-dong.png)

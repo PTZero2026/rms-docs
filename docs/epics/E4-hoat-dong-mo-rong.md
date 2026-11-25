@@ -2,7 +2,7 @@
 title: "E4 — Hoạt động khoa học mở rộng & Quy đổi giờ giảng"
 id: "E4"
 status: Draft
-updated: 2026-06-24
+updated: 2026-11-24
 source: "docs/epics/BienBan_TongHop_NCKH_ThuyLoi.md"
 ---
 
@@ -44,10 +44,10 @@ Later (sau khi vòng đời cốt lõi E1–E2 ổn định) — *phụ thuộc 
   và **Kinh phí** (F05) cho các hoạt động cần phê duyệt/cấp kinh phí.
 - **Tích hợp mới (xem mục Open questions):** SSO Microsoft Entra ID; đồng bộ GV/SV; số hóa dữ liệu 5 năm.
 
-## Open questions (chặn, cần chốt với Trường — từ biên bản §D)
-- **Công thức quy đổi giờ giảng** cho từng loại hoạt động (đề tài/bài báo/hội nghị/cộng đồng/SHTT) — chặn P03.
-- **Phạm vi vòng đời đề tài SV** ("dự kiến" trong biên bản) — chặn F10.
-- **Cơ chế link tự động đề tài ↔ bài báo** — chặn build-out F07.
+## Điều kiện kích hoạt tại trường (RV-36)
+- **Công thức quy đổi giờ giảng** cho từng loại hoạt động (đề tài/bài báo/hội nghị/cộng đồng/SHTT) — trường xác nhận trước khi bật P03. DEV dùng công thức thử có hiệu lực.
+- **Phạm vi vòng đời đề tài SV** ("dự kiến" trong biên bản) — triển khai chế độ rút gọn trên fixture. Trường chọn chế độ khi bật F10.
+- **Cơ chế link tự động đề tài ↔ bài báo** — trong US-20/21, dùng liên kết đề tài do người kê khai chọn và máy chủ kiểm quyền. Tự suy đoán liên kết thuộc đợt mở rộng.
 - **Phạm vi quản lý kinh phí** cho hoạt động (chỉ ghi nhận hay dự toán/giải ngân) — ảnh hưởng F11/F12.
 - **SSO Microsoft Entra ID** vs ADR-0008 (Keycloak email-OTP) — cần **ADR mới** (federate Entra / Keycloak làm broker).
 - **Đồng bộ GV/SV** từ HR/hệ thống sinh viên theo cơ chế "xác nhận, không khai lại" — cần bổ sung `integrations.md`.

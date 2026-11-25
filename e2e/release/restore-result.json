@@ -1,0 +1,35 @@
+{
+  "recordedAt": "2026-11-24T20:10:20.131Z",
+  "databases": {
+    "rms_test": {
+      "tables": 67,
+      "rows": 2288,
+      "dumpBytes": 489619,
+      "sha256": "5f398f018ccb73c7ad92b1ffde31c7cd744ea4a091025157d991b9e7ff393ea6",
+      "restoreSeconds": 0.28,
+      "matched": true
+    },
+    "rms_config_test": {
+      "tables": 2,
+      "rows": 36,
+      "dumpBytes": 14948,
+      "sha256": "a5b9983d22b6e1168b529f5f2d836fe150a52634320db97897856dabfd0fa8c9",
+      "restoreSeconds": 0.053,
+      "matched": true
+    },
+    "elapsedWithChecksSeconds": 3.161
+  },
+  "objects": [
+    {
+      "bytes": 1048576,
+      "sha256": "a9cf9ee1c784cb9dc2337a9ecd2d6fdd549ea9e7b314a681b39f531be840131f"
+    },
+    {
+      "bytes": 6291456,
+      "sha256": "a9a1377224bf8a33f76ba4eae7b459a07aa1e703f1232e8aa3b44343937cc424"
+    }
+  ],
+  "restoredScopeChecked": true,
+  "controlledWritesLost": 0,
+  "seconds": 3.901
+}

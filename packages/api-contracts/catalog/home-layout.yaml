@@ -1,0 +1,37 @@
+Role:
+  type: string
+  enum: [user, author, staff, admin]
+Widgets:
+  type: array
+  maxItems: 5
+  uniqueItems: true
+  items: {$ref: '../home/overview.yaml#/Widget'}
+Update:
+  type: object
+  additionalProperties: false
+  required: [revision, widgets]
+  properties:
+    revision: {type: string, format: uuid, nullable: true}
+    widgets: {$ref: '#/Widgets'}
+LayoutSettings:
+  type: object
+  required: [source, revision, widgets, total, history]
+  properties:
+    source: {type: string, enum: [default, shared, tenant]}
+    revision: {type: string, format: uuid, nullable: true}
+    widgets: {$ref: '#/Widgets'}
+    total: {type: integer}
+    history:
+      type: array
+      maxItems: 10
+      items:
+        type: object
+        required: [id, actorId, actorEmail, occurredAt, action, before, after]
+        properties:
+          id: {type: string, format: uuid}
+          actorId: {type: string, format: uuid}
+          actorEmail: {type: string, nullable: true}
+          occurredAt: {type: string, format: date-time}
+          action: {type: string, enum: [CREATE, UPDATE, DELETE]}
+          before: {type: array, nullable: true, items: {$ref: '../home/overview.yaml#/Widget'}}
+          after: {type: array, nullable: true, items: {$ref: '../home/overview.yaml#/Widget'}}

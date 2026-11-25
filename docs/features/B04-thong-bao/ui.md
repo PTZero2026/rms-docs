@@ -2,8 +2,8 @@
 title: "Thông báo — Giao diện (một web app, phân quyền)"
 spec: "./spec.md"
 owner: "PO/BA"
-status: Draft
-updated: 2026-06-09
+status: Review
+updated: 2026-11-25
 ---
 
 # Thông báo — Giao diện
@@ -129,6 +129,8 @@ Phân theo nhóm quyền; tất cả nằm trong cùng một web app.
 
 ### BO-01 — Quản lý mẫu thông báo
 
+Trong bản tích hợp, mở BO-01 từ **Hộp thông báo → Tùy chọn nhận thông báo → Mẫu thông báo theo kênh**. Chuyên viên xem mẫu và bản xem trước. Quản trị sửa, lưu hoặc xác nhận gỡ mẫu của từng kênh. [Hướng dẫn có ảnh](../../guides/nguoi-dung/hop-thong-bao.md#soạn-mẫu-trong-ứng-dụng-và-email)
+
 - **Danh sách mẫu** theo `eventType` × `channel`: hiển thị tiêu đề mẫu, kênh, trạng thái (có mẫu / thiếu mẫu).
 - **Soạn mẫu:** trường `templateTitle`, `templateContent` với **biến ngữ cảnh** chèn được (ví dụ `{{projectName}}`, `{{dueDate}}`,
   `{{result}}`, `{{link}}`). Danh sách biến hợp lệ tùy `eventType`.
@@ -200,3 +202,13 @@ worker (thành công/lỗi gateway) được phản ánh ở `Notification.statu
 | BO-02 Ma trận sự kiện ↔ kênh | AC-03 (SMS chỉ sự kiện cao), AC-08 (tắt EMAIL cấp sự kiện), AC-09 (cờ bắt buộc) |
 | BO-03 Nhật ký gửi | AC-04 (ERROR sau retry), AC-05 (gửi lại) |
 | BO-04 Cấu hình tham số | AC-04 (`maxRetry`/backoff), AC-07 (số ngày nhắc hạn) |
+
+## Giữ bộ lọc hộp thư
+
+| Truy vết | Hành vi |
+|---|---|
+| BR-11, AC-11 | Hộp thư trên điện thoại phục hồi bộ lọc từ URL. Trạng thái rỗng có lối sang Tất cả. |
+
+**BO-03 trên bản triển khai.** Mở nhật ký từ hộp thông báo. Chuyên viên lọc **Chỉ lỗi**, **Chờ đối soát** hoặc **Tất cả lượt gửi**. Mỗi trang có tối đa 20 lượt. Gửi lại một dòng hoặc cả nhóm được chọn và đối chiếu số lượt hệ thống đưa vào hàng đợi. [Hướng dẫn kèm ảnh](../../guides/nguoi-dung/hop-thong-bao.md)
+
+FE-04, BO-01 và BO-02 đã có ca Chrome cho AC-03. Người dùng lưu tùy chọn SMS độc lập với email bắt buộc. Quản trị xem trước mẫu SMS theo trường và đóng kênh cho nhóm đã chọn. [Kịch bản](../../../e2e/notification/preferences/sms.spec.ts) · [Ảnh người dùng](../../reviews/screenshots/notifications/tuy-chon-sms.png)

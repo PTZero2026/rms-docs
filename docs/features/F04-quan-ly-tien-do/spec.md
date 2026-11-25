@@ -3,9 +3,9 @@ title: "Quản lý tiến độ"
 id: "F04"
 epic: "E2"
 owner: "PO/BA"
-status: Draft        # Draft | Review | Approved
+status: Review
 version: 0.1
-updated: 2026-06-05
+updated: 2026-11-24
 ---
 
 # Quản lý tiến độ
@@ -232,19 +232,12 @@ vòng đời `ResearchProject` ở [data-model §3](../../architecture/data-mode
   `PENDING_ACCEPTANCE`.
 - **F06** — tiếp nhận đề tài sau `PENDING_ACCEPTANCE`; tiêu chí "đủ sản phẩm cam kết" (BR-10) cần đồng bộ với F06.
 
-**Rủi ro & điểm cần làm rõ:**
+**Quyết định cho giao và theo dõi.** Xác nhận giao cần mã quyết định hoặc hợp đồng, các ngày, kinh phí và tệp căn cứ theo BR-13. Khi giao, chốt danh sách loại và số lượng sản phẩm từ thuyết minh được duyệt. F07 đối chiếu với danh sách đó. Sửa trường chính sau giao cần phụ lục có lý do, phiên bản và audit. Tạm dừng giữ nguyên hạn, tạm ngưng nhắc và nộp. Sau tiếp tục, tính lại trễ từ hạn hiện hành. Chuyên viên mở lại báo cáo đạt khi còn thực hiện bằng lý do và audit. Đăng ký nghiệm thu kiểm kỳ cuối và sản phẩm, F05 kiểm quyết toán ở bước đóng.
 
-- **Định nghĩa "đủ sản phẩm cam kết" (BR-10):** lấy từ thuyết minh đề tài hay danh mục riêng? Cần PO chốt
-  nguồn dữ liệu và cách đối chiếu (đếm số lượng theo loại sản phẩm?).
-- **Hồ sơ giao đề tài dùng quyết định hay hợp đồng:** có đơn vị chỉ dùng quyết định giao nhiệm vụ, có đơn vị
-  ký hợp đồng; hiện cho phép một trong hai căn cứ (`contractNo` hoặc `decisionNo`), cần PO xác nhận danh sách
-  trường bắt buộc theo quy chế.
-- **Điều chỉnh sau khi giao đề tài:** gia hạn thời gian/tăng giảm kinh phí nên tạo phụ lục riêng hay cập nhật
-  hồ sơ hiện tại có version? Hiện spec chặn sửa trực tiếp và yêu cầu audit, cần chốt model phụ lục khi vào phase sau.
-- **Ảnh hưởng của `SUSPENDED` lên lịch & nhắc hạn:** khi tạm dừng, các `dueDate` có dời tương ứng không, hay
-  giữ nguyên? Cần PO xác nhận chính sách dời hạn.
-- **Cờ trễ hạn (BR-09) lưu hay tính động:** hiện giả định tính dẫn xuất; nếu cần báo cáo/thống kê nhanh có
-  thể phải materialize trường — quyết định cùng B02.
-- **Mở lại báo cáo đã `PASSED` (BR-12):** quy trình và quyền mở lại (có cần phê duyệt cấp trên?) cần làm rõ.
-- **Đồng bộ với F05 khi chuyển nghiệm thu:** có yêu cầu kinh phí đã giải ngân/đối soát tới mức nào trước khi
-  cho `PENDING_ACCEPTANCE` không — cần PO và F05 thống nhất.
+## Phạm vi BA/PO đã chốt cho task
+
+| Quyết định | AC nguồn | Hành vi ở ca biên |
+|---|---|---|
+| [RV-14](../../../specs/review-decisions.md#rv-14) | AC-14 | Yêu cầu tệp căn cứ đọc được theo phạm vi đề tài trước khi xác nhận giao. |
+| [RV-15](../../../specs/review-decisions.md#rv-15) | AC-13 | Áp khóa theo cặp đề tài và kỳ, cho hai đề tài khác nhau dùng cùng tên kỳ. |
+| [RV-17](../../../specs/review-decisions.md#rv-17) | AC-08 | Nhận hồ sơ, ghi giờ và nhãn trễ, chặn khi đề tài tạm dừng. |

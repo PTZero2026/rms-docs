@@ -1,0 +1,43 @@
+import { expect,test } from "@playwright/test"
+import { fileURLToPath } from "node:url"
+import { provision,signIn } from "./session-fixture"
+
+test("admin previews, publishes and rolls back while the other school's theme stays unchanged",async ({browser})=>{
+  test.skip(process.env.RMS_OIDC_INTEGRATION!=="1","Requires isolated IdP, SMTP and PostgreSQL.")
+  const a=await browser.newPage({baseURL:"http://127.0.0.1:4191"}),b=await browser.newPage({baseURL:"http://127.0.0.1:4191"})
+  const shot=(name:string)=>fileURLToPath(new URL("../../docs/reviews/screenshots/theme/"+name+".png",import.meta.url))
+  try {
+    const {account}=await signIn(a,"school-1","quantri-a@example.invalid")
+    await signIn(b,"school-2","thanhvien-b@example.invalid")
+    provision("UPDATE rms.account SET user_type='admin' WHERE id=:'id'::uuid;",{id:account.id})
+    await a.getByRole("button",{name:"Tải lại thông tin"}).click()
+    await a.getByRole("button",{name:"Giao diện đơn vị"}).click()
+    await expect(a.getByRole("heading",{name:/Giao diện đơn vị · Phiên bản 1/})).toBeVisible()
+    const primary = a.getByLabel("Nút chính",{exact:true})
+    await primary.fill("#ffffff")
+    await expect(a.getByRole("alert")).toContainText("primaryForeground")
+    await expect(a.getByRole("button",{name:"Lưu nháp"})).toBeDisabled()
+    await primary.fill("#713450")
+    await a.getByRole("button",{name:"Xem thử hộp thoại"}).click()
+    await expect(a.getByRole("dialog")).toBeVisible()
+    await a.keyboard.press("Escape")
+    await a.getByRole("button",{name:"Lưu nháp"}).click()
+    await expect(a.getByText("Đã lưu nháp.",{exact:true})).toBeVisible()
+    const rootColor=(page:typeof a)=>page.evaluate(()=>getComputedStyle(document.documentElement).getPropertyValue("--primary").trim())
+    expect(await rootColor(a)).toBe("#126054")
+    await a.screenshot({path:shot("admin-a-before"),fullPage:true})
+    await b.screenshot({path:shot("reader-b-before"),fullPage:true})
+    await a.getByRole("button",{name:"Áp dụng",exact:true}).click()
+    await expect(a.getByText("Đã áp dụng giao diện.",{exact:true})).toBeVisible()
+    expect(await rootColor(a)).toBe("#713450")
+    await b.reload()
+    await expect(b.getByRole("button",{name:"Tải lại thông tin"})).toBeVisible()
+    expect(await rootColor(b)).toBe("#126054")
+    await a.screenshot({path:shot("admin-a-published"),fullPage:true})
+    await a.getByRole("button",{name:"Khôi phục phiên bản"}).click()
+    await expect(a.getByRole("heading",{name:/Giao diện đơn vị · Phiên bản 3/})).toBeVisible()
+    expect(await rootColor(a)).toBe("#126054")
+    await a.screenshot({path:shot("admin-a-restored"),fullPage:true})
+    await b.screenshot({path:shot("reader-b-after"),fullPage:true})
+  } finally {await a.close();await b.close()}
+})

@@ -5,12 +5,12 @@ epic: E1
 channel: shared
 wave: C
 status: Draft
-updated: 2026-11-21
+updated: 2026-11-24
 ---
 
 # Đối chiếu mục bắt buộc trong một thuyết minh
 
-**Đầu vào** · [Danh mục INVEST](../../docs/sales/thi-truong-viet-nam-2026/feature-list-invest.md), US-31, cỡ M. **Nguồn nghiệp vụ** · [F01](../../docs/features/F01-de-xuat-de-tai/spec.md) — Đề xuất mới, chờ PO/BA xác lập AC nghiệp vụ. Các AC dưới đây có phạm vi riêng của US-31.
+**Đầu vào** · [Danh mục INVEST](../../docs/sales/thi-truong-viet-nam-2026/feature-list-invest.md), US-31, cỡ M. **Nguồn nghiệp vụ** · [F01](../../docs/features/F01-de-xuat-de-tai/spec.md) — BR-12, AC-12. Các AC dưới đây có phạm vi riêng của US-31.
 
 ## Clarifications
 

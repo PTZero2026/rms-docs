@@ -1,0 +1,26 @@
+[
+  {
+    "id": "64197a73-46ef-47c6-90e2-1c2b4c07c6c7",
+    "actor_id": "f89515ab-20c2-4273-8ac2-c9e9254e5f3f",
+    "target_id": "f89515ab-20c2-4273-8ac2-c9e9254e5f3f",
+    "occurred_at": "2026-11-25T03:35:59.225963+07:00",
+    "details": {
+      "code": "CV-01",
+      "title": "Lý lịch nghiên cứu",
+      "version": "v1",
+      "exportId": "726b9db0-6250-48f4-8fc9-939ef836dae8"
+    }
+  },
+  {
+    "id": "cabd5d3a-22f8-4bf4-b1ff-621bbf7dd86e",
+    "actor_id": "f89515ab-20c2-4273-8ac2-c9e9254e5f3f",
+    "target_id": "f89515ab-20c2-4273-8ac2-c9e9254e5f3f",
+    "occurred_at": "2026-11-25T03:35:59.486388+07:00",
+    "details": {
+      "code": "CV-01",
+      "title": "Lý lịch khoa học cấp trường",
+      "version": "v2",
+      "exportId": "e905bac3-9c51-4c47-ae0e-30d12b177b4c"
+    }
+  }
+]

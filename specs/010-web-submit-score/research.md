@@ -3,14 +3,14 @@ story: US-10
 feature: F03
 review_id: RV-10
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-24
 ---
 
 # Căn cứ và quyết định · US-10
 
 **Vấn đề.** Nếu phát hiện xung đột sau khi người chấm mở nháp thì sao?
 
-**Khuyến nghị hiện dùng.** Kiểm lại phân công và quan hệ với đề tài ngay lúc gửi.
+**Quyết định triển khai.** Kiểm lại phân công và quan hệ với đề tài ngay lúc gửi.
 
 **Lý do.** Trong trường hợp người đã mở nháp vừa được bổ sung vào nhóm đề tài, người dùng cần thấy kết quả “phiếu không được tính và người đó mất quyền chấm”. Phương án khác: Chỉ kiểm quyền khi phát phiếu. Dùng TC-03 để phân biệt hai phương án. [RV-10](../review-decisions.md#rv-10)
 

@@ -2,7 +2,7 @@
 title: "E1 — Tiếp nhận & Xét duyệt"
 id: "E1"
 status: Draft
-updated: 2026-06-12
+updated: 2026-11-24
 ---
 
 # E1 — Tiếp nhận & Xét duyệt
@@ -27,9 +27,9 @@ Now.
   (mô hình `EvaluationCommittee`/`ScoreSheet` — F03 dùng `type=PROPOSAL_REVIEW` & `ETHICS_REVIEW`).
 - **Nội bộ**: F01 phụ thuộc kỳ mở của F02; F03 chấm trên hồ sơ do F01 nộp.
 
-## Open questions
-- **F03** cần hoàn thiện: phê duyệt **đạo đức song song** + mô hình **cuộc họp/biên bản**; soát BR chưa có AC (AC 10 < BR 11).
-- Open-points §7 của F01–F03 (mã đề tài, quy tắc gia hạn kỳ, trả lại bổ sung…) cần PO chốt.
+## Căn cứ giao việc
+
+F01 cấp mã theo kỳ và giữ mã khi nộp lại. F02 dùng cửa sổ nhận theo ngày Việt Nam. F03 chốt khoa học và đạo đức theo RV-11, biên bản gắn đúng hội đồng/vòng. [Nguồn F03](../features/F03-xet-duyet-hoi-dong/spec.md)
 
 ## Định nghĩa hoàn thành (Exit criteria)
 - [ ] Tạo & mở được kỳ nhận đề xuất; tự đóng khi hết hạn (F02).

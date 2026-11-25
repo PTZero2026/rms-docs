@@ -11,7 +11,12 @@ import { loadTenant, saveAction, worldKey } from "./demo/repository"
 import { readSession } from "./demo/storage"
 import type { FeatureProps, Session } from "./demo/types"
 import "./workspace.css"
+import "./features/mobile/mobile.css"
+import { PhonePreview } from "./features/mobile/PhonePreview"
+import { usePhoneLayout } from "./features/mobile/usePhoneLayout"
 
+const ThemeGallery = lazy(() => import("./features/catalog/theme/Gallery"))
+const AccountHome = lazy(() => import("./auth/AccountHome"))
 const Intake = lazy(() => import("./features/intake"))
 const Execution = lazy(() => import("./features/execution"))
 const Extension = lazy(() => import("./features/extension"))
@@ -84,6 +89,7 @@ function Workspace() {
       sessionStorage.setItem("rms.persona", JSON.stringify(s))
       setState(next)
       setOriginal(s)
+      setRoute({ feature: "B06", id: undefined })
       setError("")
       go("B06")
     } catch {
@@ -156,6 +162,13 @@ function Workspace() {
   )
 }
 export function App() {
+  const phone = usePhoneLayout()
+  if (location.pathname.replace(/\/$/,"") === "/theme-gallery") return <Suspense fallback={<p>Đang mở giao diện…</p>}><ThemeGallery /></Suspense>
+  const signedInRoute = /^\/app\/([a-z0-9]+(?:-[a-z0-9]+)*)\/?$/.exec(location.pathname)
+  if (signedInRoute) return <FaultBoundary><Suspense fallback={<p>Đang mở tài khoản…</p>}><AccountHome slug={signedInRoute[1]} /></Suspense></FaultBoundary>
+  if (!phone && location.pathname.replace(/\/$/, "") === "/v0-mobile") {
+    return <PhonePreview />
+  }
   return (
     <FaultBoundary
       onRecover={() => {

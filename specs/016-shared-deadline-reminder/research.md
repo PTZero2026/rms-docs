@@ -3,14 +3,14 @@ story: US-16
 feature: B04
 review_id: RV-16
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-24
 ---
 
 # Căn cứ và quyết định · US-16
 
 **Vấn đề.** Chạy lại sau lỗi gửi email có tạo thông báo nghiệp vụ thứ hai?
 
-**Khuyến nghị hiện dùng.** Dùng một khóa theo tenant, đề tài, kỳ, người nhận và mốc; thử lại việc giao trên cùng thông báo.
+**Quyết định triển khai.** Dùng một khóa theo tenant, đề tài, kỳ, người nhận và mốc; thử lại việc giao trên cùng thông báo.
 
 **Lý do.** Trong trường hợp thông báo trong ứng dụng đã có nhưng kênh email lỗi, người dùng cần thấy kết quả “vẫn một thông báo và theo dõi được lần gửi lại”. Phương án khác: Tạo thông báo mới cho mỗi lần thử gửi. Dùng TC-03 để phân biệt hai phương án. [RV-16](../review-decisions.md#rv-16)
 

@@ -1,0 +1,28 @@
+Reference:
+  type: object
+  required: [id,title,label,projectId]
+  properties:
+    id: {type: string, format: uuid}
+    title: {type: string}
+    label: {type: string}
+    projectId: {type: [string,'null'], format: uuid}
+Profile:
+  type: object
+  required: [id,name,email,unit,projects,outputs]
+  properties:
+    id: {type: string, format: uuid}
+    name: {type: string}
+    email: {type: string}
+    unit: {type: string}
+    hours: {$ref: "../teaching-hour/teaching-hours.yaml#/Periods"}
+    projects: {type: array, items: {$ref: '#/Reference'}}
+    outputs: {type: array, items: {$ref: '#/Reference'}}
+Receipt:
+  type: object
+  required: [id,auditId,code,version,title]
+  properties:
+    id: {type: string, format: uuid}
+    auditId: {type: string, format: uuid}
+    code: {type: string}
+    version: {type: string}
+    title: {type: string}

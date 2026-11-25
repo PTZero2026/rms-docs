@@ -1,7 +1,7 @@
 ---
 title: "Mô hình dữ liệu — RMS"
 status: Draft
-updated: 2026-11-21
+updated: 2026-11-24
 ---
 
 # Mô hình dữ liệu
@@ -43,8 +43,7 @@ erDiagram
     WorkflowTemplate ||--o{ WorkflowInstance : "tạo"
     ResearchProject ||--|| WorkflowInstance : "vòng đời"
     User ||--o{ ProjectMember : "tham gia"
-    User }o--o{ Role : "được gán"
-    Role }o--o{ Permission : "gồm"
+    User ||--o{ AuthorUpgradeRequest : "yêu cầu nâng vai trò"
     Unit ||--o{ User : "thuộc"
 
     ProposalCall ||--o{ ResearchProject : "nhận đề xuất"
@@ -159,7 +158,8 @@ Mỗi `WorkflowStep` (dù tổ chức đặt tên/`code` gì) phải gắn đún
 |---|---|---|---|
 | `id` | uuid | PK | |
 | `userCode` | string | unique theo tenant | Mã cán bộ/nhà khoa học |
-| `keycloakId` | string | unique, not null | Khoá liên kết Keycloak (claim `sub`) — [ADR-0008](decisions/0008-keycloak-idp-dang-nhap-email-otp.md) |
+| `keycloakId` | string | unique cùng issuer, not null | Subject của realm được registry ánh xạ vào tenant — [ADR-0008](decisions/0008-keycloak-idp-dang-nhap-email-otp.md) |
+| `issuer` | string | not null, thuộc tenant đã đăng ký | Một phần khóa danh tính |
 | `fullName` | string | not null | |
 | `email` | string | unique theo tenant, not null | Định danh đăng nhập email-OTP (khớp Keycloak) |
 | `phoneNumber` | string | | Dùng cho thông báo SMS (B04) |
@@ -170,21 +170,20 @@ Mỗi `WorkflowStep` (dù tổ chức đặt tên/`code` gì) phải gắn đún
 | `positionId` | uuid | FK → CatalogItem (`POSITION`), nullable | Chức vụ — hồ sơ F08 |
 | `academicTitle` | string | | Học hàm/học vị **cao nhất** (hiển thị nhanh); chi tiết + năm nhận ở `AcademicQualification` (§4.6) — F08 |
 | `accountSource` | enum | `SSO` \| `INTERNAL` | Nguồn tạo tài khoản |
-| `status` | enum | `ACTIVE` \| `LOCKED` \| `INACTIVE` | |
+| `userType` | enum | một trong admin, staff, author, user | Vai trò RMS |
+| `isActive`, `deletedAt` | bool, timestamptz | thời điểm ngừng có thể rỗng | Theo B03 §3.3 |
 
 > **Trường/Viện** của một người = **tenant** họ thuộc về (hiển thị ngầm, không có cột riêng — F08 BR-03);
 > trong tenant chỉ chọn **phòng ban** (`unitId`) và **chức vụ** (`positionId`). Tập trường hồ sơ
 > *hiển thị/bắt buộc* cấu hình per-tenant — VP-PROFILE ([variation-points](variation-points.md)).
 
-**Role** (`id`, `code` unique, `name`, `description`, `isSystem` bool) — vai trò chuẩn xem B03 §Vai trò.
-**Permission** (`id`, `code` unique vd `RESEARCH_PROJECT.APPROVE`, `description`) — quyền nguyên tử theo `MODULE.ACTION`.
-**User_Role** và **Role_Permission**: bảng nối nhiều-nhiều.
+Quyền tại thời điểm truy cập do B03 xác định từ userType, trạng thái tài khoản và phạm vi tài nguyên. Dùng danh mục cố định trong mã nguồn. Tham chiếu user bằng issuer + sub khi đăng nhập. Email chuẩn hóa duy nhất trong tenant. Yêu cầu nâng lên author có trạng thái, bằng chứng và người quyết định. [Thiết kế IAM](../features/B03-quan-ly-nguoi-dung/design.md)
 
 ### 4.2 Danh mục dùng chung (B01)
 
 Hai nhóm: **(a) danh mục có entity riêng** vì bị FK nghiệp vụ trỏ tới, và **(b) danh mục lookup
 chung** dùng cặp bảng generic `Catalog`/`CatalogItem` (thêm loại mới chỉ cần thêm 1 dòng `Catalog`,
-không cần migration). Toàn bộ do B01 quản trị trên một màn hình hub duy nhất — xem B01 §5.
+không cần migration). Các bảng có khóa ngoại nằm trong DB RMS của module sở hữu. Adapter catalog cung cấp tra cứu cho các feature. Dịch vụ blob B01 dùng DB riêng cho cấu hình theo key.
 
 **(a) Danh mục có entity riêng (bị FK trỏ tới):**
 
@@ -234,7 +233,7 @@ ngành nghiên cứu; `ResearchProject.researchFieldId`, `ProposalCall.researchF
 > **khác** `eventType` của B04), `EVALUATION_CATEGORY` (phân loại đánh giá — **khác** `CriteriaSet`),
 > `POSITION` (chức vụ), `ACADEMIC_RANK` (học hàm: GS/PGS — hồ sơ F08), `ACADEMIC_DEGREE` (học vị:
 > TS/ThS/CN — hồ sơ F08), `USER_ROLE_LABEL` (vị trí/vai trò
-> hiển thị — **khác** RBAC `Role` của B03).
+> hiển thị — **khác** RBAC `userType` của B03).
 > Tham chiếu từ thực thể khác dùng `CatalogItem.id` (FK `ON DELETE RESTRICT`, xem §5).
 
 ### 4.3 Kỳ nhận đề xuất & đề tài (F02, F01)
@@ -276,16 +275,20 @@ ngành nghiên cứu; `ResearchProject.researchFieldId`, `ProposalCall.researchF
 
 ### 4.4 Hội đồng & đánh giá (F03, F06)
 
-**EvaluationCommittee** (`id`, `code`, `name`, `type` enum `PROPOSAL_REVIEW`|`ACCEPTANCE`, `status`).
+**EvaluationCommittee** (`id`, `code`, `name`, `type` enum `PROPOSAL_REVIEW`|`ETHICS_REVIEW`|`ACCEPTANCE`, `status`).
 **CommitteeMember** (`id`, `committeeId`, `userId`, `committeeRole` enum `CHAIR`|`REVIEWER`|`MEMBER`|`SECRETARY`).
 **CriteriaSet** (`id`, `name`, `type` `PROPOSAL_REVIEW`|`ACCEPTANCE`) & **EvaluationCriterion** (`id`, `criteriaSetId`, `name`, `maxScore`, `weight`).
 **EvaluationRound** (`id`, `researchProjectId`, `committeeId`, `type` `PROPOSAL_REVIEW`|`ACCEPTANCE`, `status`, `conclusion` enum `PASSED`|`FAILED`|`null`, `aggregateScore`).
+**Meeting** liên kết tenant, committeeId, researchProjectId và vòng xét tương ứng. Biên bản là Attachment có version thuộc cuộc họp. Chỉ cho gắn hoặc tải khi actor có quyền trên hồ sơ và cuộc họp. F03/F06 dùng cùng cấu trúc. Hồ sơ cần thẩm định đạo đức lưu kết quả chờ, bổ sung, thông qua hoặc từ chối cuối cùng của hội đồng ETHICS_REVIEW cùng căn cứ cuộc họp, độc lập điểm khoa học.
+
 **ScoreSheet** (`id`, `evaluationRoundId`, `committeeMemberId`, `status` `DRAFT`|`SUBMITTED`, `comment`, `totalScore`).
 **CriterionScore** (`id`, `scoreSheetId`, `evaluationCriterionId`, `score`).
 
 ### 4.5 Thực hiện đề tài (F04, F05)
 
 **ProjectAssignment** (`id`, `researchProjectId`, `assignmentType` `CONTRACT`|`DECISION`, `contractNo`, `decisionNo`, `signedAt` date, `effectiveDate` date, `startDate` date, `endDate` date, `approvedBudget` bigint, `fundingSource`, `status` `DRAFT`|`EFFECTIVE`|`CANCELLED`, `note`).
+
+**ExpectedOutput** gồm tenantId, researchProjectId, productTypeId, minQuantity. Mỗi đề tài có một dòng cho mỗi loại cam kết, với số lượng dương. F04 chốt từ thuyết minh khi xác nhận giao. F07/F06 so với số định danh sản phẩm APPROVED khác nhau trong từng loại.
 
 **ProgressReport** (`id`, `researchProjectId`, `period` int, `dueDate` date, `submittedAt`, `content` text, `status` `PENDING_SUBMISSION`|`SUBMITTED`|`PASSED`|`REVISION_REQUESTED`, `officerComment`).
 **BudgetEstimate** (`id`, `researchProjectId`, `budgetLine`, `estimatedAmount` bigint, `period`, `settlementMode` `LUMP_SUM`|`ACTUAL_EXPENSE`|`MIXED`).
@@ -387,6 +390,6 @@ hệ thống và là nền cho lộ trình Event Stream; tải vận chuyển in
 
 - Mọi FK trỏ tới danh mục dùng `ON DELETE RESTRICT` — danh mục đang được tham chiếu không xóa cứng được.
 - `ResearchProject.status` chỉ được đổi qua domain service, không update trực tiếp từ API CRUD.
-- Bảng nối nhiều-nhiều (`User_Role`, `Role_Permission`, `CommitteeMember`) có unique constraint trên cặp khóa để tránh trùng.
+- Bảng nối nhiều-nhiều (`CommitteeMember`, `ProjectMember`) có unique constraint trên cặp khóa để tránh trùng.
 - `AiSuggestion` **không** trực tiếp đổi trạng thái nghiệp vụ: chỉ khi `status = ACCEPTED` mới gọi domain service dùng chung để tạo tác động thật (giữ luật bất biến [AGENTS.md §4.1/§4.2](../../AGENTS.md)).
 - `AuditLog`, `WorkflowHistory`, `DomainEvent` append-only; AI là actor chịu RLS (`app.current_tenant`) + RBAC như mọi actor ([ADR-0010](decisions/0010-chuan-du-lieu-cho-ai-tham-gia.md)).

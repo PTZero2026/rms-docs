@@ -1,0 +1,8 @@
+Reconcile:
+  type: object
+  required: [revision,reference,amount]
+  properties: {revision: {type: integer},reference: {type: string},amount: {$ref: './budget-allocation.yaml#/Money'}}
+Settle:
+  type: object
+  required: [manualReviewed]
+  properties: {manualReviewed: {type: boolean}}

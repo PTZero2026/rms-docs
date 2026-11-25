@@ -2,7 +2,7 @@
 title: "E3 — Đầu ra, Lý lịch & Báo cáo"
 id: "E3"
 status: Draft
-updated: 2026-06-12
+updated: 2026-11-24
 ---
 
 # E3 — Đầu ra, Lý lịch & Báo cáo
@@ -28,10 +28,9 @@ Later.
   [0010 Chuẩn dữ liệu cho AI](../architecture/decisions/0010-chuan-du-lieu-cho-ai-tham-gia.md) (phân loại dữ liệu nhạy cảm khi công khai).
 - **Nội bộ**: F08 tổng hợp từ F01/F07/B03; B02 cần dữ liệu vòng đời + kinh phí + hội đồng.
 
-## Open questions
-- **F07, F08, B02 còn khung mẫu** — cần PO/BA điền đầy đủ (Bối cảnh/Luồng/BR/AC/Dữ liệu).
-- **Cổng công khai**: tách thành feature `B05` (có spec/ui/test riêng) hay giữ mục epic-level? Cần quyết định.
-- Ranh giới dữ liệu PUBLIC vs INTERNAL khi công khai (theo `dataClassification`).
+## Căn cứ giao việc
+
+F07 nhận liên kết nguồn theo quyền và trạng thái duyệt. F08 tổng hợp từ nguồn được phép, ghi phiên bản mẫu khi xuất. B02 dùng snapshot của một kỳ. B05 giữ chỗ cho cổng công khai, PO lập phạm vi riêng trước khi mở công khai. [Lộ trình](../product/roadmap.md)
 
 ## Định nghĩa hoàn thành (Exit criteria)
 - [ ] Kê khai sản phẩm & gắn về đề tài nguồn; chuyên viên duyệt (F07).

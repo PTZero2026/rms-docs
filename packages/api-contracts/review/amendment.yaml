@@ -1,0 +1,43 @@
+Command:
+  type: object
+  required: [action, revision, reason]
+  properties:
+    action: {type: string, enum: [REOPEN, REFER]}
+    revision: {type: integer, minimum: 0}
+    reason: {type: string, minLength: 1, maxLength: 2000}
+    recipientId: {type: string, format: uuid}
+Entry:
+  type: object
+  required: [revision, action, reason, actor, recipient, conclusion, mean, count, passing, minimum, ethics, ethicsNote, projectStatus, concludedAt, createdAt]
+  properties:
+    revision: {type: integer}
+    action: {type: string, enum: [REOPEN, REFER]}
+    reason: {type: string}
+    actor: {type: string}
+    recipient: {type: string, nullable: true}
+    conclusion: {type: string}
+    mean: {type: number}
+    count: {type: integer}
+    passing: {type: number}
+    minimum: {type: integer}
+    ethics: {type: string}
+    ethicsNote: {type: string, nullable: true}
+    projectStatus: {type: string}
+    concludedAt: {type: string, format: date-time}
+    createdAt: {type: string, format: date-time}
+State:
+  type: object
+  required: [revision, action, recipients, history]
+  properties:
+    revision: {type: integer}
+    action:
+      oneOf:
+        - {type: string, enum: [REOPEN, REFER]}
+        - {type: 'null'}
+    recipients: {type: array, items: {$ref: './open-review.yaml#/Option'}}
+    history: {type: array, items: {$ref: '#/Entry'}}
+DecisionVersion:
+  type: object
+  required: [revision]
+  properties:
+    revision: {type: integer, minimum: 0}

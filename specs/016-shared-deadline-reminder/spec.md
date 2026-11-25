@@ -5,7 +5,7 @@ epic: E0
 channel: shared
 wave: B
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-24
 ---
 
 # Nhắc hạn đúng một lần theo mốc
@@ -16,7 +16,7 @@ updated: 2026-11-18
 
 ### Session 2026-11-18
 
-- Q: Chạy lại sau lỗi gửi email có tạo thông báo nghiệp vụ thứ hai? → A: Dùng một khóa theo tenant, đề tài, kỳ, người nhận và mốc; thử lại việc giao trên cùng thông báo. [RV-16](../review-decisions.md#rv-16). Khuyến nghị dùng để lập kế hoạch, chờ Chuyên viên tiến độ và phụ trách vận hành xác nhận.
+- Q: Chạy lại sau lỗi gửi email có tạo thông báo nghiệp vụ thứ hai? → A: Dùng một khóa theo tenant, đề tài, kỳ, người nhận và mốc; thử lại việc giao trên cùng thông báo. [RV-16](../review-decisions.md#rv-16). BA/PO chốt cho triển khai ngày 24/11/2026.
 
 ## User Scenarios & Testing
 
@@ -29,7 +29,7 @@ Chủ nhiệm nhận nhắc khi đến mốc cấu hình để kịp chuẩn b�
 - **AC-01** (US-16.1) — Given kỳ đến mốc N. When chạy nhắc. Then có thông báo cho đúng chủ nhiệm.
 - **AC-02** (US-16.2) — Given cùng đề tài, kỳ và mốc. When chạy lại. Then không tạo thêm thông báo.
 
-- **AC-03** (US-16.3, khuyến nghị) — Given Thông báo trong ứng dụng đã có nhưng kênh email lỗi. When tác vụ chạy lại cùng mốc. Then vẫn một thông báo và theo dõi được lần gửi lại.
+- **AC-03** (US-16.3) — Given Thông báo trong ứng dụng đã có nhưng kênh email lỗi. When tác vụ chạy lại cùng mốc. Then vẫn một thông báo và theo dõi được lần gửi lại.
 
 ### Edge Cases
 
@@ -42,7 +42,7 @@ Cùng đề tài, kỳ và mốc → không tạo thêm thông báo.
 - **BR-01 / FR-001.** Khi kỳ đến mốc N, người có quyền có thể chạy nhắc. Kết quả phải quan sát được: có thông báo cho đúng chủ nhiệm (AC-01).
 - **BR-02 / FR-002.** Với tình huống cùng đề tài, kỳ và mốc, thao tác chạy lại phải cho kết quả không tạo thêm thông báo (AC-02).
 
-- **BR-03 / FR-003 (đề xuất).** Dùng một khóa theo tenant, đề tài, kỳ, người nhận và mốc; thử lại việc giao trên cùng thông báo. Kiểm bằng AC-03.
+- **BR-03 / FR-003.** Dùng một khóa theo tenant, đề tài, kỳ, người nhận và mốc; thử lại việc giao trên cùng thông báo. Kiểm bằng AC-03.
 
 ### Key Entities
 

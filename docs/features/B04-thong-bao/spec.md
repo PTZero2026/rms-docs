@@ -3,9 +3,9 @@ title: "Thông báo"
 id: "B04"
 epic: "E0"
 owner: "PO/BA"
-status: Draft        # Draft | Review | Approved
+status: Review
 version: 0.1
-updated: 2026-06-05
+updated: 2026-11-24
 ---
 
 # Thông báo
@@ -193,3 +193,19 @@ trường ở đây; chỉ làm rõ cách dùng trong B04:
 - **Trùng thông báo** nếu sự kiện bị phát lại → cần khóa idempotent (BR-07) và khử trùng ở tầng tạo bản ghi.
 - **Chi phí SMS**: cần rà soát danh sách sự kiện ưu tiên cao định kỳ (BR-03).
 - **Quyền riêng tư nội dung**: nội dung email/SMS không lộ thông tin nhạy cảm vượt mức cần thiết (chỉ tiêu đề + deep-link).
+
+## Phạm vi BA/PO đã chốt cho task
+
+| Quyết định | AC nguồn | Hành vi ở ca biên |
+|---|---|---|
+| [RV-16](../../../specs/review-decisions.md#rv-16) | AC-07 | Dùng một khóa theo tenant, đề tài, kỳ, người nhận và mốc; thử lại việc giao trên cùng thông báo. |
+
+## Giữ bộ lọc hộp thư
+
+| Quy tắc | Nội dung |
+|---|---|
+| BR-11 | Mở tin IN_APP chỉ cập nhật trạng thái đọc của người nhận trong tenant hiện tại. URL danh sách giữ bộ lọc. |
+
+- **AC-11** (BR-11) — Đọc một trong hai tin rồi quay lại và tải lại danh sách Chưa đọc chỉ còn một tin. Mở lại tin đã đọc giữ nguyên số đếm.
+
+[Lát US-34](../../../specs/034-mobile-read-inbox/spec.md)

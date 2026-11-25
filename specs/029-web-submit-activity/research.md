@@ -3,14 +3,14 @@ story: US-29
 feature: F12
 review_id: RV-29
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-24
 ---
 
 # Căn cứ và quyết định · US-29
 
 **Vấn đề.** Dùng quy tắc chứng cứ của trường nào khi cùng loại hội nghị?
 
-**Khuyến nghị hiện dùng.** Lấy bộ minh chứng của tenant và loại hoạt động tại bước gửi, nêu từng mục thiếu.
+**Quyết định triển khai.** Lấy bộ minh chứng của tenant và loại hoạt động tại bước gửi, nêu từng mục thiếu.
 
 **Lý do.** Trong trường hợp hai trường yêu cầu minh chứng khác nhau cho cùng một hội nghị, người dùng cần thấy kết quả “chỉ kiểm bộ minh chứng của A”. Phương án khác: Áp một bộ bắt buộc chung cho mọi trường. Dùng TC-03 để phân biệt hai phương án. [RV-29](../review-decisions.md#rv-29)
 

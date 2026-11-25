@@ -2,8 +2,8 @@
 title: "Đề xuất đề tài — Test plan"
 spec: "./spec.md"
 owner: "PO/BA"
-status: Draft
-updated: 2026-06-01
+status: Review
+updated: 2026-11-25
 ---
 
 # Đề xuất đề tài — Kế hoạch kiểm thử
@@ -68,3 +68,21 @@ updated: 2026-06-01
 - **Máy trạng thái `ResearchProject`:** không phát sinh chuyển trạng thái ngoài sơ đồ data-model §3; mọi
   chuyển ghi `AuditLog`.
 - **Audit:** nộp/trả lại/chốt/hủy đều sinh bản ghi nhật ký đúng nội dung.
+- **Hủy đề xuất theo BR-10:** chủ nhiệm hủy bản nháp chưa có mã, chuyên viên cùng khoa hủy hồ sơ đã nộp. Kiểm lý do trống, hồ sơ sang xét duyệt, người cùng nhóm, chuyên viên khác khoa và tài khoản trường khác. Cho hai phiên hủy cùng bản và đối chiếu đúng một lần đổi trạng thái, một lý do, một dòng audit và một sự kiện. Với hai phiên bản quy trình, kiểm quyền hủy theo mẫu đã ghim vào từng hồ sơ. [Ca DB](../../../apps/backend/test/db/proposals.test.mjs)
+
+## Ca biên theo quyết định triển khai
+
+| Ca | AC nguồn | Điều kiện | Thao tác | Kết quả |
+|---|---|---|---|---|
+| TC-17 · [US-06/TC-03](../../../specs/006-web-draft-proposal/quickstart.md) | AC-01 | Chủ nhiệm đã chọn kỳ và nhập tên nhưng thiếu phần phương pháp | lưu rồi mở lại nháp | thấy phần đã nhập và có thể tiếp tục sửa |
+| TC-18 · [US-07/TC-03](../../../specs/007-web-submit-proposal/quickstart.md) | AC-02 | Nháp hợp lệ, đồng hồ máy chủ đúng hạn và kỳ còn mở | chủ nhiệm gửi hai lần | chỉ có một mã và một lần chuyển Đã nộp |
+| TC-19 · [US-08/TC-03](../../../specs/008-web-return-proposal/quickstart.md) | AC-07 | Hồ sơ còn hạn và lý do chỉ chứa khoảng trắng | chuyên viên gửi trả | giữ Đã nộp, yêu cầu nhập lý do |
+
+## Trợ lý rà thuyết minh
+
+| Ca | AC nguồn | Điều kiện | Thao tác | Kết quả |
+|---|---|---|---|---|
+| TC-20 | AC-12 | đoạn nguồn hợp lệ | yêu cầu rà | thấy trích đoạn, vị trí và bản mẫu, chủ nhiệm có thể bác gợi ý |
+| TC-21 | AC-12 | tài liệu ngoài quyền hoặc thiếu căn cứ | yêu cầu rà | từ chối truy xuất hoặc ghi chưa đủ căn cứ, hồ sơ gốc giữ nguyên |
+| TC-22 | AC-12 | Dịch vụ trợ lý gián đoạn lúc rà một thuyết minh | chủ nhiệm trở lại biểu mẫu | vẫn rà thủ công và lưu được bản nháp của mình |
+| TC-23 | AC-12 | Người tenant B có cùng vai trò nhưng chỉ có mã/đường dẫn của A | Yêu cầu lại dữ liệu hoặc thao tác của A | Không trả nội dung riêng của A và không thay đổi bản ghi A |

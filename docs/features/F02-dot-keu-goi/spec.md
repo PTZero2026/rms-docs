@@ -3,9 +3,9 @@ title: "Kỳ nhận đề xuất"
 id: "F02"
 epic: "E1"
 owner: "PO/BA"
-status: Draft        # Draft | Review | Approved
+status: Review
 version: 0.1
-updated: 2026-11-21
+updated: 2026-11-24
 ---
 
 # Kỳ nhận đề xuất
@@ -88,10 +88,10 @@ stateDiagram-v2
 | BR-02 | Mã kỳ duy nhất | `code` là duy nhất toàn hệ thống (vd `KG-2026-01`). | Unique constraint trên `ProposalCall.code` |
 | BR-03 | Cấu hình bắt buộc khi mở | Để chuyển `DRAFT → OPEN` phải có: `name`, `code`, `startDate`, `endDate`, ≥1 `researchFieldIds`, `proposalTemplateId`, `reviewCriteriaSetId`. | Đảm bảo F01/F03 có đủ cấu hình |
 | BR-04 | Tham chiếu danh mục còn hiệu lực | `researchFieldIds`, `proposalTemplateId`, `reviewCriteriaSetId` phải trỏ tới bản ghi B01 đang `ACTIVE` tại thời điểm mở kỳ. Nếu có tham chiếu hết hiệu lực, giữ `DRAFT` và chỉ rõ mục cần thay. | `ON DELETE RESTRICT`, xem data-model §5 |
-| BR-05 | Chỉ kỳ OPEN mới nhận đề xuất | Nhà khoa học chỉ nộp được khi kỳ `OPEN` **và** thời điểm nộp ≤ `endDate`. Kỳ `DRAFT`/`CLOSED`/`CANCELLED` từ chối nộp. | Kiểm tra phía backend F01 |
+| BR-05 | Chỉ kỳ OPEN mới nhận đề xuất | Nhà khoa học chỉ nộp được khi kỳ `OPEN` **và** ngày tiếp nhận ở Asia/Ho_Chi_Minh nằm trong [startDate, endDate]. Kỳ `DRAFT`/`CLOSED`/`CANCELLED` từ chối nộp. | Kiểm tra phía backend F01 |
 | BR-06 | Khóa cấu hình sau khi có đề xuất | Khi kỳ đã `OPEN` và đã có ≥1 đề tài `SUBMITTED`: không sửa `startDate`, `researchFieldIds`, `proposalTemplateId`, `reviewCriteriaSetId`; **chỉ cho gia hạn `endDate` nhận đề xuất** về tương lai. | Tránh lệch dữ liệu với hồ sơ đã nộp |
 | BR-07 | Không hủy kỳ đã có đề xuất | Không cho `CANCELLED` nếu kỳ có bất kỳ đề tài nào ở `SUBMITTED` trở đi. Phải `CLOSED` thay vì `CANCELLED`. | Bảo toàn hồ sơ nhà khoa học |
-| BR-08 | Hiển thị có lọc cho FE | Nhà khoa học chỉ thấy kỳ `status = OPEN` và `endDate` ≥ hôm nay. | Kỳ `DRAFT/CLOSED/CANCELLED` ẩn khỏi FE |
+| BR-08 | Hiển thị có lọc cho FE | Danh sách Đang nhận chỉ gồm kỳ OPEN có startDate ≤ ngày nghiệp vụ ≤ endDate. Tất cả vẫn lọc quyền của người dùng. | Kỳ `DRAFT/CLOSED/CANCELLED` ẩn khỏi FE |
 
 ## 5. Dữ liệu
 
@@ -149,13 +149,14 @@ Viết theo Given / When / Then — đầu vào trực tiếp cho `test-plan.md`
 - **F03 — Xét duyệt hội đồng (đầu ra):** dùng `reviewCriteriaSetId` đã đóng băng theo kỳ.
 - **Job scheduler** (overview §2): tự động đóng kỳ khi quá `endDate` nhận đề xuất.
 
-**Rủi ro & điểm cần làm rõ:**
+**Quyết định cho kỳ nhận.** Lúc mở, kiểm trạng thái danh mục rồi ghim phiên bản bất biến của biểu mẫu và bộ tiêu chí. F01/F03 đọc cùng phiên bản. Nếu cấu hình nguồn chỉ có nội dung thay thế được, lưu snapshot nội dung trong kỳ. Dùng ngày nghiệp vụ Việt Nam, nhận hết ngày kết thúc. Chuyên viên được mở lại kỳ CLOSED bằng gia hạn đến ngày còn nhận, có lý do và audit. CANCELLED là trạng thái cuối. Kỳ trùng lĩnh vực được phép, hiển thị mã và khoảng nhận để phân biệt.
 
-- *Đóng băng cấu hình:* cần chốt phạm vi "snapshot" biểu mẫu/bộ tiêu chí — tham chiếu id hay sao chép
-  nội dung tại thời điểm mở? Hiện giả định tham chiếu + B01 dùng xóa mềm để giữ toàn vẹn (BR-04).
-- *Múi giờ hạn nộp:* `startDate/endDate` là `date`; cần thống nhất "hết hạn nhận đề xuất" tính theo cuối ngày
-  `endDate` theo Asia/Ho_Chi_Minh (overview §4.4) để job đóng kỳ không lệch ngày.
-- *Mở lại kỳ đã đóng:* `CLOSED → OPEN` chỉ hợp lệ khi gia hạn `endDate`; cần xác nhận nghiệp vụ có cho
-  phép mở lại hay luôn tạo kỳ mới.
-- *Kỳ chồng lấn lĩnh vực/thời gian:* chưa ràng buộc cứng; rủi ro nhà khoa học phân vân chọn kỳ —
-  cân nhắc cảnh báo (không chặn) ở BO.
+## Tra kỳ trên điện thoại
+
+| Quy tắc | Nội dung |
+|---|---|
+| BR-09 | Mặc định hiển thị kỳ OPEN trong cả khoảng nhận theo ngày Việt Nam và quyền của người dùng. |
+
+- **AC-09** (BR-09) — Tra mã không phân biệt hoa thường thấy hạn, mẫu và liên kết đúng kỳ. OPEN ở tương lai hoặc đã hết hạn vắng trong Đang nhận. Khi chuyển Tất cả, chỉ chuyên viên đủ quyền thấy kỳ nháp.
+
+[Lát US-35](../../../specs/035-mobile-find-open-call/spec.md)

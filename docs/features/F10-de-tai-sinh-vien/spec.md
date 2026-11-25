@@ -3,9 +3,9 @@ title: "Đề tài sinh viên"
 id: "F10"
 epic: "E4"
 owner: "<PO/BA phụ trách>"
-status: Draft        # Draft | Review | Approved
+status: Review
 version: 0.2
-updated: 2026-06-29
+updated: 2026-11-24
 ---
 
 # Đề tài sinh viên
@@ -39,8 +39,7 @@ updated: 2026-06-29
   - Tính điểm học phần/điểm tốt nghiệp của sinh viên — thuộc hệ thống đào tạo.
   - Quản lý học vụ chi tiết của sinh viên — thuộc hệ thống sinh viên/đào tạo.
   - Quyết toán/thù lao theo giờ giảng — ngoài phạm vi P03/F10.
-  - Quản lý kinh phí hỗ trợ đề tài SV ở mức dự toán/giải ngân — chưa chốt; nếu có, cần quyết định reuse F05
-    hoặc ghi nhận kinh phí nhẹ riêng cho F10.
+  - Dự toán/giải ngân chi tiết của đề tài SV nằm ngoài lát US-27.
 
 ## 3. Luồng nghiệp vụ chính
 
@@ -176,7 +175,7 @@ ngoài danh sách lõi.
 - [F08](../F08-ly-lich-khoa-hoc/) — hiển thị giờ giảng và vai trò hướng dẫn trong lý lịch khoa học.
 - [B03](../B03-quan-ly-nguoi-dung/) — tài khoản, vai trò, quyền, phạm vi dữ liệu.
 - [B01](../B01-danh-muc-cau-hinh/) — danh mục loại đề tài, lĩnh vực, đơn vị, minh chứng, tiêu chí.
-- `integrations.md` — cần bổ sung đồng bộ sinh viên/giảng viên (`VP-SYNC`).
+- [Nguồn danh sách sinh viên/giảng viên](../../architecture/integrations.md) theo VP-SYNC.
 - `variation-points.md` — `VP-MODE`, `VP-WF`, `VP-EVID-REQ`, `VP-TH-FORMULA`, `VP-TH-ALLOC`.
 
 **Rủi ro & điểm cần chốt:**
@@ -184,7 +183,15 @@ ngoài danh sách lõi.
 | Vấn đề | Ảnh hưởng | Đề xuất |
 |---|---|---|
 | Trường muốn quản lý đề tài SV như đề tài cấp cơ sở đầy đủ | Tăng độ phức tạp F10 | Giữ default rút gọn; bật `FULL_LIFECYCLE` theo tenant |
-| Chưa có tích hợp sinh viên | Không đảm bảo "xác nhận, không khai lại" | Cần bổ sung adapter/nguồn đồng bộ trong `integrations.md`; fallback import có kiểm soát nếu PO chốt |
+| Chưa có tích hợp sinh viên | Không đảm bảo "xác nhận, không khai lại" | Dùng adapter VP-SYNC hoặc import danh sách theo tenant như mô tả ở integrations.md |
 | Công thức giờ giảng chưa chốt | Chặn AC-10 khi triển khai thật | P03 phải có seed/cấu hình theo kỳ trước khi bật F10 production |
 | Nhiều GVHD cùng hướng dẫn | Cần phân bổ giờ rõ ràng | Dùng `VP-TH-ALLOC`; mặc định yêu cầu tổng tỷ lệ phân bổ = 100% nếu có nhiều GVHD |
-| Có kinh phí hỗ trợ đề tài SV | Có thể kéo F05 vào F10 | PO chốt: ngoài phạm vi, ghi nhận nhẹ, hoặc reuse F05 |
+| Có kinh phí hỗ trợ đề tài SV | Có thể kéo F05 vào F10 | US-27 chỉ xác nhận GVHD. Phạm vi kinh phí chi tiết thuộc đợt mở rộng |
+
+**Căn cứ giao task ngày 24/11/2026.** Triển khai chế độ rút gọn, đọc danh sách người học từ nguồn đồng bộ hoặc danh sách import của tenant. Xác nhận GVHD gắn đúng đăng ký. Dự toán/giải ngân chi tiết và FULL_LIFECYCLE là tùy chọn sau.
+
+## Phạm vi BA/PO đã chốt cho task
+
+| Quyết định | AC nguồn | Hành vi ở ca biên |
+|---|---|---|
+| [RV-27](../../../specs/review-decisions.md#rv-27) | AC-04 | Gắn xác nhận với đúng đăng ký, kiểm khi sinh viên nộp chính thức. |

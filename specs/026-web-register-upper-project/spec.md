@@ -5,7 +5,7 @@ epic: E4
 channel: web
 wave: C
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-24
 ---
 
 # Theo dõi đầu mục nhiệm vụ cấp trên
@@ -16,7 +16,7 @@ updated: 2026-11-18
 
 ### Session 2026-11-18
 
-- Q: Căn cứ phê duyệt phải có ở lúc lưu nháp hay lúc duyệt? → A: Cho lưu thông tin ban đầu theo trường bắt buộc, kiểm loại minh chứng theo cấp ở bước duyệt. [RV-26](../review-decisions.md#rv-26). Khuyến nghị dùng để lập kế hoạch, chờ Phòng KHCN phụ trách nhiệm vụ cấp trên xác nhận.
+- Q: Căn cứ phê duyệt phải có ở lúc lưu nháp hay lúc duyệt? → A: Cho lưu thông tin ban đầu theo trường bắt buộc, kiểm loại minh chứng theo cấp ở bước duyệt. [RV-26](../review-decisions.md#rv-26). BA/PO chốt cho triển khai ngày 24/11/2026.
 
 ## User Scenarios & Testing
 
@@ -29,7 +29,7 @@ Chuyên viên ghi đầu mục cấp Bộ gắn với đơn vị chủ trì và 
 - **AC-01** (US-26.1) — Given đủ dữ liệu. When lưu. Then tra lại đầu mục đúng cấp và đơn vị.
 - **AC-02** (US-26.2) — Given thiếu tệp bắt buộc ở bước duyệt. When gửi duyệt và QLKH kiểm tại bước duyệt. Then chặn và chỉ rõ chứng cứ thiếu.
 
-- **AC-03** (US-26.3, khuyến nghị) — Given Đầu mục cấp Bộ có tệp sai loại so với quy tắc DECISION. When chuyên viên duyệt. Then nêu đúng loại quyết định phải bổ sung.
+- **AC-03** (US-26.3) — Given Đầu mục cấp Bộ có tệp sai loại so với quy tắc DECISION. When chuyên viên duyệt. Then nêu đúng loại quyết định phải bổ sung.
 
 ### Edge Cases
 
@@ -42,7 +42,7 @@ Thiếu tệp bắt buộc ở bước duyệt → chặn và chỉ rõ chứng 
 - **BR-01 / FR-001.** Khi đủ dữ liệu, người có quyền có thể lưu. Kết quả phải quan sát được: tra lại đầu mục đúng cấp và đơn vị (AC-01).
 - **BR-02 / FR-002.** Với tình huống thiếu tệp bắt buộc ở bước duyệt, thao tác gửi duyệt và QLKH kiểm tại bước duyệt phải cho kết quả chặn và chỉ rõ chứng cứ thiếu (AC-02).
 
-- **BR-03 / FR-003 (đề xuất).** Cho lưu thông tin ban đầu theo trường bắt buộc, kiểm loại minh chứng theo cấp ở bước duyệt. Kiểm bằng AC-03.
+- **BR-03 / FR-003.** Cho lưu thông tin ban đầu theo trường bắt buộc, kiểm loại minh chứng theo cấp ở bước duyệt. Kiểm bằng AC-03.
 
 ### Key Entities
 

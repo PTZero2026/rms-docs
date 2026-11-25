@@ -2,7 +2,7 @@
 title: "Tổ chức và chạy thử đội agent phát triển RMS"
 owner: "Tech lead và PO"
 status: Draft
-updated: 2026-11-21
+updated: 2026-11-24
 ---
 
 # Tổ chức và chạy thử đội agent phát triển RMS
@@ -13,9 +13,9 @@ updated: 2026-11-21
 
 | Công việc | Mức sẵn sàng | Căn cứ và điều kiện |
 |---|---|---|
-| Nghiên cứu, phân tích và chuẩn bị nghiệm thu | Có thể thử hôm nay | Đã có 32 lát INVEST, quyết định nghiệp vụ, spec feature và quickstart. PO agent tổng hợp căn cứ. Những điểm cần trường xác nhận vẫn có người chịu trách nhiệm. [Danh mục lát](../../specs/README.md) |
-| Design và FE | Có thể giao thay đổi nhỏ | Có React/Vite tại `apps/web`, component và theme tại `packages/ui`. Trang web hiện tại dẫn đến tài liệu. N05 mô tả gallery và phép thử với hai theme. [Ứng dụng hiện tại](../../apps/web/src/App.tsx) · [Thẻ N05](ke-hoach-implement-rms.md) |
-| BE và tích hợp | Khả thi sau phần nền | `apps/backend` và `packages/api-contracts` là hai workspace cần xây. SA-01–06 đang ở trạng thái đề xuất. N01 mở đầu bằng contract health, client sinh và lần gọi thật từ web. [ADR-0015](../architecture/decisions/0015-monorepo-rms.md) · [Hồ sơ SA](../architecture/rms-v0-sa-review.md) |
+| Nghiên cứu, phân tích và chuẩn bị nghiệm thu | Có thể thử hôm nay | Đã có 35 lát INVEST, quyết định nghiệp vụ, spec feature và quickstart. PO agent tổng hợp căn cứ. Những điểm cần trường xác nhận vẫn có người chịu trách nhiệm. [Danh mục lát](../../specs/README.md) |
+| Design và FE | Có thể giao thay đổi nhỏ | Có React/Vite tại `apps/web`, component và theme tại `packages/ui`. Ứng dụng V0 chạy trên dữ liệu mô phỏng hai tenant. N05 mô tả gallery và phép thử với hai theme. [Ứng dụng hiện tại](../../apps/web/src/App.tsx) · [Thẻ N05](ke-hoach-implement-rms.md) |
+| BE và tích hợp | Khả thi sau phần nền | `apps/backend` và `packages/api-contracts` là hai workspace cần xây. SA đã chốt SA-01–06 cho triển khai local/CI ngày 24/11/2026. N01 mở đầu bằng contract health, client sinh và lần gọi thật từ web. [ADR-0015](../architecture/decisions/0015-monorepo-rms.md) · [Hồ sơ SA](../architecture/rms-v0-sa-review.md) |
 | Kiểm tải, bảo mật, phát hành | Cần bản tích hợp và môi trường thử được cấp | Bộ Playwright hiện có nhắm tới tenant pilot bên ngoài. Đợt A cần bằng chứng từ cùng một build, hai tenant, quyền thực, số liệu, khôi phục và UAT. [Harness pilot](../../e2e/README.md) · [Kế hoạch kiểm thử](kiem-thu-rms.md) |
 
 ## Người làm, sản phẩm bàn giao và người nhận
@@ -83,4 +83,4 @@ Tech lead dùng [kế hoạch khởi động và hai phiếu giao BA/QA](../supe
 | Có đủ bằng chứng nhận lát phần mềm? | Mọi AC trong phạm vi có test chạy và kết quả thực. Các lỗi sai số nghiệp vụ, cách ly tenant, quyền, audit hoặc restore liên quan đều phải đóng và retest. Lưu build, seed và kết quả. Với US-13, chạy đủ TC-01–04, so tệp và danh sách, kiểm quyền tải lại trên bản tích hợp. [Kế hoạch QA](kiem-thu-rms.md) |
 | Khi nào đổi cách tổ chức? | Sai đáp án hoặc thiếu căn cứ thì sửa phiếu/fixture trước lần kế tiếp. Review tồn thì giảm việc đang mở và chỉ định reviewer sớm. Nếu việc chờ hoặc mất ngữ cảnh lặp qua hai lát, thử một bộ điều phối trên chính các thẻ đó rồi so chi phí và chất lượng. |
 
-**Thẻ code đầu tiên là N01 sau khi SA-01 được duyệt.** DevOps/BE hoàn thiện workspace còn thiếu và contract health. FE dùng client sinh để gọi API. QA nhận khi có thể dựng từ checkout sạch, chạy lint, typecheck, test và build, rồi chứng minh thay đổi contract thiếu regenerate làm CI báo lỗi. Từ N01, mở N02/N03/N05 theo phụ thuộc và quyết định SA tương ứng. Kết quả đối chứng của buổi US-13 được giữ để QA dùng lại khi đợt A đã có dữ liệu thật từ luồng mở kỳ, nộp và xét duyệt. [Thứ tự N01–N14 và đợt A](ke-hoach-implement-rms.md)
+**Thẻ code đầu tiên là N01 trên local/CI theo SA-01 đã chốt.** DevOps/BE hoàn thiện workspace còn thiếu và contract health. FE dùng client sinh để gọi API. QA nhận khi có thể dựng từ checkout sạch, chạy lint, typecheck, test và build, rồi chứng minh thay đổi contract thiếu regenerate làm CI báo lỗi. Từ N01, mở N02/N03/N05 theo phụ thuộc và quyết định SA tương ứng. Kết quả đối chứng của buổi US-13 được giữ để QA dùng lại khi đợt A đã có dữ liệu thật từ luồng mở kỳ, nộp và xét duyệt. [Thứ tự N01–N14 và đợt A](ke-hoach-implement-rms.md)

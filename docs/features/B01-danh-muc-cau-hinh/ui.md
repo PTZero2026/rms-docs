@@ -2,9 +2,9 @@
 title: "Danh mục & cấu hình (sys-config-service) — Giao diện"
 spec: "./spec.md"
 owner: "PO/BA"
-status: Draft
+status: Review
 version: 0.3
-updated: 2026-07-04
+updated: 2026-11-25
 ---
 
 # Danh mục & cấu hình (sys-config-service) — Giao diện
@@ -106,6 +106,7 @@ Toàn bộ B01 gói trong một **trang "Cấu hình hệ thống"**: bảng dan
 ### CFG-02 Sửa cấu hình
 - **Sửa được:** `description`, `refer`, `group`, `public`, `active`, MIME/encoding, và nội dung.
 - **Giữ nội dung cũ:** để trống ô nội dung khi lưu → **không đổi** content (BR-06); chỉ cập nhật metadata.
+- Với nội dung gõ trực tiếp, mã hóa theo bảng mã đã nhập. Nếu có ký tự ngoài bảng mã, giữ biểu mẫu để người dùng sửa. Với tệp hoặc Base64, giữ nguyên dãy byte đã gửi. [Ca nhập lại XML](../../../e2e/catalog/config-override/formats.spec.ts)
 - **`active = false`:** ẩn key khỏi danh sách chọn ở các UI tiêu thụ, **không** xóa; GET `:key` vẫn
   trả về (BR-10).
 - **Sau khi lưu:** cache của **đúng key đó** bị invalidate ngay (BR-04) — lần đọc kế tiếp là MISS.
@@ -113,17 +114,15 @@ Toàn bộ B01 gói trong một **trang "Cấu hình hệ thống"**: bảng dan
 ### CFG-03 Xem / tải nội dung
 - **Hiển thị theo MIME (BR-09):** JSON/text/XML/YAML → xem inline (kèm charset); ảnh → preview; PDF/
   binary → nút tải xuống. Header `Content-Type` đúng như đã lưu.
+- Phần đọc văn bản giới hạn 64 KiB. Trình duyệt giải mã bằng charset hiệu lực và bỏ ký tự đang dở ở ranh giới xem trước. Tệp tải xuống chứa toàn bộ bytes. Khi bảng mã chưa hỗ trợ hoặc dữ liệu không khớp, người dùng thấy lý do và vẫn tải được bản gốc.
 - **Chỉ báo cache:** hiển thị `X-Cache: HIT` (từ Redis, TTL 5 phút) hoặc `MISS` (đọc DB) để quản trị
   biết đang xem bản cache hay bản tươi.
 - **Nguồn dữ liệu (fallback — BR-03):** nếu tenant chưa có bản riêng, màn hình hiển thị **bản shared**
   và ghi rõ "đang dùng bản Chung"; muốn cá biệt hóa → *Tạo cấu hình* cùng key cho tenant.
 
-## 5. Trạng thái, không có audit
+## 5. Xác nhận ghi và xóa
 
-- Service **không** ghi audit log chi tiết (không `AuditLog` với `oldValue/newValue`) và **không** có
-  versioning nội dung — một PUT ghi đè hoàn toàn bản cũ, không rollback được (spec §2, §7.4–§7.5).
-  UI **không** có màn hình "Nhật ký thay đổi". Nếu cần truy vết, xem đề xuất mở ở spec §7.4.
-- Metadata thời gian duy nhất trên mỗi bản ghi là `created` / `modified` (hiển thị ở CFG-00/CFG-02).
+Hiện phạm vi Chung hoặc tên tenant trước khi xác nhận. Với bản shared, người quản trị xác nhận key và phạm vi tác động trước khi sửa hoặc xóa. CFG-02 hiển thị thời điểm cập nhật. Nhật ký P02 ghi metadata và người thực hiện. Màn hình xử lý blob giữ hiệu lực ngay sau lưu.
 
 ## 6. Liên kết AC
 

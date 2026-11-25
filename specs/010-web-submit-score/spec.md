@@ -5,7 +5,7 @@ epic: E1
 channel: web
 wave: A
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-24
 ---
 
 # Gửi phiếu chấm cá nhân
@@ -16,7 +16,7 @@ updated: 2026-11-18
 
 ### Session 2026-11-18
 
-- Q: Nếu phát hiện xung đột sau khi người chấm mở nháp thì sao? → A: Kiểm lại phân công và quan hệ với đề tài ngay lúc gửi. [RV-10](../review-decisions.md#rv-10). Khuyến nghị dùng để lập kế hoạch, chờ Chủ tịch hội đồng và QA xác nhận.
+- Q: Nếu phát hiện xung đột sau khi người chấm mở nháp thì sao? → A: Kiểm lại phân công và quan hệ với đề tài ngay lúc gửi. [RV-10](../review-decisions.md#rv-10). BA/PO chốt cho triển khai ngày 24/11/2026.
 
 ## User Scenarios & Testing
 
@@ -29,7 +29,7 @@ Thành viên hội đồng nhập điểm theo tiêu chí và nhận xét để 
 - **AC-01** (US-10.1) — Given phiếu đủ điểm hợp lệ. When gửi. Then tính tổng theo trọng số, khóa phiếu đã nộp.
 - **AC-02** (US-10.2) — Given người chấm là thành viên đề tài. When mở hoặc tạo phiếu cho đề tài. Then không thấy việc chấm và không tạo được phiếu.
 
-- **AC-03** (US-10.3, khuyến nghị) — Given Người đã mở nháp vừa được bổ sung vào nhóm đề tài. When gửi phiếu đã điền. Then phiếu không được tính và người đó mất quyền chấm.
+- **AC-03** (US-10.3) — Given Người đã mở nháp vừa được bổ sung vào nhóm đề tài. When gửi phiếu đã điền. Then phiếu không được tính và người đó mất quyền chấm.
 
 ### Edge Cases
 
@@ -42,7 +42,7 @@ Người chấm là thành viên đề tài → không thấy việc chấm và 
 - **BR-01 / FR-001.** Khi phiếu đủ điểm hợp lệ, người có quyền có thể gửi. Kết quả phải quan sát được: tính tổng theo trọng số, khóa phiếu đã nộp (AC-01).
 - **BR-02 / FR-002.** Với tình huống người chấm là thành viên đề tài, thao tác mở hoặc tạo phiếu cho đề tài phải cho kết quả không thấy việc chấm và không tạo được phiếu (AC-02).
 
-- **BR-03 / FR-003 (đề xuất).** Kiểm lại phân công và quan hệ với đề tài ngay lúc gửi. Kiểm bằng AC-03.
+- **BR-03 / FR-003.** Kiểm lại phân công và quan hệ với đề tài ngay lúc gửi. Kiểm bằng AC-03.
 
 ### Key Entities
 

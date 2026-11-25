@@ -5,7 +5,7 @@ epic: E2
 channel: web
 wave: B
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-24
 ---
 
 # Giao thực hiện đề tài đã duyệt
@@ -16,7 +16,7 @@ updated: 2026-11-18
 
 ### Session 2026-11-18
 
-- Q: Chuyên viên có thể giao khi mới có số quyết định nhưng chưa có bản đính kèm? → A: Yêu cầu tệp căn cứ đọc được theo phạm vi đề tài trước khi xác nhận giao. [RV-14](../review-decisions.md#rv-14). Khuyến nghị dùng để lập kế hoạch, chờ Trưởng phòng KHCN và chuyên viên hợp đồng xác nhận.
+- Q: Chuyên viên có thể giao khi mới có số quyết định nhưng chưa có bản đính kèm? → A: Yêu cầu tệp căn cứ đọc được theo phạm vi đề tài trước khi xác nhận giao. [RV-14](../review-decisions.md#rv-14). BA/PO chốt cho triển khai ngày 24/11/2026.
 
 ## User Scenarios & Testing
 
@@ -29,7 +29,7 @@ Chuyên viên xác nhận căn cứ giao để từ một quyết định phê d
 - **AC-01** (US-14.1) — Given đủ căn cứ. When xác nhận giao. Then hồ sơ giao có hiệu lực, đề tài IN_PROGRESS.
 - **AC-02** (US-14.2) — Given thiếu căn cứ bắt buộc. When xác nhận. Then chỉ ra mục thiếu, đề tài còn APPROVED.
 
-- **AC-03** (US-14.3, khuyến nghị) — Given Thiếu tệp căn cứ dù đã nhập số quyết định. When xác nhận giao. Then nêu mục tệp thiếu, giữ APPROVED.
+- **AC-03** (US-14.3) — Given Thiếu tệp căn cứ dù đã nhập số quyết định. When xác nhận giao. Then nêu mục tệp thiếu, giữ APPROVED.
 
 ### Edge Cases
 
@@ -42,7 +42,7 @@ Thiếu căn cứ bắt buộc → chỉ ra mục thiếu, đề tài còn APPRO
 - **BR-01 / FR-001.** Khi đủ căn cứ, người có quyền có thể xác nhận giao. Kết quả phải quan sát được: hồ sơ giao có hiệu lực, đề tài IN_PROGRESS (AC-01).
 - **BR-02 / FR-002.** Với tình huống thiếu căn cứ bắt buộc, thao tác xác nhận phải cho kết quả chỉ ra mục thiếu, đề tài còn APPROVED (AC-02).
 
-- **BR-03 / FR-003 (đề xuất).** Yêu cầu tệp căn cứ đọc được theo phạm vi đề tài trước khi xác nhận giao. Kiểm bằng AC-03.
+- **BR-03 / FR-003.** Yêu cầu tệp căn cứ đọc được theo phạm vi đề tài trước khi xác nhận giao. Kiểm bằng AC-03.
 
 ### Key Entities
 

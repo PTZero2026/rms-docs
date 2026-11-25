@@ -3,7 +3,7 @@ title: "Dự án phục vụ sản xuất — Giao diện (một web app, phân 
 spec: "./spec.md"
 owner: "<BA/Designer>"
 status: Draft
-updated: 2026-11-21
+updated: 2026-11-24
 ---
 
 # Dự án phục vụ sản xuất — Giao diện
@@ -75,3 +75,5 @@ bước gửi duyệt/duyệt khi thiếu loại bắt buộc.
 | MH-02 | AC-01, AC-02, AC-03, AC-04 |
 | MH-03 | AC-04, AC-05, AC-06, AC-07 |
 | MH-04 | AC-04, AC-07 |
+
+**Màn hình đã kiểm cho AC-04 và AC-07.** Trên MH-04, chủ nhiệm tải biên bản riêng, nhập ngày và tóm tắt rồi gửi. Người thẩm định xác nhận hoặc ghi lý do trả. MH-03 hiển thị từng người hưởng, tỷ lệ, giờ, kỳ và phiên bản định mức sau khi chọn **Xem giờ của dự án**. [Ảnh MH-04 và bảng giờ](../../reviews/screenshots/extension/ket-qua-gio-f11.png)

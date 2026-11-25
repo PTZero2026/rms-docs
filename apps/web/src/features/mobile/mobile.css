@@ -1,0 +1,228 @@
+.mobile-preview {
+  min-height: 100dvh;
+  padding: 20px;
+  background: var(--muted);
+  display: grid;
+  justify-content: center;
+  align-content: center;
+  gap: 10px;
+}
+.mobile-preview header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+}
+.mobile-preview a {
+  color: var(--primary);
+  text-decoration: underline;
+}
+.mobile-preview iframe {
+  box-sizing: content-box;
+  width: 390px;
+  height: min(844px, calc(100dvh - 75px));
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: 0 12px 36px #1c45301c;
+  background: var(--paper);
+}
+@media (max-width: 600px) {
+  .workspace {
+    padding: 18px 14px calc(90px + env(safe-area-inset-bottom));
+  }
+  .topbar {
+    padding-inline: 8px;
+  }
+  .mobile-brand {
+    font-size: 21px;
+    letter-spacing: -0.07em;
+    font-weight: 750;
+  }
+  .mobile-brand span {
+    color: var(--primary);
+  }
+  .crumb {
+    display: none;
+  }
+  .top-actions {
+    margin-left: auto;
+  }
+  .home .page-heading h1 {
+    font-size: 24px;
+  }
+  .home .page-heading p {
+    max-width: none;
+  }
+  .home .today {
+    margin: 0;
+    color: var(--quiet);
+  }
+  .mobile-dock {
+    position: fixed;
+    z-index: 15;
+    bottom: 0;
+    inset-inline: 0;
+    display: flex;
+    gap: 4px;
+    padding: 5px 10px calc(5px + env(safe-area-inset-bottom));
+    background: var(--background);
+    border-top: 1px solid var(--line);
+  }
+  .mobile-dock a {
+    flex: 1;
+    min-height: 48px;
+    border-radius: 9px;
+    display: grid;
+    align-content: center;
+    justify-items: center;
+    gap: 3px;
+    color: var(--quiet);
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .mobile-dock a[aria-current="page"] {
+    background: var(--secondary);
+    color: var(--primary);
+  }
+  .deadline-queue {
+    display: grid;
+    gap: 12px;
+  }
+  .deadline-summary {
+    color: #fff;
+    background:
+      linear-gradient(90deg, #123f3d 0%, #164b47ef 45%, #164b474a 100%),
+      url("../../assets/river-atlas.webp") center right / cover;
+    border-radius: 15px;
+    padding: 16px 18px;
+    display: grid;
+    gap: 6px;
+  }
+  .deadline-summary div,
+  .deadline-summary span,
+  .deadline-summary p {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .deadline-summary h2 {
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .deadline-summary strong {
+    font-size: 44px;
+    line-height: 1.05;
+    letter-spacing: -0.05em;
+  }
+  .deadline-summary p {
+    align-items: baseline;
+    font-size: 14px;
+  }
+  .deadline-summary span {
+    font-size: 13px;
+  }
+  .mobile-filters {
+    display: flex;
+    width: 100%;
+    padding: 3px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--muted);
+  }
+  .mobile-filters button {
+    flex: 1;
+    min-height: 44px;
+    color: var(--quiet);
+  }
+  .mobile-filters button[aria-pressed="true"] {
+    background: var(--background);
+    color: var(--primary);
+    box-shadow: 0 1px 4px #1c453023;
+  }
+  .mobile-records {
+    background: var(--background);
+    border: 1px solid var(--line);
+    border-radius: 13px;
+    overflow-wrap: anywhere;
+  }
+  .agenda-row,
+  .call-record {
+    display: flex;
+    gap: 10px;
+    padding: 13px 15px;
+  }
+  .agenda-row + .agenda-row,
+  .call-record + .call-record {
+    border-top: 1px solid var(--line);
+  }
+  .agenda-row {
+    align-items: center;
+    justify-content: space-between;
+  }
+  .agenda-row > svg,
+  .call-deadline > svg {
+    flex-shrink: 0;
+    color: var(--quiet);
+  }
+  .agenda-copy {
+    display: grid;
+    gap: 4px;
+  }
+  .agenda-copy small,
+  .call-meta,
+  .due {
+    font-size: 12px;
+    color: var(--quiet);
+  }
+  .agenda-copy b,
+  .call-record strong {
+    font-size: 15px;
+    line-height: 1.4;
+  }
+  .due,
+  .call-meta,
+  .call-deadline {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .due.late {
+    color: #943e24;
+    font-weight: 600;
+  }
+  .call-record {
+    flex-direction: column;
+  }
+  .call-meta {
+    justify-content: space-between;
+    font-weight: 600;
+  }
+  .call-deadline {
+    font-size: 13px;
+  }
+  .call-deadline svg:last-child {
+    margin-left: auto;
+  }
+  .inbox-page .tabs-bar {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .inbox-page button,
+  .intake input[type="search"] {
+    min-height: 44px;
+  }
+  .inbox-page .task-copy b {
+    font-size: 14px;
+  }
+  .inbox-page .section-heading {
+    flex-wrap: wrap;
+  }
+  .inbox-page .project-row {
+    width: 100%;
+  }
+  .inbox-page .project-row .task-copy {
+    text-align: start;
+  }
+  html {
+    scroll-padding-bottom: calc(75px + env(safe-area-inset-bottom));
+  }
+}

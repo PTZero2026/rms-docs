@@ -1,0 +1,95 @@
+import {test,after} from "node:test"
+import assert from "node:assert/strict"
+import {randomUUID} from "node:crypto"
+import {Pool} from "pg"
+import {withTenant} from "../../dist/db/tenant-transaction.js"
+import {resolveAccount} from "../../dist/modules/iam/account.js"
+import {registerStudent,answerMentor,submitStudent,decideStudent,studentRecord} from "../../dist/modules/student-project/confirm-mentor/service.js"
+import {amendStudent,amendmentPeople} from "../../dist/modules/student-project/amendments.js"
+import {studentResult} from "../../dist/modules/student-project/results.js"
+const pool=new Pool({user:"rms_test_client"}),ops=new Pool(),tenant="00000000-0000-4000-8000-000000000031"
+after(()=>Promise.all([pool.end(),ops.end()]))
+const run=(subject,work)=>withTenant(pool,tenant,async db=>work(db,await resolveAccount(db,{subject,email:subject+"@example.invalid"})))
+test("F10 requires this proposal's active invited mentor and a currently open call",async()=>{
+  const unit=randomUUID(),a=randomUUID(),b=randomUUID()
+  await ops.query("INSERT INTO rms.unit VALUES($1,$2,'Khoa Thủy văn')",[tenant,unit])
+  const [student,mentor]=await Promise.all(["student","mentor"].map(sub=>run(sub,async(db,actor)=>actor.id)))
+  for(const [id,kind] of [[student,"STUDENT"],[mentor,"MENTOR"]]){
+    await ops.query("UPDATE rms.account SET unit_id=$1 WHERE id=$2",[unit,id])
+    await ops.query("INSERT INTO rms.student_directory VALUES($1,$2,$3)",[tenant,id,kind])
+  }
+  const call={code:"SV2026",unitId:unit,starts:"2020-01-01",ends:"2099-01-01",min:1,max:5}
+  for(const id of [a,b])await run("student",(db,s)=>registerStudent(db,s,id,{title:"Nhóm nghiên cứu",call:call.code,mentorId:mentor,members:[student]},[call]))
+  await assert.rejects(run("student",(db,s)=>answerMentor(db,s,a,"accept","")),e=>e.getStatus()===403)
+  await run("mentor",(db,s)=>answerMentor(db,s,a,"accept",""))
+  await assert.rejects(run("student",(db,s)=>submitStudent(db,s,b,[call])),e=>e.getStatus()===409)
+  await assert.rejects(run("student",(db,s)=>submitStudent(db,s,a,[{...call,ends:"2021-01-01"}])),e=>e.getStatus()===409)
+  const submitted=await run("student",(db,s)=>submitStudent(db,s,a,[call]))
+  assert.equal(submitted.mentorLabel,"mentor@example.invalid")
+  assert.deepEqual(submitted.memberLabels,["student@example.invalid"])
+  const staff=await run("student-officer",async(db,s)=>s.id)
+  await ops.query("UPDATE rms.account SET unit_id=$1,user_type='staff' WHERE id=$2",[unit,staff])
+  const decide=(action,revision,reason="",who="student-officer")=>run(who,(db,s)=>decideStudent(db,s,a,{action,revision,reason}))
+  await assert.rejects(decide("approve",submitted.revision,"","mentor"),e=>e.getStatus?.()===403)
+  await assert.rejects(decide("return",submitted.revision," "),e=>e.getStatus?.()===400)
+  const back=await decide("return",submitted.revision,"Bổ sung mục tiêu")
+  assert.equal(back.status,"DRAFT")
+  assert.equal(back.reason,"Bổ sung mục tiêu")
+  const revised={title:"Đề tài đã bổ sung",call:call.code,mentorId:mentor,members:[student]}
+  const invitation=await run("student",(db,s)=>registerStudent(db,s,a,revised,[call]))
+  await assert.rejects(run("student",(db,s)=>submitStudent(db,s,a,[call])),e=>e.getStatus?.()===409)
+  await assert.rejects(run("mentor",(db,s)=>answerMentor(db,s,a,"accept","",1)),e=>e.getStatus?.()===409)
+  await assert.rejects(run("mentor",(db,s)=>answerMentor(db,s,a,"accept","")),e=>e.getStatus?.()===409)
+  await run("mentor",(db,s)=>answerMentor(db,s,a,"accept","",invitation.revision))
+  const again=await run("student",(db,s)=>submitStudent(db,s,a,[call]))
+  await assert.rejects(decide("approve",submitted.revision),e=>e.getStatus?.()===409)
+  const results=await Promise.allSettled([decide("approve",again.revision),decide("approve",again.revision)])
+  assert.equal(results.filter(r=>r.status==="fulfilled").length,1)
+  const approved=results.find(r=>r.status==="fulfilled").value
+  assert.equal(approved.status,"APPROVED")
+  assert.equal((await decide("start",approved.revision)).status,"IN_PROGRESS")
+  assert.equal((await run("student-officer",db=>db.query("SELECT id FROM rms.audit_log WHERE target_id=$1 AND action='STUDENT_PROJECT_APPROVED'",[a]))).rowCount,1)
+  await run("mentor",(db,s)=>answerMentor(db,s,b,"accept",""))
+  const fast=await run("student",(db,s)=>submitStudent(db,s,b,[{...call,onApproval:"IN_PROGRESS"}]))
+  const direct=await run("student-officer",(db,s)=>decideStudent(db,s,b,{action:"approve",revision:fast.revision,reason:""}))
+  assert.equal(direct.status,"IN_PROGRESS")
+  const trail=await run("student-officer",db=>db.query("SELECT action,details FROM rms.audit_log WHERE target_id=$1 AND action IN ('MENTOR_INVITED','MENTOR_ACCEPTED') ORDER BY occurred_at,id",[a]))
+  const invitations=trail.rows.filter(event=>event.action==="MENTOR_INVITED").map(event=>event.details)
+  assert.deepEqual(invitations.map(event=>[event.fromMentor,event.toMentor]),[[null,"INVITED"],["RECONFIRM_REQUIRED","INVITED"]])
+  assert.ok(trail.rows.filter(event=>event.action==="MENTOR_ACCEPTED").every(event=>event.details.fromMentor==="INVITED"&&event.details.toMentor==="ACCEPTED"))
+
+  const replacement=await run("student-new-mentor",async(db,s)=>s.id)
+  const colleague=await run("student-new-member",async(db,s)=>s.id)
+  await ops.query("UPDATE rms.account SET unit_id=$1 WHERE id=ANY($2::uuid[])",[unit,[replacement,colleague]])
+  await ops.query("INSERT INTO rms.student_directory VALUES($1,$2,'MENTOR')",[tenant,replacement])
+  await ops.query("INSERT INTO rms.student_directory VALUES($1,$2,'STUDENT')",[tenant,colleague])
+  const request={title:"Đề tài điều chỉnh",objective:"Đo lưu lượng",product:"Bản đồ",mentorId:replacement,members:[student,colleague],reason:"Quyết định của khoa",revision:direct.revision}
+  const amend=(who,fields={})=>run(who,(db,s)=>amendStudent(db,s,b,{...request,...fields},[]))
+  await assert.rejects(amend("student"),e=>e.getStatus?.()===403)
+  await assert.rejects(amend("student-officer",{reason:" "}),e=>e.getStatus?.()===400)
+  await assert.rejects(amend("student-officer",{members:[replacement]}),e=>e.getStatus?.()===400)
+  await assert.rejects(run("student",(db,s)=>amendmentPeople(db,s,b)),e=>e.getStatus?.()===403)
+  assert.deepEqual([direct.groupMin,direct.groupMax],[1,5])
+  const changed=await amend("student-officer")
+  assert.equal(changed.status,"MENTOR_PENDING")
+  assert.equal(changed.resumeStatus,"IN_PROGRESS")
+  assert.equal(changed.objective,request.objective)
+  await assert.rejects(amend("student-officer"),e=>e.getStatus?.()===409)
+  await assert.rejects(run("student",(db,s)=>studentResult(db,s,b,{action:"submit",revision:changed.revision,message:"Tổng kết"},true)),e=>e.getStatus?.()===409)
+  assert.equal((await run("student-new-member",(db,s)=>studentRecord(db,s,b))).id,b)
+  await assert.rejects(run("mentor",(db,s)=>studentRecord(db,s,b)),e=>e.getStatus?.()===404)
+  await assert.rejects(run("student-new-mentor",(db,s)=>answerMentor(db,s,b,"accept","",direct.revision)),e=>e.getStatus?.()===409)
+  const decline=await run("student-new-mentor",(db,s)=>answerMentor(db,s,b,"decline","Trùng lịch",changed.revision))
+  assert.equal(decline.status,"MENTOR_PENDING")
+  await assert.rejects(run("student",(db,s)=>registerStudent(db,s,b,revised,[call])),e=>e.getStatus?.()===409)
+  const renewed=await amend("student-officer",{mentorId:mentor,members:[student],revision:decline.revision})
+  await assert.rejects(run("student-new-member",(db,s)=>studentRecord(db,s,b)),e=>e.getStatus?.()===404)
+  const resumed=await run("mentor",(db,s)=>answerMentor(db,s,b,"accept","",renewed.revision))
+  assert.equal(resumed.status,"IN_PROGRESS")
+  assert.equal(resumed.resumeStatus,null)
+  const updates=await run("student-officer",db=>db.query("SELECT details FROM rms.audit_log WHERE target_id=$1 AND action='STUDENT_PROJECT_AMENDED' ORDER BY occurred_at,id",[b]))
+  assert.deepEqual(updates.rows[0].details.before.members,[student])
+  assert.equal(updates.rows[0].details.after.mentorId,replacement)
+  assert.deepEqual(updates.rows[0].details.after.members,[student,colleague])
+  assert.equal(updates.rows[1].details.reason,request.reason)
+})

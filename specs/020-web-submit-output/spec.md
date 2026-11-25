@@ -5,7 +5,7 @@ epic: E3
 channel: web
 wave: B
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-24
 ---
 
 # Nộp sản phẩm khoa học kèm minh chứng
@@ -16,7 +16,7 @@ updated: 2026-11-18
 
 ### Session 2026-11-18
 
-- Q: Một tệp có trong thư viện nhưng người dùng vừa mất quyền có thể làm minh chứng không? → A: Kiểm lại quyền sử dụng tệp tại lúc gửi, yêu cầu thay tệp khi quyền hết hiệu lực. [RV-20](../review-decisions.md#rv-20). Khuyến nghị dùng để lập kế hoạch, chờ Chủ nhiệm và chuyên viên sản phẩm xác nhận.
+- Q: Một tệp có trong thư viện nhưng người dùng vừa mất quyền có thể làm minh chứng không? → A: Kiểm lại quyền sử dụng tệp tại lúc gửi, yêu cầu thay tệp khi quyền hết hiệu lực. [RV-20](../review-decisions.md#rv-20). BA/PO chốt cho triển khai ngày 24/11/2026.
 
 ## User Scenarios & Testing
 
@@ -29,7 +29,7 @@ Chủ nhiệm khai một sản phẩm thuộc đề tài trong phạm vi để c
 - **AC-01** (US-20.1) — Given sản phẩm đủ minh chứng. When gửi. Then vào hàng chờ duyệt, giữ liên kết đề tài.
 - **AC-02** (US-20.2) — Given thiếu minh chứng bắt buộc. When gửi. Then báo thiếu, bản kê khai chưa chuyển chờ duyệt.
 
-- **AC-03** (US-20.3, khuyến nghị) — Given Tệp đính kèm đã bị thu quyền trước khi gửi. When nộp sản phẩm. Then báo minh chứng chưa hợp lệ, giữ nháp.
+- **AC-03** (US-20.3) — Given Tệp đính kèm đã bị thu quyền trước khi gửi. When nộp sản phẩm. Then báo minh chứng chưa hợp lệ, giữ nháp.
 
 ### Edge Cases
 
@@ -42,7 +42,7 @@ Thiếu minh chứng bắt buộc → báo thiếu, bản kê khai chưa chuyể
 - **BR-01 / FR-001.** Khi sản phẩm đủ minh chứng, người có quyền có thể gửi. Kết quả phải quan sát được: vào hàng chờ duyệt, giữ liên kết đề tài (AC-01).
 - **BR-02 / FR-002.** Với tình huống thiếu minh chứng bắt buộc, thao tác gửi phải cho kết quả báo thiếu, bản kê khai chưa chuyển chờ duyệt (AC-02).
 
-- **BR-03 / FR-003 (đề xuất).** Kiểm lại quyền sử dụng tệp tại lúc gửi, yêu cầu thay tệp khi quyền hết hiệu lực. Kiểm bằng AC-03.
+- **BR-03 / FR-003.** Kiểm lại quyền sử dụng tệp tại lúc gửi, yêu cầu thay tệp khi quyền hết hiệu lực. Kiểm bằng AC-03.
 
 ### Key Entities
 

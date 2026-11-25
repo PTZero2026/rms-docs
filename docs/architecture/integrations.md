@@ -1,7 +1,7 @@
 ---
 title: "Tích hợp hệ thống — RMS"
 status: Draft
-updated: 2026-06-01
+updated: 2026-11-24
 ---
 
 # Tích hợp ngoài
@@ -13,20 +13,14 @@ updated: 2026-06-01
 
 | Hệ thống | Mục đích | Giao thức | Chiều | Feature liên quan | Mức phụ thuộc |
 |---|---|---|---|---|---|
-| SSO nội bộ | Đăng nhập một lần | OIDC (ưu tiên) / SAML 2.0 | RMS ← SSO | Toàn hệ thống, B03 | Bắt buộc |
+| SSO nội bộ | Đăng nhập một lần | OIDC tới realm Keycloak | RMS ← SSO | Toàn hệ thống, B03 | Bắt buộc |
 | Email/SMS gateway | Gửi thông báo | SMTP / REST API | RMS → GW | B04 (xuyên suốt) | Bắt buộc cho thông báo |
 | Hệ thống tài chính | Đối soát kinh phí | REST API (hoặc file định kỳ) | Hai chiều | F05 | Quan trọng, có fallback thủ công |
 | Object storage | Lưu file đính kèm | S3 API | Hai chiều | Mọi feature có upload | Bắt buộc |
 
-## 2. SSO (OIDC/SAML)
+## 2. Đăng nhập và phạm vi dữ liệu
 
-- **Luồng:** Authorization Code + PKCE (OIDC). RMS là Relying Party; SSO là Identity Provider.
-- **Ánh xạ định danh:** claim `email` (hoặc `preferred_username`) → `User.email`. Lần đăng nhập đầu,
-  nếu chưa có tài khoản và chính sách cho phép, tạo `User` với `accountSource = SSO` (just-in-time provisioning).
-- **Vai trò:** RMS quản lý vai trò nội bộ (B03), **không** lấy quyền từ SSO — SSO chỉ chứng thực danh tính.
-- **Đăng xuất:** hỗ trợ single logout nếu IdP cung cấp; nếu không, hủy session nội bộ.
-- **Dự phòng:** tài khoản `INTERNAL` (đăng nhập mật khẩu RMS) cho người không có trên SSO hoặc khi SSO sự cố;
-  giới hạn tối thiểu, có audit riêng.
+Keycloak xác thực OTP ở realm của từng tenant. SPA dùng OIDC Code + PKCE. Backend kiểm issuer đã đăng ký, chữ ký, audience và hạn token. Cặp issuer + sub định danh người dùng. B03 đồng bộ email và tự tạo user ở lần đăng nhập đầu, cấp quyền theo trạng thái hiện hành trong RMS. Khi IdP gián đoạn, báo lỗi đăng nhập và cho thử lại. Phiên có token hợp lệ vẫn chịu kiểm tra quyền ở từng request. [SA-02](rms-v0-sa-review.md) · [B03](../features/B03-quan-ly-nguoi-dung/spec.md)
 
 ## 3. Email/SMS gateway
 
@@ -57,3 +51,7 @@ updated: 2026-06-01
 - Cấu hình endpoint/khóa bí mật để ở secret manager, không commit vào repo.
 - Mỗi tích hợp có chế độ **degrade**: SSO lỗi → tài khoản nội bộ; tài chính lỗi → đối soát thủ công;
   email lỗi → thông báo in-app vẫn hoạt động.
+
+## Nguồn danh sách sinh viên và giảng viên
+
+F10 tra danh sách đã nạp theo tenant, mã ngoài và loại đối tượng. Trên local, adapter đọc fixture có mã ổn định. Khi bật VP-SYNC, đơn vị cung cấp danh sách có hiệu lực qua import hoặc API. Cùng tenant và mã ngoài cập nhật một bản ghi, khóa nguồn ở tenant khác độc lập. Người dùng chọn và xác nhận đúng người trong danh sách. Bản ghi ngừng hiệu lực được giữ cho lịch sử, loại khỏi lựa chọn mới. Đối chiếu số lượng và bản ghi lỗi với đầu mối trường trước khi mở thật.

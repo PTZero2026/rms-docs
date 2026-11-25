@@ -3,9 +3,9 @@ title: "Dự án phục vụ sản xuất"
 id: "F11"
 epic: "E4"
 owner: "<PO/BA phụ trách>"
-status: Draft        # Draft | Review | Approved
+status: Review
 version: 0.3
-updated: 2026-11-21
+updated: 2026-11-24
 ---
 
 # Dự án phục vụ sản xuất
@@ -134,7 +134,9 @@ thái duyệt, lý do trả lại, tham chiếu bản ghi giờ giảng P03).
   - Mỗi dự án chỉ sinh giờ một lần theo `eventKey`; thu hồi/sửa dữ liệu ảnh hưởng giờ thì P03 ghi điều chỉnh,
     không tạo bản ghi trùng.
 
-- **Điểm cần PO chốt còn lại:**
+- **Đối chiếu trước khi bật cho Trường theo RV-36:**
   - Có chấp nhận `RESULT_CONFIRMATION` thay thế `ACCEPTANCE_MINUTES` trong một số dự án không có nghiệm thu
     chính thức hay không.
   - Bảng giờ pilot ở trên dùng ngay cho Thủy Lợi hay cần điều chỉnh ngưỡng/giờ theo quy chế nội bộ.
+
+**Căn cứ giao task ngày 24/11/2026.** Fixture dùng ACCEPTANCE_MINUTES ở bước nghiệm thu. Chỉ cho RESULT_CONFIRMATION thay thế nếu cấu hình loại minh chứng của chính tenant cho phép. Bảng giờ là ví dụ thử theo RV-36.

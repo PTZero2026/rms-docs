@@ -5,7 +5,7 @@ epic: E3
 channel: shared
 wave: B
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-24
 ---
 
 # Duyệt sản phẩm để tính vào cam kết
@@ -16,7 +16,7 @@ updated: 2026-11-18
 
 ### Session 2026-11-18
 
-- Q: Duyệt cùng sản phẩm hai lần có làm tăng số cam kết đã đạt không? → A: Tổng hợp theo định danh sản phẩm đã duyệt, độc lập số lần gửi lệnh. [RV-21](../review-decisions.md#rv-21). Khuyến nghị dùng để lập kế hoạch, chờ Chuyên viên sản phẩm và phòng KHCN xác nhận.
+- Q: Duyệt cùng sản phẩm hai lần có làm tăng số cam kết đã đạt không? → A: Tổng hợp theo định danh sản phẩm đã duyệt, độc lập số lần gửi lệnh. [RV-21](../review-decisions.md#rv-21). BA/PO chốt cho triển khai ngày 24/11/2026.
 
 ## User Scenarios & Testing
 
@@ -29,7 +29,7 @@ Chuyên viên duyệt một sản phẩm hợp lệ để hệ thống phản á
 - **AC-01** (US-21.1) — Given sản phẩm đủ chứng cứ. When chuyên viên duyệt. Then APPROVED và được tính vào cam kết của đề tài.
 - **AC-02** (US-21.2) — Given chủ nhiệm chỉ có quyền kê khai. When tự duyệt. Then bị từ chối, tổng đạt giữ nguyên.
 
-- **AC-03** (US-21.3, khuyến nghị) — Given Cùng một đầu ra vừa duyệt, cam kết còn thiếu một sản phẩm cùng loại. When gửi lại lệnh duyệt. Then chỉ một đầu ra được tính, mục cam kết vẫn thiếu một.
+- **AC-03** (US-21.3) — Given Cùng một đầu ra vừa duyệt, cam kết còn thiếu một sản phẩm cùng loại. When gửi lại lệnh duyệt. Then chỉ một đầu ra được tính, mục cam kết vẫn thiếu một.
 
 ### Edge Cases
 
@@ -42,7 +42,7 @@ Chủ nhiệm chỉ có quyền kê khai → bị từ chối, tổng đạt gi�
 - **BR-01 / FR-001.** Khi sản phẩm đủ chứng cứ, người có quyền có thể chuyên viên duyệt. Kết quả phải quan sát được: APPROVED và được tính vào cam kết của đề tài (AC-01).
 - **BR-02 / FR-002.** Với tình huống chủ nhiệm chỉ có quyền kê khai, thao tác tự duyệt phải cho kết quả bị từ chối, tổng đạt giữ nguyên (AC-02).
 
-- **BR-03 / FR-003 (đề xuất).** Tổng hợp theo định danh sản phẩm đã duyệt, độc lập số lần gửi lệnh. Kiểm bằng AC-03.
+- **BR-03 / FR-003.** Tổng hợp theo định danh sản phẩm đã duyệt, độc lập số lần gửi lệnh. Kiểm bằng AC-03.
 
 ### Key Entities
 

@@ -1,0 +1,9 @@
+type: object
+additionalProperties: false
+required: [schemaVersion, font, radius, light, dark]
+properties:
+  schemaVersion: {type: integer, enum: [1]}
+  font: {type: string, enum: [geist, system, serif]}
+  radius: {type: string, enum: [sm, md, lg]}
+  light: {$ref: './theme-palette.yaml'}
+  dark: {$ref: './theme-palette.yaml'}

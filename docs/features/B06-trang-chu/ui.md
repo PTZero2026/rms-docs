@@ -2,8 +2,8 @@
 title: "Trang chủ (Dashboard cá nhân) — Giao diện (một web app, phân quyền)"
 spec: "./spec.md"
 owner: "BA/Designer"
-status: Draft
-updated: 2026-06-26
+status: Review
+updated: 2026-11-25
 ---
 
 # Trang chủ (Dashboard cá nhân) — Giao diện
@@ -79,7 +79,7 @@ Bố cục dạng **lưới widget** (cards), thứ tự & tập thẻ theo vai 
 **Trạng thái khối:**
 - *Đang tải:* mỗi widget tải bất đồng bộ, hiển thị skeleton riêng (trang không chờ widget chậm nhất).
 - *Rỗng:* xem HOME-02.
-- *Lỗi một widget:* hiển thị lỗi cục bộ trong thẻ đó, **không** làm hỏng cả trang.
+- *Lỗi một widget:* hiện “Không tải được mục này” và nút **Thử lại** ngay trong thẻ. Người dùng vẫn đọc được số liệu và thao tác ở các thẻ đã tải. Bộ lọc công việc đang chọn được giữ khi thử lại.
 
 ### HOME-02 — Trạng thái rỗng
 
@@ -92,11 +92,13 @@ Dành cho **Quản trị tenant** (`HOME.CONFIG`). Chọn, với từng **vai tr
 widget chuẩn) và **thứ tự/bố cục mặc định**. Không tạo widget tuỳ biến mới (spec BR-05, VP-HOME). Lưu cấu
 hình áp cho mọi người dùng vai trò đó trong tenant.
 
+Trong **Cấu hình hệ thống**, quản trị trường chọn **Bố cục trang chủ theo vai trò**, chọn vai trò, đánh dấu thẻ và bấm **Lên** hoặc **Xuống**. Biểu mẫu hiện nguồn của bố cục đang sửa. Nút **Lưu bố cục** áp thay đổi cho trường. Khi hai người cùng sửa một phiên bản, người lưu sau có thể tải bản hiện hành và chọn lại. Phần **Lịch sử bố cục** hiển thị giờ Việt Nam, người thực hiện và thứ tự trước/sau cho từng lần lưu. [Hướng dẫn có ảnh](../../guides/nguoi-dung/cau-hinh-theo-truong.md#đổi-bố-cục-trang-chủ-theo-vai-trò)
+
 ## 4. Thông báo & trạng thái
 
 - B06 không có thông báo "lưu thành công" cho người dùng cuối (không sửa nghiệp vụ).
-- HOME-11: lưu cấu hình widget hiển thị toast "Đã lưu cấu hình trang chủ".
-- Widget lỗi tải: "Không tải được mục này, thử lại" (lỗi cục bộ trong thẻ).
+- HOME-11 hiển thị trạng thái “Đã lưu cấu hình trang chủ.” sau khi máy chủ xác nhận.
+- Widget lỗi tải: “Không tải được mục này.” Nút **Thử lại** tải lại nguồn của thẻ.
 
 ## 5. Audit & nhật ký
 
@@ -120,4 +122,13 @@ hình áp cho mọi người dùng vai trò đó trong tenant.
 | HOME-02 — trạng thái rỗng | AC-10 |
 | HOME-01 — không ghi audit khi mở | AC-11 |
 | HOME-01 — số liệu cache nêu mốc | AC-12 |
-</content>
+
+Trên **Số liệu nhanh**, chọn **Mở báo cáo theo kỳ** để sang màn hình B02. Tại đó chuyên viên chọn kỳ, kiểm khoa đã chọn sẵn và có thể đổi phạm vi theo quyền. **Về trang chủ** mở lại các thẻ cá nhân. [Hướng dẫn báo cáo](../../guides/nguoi-dung/truong-phong-bao-cao-ky.md#mở-báo-cáo-từ-số-liệu-nhanh)
+
+## Lọc việc quá hạn
+
+| Truy vết | Hành vi |
+|---|---|
+| BR-11, AC-13 | Trang chủ trên điện thoại có hai bộ lọc Tất cả và Quá hạn. Nhóm rỗng có đường quay lại Tất cả. |
+
+Trong **Việc cần làm**, thành viên hội đồng thấy **Chấm nghiệm thu** kèm tên đề tài. Chọn thẻ mở phiếu F06 và điểm đã lưu nháp của người đó. Chuyên viên thấy **Điều phối nghiệm thu** và mở hồ sơ để lập hội đồng hoặc chốt kết luận. Hai thẻ thuộc nhóm **Tất cả** khi nguồn chưa ấn định hạn. [Ảnh thẻ của thành viên hội đồng](../../reviews/screenshots/acceptance/thanh-vien-viec-nghiem-thu.png)

@@ -5,7 +5,7 @@ epic: E2
 channel: web
 wave: B
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-24
 ---
 
 # Nộp báo cáo tiến độ
@@ -16,7 +16,7 @@ updated: 2026-11-18
 
 ### Session 2026-11-18
 
-- Q: Có chặn báo cáo quá hạn nếu đề tài vẫn đang thực hiện? → A: Nhận hồ sơ, ghi giờ và nhãn trễ, chặn khi đề tài tạm dừng. [RV-17](../review-decisions.md#rv-17). Khuyến nghị dùng để lập kế hoạch, chờ Chủ nhiệm và chuyên viên tiến độ xác nhận.
+- Q: Có chặn báo cáo quá hạn nếu đề tài vẫn đang thực hiện? → A: Nhận hồ sơ, ghi giờ và nhãn trễ, chặn khi đề tài tạm dừng. [RV-17](../review-decisions.md#rv-17). BA/PO chốt cho triển khai ngày 24/11/2026.
 
 ## User Scenarios & Testing
 
@@ -29,7 +29,7 @@ Chủ nhiệm đính báo cáo của kỳ và nộp để chuyên viên theo dõ
 - **AC-01** (US-17.1) — Given đang thực hiện, kỳ quá hạn. When nộp. Then ghi nhận thời điểm, thể hiện trễ, chuyển chờ duyệt.
 - **AC-02** (US-17.2) — Given đề tài tạm dừng. When nộp cùng loại báo cáo. Then chặn và giữ trạng thái kỳ.
 
-- **AC-03** (US-17.3, khuyến nghị) — Given Báo cáo đến đúng hạn trong khi đề tài đang thực hiện. When chủ nhiệm nộp đủ tệp. Then ghi nhận đúng hạn và chuyển chờ duyệt.
+- **AC-03** (US-17.3) — Given Báo cáo đến đúng hạn trong khi đề tài đang thực hiện. When chủ nhiệm nộp đủ tệp. Then ghi nhận đúng hạn và chuyển chờ duyệt.
 
 ### Edge Cases
 
@@ -42,7 +42,7 @@ Chủ nhiệm đính báo cáo của kỳ và nộp để chuyên viên theo dõ
 - **BR-01 / FR-001.** Khi đang thực hiện, kỳ quá hạn, người có quyền có thể nộp. Kết quả phải quan sát được: ghi nhận thời điểm, thể hiện trễ, chuyển chờ duyệt (AC-01).
 - **BR-02 / FR-002.** Với tình huống đề tài tạm dừng, thao tác nộp cùng loại báo cáo phải cho kết quả chặn và giữ trạng thái kỳ (AC-02).
 
-- **BR-03 / FR-003 (đề xuất).** Nhận hồ sơ, ghi giờ và nhãn trễ, chặn khi đề tài tạm dừng. Kiểm bằng AC-03.
+- **BR-03 / FR-003.** Nhận hồ sơ, ghi giờ và nhãn trễ, chặn khi đề tài tạm dừng. Kiểm bằng AC-03.
 
 ### Key Entities
 

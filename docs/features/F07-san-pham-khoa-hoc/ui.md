@@ -4,7 +4,7 @@ spec: "./spec.md"
 owner: "PO/BA"
 status: Review
 version: 0.2
-updated: 2026-07-04
+updated: 2026-11-25
 ---
 
 # Sản phẩm khoa học — Giao diện
@@ -124,3 +124,11 @@ do từ chối liên quan.
 | FE-02 (Sản phẩm của đề tài) | AC-01, AC-03, AC-04, AC-11, AC-12 |
 | BO-01 (Duyệt sản phẩm) | AC-03, AC-04, AC-08, AC-09 |
 | BO-02 (Tra cứu sản phẩm) | AC-07, AC-13 |
+
+## Thẻ đọc DOI
+
+| Truy vết | Hành vi |
+|---|---|
+| BR-15, AC-14 | Cho mở nguồn và bỏ thẻ nháp. Khi quyền thay đổi, render lại từng trường theo nguồn hiện được phép. Người dùng tiếp tục kê khai thủ công. |
+
+**Kê khai ngoài đề tài, AC-02.** Tại màn hình tài khoản, chọn **Sản phẩm ngoài đề tài**. Trường hợp nhập hộ chọn tác giả đứng tên thuộc phạm vi quản lý. Có thể dùng email đầy đủ trong danh bạ trường để thêm đồng tác giả khác khoa. Sau khi lưu nháp, tác giả chọn minh chứng, gửi duyệt và đối chiếu F08. [Hướng dẫn](../../guides/nguoi-dung/san-pham-va-nghiem-thu.md#kê-khai-sản-phẩm-ngoài-đề-tài-rms)

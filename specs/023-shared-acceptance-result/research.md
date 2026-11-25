@@ -3,14 +3,14 @@ story: US-23
 feature: F06
 review_id: RV-23
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-24
 ---
 
 # Căn cứ và quyết định · US-23
 
 **Vấn đề.** Một phiếu xét duyệt đầu vào có được tính để đủ số phiếu nghiệm thu?
 
-**Khuyến nghị hiện dùng.** Chỉ tính phiếu đã gửi của đợt nghiệm thu đang kết luận.
+**Quyết định triển khai.** Chỉ tính phiếu đã gửi của đợt nghiệm thu đang kết luận.
 
 **Lý do.** Trong trường hợp đợt nghiệm thu thiếu một phiếu, đề tài có một phiếu xét duyệt đầu vào, người dùng cần thấy kết quả “vẫn thiếu một phiếu, chưa chuyển PASSED”. Phương án khác: Tính mọi phiếu gắn cùng mã đề tài. Dùng TC-03 để phân biệt hai phương án. [RV-23](../review-decisions.md#rv-23)
 

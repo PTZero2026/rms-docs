@@ -3,9 +3,9 @@ title: "Audit (nhật ký hành động nghiệp vụ)"
 id: "P02"
 epic: "E0"
 owner: "Kiến trúc/DEV (SA)"
-status: Draft        # Draft | Review | Approved
+status: Review
 version: 0.1
-updated: 2026-11-21
+updated: 2026-11-24
 ---
 
 # Audit (nhật ký hành động nghiệp vụ)
@@ -73,4 +73,6 @@ Chi tiết trường → [data-model §4.7](../../architecture/data-model.md) v�
 - **Nguồn:** [AGENTS.md §4.4](../../../AGENTS.md), [ADR-0010](../../architecture/decisions/0010-chuan-du-lieu-cho-ai-tham-gia.md) (actor mở rộng — *Proposed*), `AuditLog` gốc theo [ADR-0002](../../architecture/decisions/0002-kien-truc-hai-mat-mot-backend.md).
 - **Phụ thuộc:** RBAC & tenant từ [B03](../B03-quan-ly-nguoi-dung/); ghi song hành với [P01](../P01-workflow-engine/) khi chuyển trạng thái.
 - **Là dependency cứng của:** mọi feature có hành động đổi trạng thái (F01–F08, B01–B04).
-- **Rủi ro / điểm cần chốt:** danh sách **action chuẩn** cần audit cho từng module; chính sách **lưu trữ/retention** nhật ký; ranh giới với `DomainEvent` (chuẩn 4 ADR-0010) để không ghi trùng tầng.
+- Chủ dữ liệu xác định retention khi bàn giao pilot. N08 kiểm transaction của lệnh nguồn, N09 kiểm riêng event giao việc.
+
+**Căn cứ giao task ngày 24/11/2026.** Mỗi lệnh có action do module sở hữu khai báo cạnh contract. P02 ghi audit cùng transaction, outbox mang event cho consumer. Mặc định giữ audit append-only trong môi trường thử. Chủ dữ liệu và Ops chốt thời hạn lưu, sao lưu và quyền đọc trước pilot.

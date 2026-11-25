@@ -3,14 +3,14 @@ story: US-15
 feature: F04
 review_id: RV-15
 status: Draft
-updated: 2026-11-18
+updated: 2026-11-24
 ---
 
 # Căn cứ và quyết định · US-15
 
 **Vấn đề.** Hai đề tài có được dùng cùng mã kỳ không?
 
-**Khuyến nghị hiện dùng.** Áp khóa theo cặp đề tài và kỳ, cho hai đề tài khác nhau dùng cùng tên kỳ.
+**Quyết định triển khai.** Áp khóa theo cặp đề tài và kỳ, cho hai đề tài khác nhau dùng cùng tên kỳ.
 
 **Lý do.** Trong trường hợp hai đề tài đang thực hiện cùng chưa có kỳ 1, người dùng cần thấy kết quả “mỗi đề tài có một báo cáo chờ riêng”. Phương án khác: Đặt mã kỳ duy nhất toàn trường. Dùng TC-03 để phân biệt hai phương án. [RV-15](../review-decisions.md#rv-15)
 

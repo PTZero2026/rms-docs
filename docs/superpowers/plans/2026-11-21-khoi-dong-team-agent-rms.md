@@ -1,7 +1,7 @@
 ---
 title: "Kế hoạch khởi động đội agent RMS"
 status: Draft
-updated: 2026-11-21
+updated: 2026-11-24
 owner: "Tech lead và PO"
 ---
 
@@ -70,5 +70,5 @@ Tech lead điều phối bằng các phiên agent hiện có và một biên b�
 | Mốc đề xuất | Việc giao | Điều kiện đi tiếp |
 |---|---|---|
 | Ngày làm việc kế tiếp | Tech lead giao cùng dữ liệu US-13 cho một agent, cùng model và giới hạn. Reviewer dùng cùng thang điểm. Chọn lát thứ hai là F02/US-05, mở kỳ nhận đề xuất, để lặp phép so giữa một agent và đội phân vai trên nghiệp vụ có thay đổi trạng thái. [US-05](../../../specs/005-web-open-call/spec.md) | Có số liệu của từng phương án trên cùng đầu bài. PO/Tech lead mở rộng khi chất lượng giữ được, công người giảm và chi phí trong trần đã ghi. |
-| Thẻ code đầu tiên | Sau quyết định SA-01 của SA, Ops và chủ ngân sách, giao N01 cho DevOps/BE. FE gọi health bằng client sinh. QA dựng lại từ checkout sạch và thử thay đổi contract thiếu bước sinh lại. | CI chạy lint, typecheck, test, build. FE gọi được API thật. CI phát hiện client lệch contract. [SA-01](../../architecture/rms-v0-sa-review.md) · [Thẻ N01](../../guides/ke-hoach-implement-rms.md) |
+| Thẻ code đầu tiên | Theo SA-01 đã chốt ngày 24/11 cho local/CI, giao N01 cho DevOps/BE. FE gọi health bằng client sinh. QA dựng lại từ checkout sạch và thử thay đổi contract thiếu bước sinh lại. | CI chạy lint, typecheck, test, build. FE gọi được API thật. CI phát hiện client lệch contract. [SA-01](../../architecture/rms-v0-sa-review.md) · [Thẻ N01](../../guides/ke-hoach-implement-rms.md) |
 | Đợt A | Mở các thẻ N02/N03/N05 theo phụ thuộc. Khi có luồng mở kỳ, nộp và xét duyệt, QA chạy lại US-13 trên bản tích hợp hai tenant. DevOps thu kết quả restore, Tech thu số đo thực, Trưởng phòng KHCN xác nhận danh sách đối chứng. | Nghiệm thu sản phẩm theo kế hoạch đợt A. Push và triển khai thực hiện theo yêu cầu rõ của chủ dự án. [Lịch bàn giao v0](../../guides/ke-hoach-implement-rms.md) |

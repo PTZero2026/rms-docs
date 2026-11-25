@@ -3,7 +3,7 @@ title: "Quy đổi giờ giảng — Thiết kế kỹ thuật"
 spec: "./spec.md"
 owner: "<DEV/Architect>"
 status: Draft
-updated: 2026-11-21
+updated: 2026-11-25
 ---
 
 # Quy đổi giờ giảng — Thiết kế kỹ thuật
@@ -70,3 +70,5 @@ Seed TLU ở `spec.md §8` nên được lưu như dữ liệu cấu hình, khô
 
 - Giá trị giờ cơ sở `tlu.baseHoursScieQ1` vẫn chờ PO/Trường cung cấp.
 - Cần chốt lịch năm học/năm tài khóa mặc định theo tenant trước khi bật P03 production.
+
+**Nguồn F07 và F10.** F07 gửi giờ trong giao dịch duyệt sản phẩm gắn đề tài hoặc ngoài đề tài. Chuyên viên xác nhận một tác giả chính/liên hệ và tỷ lệ phần trăm cho các tác giả hưởng giờ. P03 lấy mã loại sản phẩm và ngày duyệt để chọn công thức cho từng vai trò. Khi mở lại, yêu cầu chưa xử lý được dừng, các giờ đã ghi được đảo trên từng người bằng khoản điều chỉnh có audit. F10 gửi khi đóng đề tài đạt, dùng ngày khoa kết luận đạt và vai trò MENTOR. Các sự kiện dùng cùng khóa nguồn, phiên bản, người và vai trò. [Tích hợp F07](../../../apps/backend/src/modules/product/teaching-credit.ts) · [Tích hợp F10](../../../apps/backend/src/modules/student-project/results.ts)

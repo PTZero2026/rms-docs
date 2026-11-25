@@ -1,0 +1,48 @@
+Money:
+  type: string
+  pattern: '^[0-9]+$'
+Allocation:
+  type: object
+  required: [amount,override,note]
+  properties:
+    amount: {$ref: '#/Money'}
+    override: {type: string,nullable: true}
+    note: {type: string,maxLength: 2000}
+    revision: {type: integer,minimum: 1}
+Confirmed:
+  type: object
+  required: [amount,rate,cap,fee,note,revision,settlementMode]
+  properties:
+    amount: {$ref: '#/Money'}
+    rate: {type: string}
+    cap: {type: string,nullable: true}
+    fee: {$ref: '#/Money'}
+    note: {type: string}
+    revision: {type: integer}
+    settlementMode: {type: string,enum: [MANUAL,MATCHED],nullable: true}
+Detail:
+  type: object
+  required: [id,title,status,projectRevision,approvedBudget,officer,principal,allocation,available,spent,balance,items,files]
+  properties:
+    id: {type: string,format: uuid}
+    title: {type: string}
+    status: {type: string}
+    projectRevision: {type: integer}
+    reconciliationEnabled: {type: boolean,nullable: true}
+    approvedBudget: {type: string,nullable: true}
+    officer: {type: boolean}
+    principal: {type: boolean}
+    allocation:
+      oneOf: [{$ref: '#/Confirmed'},{type: 'null'}]
+    available: {$ref: '#/Money'}
+    spent: {$ref: '#/Money'}
+    balance: {type: string}
+    items: {type: array,items: {$ref: './record-expense.yaml#/Expense'}}
+    files:
+      type: array
+      items:
+        type: object
+        required: [id,filename]
+        properties:
+          id: {type: string,format: uuid}
+          filename: {type: string}

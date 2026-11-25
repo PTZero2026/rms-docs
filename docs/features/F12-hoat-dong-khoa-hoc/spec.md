@@ -3,9 +3,9 @@ title: "Hoạt động khoa học & minh chứng"
 id: "F12"
 epic: "E4"
 owner: "<PO/BA phụ trách>"
-status: Draft        # Draft | Review | Approved
+status: Review
 version: 0.1
-updated: 2026-06-24
+updated: 2026-11-24
 ---
 
 # Hoạt động khoa học & minh chứng
@@ -53,7 +53,7 @@ flowchart LR
 | ID    | Quy tắc | Mô tả | Ghi chú |
 |-------|---------|-------|---------|
 | BR-01 | Loại hoạt động cấu hình | Loại hoạt động lấy từ danh mục, mở rộng được | B01; tránh hardcode |
-| BR-02 | Minh chứng bắt buộc | Phải có minh chứng phù hợp loại hoạt động để được duyệt | Bộ minh chứng theo loại — PO chốt |
+| BR-02 | Minh chứng bắt buộc | Phải có minh chứng phù hợp loại hoạt động để được duyệt | Theo cấu hình tenant/giai đoạn ở RV-29 |
 | BR-03 | Phê duyệt mới cấp kinh phí | Chỉ hoạt động đã duyệt mới ghi nhận kinh phí hỗ trợ & sinh giờ giảng | Trạng thái hợp lệ cho P03 (BR-04 của P03) |
 | BR-04 | Giờ giảng theo loại | Số giờ quy đổi khác nhau theo loại hoạt động & vai trò | Công thức ở P03 |
 
@@ -72,5 +72,12 @@ trạng thái phê duyệt, **kinh phí hỗ trợ**, tham chiếu giờ giảng
 ## 7. Phụ thuộc & rủi ro
 
 - **Phụ thuộc:** P03 (giờ giảng), F08 (lý lịch), B01 (danh mục loại hoạt động), F05 (ghi nhận kinh phí hỗ trợ), B04 (thông báo), P02 (audit).
-- **Điểm cần chốt:** bộ minh chứng & cấp duyệt theo từng loại; mức độ quản lý kinh phí hỗ trợ (biên bản §D);
-  SHTT có cần theo dõi vòng đời cấp văn bằng riêng không.
+- Khi kích hoạt, trường xác nhận bộ minh chứng và cấp duyệt theo loại theo RV-36.
+
+**Căn cứ giao task ngày 24/11/2026.** Đọc quy tắc minh chứng và cấp duyệt theo tenant, loại, giai đoạn. Chỉ ghi kinh phí hỗ trợ tổng sau phê duyệt. Theo dõi vòng đời văn bằng là phạm vi mở rộng.
+
+## Phạm vi BA/PO đã chốt cho task
+
+| Quyết định | AC nguồn | Hành vi ở ca biên |
+|---|---|---|
+| [RV-29](../../../specs/review-decisions.md#rv-29) | AC-02 | Lấy bộ minh chứng của tenant và loại hoạt động tại bước gửi, nêu từng mục thiếu. |

@@ -1,0 +1,121 @@
+Draft:
+  type: object
+  required: [title,call,mentorId,members]
+  properties:
+    title: {type: string}
+    objective: {type: string, maxLength: 4000}
+    product: {type: string, maxLength: 4000}
+    call: {type: string}
+    mentorId: {type: string, format: uuid}
+    members: {type: array, items: {type: string, format: uuid}}
+Response:
+  type: object
+  required: [action,reason]
+  properties:
+    revision: {type: integer, minimum: 1, description: Current invitation revision. Required for a revised faculty-returned proposal.}
+    action: {type: string, enum: [accept,decline,return]}
+    reason: {type: string}
+Record:
+  allOf:
+    - {$ref: '#/Draft'}
+    - type: object
+      required: [id,unitId,leader,mentorState,reason,status,revision,onApproval,canReview,mentorRevisionRequired,mentorLabel,memberLabels,finalEvidence,requireMentorFinal,hourCategory,finalRound,finalSummary,mentorEndorsed,acceptanceDate,dueDate,hoursRequested,files,objective,product,resumeStatus,groupMin,groupMax,requireProgress,progressNote,progressBy,progressLabel,progressAt]
+      properties:
+        requireProgress: {type: boolean}
+        progressNote: {type: string}
+        progressBy: {type: [string,'null'], format: uuid}
+        progressLabel: {type: [string,'null']}
+        progressAt: {type: [string,'null'],format: date-time}
+        finalEvidence: {$ref: '#/FinalEvidence'}
+        requireMentorFinal: {type: boolean}
+        hourCategory: {type: string}
+        finalRound: {type: integer}
+        finalSummary: {type: string}
+        mentorEndorsed: {type: boolean}
+        dueDate: {type: [string,'null'], format: date}
+        acceptanceDate: {type: [string,'null'], format: date}
+        hoursRequested: {type: boolean}
+        files: {$ref: '../extension/evidence.yaml#/Record/allOf/1/properties/files'}
+        revision: {type: integer, minimum: 1}
+        canReview: {type: boolean}
+        mentorLabel: {type: string}
+        memberLabels: {type: array, items: {type: string}}
+        mentorRevisionRequired: {type: boolean}
+        onApproval: {type: string, enum: [APPROVED,IN_PROGRESS]}
+        resumeStatus: {enum: [null,APPROVED,IN_PROGRESS]}
+        groupMin: {type: [integer,'null']}
+        groupMax: {type: [integer,'null']}
+        objective: {$ref: '#/Draft/properties/objective'}
+        product: {$ref: '#/Draft/properties/product'}
+        id: {type: string, format: uuid}
+        unitId: {type: string, format: uuid}
+        leader: {type: string, format: uuid}
+        mentorState: {type: string, enum: [INVITED,ACCEPTED,DECLINED,RETURNED,RECONFIRM_REQUIRED]}
+        reason: {type: string}
+        status: {type: string, enum: [DRAFT,SUBMITTED,APPROVED,IN_PROGRESS,MENTOR_PENDING,FINAL_SUBMITTED,PASSED,FAILED,COMPLETED]}
+Call:
+  type: object
+  required: [code,unitId,starts,ends,min,max]
+  properties:
+    code: {type: string}
+    unitId: {type: string, format: uuid}
+    starts: {type: string, format: date}
+    ends: {type: string, format: date}
+    finalDue: {type: string, format: date}
+    requireProgress: {type: boolean}
+    onApproval: {type: string, enum: [APPROVED,IN_PROGRESS]}
+    finalEvidence: {$ref: '#/FinalEvidence'}
+    requireMentorFinal: {type: boolean}
+    hourCategory: {type: string, maxLength: 80}
+    min: {type: integer}
+    max: {type: integer}
+Page:
+  type: object
+  required: [accountId,items,people,calls]
+  properties:
+    accountId: {type: string, format: uuid}
+    items: {type: array, items: {$ref: '#/Record'}}
+    calls: {type: array, items: {$ref: '#/Call'}}
+    people:
+      type: array
+      items:
+        type: object
+        required: [id,label,kind]
+        properties: {id: {type: string, format: uuid}, label: {type: string}, kind: {type: string, enum: [STUDENT,MENTOR]}}
+Decision:
+  type: object
+  required: [action,reason,revision]
+  properties:
+    action: {type: string, enum: [approve,return,start]}
+    reason: {type: string,maxLength: 2000}
+    revision: {type: integer,minimum: 1}
+
+FinalEvidence:
+  type: array
+  maxItems: 40
+  items: {$ref: '../extension/evidence.yaml#/Choice'}
+ResultDecision:
+  type: object
+  required: [action,revision,message]
+  properties:
+    action: {type: string, enum: [submit,endorse,revise,pass,fail,close,reopen]}
+    revision: {type: integer, minimum: 1}
+    message: {type: string, maxLength: 4000}
+    dueDate: {type: string, format: date}
+Amendment:
+  type: object
+  required: [revision,reason,title,objective,product,members,mentorId]
+  properties:
+    revision: {type: integer, minimum: 1}
+    reason: {type: string, minLength: 1, maxLength: 2000}
+    title: {$ref: '#/Draft/properties/title'}
+    objective: {$ref: '#/Draft/properties/objective'}
+    product: {$ref: '#/Draft/properties/product'}
+    members: {$ref: '#/Draft/properties/members'}
+    mentorId: {$ref: '#/Draft/properties/mentorId'}
+Progress:
+  type: object
+  required: [revision,note]
+  properties:
+    revision: {type: integer, minimum: 1}
+    note: {type: string, minLength: 1, maxLength: 4000}

@@ -3,7 +3,7 @@ story: US-01
 feature: B03
 review_id: RV-01
 status: Draft
-updated: 2026-11-21
+updated: 2026-11-24
 ---
 
 # Kế hoạch · Khóa tài khoản của người rời đơn vị
@@ -16,7 +16,7 @@ Quản trị viên khóa một tài khoản khi người dùng rời đơn vị 
 
 ## Technical Context
 
-Một SPA trong `apps/web`, backend chia module, PostgreSQL và hợp đồng sinh type. Ngôn ngữ và phiên bản theo repo thực thi khi khởi tạo. [Kiến trúc đích](../../docs/architecture/overview.md). Kênh nghiệm thu chính: Dịch vụ dùng chung và điểm gọi của module sở hữu. Dữ liệu trong lát: Tài khoản đích và xác nhận khóa. Đối chiếu trên bộ thử một tài khoản hoạt động, hai vai trò. Điều kiện tích hợp: B03, P02.
+Một SPA trong `apps/web`, backend chia module, PostgreSQL và hợp đồng sinh type. Ngôn ngữ và phiên bản theo repo thực thi khi khởi tạo. [Kiến trúc đích](../../docs/architecture/overview.md). Kênh nghiệm thu chính: Dịch vụ dùng chung và điểm gọi của module sở hữu. Dữ liệu trong lát: Tài khoản đích và xác nhận khóa. Đối chiếu trên bộ thử một tài khoản đích đang hoạt động và hai người thao tác riêng biệt (một admin, một user chỉ xem). Điều kiện tích hợp: B03, P02.
 
 ### Xử lý tại module B03
 

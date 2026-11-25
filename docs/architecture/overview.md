@@ -1,16 +1,15 @@
 ---
 title: "Kiến trúc tổng quan — RMS"
 status: Draft
-updated: 2026-11-19
+updated: 2026-11-24
 ---
 
 # Kiến trúc tổng quan
 
-Hồ sơ trình SA cho đợt chạy thử mô tả cấu hình Vercel, Neon, Keycloak, cách ly qua connection pool và quản lý theme shadcn theo trường. [Kiến trúc triển khai v0](rms-v0-sa-review.md)
+Quyết định của SA cho đợt chạy thử mô tả cấu hình Vercel, Neon, Keycloak, cách ly qua connection pool và quản lý theme shadcn theo trường. [Kiến trúc triển khai v0](rms-v0-sa-review.md)
 
 > Mức **HOW** của hệ thống. Quyết định lớn được tách thành ADR trong `decisions/`.
-> Stack nêu dưới đây là **khuyến nghị** (giả định hợp lý cho hệ thống nội bộ bệnh viện/cơ sở y tế),
-> có thể điều chỉnh qua ADR mà không ảnh hưởng tài liệu nghiệp vụ trong `features/`.
+> SA-01–06 xác định stack dùng cho các task v0, môi trường local và điều kiện vận hành pilot.
 
 ## 1. Context (C4 - mức 1)
 
@@ -65,7 +64,7 @@ flowchart LR
 
 | Thành phần | Trách nhiệm | Stack khuyến nghị |
 |---|---|---|
-| Web app | Giao diện cho mọi vai trò; route & menu render theo `Permission` | SPA (React/Vue), gọi REST |
+| Web app | Giao diện cho mọi vai trò; route & menu render theo `Permission` | React/Vite và client REST sinh từ OpenAPI |
 | API Gateway/BFF | Xác thực token, định tuyến, rate-limit | Reverse proxy + lớp BFF mỏng |
 | Backend | Toàn bộ domain logic, vòng đời đề tài | **Modular monolith** chia module theo feature (F01–F08, B01–B04) |
 | CSDL | Lưu trữ giao dịch | PostgreSQL (RDBMS, transaction, jsonb) |
@@ -83,16 +82,17 @@ qua interface rõ ràng. Thực thể dùng chung định nghĩa ở `data-model
 
 | Nhóm | Module |
 |---|---|
-| Nền tảng | `iam` (B03 người dùng/quyền), `catalog` (B01 danh mục), `notification` (B04), `audit`, `home` (B06 trang chủ — aggregation/BFF read-only) |
+| Nền tảng | `iam` (B03 người dùng/quyền), `catalog` (B01 danh mục), `notification` (B04), `workflow` (P01), `audit` (P02), `home` (B06 trang chủ — aggregation/BFF read-only) |
 | Đầu vòng đời | `call` (F02 kỳ nhận đề xuất), `proposal` (F01 đề xuất), `review` (F03 xét duyệt) |
 | Thực hiện | `progress` (F04), `budget` (F05), `acceptance` (F06 nghiệm thu) |
 | Đầu ra | `product` (F07 sản phẩm), `profile` (F08 lý lịch), `report` (B02 thống kê) |
+| E4 theo tenant | `upper-project` (F09), `student-project` (F10), `applied-project` (F11), `activity` (F12), `teaching-hour` (P03) |
 
 ## 4. Cross-cutting concerns
 
 ### 4.1 Xác thực & phân quyền
 - **Xác thực.** Keycloak phát access token sau khi xác thực email-OTP theo realm. API RMS kiểm token và quyết định quyền nghiệp vụ theo B03. [ADR-0008](decisions/0008-keycloak-idp-dang-nhap-email-otp.md)
-- **Phân quyền:** RBAC — `Permission` (nguyên tử `MODULE.ACTION`) gom vào `Role`, gán cho `User`.
+- **Phân quyền:** RMS tra quyền từ một userType và kiểm phân công theo đối tượng ở từng request.
   Kiểm tra quyền ở backend cho mọi API; web app chỉ ẩn/hiện theo quyền, **không** là lớp bảo vệ.
 - Phạm vi dữ liệu (data scoping): chủ nhiệm chỉ thấy đề tài của mình; chuyên viên thấy theo đơn vị/kỳ.
   Xem [ADR-0005](decisions/0005-sso-va-rbac.md).

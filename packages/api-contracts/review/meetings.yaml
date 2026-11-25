@@ -1,0 +1,39 @@
+RoundList:
+  type: array
+  items:
+    type: object
+    required: [id,title,kind,secretary]
+    properties:
+      id: {type: string, format: uuid}
+      title: {type: string}
+      kind: {type: string, enum: [ACCEPTANCE,PROPOSAL_REVIEW]}
+      secretary: {type: boolean}
+Create:
+  type: object
+  required: [id,title,date]
+  properties:
+    id: {type: string, format: uuid}
+    title: {type: string}
+    date: {type: string, format: date}
+Meeting:
+  allOf:
+    - {$ref: '#/Create'}
+    - type: object
+      required: [revision,files]
+      properties:
+        revision: {type: integer}
+        files:
+          type: array
+          items:
+            type: object
+            required: [id,filename,revision,actorId,actor,attachedAt]
+            properties:
+              id: {type: string,format: uuid}
+              filename: {type: string}
+              revision: {type: integer}
+              actorId: {type: string,format: uuid}
+              actor: {type: string}
+              attachedAt: {type: string,format: date-time}
+List:
+  type: array
+  items: {$ref: '#/Meeting'}

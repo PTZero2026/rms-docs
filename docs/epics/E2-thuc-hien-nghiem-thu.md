@@ -2,7 +2,7 @@
 title: "E2 — Thực hiện & Nghiệm thu"
 id: "E2"
 status: Draft
-updated: 2026-06-12
+updated: 2026-11-24
 ---
 
 # E2 — Thực hiện & Nghiệm thu
@@ -28,10 +28,9 @@ Next.
   **F06 dùng lại mô hình hội đồng của F03** (`type=ACCEPTANCE`).
 - **Nội bộ**: F05 phụ thuộc dự toán (F01) & quyết định giao (F04); F06 gọi F05 khi quyết toán.
 
-## Open questions
-- **F06 test-plan còn khung** — cần viết test case bám AC.
-- Đồng bộ mô hình cuộc họp/biên bản nghiệm thu (F06) với F03.
-- Điều kiện vào nghiệm thu ("đủ sản phẩm cam kết") đối chiếu F04/F07 — nguồn dữ liệu & cách kiểm.
+## Căn cứ giao việc
+
+F04 chốt cam kết khi giao. F07 đếm theo loại và định danh sản phẩm. F06 dùng kỳ cuối PASSED và kết quả đối chiếu F07 khi đăng ký, dùng cuộc họp và biên bản cùng mô hình F03. F05 gọi P01 khi đủ điều kiện RV-24. [Ca liên module](../features/integration-test-plan.md)
 
 ## Định nghĩa hoàn thành (Exit criteria)
 - [ ] Giao đề tài & nộp/duyệt báo cáo tiến độ định kỳ (F04).

@@ -1,4 +1,6 @@
-import { useState } from "react"
+import { useEffect, useEffectEvent, useState } from "react"
+import { FilterPair } from "../mobile/FilterPair"
+import { usePhoneLayout } from "../mobile/usePhoneLayout"
 import { Bell, CheckCheck, ChevronRight, Mail } from "lucide-react"
 import { Button } from "@rms/ui/components/button"
 import { Heading, Blank, Status, Back } from "../../demo/ui"
@@ -13,14 +15,29 @@ export default function Notifications(p: FeatureProps) {
   const { rows, session, route, go, commit } = p,
     admin = session.role === "admin",
     operator = admin || session.role === "officer"
-  const [filter, setFilter] = useState("all"),
-    [editing, setEditing] = useState(""),
+  const phone = usePhoneLayout()
+  const fromUnread = route.id === "unread" || !!route.id?.startsWith("unread~")
+  const inboxPage = !route.id || route.id === "unread"
+  const showUnread = (active: boolean) => go("B04", active ? "unread" : undefined)
+  const [editing, setEditing] = useState(""),
     [draft, setDraft] = useState(""),
     [event, setEvent] = useState("PROPOSAL_CALL_OPENED")
   const list = inbox(rows, session.userId),
     unread = list.filter((r) => r.status === "UNREAD"),
-    shown = filter === "unread" ? unread : list
-  const selected = list.find((r) => r.id === route.id)
+    shown = fromUnread ? unread : list
+  const selectedId = route.id?.replace(/^unread~/, "")
+  const selected = list.find((r) => r.id === selectedId)
+  const markRead = useEffectEvent(() => {
+    if (selected?.status !== "UNREAD") return
+    try {
+      commit("Đánh dấu đã đọc", [{ ...selected, status: "READ" }])
+    } catch {
+      // Workspace displays the storage or changed-session error with a retry action below.
+    }
+  })
+  useEffect(() => {
+    markRead()
+  }, [selectedId, selected?.status])
   const preferences = route.id === "preferences",
     delivery = route.id === "delivery" && operator,
     policy = route.id === "policy" && admin
@@ -46,7 +63,7 @@ export default function Notifications(p: FeatureProps) {
     ])
   }
   return (
-    <div className="stack">
+    <div className="stack inbox-page">
       <Heading title="Thông báo" description="Cập nhật và nhắc hạn từ các hồ sơ nghiên cứu." />
       <div className="tabs-bar">
         {[
@@ -57,7 +74,7 @@ export default function Notifications(p: FeatureProps) {
         ].map(([id, label]) => (
           <Button
             key={label}
-            variant={route.id === id ? "secondary" : "ghost"}
+            variant={route.id === id || (!id && inboxPage) ? "secondary" : "ghost"}
             onClick={() => go("B04", id)}
           >
             {label}
@@ -187,7 +204,7 @@ export default function Notifications(p: FeatureProps) {
         </section>
       ) : selected ? (
         <section className="panel pad stack">
-          <Back onClick={() => go("B04")} />
+          <Back onClick={() => showUnread(fromUnread)} />
           <h2>{selected.title}</h2>
           <p>{selected.fields.text ?? selected.fields.message}</p>
           <div className="toolbar">
@@ -216,7 +233,7 @@ export default function Notifications(p: FeatureProps) {
             )}
           </div>
         </section>
-      ) : route.id ? (
+      ) : !inboxPage ? (
         <Blank title="Không tìm thấy thông báo trong phạm vi của bạn" />
       ) : (
         <section className="panel">
@@ -240,16 +257,29 @@ export default function Notifications(p: FeatureProps) {
             </Button>
           </div>
           <div className="toolbar pad">
-            <Choice
-              label="Hiển thị"
-              value={filter}
-              change={setFilter}
-              options={{ all: "Tất cả", unread: "Chưa đọc" }}
-            />
+            {phone ? (
+              <FilterPair
+                label="Lọc hộp thư"
+                options={["Tất cả", "Chưa đọc"]}
+                secondActive={fromUnread}
+                onChange={showUnread}
+              />
+            ) : (
+              <Choice
+                label="Hiển thị"
+                value={fromUnread ? "unread" : "all"}
+                change={(value) => showUnread(value === "unread")}
+                options={{ all: "Tất cả", unread: "Chưa đọc" }}
+              />
+            )}
           </div>
           {shown.length ? (
             shown.map((r) => (
-              <button className="project-row" key={r.id} onClick={() => go("B04", r.id)}>
+              <button
+                className="project-row"
+                key={r.id}
+                onClick={() => go("B04", fromUnread ? "unread~" + r.id : r.id)}
+              >
                 <Bell size={17} />
                 <span className="task-copy">
                   <b>{r.title}</b>

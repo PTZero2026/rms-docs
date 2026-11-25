@@ -2,7 +2,7 @@
 title: "Bản đồ migrate: backend cũ → monorepo RMS"
 status: Draft
 version: 0.1
-updated: 2026-11-21
+updated: 2026-11-24
 source_repo: https://github.com/ducnv2509/BE_NCKH
 ---
 
@@ -21,17 +21,17 @@ source_repo: https://github.com/ducnv2509/BE_NCKH
   |---|---|---|
   | `nckh-backend` | Modular monolith domain NCKH (16 module) | **Nguồn chính** → rót vào `apps/backend` |
   | `templates-service` | Render template (đề cương/biểu mẫu/docx) | Gộp thành module hoặc giữ làm service phụ |
-  | `sys-config-service` | Cấu hình hệ thống | Gộp vào `catalog`/config |
+  | `sys-config-service` | Cấu hình hệ thống | Giữ service blob riêng, gọi qua adapter catalog (SA-05) |
   | `isofh-admin` | Control-plane SaaS: tenant, subscription, **payment** | **Loại khỏi phạm vi RMS** (không phải domain NCKH) |
 
-## 1. Quyết định kiến trúc cần chốt TRƯỚC (chặn nhiều việc phía sau)
+## 1. Quyết định kiến trúc áp dụng khi chuyển đổi
 
 | # | Quyết định | Vì sao quan trọng |
 |---|---|---|
-| ~~Q1~~ ✅ **ĐÃ CHỐT: ĐA TỔ CHỨC** (2026-06-07) | RMS đa tổ chức (multi-tenant) | Giữ realm-per-tenant + Postgres RLS của repo cũ → **Lift** tầng `auth`/`tenants`/`users`. `data-model.md` giữ `tenant_id` + RLS. **Cần ADR multi-tenant mới** (monorepo chưa có). |
+| ~~Q1~~ ✅ **ĐÃ CHỐT: ĐA TỔ CHỨC** (2026-06-07) | RMS đa tổ chức (multi-tenant) | Giữ realm-per-tenant + Postgres RLS của repo cũ → **Lift** tầng `auth`/`tenants`/`users`. `data-model.md` giữ `tenant_id` + RLS. [ADR-0016](decisions/0016-nen-tang-trien-khai-va-cach-ly-tenant.md) chốt realm, tenant context và RLS. |
 | ~~Q2~~ ✅ **ĐÃ CHỐT: GIỮ ĐỘNG PER-TENANT** ([ADR-0007](decisions/0007-workflow-engine-dong-per-tenant.md)) | Giữ engine cấu hình động (lifecycle khác nhau giữa tổ chức, nhất là NCKH nội bộ); tái cấu trúc 3 tầng + tầng `statusSemantic`, kéo domain logic khỏi kernel. |
 | ~~Q3~~ ✅ **ĐÃ CHỐT: GIỮ KEYCLOAK** ([ADR-0008](decisions/0008-keycloak-idp-dang-nhap-email-otp.md)) | Keycloak realm-per-tenant; đăng nhập passwordless **email-OTP**; không tự đăng ký, không quên mật khẩu. Keycloak=authN, RMS=authZ. |
-| Q4 ⏳ **CHỜ DEV** | Phận của `isofh-admin` (payment/subscription) | Khuyến nghị: **loại khỏi domain RMS**, nhưng **giữ phần tạo/quản realm Keycloak** (onboard tổ chức vẫn cần) → chuyển về `iam`/infra. **Cần hỏi DEV:** (1) `isofh-admin` có đang được dùng cho việc gì ngoài tenant/subscription/payment không? (2) Có logic nào RMS đang phụ thuộc vào nó không? (3) Phần tạo realm/SMTP đang nằm ở service nào? |
+| Q4 · SA-01/02 | Payment và subscription nằm ngoài RMS. N03 sở hữu tạo realm, SMTP và client. | N04 dùng B03 trong RMS để quyết định quyền. Kiểm phụ thuộc thực tế của isofh-admin khi có nhiệm vụ di trú. N01 chạy độc lập với hệ cũ. |
 
 ## 2. Coverage matrix theo feature đích
 
@@ -72,7 +72,7 @@ source_repo: https://github.com/ducnv2509/BE_NCKH
 
 ## 4. Trình tự đề xuất
 
-1. **Chốt Q1–Q4** (mục §1) — chặn nhiều việc, làm trước tiên.
+1. **Áp dụng Q1–Q4** ở §1. N01 chạy local theo SA-01 trước khi nối hệ thống cũ.
 2. **Xương sống:** `data-model.md` (rút từ Prisma) + vòng đời `ResearchProject` (từ `workflow/`).
 3. **Tracer bullet F01** end-to-end: `spec.md` → `api-contracts` (OpenAPI) → bê `research`→`proposal` (tách `budget`) → 1 lát FE. Kiểm chứng quy ước + DoD §6.
 4. **Nhân rộng theo vòng đời:** F02 → F01 → F03 → F04 → F05 → F06 → F07; song song B01–B04, audit.
@@ -99,7 +99,7 @@ source_repo: https://github.com/ducnv2509/BE_NCKH
 | `startDate`/`endDate`/`durationMonths` | `durationMonths` (+ phái sinh) | 🧩 | Cân nhắc giữ start/end ở giai đoạn thực hiện (F04) |
 | `version` | (optimistic lock) | = | |
 | `revisionRequest`/`revisionDeadline`/`lastRevisionSubmittedAt` | (effect `setRevisionDeadline` — ADR-0007) | 🧩 | Chuyển thành side-effect của transition, không phải cột rời |
-| `ethicsRequired`/`ethicsApprovedAt`/`ethicsApprovedById`/`ethicsMeetingId` | `EvaluationCommittee(type=ETHICS_REVIEW)` + `Meeting` | 🧩 | ✅ **Đã chốt (2026-06-11):** đạo đức thuộc **F03**, tái dùng `EvaluationCommittee` `type=ETHICS_REVIEW`, **phê duyệt song song** xét duyệt khoa học. F03 BR-08 đã ghi điều kiện duyệt. Còn bổ sung mô hình `Meeting` và giá trị enum vào `data-model.md`. |
+| `ethicsRequired`/`ethicsApprovedAt`/`ethicsApprovedById`/`ethicsMeetingId` | `EvaluationCommittee(type=ETHICS_REVIEW)` + `Meeting` | 🧩 | ✅ **Đã chốt (2026-06-11):** đạo đức thuộc **F03**, tái dùng `EvaluationCommittee` `type=ETHICS_REVIEW`, **phê duyệt song song** xét duyệt khoa học. F03 BR-08 đã ghi điều kiện duyệt. Meeting và ETHICS_REVIEW nằm trong mô hình dữ liệu §4.4. |
 | `level` (`ProjectLevel`), `year` | — | ⚠️ | Cấp đề tài / năm — target chưa có; `year` có thể về `ProposalCall` |
 | `approvalDecisionUrl` | `Attachment` | 🧩 | File → object storage qua `Attachment` |
 
@@ -125,6 +125,6 @@ source_repo: https://github.com/ducnv2509/BE_NCKH
 | `version`/`submittedAt`/`status` (`ProposalStatus`)/`revisionNote` | Vòng đời ở `WorkflowInstance` + `statusSemantic` | 🧩 | Trạng thái proposal hợp nhất vào workflow đề tài |
 
 ### Việc phát sinh cần hỏi owner/DEV
-- ✅ **Đạo đức nghiên cứu** (`ethics*`) — **đã chốt (2026-06-11):** thuộc **F03**, tái dùng `EvaluationCommittee` `type=ETHICS_REVIEW`, **phê duyệt song song** xét duyệt khoa học (đề tài phải đạt cả hai). Còn lại: mô hình `Meeting` + `ETHICS_REVIEW` trong `data-model.md`. Điều kiện chuyển trạng thái và thông báo đã chốt ở [RV-11](../../specs/review-decisions.md#rv-11).
+- ✅ **Đạo đức nghiên cứu** (`ethics*`) — **đã chốt (2026-06-11):** thuộc **F03**, tái dùng `EvaluationCommittee` `type=ETHICS_REVIEW`, **phê duyệt song song** xét duyệt khoa học (đề tài phải đạt cả hai). Mô hình Meeting và ETHICS_REVIEW đã ghi tại [§4.4](data-model.md). Điều kiện chuyển trạng thái và thông báo đã chốt ở [RV-11](../../specs/review-decisions.md#rv-11).
 - ⚠️ **Cấp đề tài** (`level`) và **năm** (`year`): bổ sung vào target ở đâu.
 - 🧩 Map chi tiết `ProjectStatus` (enum legacy) → `statusSemantic` (§3.1) cần làm khi dựng workflow mặc định.

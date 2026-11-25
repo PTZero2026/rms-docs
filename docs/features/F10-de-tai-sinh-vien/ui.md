@@ -3,7 +3,7 @@ title: "Đề tài sinh viên — Giao diện (một web app, phân quyền)"
 spec: "./spec.md"
 owner: "<BA/Designer>"
 status: Draft
-updated: 2026-06-29
+updated: 2026-11-25
 ---
 
 # Đề tài sinh viên — Giao diện
@@ -47,3 +47,13 @@ updated: 2026-06-29
 | MH-05 | AC-07, AC-12 |
 | MH-06 | AC-08, AC-09 |
 | MH-07 | AC-10, AC-11, AC-12 |
+
+**MH-04 và AC-06.** Khoa mở đăng ký **Đã nộp**. Nút **Phê duyệt triển khai** áp dụng mốc đã chọn khi nộp. Khoa có thể nhập lý do rồi chọn **Trả đăng ký bổ sung**. Sau khi duyệt, hồ sơ ở mốc **Đã phê duyệt** có nút **Bắt đầu thực hiện**. [Hướng dẫn theo vai trò](../../guides/nguoi-dung/dang-ky-sinh-vien.md)
+
+**MH-06 và MH-07.** Mục **Kết quả cuối** hiển thị số lượt, tóm tắt, tệp theo loại và xác nhận của giảng viên. Khoa ghi nhận kết quả, cho làm lại có hạn hoặc đóng đề tài đạt. Thông báo sau khi đóng cho biết đã gửi yêu cầu P03 hay P03 đang tắt. [Hướng dẫn và ảnh từng vai](../../guides/nguoi-dung/dang-ky-sinh-vien.md#nộp-kết-quả-và-nghiệm-thu)
+
+**MH-05 và AC-07.** Khoa mở **Điều chỉnh hồ sơ đã duyệt**, chọn nhóm và GVHD từ danh bạ, ghi lý do rồi gửi. Người nhận lời mời thấy mục tiêu, sản phẩm dự kiến và lý do điều chỉnh trước khi phản hồi. [Hướng dẫn đổi người hướng dẫn](../../guides/nguoi-dung/dang-ky-sinh-vien.md#điều-chỉnh-sau-phê-duyệt)
+
+**MH-05/MH-06.** Khi đang thực hiện, trưởng nhóm và GVHD có mục **Tiến độ thực hiện** để cập nhật nội dung. Cả nhóm và khoa đọc được người ghi và thời điểm. Khu vực **Kết quả cuối** hiển thị hạn do đợt quy định. Khi lưu tiến độ, nội dung tóm tắt kết quả đang soạn vẫn còn trên biểu mẫu.
+
+**MH-01.** Quản trị trường mở **Cấu hình hệ thống**, sửa danh sách `F10.CALLS`, kiểm qua **Xem trước** rồi lưu. Quy tắc ngày, quy mô nhóm, bộ minh chứng và cờ bắt buộc được dùng chung giữa B01 và F10. [Hướng dẫn kèm mẫu](../../guides/nguoi-dung/cau-hinh-theo-truong.md#mở-đợt-đề-tài-sinh-viên)

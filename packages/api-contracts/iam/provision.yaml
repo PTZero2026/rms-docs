@@ -1,0 +1,16 @@
+Create:
+  type: object
+  additionalProperties: false
+  required: [commandId,email,fullName,unitId,userType]
+  properties:
+    commandId: {type: string, format: uuid}
+    email: {type: string, format: email}
+    fullName: {type: string}
+    unitId: {type: string, format: uuid}
+    userType: {type: string, enum: [user,author,staff,admin]}
+Units:
+  type: array
+  items:
+    type: object
+    required: [id,name]
+    properties: {id: {type: string, format: uuid}, name: {type: string}}

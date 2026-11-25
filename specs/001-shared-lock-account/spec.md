@@ -5,7 +5,7 @@ epic: E0
 channel: shared
 wave: A
 status: Draft
-updated: 2026-11-21
+updated: 2026-11-24
 ---
 
 # Khóa tài khoản của người rời đơn vị
@@ -24,7 +24,7 @@ updated: 2026-11-21
 
 Quản trị viên khóa một tài khoản khi người dùng rời đơn vị để ngừng truy cập nghiệp vụ.
 
-**Giá trị và phép thử độc lập.** Chuẩn bị một tài khoản hoạt động, hai vai trò. Thực hiện thao tác bằng đúng vai trò và kiểm đầu ra sau khi mở lại. Lát này thuộc đợt A.
+**Giá trị và phép thử độc lập.** Chuẩn bị một tài khoản đích đang hoạt động và hai người thao tác riêng biệt (một admin, một user chỉ xem). Thực hiện thao tác bằng đúng vai trò và kiểm đầu ra sau khi mở lại. Lát này thuộc đợt A.
 
 - **AC-01** (US-01.1) — Given admin khóa đúng người. When gửi lệnh. Then tài khoản chuyển sang bị khóa và ghi audit.
 - **AC-02** (US-01.2) — Given người chỉ có quyền xem. When gửi cùng yêu cầu. Then backend từ chối, tài khoản giữ nguyên.
